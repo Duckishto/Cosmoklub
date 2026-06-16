@@ -7,14 +7,14 @@ const canvas = document.getElementById('planet-canvas');
 
 // ── Random planet model picked on each page load ────────────────────────
 const PLANET_MODELS = [
-  'models/Mars.glb',
-  'models/Earth.glb',
-  'models/Jupiter.glb',
-  'models/Mercury.glb',
-  'models/Venus.glb',
-  'models/Saturn.glb',
-  'models/Uranus.glb',
-  'models/Neptune.glb',
+  'Mars.glb',
+  'Earth.glb',
+  'Jupiter.glb',
+  'Mercury.glb',
+  'Venus.glb',
+  'Saturn.glb',
+  'Uranus.glb',
+  'Neptune.glb',
   // add more models here as needed
 ];
 const randomModel = PLANET_MODELS[Math.floor(Math.random() * PLANET_MODELS.length)];
