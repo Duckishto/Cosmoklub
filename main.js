@@ -219,6 +219,7 @@ createApp({
       pensiaLoading: false,
       pensiaMsg: '',
       pensiaHeadline: '',
+      pensiaCloseTimer: null,
       _pensiaFetched: false,
       currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
       langs: [
@@ -263,6 +264,7 @@ createApp({
   methods: {
     setLang(l) { this.currentLang = l; this.langOpen = false; },
     async pensiaClick() {
+      clearTimeout(this.pensiaCloseTimer);
       this.pensiaOpen = !this.pensiaOpen;
       if (!this.pensiaOpen) return;
       this.pensiaLoading = true;
@@ -285,6 +287,9 @@ createApp({
         this.pensiaMsg = f.m;
       }
       this.pensiaLoading = false;
+      this.pensiaCloseTimer = setTimeout(() => {
+        this.pensiaOpen = false;
+      }, 8000);
     },
     pensiaVoice(title, explanation) {
       const openers = [
