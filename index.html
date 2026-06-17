@@ -289,7 +289,7 @@
     <!-- ToS Modal -->
     <transition name="fade">
       <div class="modal-overlay" v-if="modal==='tos'" @click.self="closeModal">
-        <div class="modal">
+        <div class="modal tos-modal">
           <div class="modal-header">
             <div><div class="modal-title"><span>{{ t.tos }}</span></div><div class="modal-sub">{{ t.tosDate }}</div></div>
             <button class="close-btn" @click="closeModal"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -304,7 +304,7 @@
               <h3>6. {{ t.tos6Title }}</h3><p>{{ t.tos6Body }}</p>
             </div>
           </div>
-          <div style="padding:1rem 1.9rem 1.9rem"><button class="btn-submit" @click="closeModal">{{ t.accept }}</button></div>
+          <div style="padding:1rem 1.9rem 1.9rem;flex-shrink:0"><button class="btn-submit" @click="closeModal">{{ t.accept }}</button></div>
         </div>
       </div>
     </transition>
