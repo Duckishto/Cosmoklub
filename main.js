@@ -272,7 +272,7 @@ createApp({
       this.pensiaHeadline = '';
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4500);
+        const timeoutId = setTimeout(() => controller.abort(), 2222);
         const apodRes = await fetch(`https://api.nasa.gov/planetary/apod?api_key=TSTiFv4spdqyeg2tijUw3GwScNh2JA596I0qSnKa&count=3`, { signal: controller.signal });
         clearTimeout(timeoutId);
         if (!apodRes.ok) throw new Error(`NASA APOD request failed (${apodRes.status})`);
