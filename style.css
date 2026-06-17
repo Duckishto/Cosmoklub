@@ -601,7 +601,7 @@ h2 {
 }
 .features-header-row {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 2rem;
   margin-bottom: 0;
@@ -1071,8 +1071,7 @@ footer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  align-self: flex-end;
-  padding-bottom: 1rem;
+  align-self: center;
   position: relative;
 }
 .pensia-wrap:hover .mascot-pensia {
@@ -2229,9 +2228,9 @@ footer {
 
 /* ---------- Mascot ---------- */
 .pensia-wrap {
-  position: absolute;
-  bottom: 2rem;
-  right: 3rem;
+  position: relative;
+  flex: 0 0 auto;
+  align-self: center;
   width: clamp(100px, 9vw, 148px);
   z-index: 3;
   cursor: pointer;
