@@ -395,8 +395,8 @@ createApp({
       ];
       return facts[Math.floor(Math.random() * facts.length)];
     },
-    openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; },
-    closeModal() { this.modal = null; this.success = false; },
+    openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; document.body.style.overflow = 'hidden'; },
+    closeModal() { this.modal = null; this.success = false; document.body.style.overflow = ''; },
     clearForm() { this.form = { firstName: '', lastName: '', email: '', password: '', confirm: '', tos: false }; this.errors = {}; },
     validateRegister() {
       const e = {};
