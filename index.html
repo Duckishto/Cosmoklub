@@ -114,35 +114,38 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
       </div>
-      <!-- Pensia Mascot + Chat Bubble -->
-      <div class="pensia-wrap" @click="pensiaClick" :class="{active: pensiaOpen}">
-        <transition name="bubble">
-          <div class="pensia-bubble" v-if="pensiaOpen">
-            <div class="bubble-inner" v-if="!pensiaLoading && pensiaMsg">
-              <div class="bubble-headline">{{ pensiaHeadline }}</div>
-              <div class="bubble-msg">{{ pensiaMsg }}</div>
-            </div>
-            <div class="bubble-loading" v-else-if="pensiaLoading">
-              <span></span><span></span><span></span>
-            </div>
-          </div>
-        </transition>
-        <img
-          src="pensia1.png"
-          alt="Pensia the CosmoKlub mascot — click for astronomy news"
-          class="mascot-pensia"
-        />
-
-      </div>
     </div>
 
     <div class="sep"></div>
 
     <!-- Features -->
-    <section id="features">
-      <div class="section-eyebrow-row"><div class="section-label">{{ t.featLabel }}</div><div class="section-rule"></div></div>
-      <h2>{{ t.featTitle }}</h2>
-      <p class="section-sub">{{ t.featSub }}</p>
+    <section id="features" class="features-section">
+      <div class="features-header-row">
+        <div class="features-header-left">
+          <div class="section-eyebrow-row"><div class="section-label">{{ t.featLabel }}</div><div class="section-rule"></div></div>
+          <h2>{{ t.featTitle }}</h2>
+          <p class="section-sub">{{ t.featSub }}</p>
+        </div>
+        <!-- Pensia Mascot + Chat Bubble -->
+        <div class="pensia-wrap" @click="pensiaClick" :class="{active: pensiaOpen}">
+          <transition name="bubble">
+            <div class="pensia-bubble" v-if="pensiaOpen">
+              <div class="bubble-inner" v-if="!pensiaLoading && pensiaMsg">
+                <div class="bubble-headline">{{ pensiaHeadline }}</div>
+                <div class="bubble-msg">{{ pensiaMsg }}</div>
+              </div>
+              <div class="bubble-loading" v-else-if="pensiaLoading">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </transition>
+          <img
+            src="pensia1.png"
+            alt="Pensia the CosmoKlub mascot — click for astronomy news"
+            class="mascot-pensia"
+          />
+        </div>
+      </div>
       <div class="features-grid">
         <div class="feature-card" v-for="f in features" :key="f.title">
           <div class="feat-icon" v-html="f.svg"></div>
