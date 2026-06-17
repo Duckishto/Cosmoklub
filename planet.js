@@ -4,6 +4,12 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const wrap = document.querySelector('.planet-wrap');
 const canvas = document.getElementById('planet-canvas');
+const loadingLabel = document.getElementById('planet-loading');
+const loadingText = loadingLabel ? loadingLabel.querySelector('.planet-loading-text') : null;
+
+function hidePlanetLoading() {
+  if (loadingLabel) loadingLabel.classList.add('is-hidden');
+}
 
 // ── Random planet model picked on each page load ────────────────────────
 const PLANET_MODELS = [
@@ -21,6 +27,7 @@ const randomModel = PLANET_MODELS[Math.floor(Math.random() * PLANET_MODELS.lengt
 
 if (!wrap || !canvas) {
   console.warn('Planet wrap or canvas not found – skipping 3D Earth.');
+  hidePlanetLoading();
 } else {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -444,14 +451,19 @@ if (!wrap || !canvas) {
 
       addAtmosphereHalo(modelGroup, 2.0, isEarth);
       scene.add(modelGroup);
+      hidePlanetLoading();
     },
     (progress) => {
-      if (progress.total > 0)
-        console.log(`Loading ${randomModel}: ${Math.round(progress.loaded / progress.total * 100)}%`);
+      if (progress.total > 0) {
+        const pct = Math.round(progress.loaded / progress.total * 100);
+        console.log(`Loading ${randomModel}: ${pct}%`);
+        if (loadingText) loadingText.textContent = `Loading planet… ${pct}%`;
+      }
     },
     (error) => {
       console.warn(`${randomModel} failed – using procedural fallback.`, error);
       if (!modelGroup) createFallbackPlanet();
+      hidePlanetLoading();
     }
   );
 
