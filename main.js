@@ -285,9 +285,6 @@ createApp({
       pensiaHeadline: '',
       pensiaCloseTimer: null,
       _pensiaFetched: false,
-      pensiaDragging: false,
-      pensiaPos: { x: null, y: null },
-      _pensiaDrag: null,
       currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
       langs: [
         { code: 'EN', name: 'English', flag: '🇬🇧' },
@@ -315,78 +312,21 @@ createApp({
         { svg: SVGS.book, title: 'Observation Logbook', desc: 'Track observations, equipment used, sketches, notes, and achievements.' }
       ];
     },
-    // FIX 1: pensiaStyle now has its own closing brace, separated from objects()
-    pensiaStyle() {
-      if (this.pensiaPos.x === null) return {};
-      return { left: this.pensiaPos.x + 'px', top: this.pensiaPos.y + 'px', right: 'auto', bottom: 'auto' };
-    },
-    // FIX 2: objects() was missing its function wrapper entirely — restored here
     objects() {
       return [
-        { svg: OBJ_SVGS.galaxy,    type: 'Galaxy',    name: 'Andromeda (M31)',       desc: 'Nearest major galaxy, 2.5M light-years away.' },
-        { svg: OBJ_SVGS.nebula,    type: 'Nebula',    name: 'Orion Nebula (M42)',    desc: 'Active stellar nursery in the sword of Orion.' },
-        { svg: OBJ_SVGS.cluster,   type: 'Cluster',   name: 'Pleiades (M45)',        desc: 'Seven Sisters open cluster, visible to the naked eye.' },
-        { svg: OBJ_SVGS.ring,      type: 'Nebula',    name: 'Ring Nebula (M57)',     desc: 'Classic planetary nebula in Lyra.' },
-        { svg: OBJ_SVGS.supernova, type: 'Supernova', name: 'Crab Nebula (M1)',      desc: 'Remnant of SN 1054, powered by a pulsar.' },
-        { svg: OBJ_SVGS.whirlpool, type: 'Galaxy',    name: 'Whirlpool (M51)',       desc: 'Interacting galaxy pair in Canes Venatici.' },
-        { svg: OBJ_SVGS.globular,  type: 'Cluster',   name: 'Hercules Cluster (M13)',desc: 'Brightest globular cluster in the northern sky.' },
-        { svg: OBJ_SVGS.lagoon,    type: 'Nebula',    name: 'Lagoon Nebula (M8)',    desc: 'Emission nebula and open cluster in Sagittarius.' }
+        { svg: OBJ_SVGS.galaxy, type: 'Galaxy', name: 'Andromeda (M31)', desc: 'Nearest major galaxy, 2.5M light-years away.' },
+        { svg: OBJ_SVGS.nebula, type: 'Nebula', name: 'Orion Nebula (M42)', desc: 'Active stellar nursery in the sword of Orion.' },
+        { svg: OBJ_SVGS.cluster, type: 'Cluster', name: 'Pleiades (M45)', desc: 'Seven Sisters open cluster, visible to the naked eye.' },
+        { svg: OBJ_SVGS.ring, type: 'Nebula', name: 'Ring Nebula (M57)', desc: 'Classic planetary nebula in Lyra.' },
+        { svg: OBJ_SVGS.supernova, type: 'Supernova', name: 'Crab Nebula (M1)', desc: 'Remnant of SN 1054, powered by a pulsar.' },
+        { svg: OBJ_SVGS.whirlpool, type: 'Galaxy', name: 'Whirlpool (M51)', desc: 'Interacting galaxy pair in Canes Venatici.' },
+        { svg: OBJ_SVGS.globular, type: 'Cluster', name: 'Hercules Cluster (M13)', desc: 'Brightest globular cluster in the northern sky.' },
+        { svg: OBJ_SVGS.lagoon, type: 'Nebula', name: 'Lagoon Nebula (M8)', desc: 'Emission nebula and open cluster in Sagittarius.' }
       ];
     }
   },
   methods: {
     setLang(l) { this.currentLang = l; this.langOpen = false; },
-
-    pensiaDragStart(e) {
-      if (e.button !== 0) return;
-      this._startDrag(e.clientX, e.clientY, e.currentTarget);
-      const onMove = ev => this._doDrag(ev.clientX, ev.clientY);
-      const onUp   = () => { this._endDrag(); window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
-      window.addEventListener('mousemove', onMove);
-      window.addEventListener('mouseup', onUp);
-    },
-    pensiaTouchStart(e) {
-      const t = e.touches[0];
-      this._startDrag(t.clientX, t.clientY, e.currentTarget);
-      const onMove = ev => { const tt = ev.touches[0]; this._doDrag(tt.clientX, tt.clientY); };
-      const onEnd  = () => { this._endDrag(); window.removeEventListener('touchmove', onMove); window.removeEventListener('touchend', onEnd); };
-      window.addEventListener('touchmove', onMove, { passive: false });
-      window.addEventListener('touchend', onEnd);
-    },
-    _startDrag(cx, cy, el) {
-      const rect = el.getBoundingClientRect();
-      this._pensiaDrag = {
-        startX: cx, startY: cy,
-        origLeft: rect.left, origTop: rect.top,
-        moved: false
-      };
-      if (this.pensiaPos.x === null) {
-        this.pensiaPos = { x: rect.left, y: rect.top };
-      }
-      this.pensiaDragging = true;
-      clearTimeout(this.pensiaCloseTimer);
-    },
-    _doDrag(cx, cy) {
-      if (!this._pensiaDrag) return;
-      const dx = cx - this._pensiaDrag.startX;
-      const dy = cy - this._pensiaDrag.startY;
-      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) this._pensiaDrag.moved = true;
-      const el = document.querySelector('.pensia-float');
-      const w = el ? el.offsetWidth : 120;
-      const h = el ? el.offsetHeight : 140;
-      const nx = Math.max(0, Math.min(window.innerWidth  - w, this._pensiaDrag.origLeft + dx));
-      const ny = Math.max(0, Math.min(window.innerHeight - h, this._pensiaDrag.origTop  + dy));
-      this.pensiaPos = { x: nx, y: ny };
-    },
-    _endDrag() {
-      this._pensiaDrag = null;
-      this.pensiaDragging = false;
-    },
-    pensiaFloatClick() {
-      if (this._pensiaDrag && this._pensiaDrag.moved) return;
-      this.pensiaClick();
-    },
-    // FIX 3: async pensiaClick() was missing entirely — restored here
     async pensiaClick() {
       clearTimeout(this.pensiaCloseTimer);
       this.pensiaOpen = !this.pensiaOpen;
@@ -488,7 +428,9 @@ createApp({
     const featuresSection = document.getElementById('features');
     window.addEventListener('scroll', () => {
       const y = window.scrollY;
+      // scrolled: subtle shadow/border on any scroll
       if (y > 20) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+      // compact: squeeze nav when features section reaches the top
       if (featuresSection) {
         const rect = featuresSection.getBoundingClientRect();
         const inFeatures = rect.top <= nav.offsetHeight + 20;
