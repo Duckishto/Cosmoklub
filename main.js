@@ -285,6 +285,9 @@ createApp({
       pensiaHeadline: '',
       pensiaCloseTimer: null,
       _pensiaFetched: false,
+      pensiaDragging: false,
+      pensiaPos: { x: null, y: null },  // null = use CSS default (bottom-right)
+      _pensiaDrag: null, // internal drag tracking
       currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
       langs: [
         { code: 'EN', name: 'English', flag: '🇬🇧' },
@@ -312,7 +315,10 @@ createApp({
         { svg: SVGS.book, title: 'Observation Logbook', desc: 'Track observations, equipment used, sketches, notes, and achievements.' }
       ];
     },
-    objects() {
+    pensiaStyle() {
+      if (this.pensiaPos.x === null) return {};
+      return { left: this.pensiaPos.x + 'px', top: this.pensiaPos.y + 'px', right: 'auto', bottom: 'auto' };
+    },
       return [
         { svg: OBJ_SVGS.galaxy, type: 'Galaxy', name: 'Andromeda (M31)', desc: 'Nearest major galaxy, 2.5M light-years away.' },
         { svg: OBJ_SVGS.nebula, type: 'Nebula', name: 'Orion Nebula (M42)', desc: 'Active stellar nursery in the sword of Orion.' },
@@ -327,7 +333,60 @@ createApp({
   },
   methods: {
     setLang(l) { this.currentLang = l; this.langOpen = false; },
-    async pensiaClick() {
+
+    pensiaDragStart(e) {
+      if (e.button !== 0) return;
+      this._startDrag(e.clientX, e.clientY, e.currentTarget);
+      const onMove = ev => this._doDrag(ev.clientX, ev.clientY);
+      const onUp   = () => { this._endDrag(); window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    },
+    pensiaTouchStart(e) {
+      const t = e.touches[0];
+      this._startDrag(t.clientX, t.clientY, e.currentTarget);
+      const onMove = ev => { const tt = ev.touches[0]; this._doDrag(tt.clientX, tt.clientY); };
+      const onEnd  = () => { this._endDrag(); window.removeEventListener('touchmove', onMove); window.removeEventListener('touchend', onEnd); };
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('touchend', onEnd);
+    },
+    _startDrag(cx, cy, el) {
+      const rect = el.getBoundingClientRect();
+      this._pensiaDrag = {
+        startX: cx, startY: cy,
+        origLeft: rect.left, origTop: rect.top,
+        moved: false
+      };
+      if (this.pensiaPos.x === null) {
+        this.pensiaPos = { x: rect.left, y: rect.top };
+      }
+      this.pensiaDragging = true;
+      clearTimeout(this.pensiaCloseTimer);
+    },
+    _doDrag(cx, cy) {
+      if (!this._pensiaDrag) return;
+      const dx = cx - this._pensiaDrag.startX;
+      const dy = cy - this._pensiaDrag.startY;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) this._pensiaDrag.moved = true;
+      const el = document.querySelector('.pensia-float');
+      const w = el ? el.offsetWidth : 120;
+      const h = el ? el.offsetHeight : 140;
+      const nx = Math.max(0, Math.min(window.innerWidth  - w, this._pensiaDrag.origLeft + dx));
+      const ny = Math.max(0, Math.min(window.innerHeight - h, this._pensiaDrag.origTop  + dy));
+      this.pensiaPos = { x: nx, y: ny };
+    },
+    _endDrag() {
+      if (this._pensiaDrag && !this._pensiaDrag.moved) {
+        // treat as click — handled by pensiaFloatClick
+      }
+      this._pensiaDrag = null;
+      this.pensiaDragging = false;
+    },
+    pensiaFloatClick() {
+      // Only trigger if not a drag
+      if (this._pensiaDrag && this._pensiaDrag.moved) return;
+      this.pensiaClick();
+    },
       clearTimeout(this.pensiaCloseTimer);
       this.pensiaOpen = !this.pensiaOpen;
       if (!this.pensiaOpen) return;
