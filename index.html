@@ -130,7 +130,25 @@
           <h2>{{ t.featTitle }}</h2>
           <p class="section-sub" v-html="t.featSub"></p>
         </div>
-
+        <!-- Pensia Mascot + Chat Bubble -->
+        <div class="pensia-wrap" @click="pensiaClick" :class="{active: pensiaOpen}">
+          <transition name="bubble">
+            <div class="pensia-bubble" v-if="pensiaOpen">
+              <div class="bubble-inner" v-if="!pensiaLoading && pensiaMsg">
+                <div class="bubble-headline">{{ pensiaHeadline }}</div>
+                <div class="bubble-msg">{{ pensiaMsg }}</div>
+              </div>
+              <div class="bubble-loading" v-else-if="pensiaLoading">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </transition>
+          <img
+            src="pensia1.png"
+            alt="Pensia the CosmoKlub mascot — click for astronomy news"
+            class="mascot-pensia"
+          />
+        </div>
       </div>
       <div class="features-grid">
         <div class="feature-card" v-for="f in features" :key="f.title">
@@ -210,36 +228,6 @@
       </ul>
       <span class="footer-copy">&copy; 2026 CosmoKlub. {{ t.rights }}</span>
     </footer>
-
-    <!-- Floating Draggable Pensia -->
-    <div
-      class="pensia-float"
-      :class="{active: pensiaOpen, dragging: pensiaDragging}"
-      :style="pensiaStyle"
-      @mousedown="pensiaDragStart"
-      @touchstart.prevent="pensiaTouchStart"
-      @click="pensiaFloatClick"
-      title="Drag me anywhere! Click for space news."
-    >
-      <transition name="bubble">
-        <div class="pensia-bubble" v-if="pensiaOpen">
-          <div class="bubble-inner" v-if="!pensiaLoading && pensiaMsg">
-            <div class="bubble-headline">{{ pensiaHeadline }}</div>
-            <div class="bubble-msg">{{ pensiaMsg }}</div>
-          </div>
-          <div class="bubble-loading" v-else-if="pensiaLoading">
-            <span></span><span></span><span></span>
-          </div>
-        </div>
-      </transition>
-      <img
-        src="pensia1.png"
-        alt="Pensia the CosmoKlub mascot — click for astronomy news"
-        class="mascot-pensia"
-        draggable="false"
-      />
-      <div class="pensia-hint">✦ click me</div>
-    </div>
 
     <!-- Auth Modal -->
     <transition name="fade">
