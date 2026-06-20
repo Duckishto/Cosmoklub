@@ -422,6 +422,10 @@ createApp({
       this.pensiaReady = true;
     },
     async pensiaClick() {
+      // the full-article modal owns the screen while it's open — ignore
+      // taps on Pensia herself so we can't end up with the bubble closed
+      // underneath an open modal and an orphaned scroll lock
+      if (this.pensiaArticleOpen) return;
       clearTimeout(this.pensiaCloseTimer);
       if (!this.pensiaOpen) {
         // about to open — snapshot her current screen position so the
@@ -519,11 +523,11 @@ createApp({
       // auto-dismiss timer so it doesn't vanish underneath it
       clearTimeout(this.pensiaCloseTimer);
       this.pensiaArticleOpen = true;
-      document.body.style.overflow = 'hidden';
+      this.syncScrollLock();
     },
     closePensiaArticle() {
       this.pensiaArticleOpen = false;
-      document.body.style.overflow = '';
+      this.syncScrollLock();
       // give the bubble a fresh, shorter window to auto-dismiss now
       // that the reader's done, rather than lingering forever
       clearTimeout(this.pensiaCloseTimer);
@@ -531,8 +535,15 @@ createApp({
         this.pensiaOpen = false;
       }, 4000);
     },
-    openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; document.body.style.overflow = 'hidden'; },
-    closeModal() { this.modal = null; this.success = false; document.body.style.overflow = ''; },
+    openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; this.syncScrollLock(); },
+    closeModal() { this.modal = null; this.success = false; this.syncScrollLock(); },
+    // single source of truth for the body scroll lock — recomputed from
+    // whatever modals/overlays are currently open, so closing one of
+    // several open surfaces can never leave a stray lock behind
+    syncScrollLock() {
+      const shouldLock = !!this.modal || this.pensiaArticleOpen;
+      document.body.style.overflow = shouldLock ? 'hidden' : '';
+    },
     clearForm() { this.form = { firstName: '', lastName: '', email: '', password: '', confirm: '', tos: false }; this.errors = {}; },
     validateRegister() {
       const e = {};
@@ -600,6 +611,13 @@ createApp({
       }
     });
     document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) this.langOpen = false; });
+    // Escape always gets you out — a guaranteed exit for any modal or
+    // overlay so nothing can ever trap the page with scroll locked
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (this.pensiaArticleOpen) this.closePensiaArticle();
+      else if (this.modal) this.closeModal();
+    });
     const nav = document.querySelector('nav');
     const featuresSection = document.getElementById('features');
     window.addEventListener('scroll', () => {
