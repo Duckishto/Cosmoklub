@@ -272,6 +272,28 @@ const translations = {
   }
 };
 
+// ---------- Pensia floating position helpers ----------
+const PENSIA_POS_KEY = 'cosmoklub_pensia_pos';
+
+function getSavedPensiaPos() {
+  try {
+    const raw = localStorage.getItem(PENSIA_POS_KEY);
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (typeof p.x === 'number' && typeof p.y === 'number') return p;
+    }
+  } catch (_) {}
+  return null;
+}
+
+function defaultPensiaPos() {
+  const size = 160, margin = 24;
+  return {
+    x: Math.max(margin, window.innerWidth - size - margin),
+    y: Math.max(margin, window.innerHeight - size - margin)
+  };
+}
+
 // ---------- Vue App ----------
 createApp({
   data() {
@@ -285,6 +307,8 @@ createApp({
       pensiaHeadline: '',
       pensiaCloseTimer: null,
       _pensiaFetched: false,
+      pensiaPos: getSavedPensiaPos() || defaultPensiaPos(),
+      pensiaDragging: false,
       currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
       langs: [
         { code: 'EN', name: 'English', flag: '🇬🇧' },
@@ -327,6 +351,65 @@ createApp({
   },
   methods: {
     setLang(l) { this.currentLang = l; this.langOpen = false; },
+    // --- Pensia drag-to-move ---
+    onPensiaPointerDown(e) {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      this._pensiaDrag = {
+        startX: e.clientX,
+        startY: e.clientY,
+        baseX: this.pensiaPos.x,
+        baseY: this.pensiaPos.y,
+        moved: false
+      };
+    },
+    onPensiaPointerMove(e) {
+      const d = this._pensiaDrag;
+      if (!d) return;
+      const dx = e.clientX - d.startX;
+      const dy = e.clientY - d.startY;
+      if (!d.moved && Math.hypot(dx, dy) > 4) {
+        d.moved = true;
+        this.pensiaDragging = true;
+        // dragging takes priority over the chat bubble — close it now
+        // even if its auto-dismiss timer hasn't run out yet
+        clearTimeout(this.pensiaCloseTimer);
+        this.pensiaOpen = false;
+      }
+      if (d.moved) {
+        const el = this.$refs.pensiaWrap;
+        const w = el ? el.offsetWidth : 160;
+        const h = el ? el.offsetHeight : 160;
+        const maxX = Math.max(8, window.innerWidth - w - 8);
+        const maxY = Math.max(8, window.innerHeight - h - 8);
+        this.pensiaPos = {
+          x: Math.min(Math.max(8, d.baseX + dx), maxX),
+          y: Math.min(Math.max(8, d.baseY + dy), maxY)
+        };
+      }
+    },
+    onPensiaPointerUp() {
+      const d = this._pensiaDrag;
+      if (!d) return;
+      this._pensiaDrag = null;
+      this.pensiaDragging = false;
+      if (d.moved) {
+        try { localStorage.setItem(PENSIA_POS_KEY, JSON.stringify(this.pensiaPos)); } catch (_) {}
+      } else {
+        // no real movement happened — treat it as a click/tap
+        this.pensiaClick();
+      }
+    },
+    clampPensiaPos() {
+      const el = this.$refs.pensiaWrap;
+      if (!el) return;
+      const w = el.offsetWidth, h = el.offsetHeight;
+      const maxX = Math.max(8, window.innerWidth - w - 8);
+      const maxY = Math.max(8, window.innerHeight - h - 8);
+      this.pensiaPos = {
+        x: Math.min(Math.max(8, this.pensiaPos.x), maxX),
+        y: Math.min(Math.max(8, this.pensiaPos.y), maxY)
+      };
+    },
     async pensiaClick() {
       clearTimeout(this.pensiaCloseTimer);
       this.pensiaOpen = !this.pensiaOpen;
@@ -423,6 +506,8 @@ createApp({
     showToast(msg) { this.toast = msg; setTimeout(() => { this.toast = null; }, 3400); }
   },
   mounted() {
+    this.$nextTick(() => this.clampPensiaPos());
+    window.addEventListener('resize', () => this.clampPensiaPos());
     document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) this.langOpen = false; });
     const nav = document.querySelector('nav');
     const featuresSection = document.getElementById('features');
