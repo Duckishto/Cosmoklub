@@ -311,10 +311,7 @@
           <button class="pam-close" @click="closeModal" aria-label="Close">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
-          <div class="pam-content">
-            <div class="pam-eyebrow">
-              <span class="pam-badge">📜 {{ t.tosDate }}</span>
-            </div>
+          <div class="pam-content tos-pam-content">
             <h3 class="pam-title">{{ t.tos }}</h3>
             <div class="tos-content">
               <h3>1. {{ t.tos1Title }}</h3><p>{{ t.tos1Body }}</p>
@@ -325,7 +322,13 @@
               <h3>6. {{ t.tos6Title }}</h3><p>{{ t.tos6Body }}</p>
             </div>
           </div>
-          <div class="tos-pam-footer"><button class="btn-submit" @click="closeModal">{{ t.accept }}</button></div>
+          <div class="tos-pam-footer">
+            <div class="tos-pam-meta">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+              <span>{{ t.tosDate }}</span>
+            </div>
+            <button class="btn-submit" @click="closeModal">{{ t.accept }}</button>
+          </div>
         </div>
       </div>
     </transition>
