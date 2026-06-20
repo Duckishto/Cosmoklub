@@ -54,7 +54,8 @@
       </div>
     </nav>
 
-    <!-- Pensia Mascot — floats over the whole page, drag her anywhere -->
+    <!-- Pensia Mascot — defaults to her spot in the Features section,
+         scrolls with the page like normal content, drag to reposition -->
     <div
       class="pensia-wrap"
       ref="pensiaWrap"
@@ -66,7 +67,7 @@
       @pointercancel="onPensiaPointerUp"
     >
       <transition name="bubble">
-        <div class="pensia-bubble" :class="{ 'bubble-below': pensiaPos.y < 170, 'bubble-left': pensiaPos.x < 200 }" v-if="pensiaOpen">
+        <div class="pensia-bubble" :class="{ 'bubble-below': pensiaBubbleFlip.below, 'bubble-left': pensiaBubbleFlip.left }" v-if="pensiaOpen">
           <div class="bubble-inner" v-if="!pensiaLoading && pensiaMsg">
             <div class="bubble-headline">{{ pensiaHeadline }}</div>
             <div class="bubble-msg">{{ pensiaMsg }}</div>
