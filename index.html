@@ -304,15 +304,18 @@
       </div>
     </transition>
 
-    <!-- ToS Modal -->
+    <!-- ToS Modal — same card layout as Pensia's "read more" article modal -->
     <transition name="fade">
       <div class="modal-overlay" v-if="modal==='tos'" @click.self="closeModal">
-        <div class="modal tos-modal">
-          <div class="modal-header">
-            <div><div class="modal-title"><span>{{ t.tos }}</span></div><div class="modal-sub">{{ t.tosDate }}</div></div>
-            <button class="close-btn" @click="closeModal"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-          </div>
-          <div class="tos-modal-body">
+        <div class="pam-frame no-image tos-pam">
+          <button class="pam-close" @click="closeModal" aria-label="Close">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <div class="pam-content">
+            <div class="pam-eyebrow">
+              <span class="pam-badge">📜 {{ t.tosDate }}</span>
+            </div>
+            <h3 class="pam-title">{{ t.tos }}</h3>
             <div class="tos-content">
               <h3>1. {{ t.tos1Title }}</h3><p>{{ t.tos1Body }}</p>
               <h3>2. {{ t.tos2Title }}</h3><p>{{ t.tos2Body }}</p>
@@ -322,7 +325,7 @@
               <h3>6. {{ t.tos6Title }}</h3><p>{{ t.tos6Body }}</p>
             </div>
           </div>
-          <div style="padding:1rem 1.9rem 1.9rem;flex-shrink:0"><button class="btn-submit" @click="closeModal">{{ t.accept }}</button></div>
+          <div class="tos-pam-footer"><button class="btn-submit" @click="closeModal">{{ t.accept }}</button></div>
         </div>
       </div>
     </transition>
