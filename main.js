@@ -286,6 +286,7 @@ createApp({
       pensiaCloseTimer: null,
       _pensiaFetched: false,
       pensiaPos: { x: 0, y: 0 },
+      pensiaReady: false,
       pensiaDragging: false,
       pensiaBubbleFlip: { below: false, left: false },
       currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
@@ -408,6 +409,7 @@ createApp({
         x: Math.min(Math.max(8, x), bounds.maxX),
         y: Math.max(8, y)
       };
+      this.pensiaReady = true;
     },
     async pensiaClick() {
       clearTimeout(this.pensiaCloseTimer);
@@ -517,7 +519,9 @@ createApp({
     // Wait for web fonts + a real layout/paint pass before placing Pensia.
     // Measuring against the page before Inter has swapped in (or before
     // images/canvas above the fold have settled their height) gives a
-    // stale rect and she ends up stranded near the top-left corner.
+    // stale rect and she ends up stranded near the top-left corner. She
+    // stays hidden (pensiaReady=false) until this succeeds, so there's
+    // no flash at her old (0,0) spot on first paint.
     const placePensia = () => {
       this.$nextTick(() => {
         requestAnimationFrame(() => this.resetPensiaToDefault());
@@ -528,9 +532,17 @@ createApp({
     } else {
       placePensia();
     }
-    // Safety net: run again shortly after load in case anything above
-    // the Features section (hero art, stat badges, planet canvas) shifts
-    // height after fonts/images finish.
+    // Safety net: keep retrying every 150ms until she's actually placed
+    // (covers slow image/font loads), capped at ~5s so it can't run forever.
+    let tries = 0;
+    const poll = setInterval(() => {
+      tries++;
+      if (this.pensiaReady || tries > 30) { clearInterval(poll); return; }
+      placePensia();
+    }, 150);
+    // Extra safety net: run again shortly after load in case anything
+    // above the Features section (hero art, stat badges, planet canvas)
+    // shifts height after fonts/images finish.
     window.addEventListener('load', placePensia);
     setTimeout(placePensia, 600);
     // On resize, re-anchor to the heading rather than just clamping —
