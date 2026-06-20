@@ -285,6 +285,8 @@ createApp({
       pensiaHeadline: '',
       pensiaCloseTimer: null,
       _pensiaFetched: false,
+      pensiaArticle: null,
+      pensiaArticleOpen: false,
       pensiaPos: { x: 0, y: 0 },
       pensiaReady: false,
       pensiaTilt: 0,
@@ -435,6 +437,7 @@ createApp({
       this.pensiaLoading = true;
       this.pensiaMsg = '';
       this.pensiaHeadline = '';
+      this.pensiaArticle = null;
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4500);
@@ -443,9 +446,19 @@ createApp({
         if (!apodRes.ok) throw new Error(`NASA APOD request failed (${apodRes.status})`);
         const apodData = await apodRes.json();
         const pick = apodData[Math.floor(Math.random() * apodData.length)];
-        const { headline, opinion } = this.pensiaVoice(pick.title, pick.explanation || '');
+        const { headline, opinion, hasMore } = this.pensiaVoice(pick.title, pick.explanation || '');
         this.pensiaHeadline = headline;
         this.pensiaMsg = opinion;
+        if (hasMore) {
+          this.pensiaArticle = {
+            title: pick.title,
+            date: pick.date,
+            image: pick.media_type === 'image' ? (pick.hdurl || pick.url) : null,
+            explanation: pick.explanation || '',
+            headline,
+            copyright: pick.copyright || null
+          };
+        }
       } catch (e) {
         const f = this.pensiaFallback();
         this.pensiaHeadline = f.h;
@@ -477,10 +490,14 @@ createApp({
       const firstSentence = (explanation.match(/^.*?[.!?](?=\s|$)/) || [explanation])[0] || '';
       const snippet    = firstSentence.length > 95 ? firstSentence.slice(0, 95).trim() + '…' : firstSentence;
       const shortTitle = title.length > 30 ? title.slice(0, 30).trim() + '…' : title;
+      // there's more to read if the full explanation runs longer than
+      // the one-sentence snippet we're showing in the chat bubble
+      const hasMore = explanation.trim().length > snippet.replace(/…$/, '').trim().length;
 
       return {
         headline: `${emoji} ${shortTitle}`,
         opinion: `${opener} ${snippet} ${reaction}`.trim(),
+        hasMore,
       };
     },
     pensiaFallback() {
@@ -495,6 +512,24 @@ createApp({
         { h: '💫 Neutron stars!', m: 'A neutron star is so dense a teaspoon of it would weigh about a billion tons. My scale would not survive that.' },
       ];
       return facts[Math.floor(Math.random() * facts.length)];
+    },
+    openPensiaArticle() {
+      if (!this.pensiaArticle) return;
+      // the full-article modal takes over — stop the bubble's
+      // auto-dismiss timer so it doesn't vanish underneath it
+      clearTimeout(this.pensiaCloseTimer);
+      this.pensiaArticleOpen = true;
+      document.body.style.overflow = 'hidden';
+    },
+    closePensiaArticle() {
+      this.pensiaArticleOpen = false;
+      document.body.style.overflow = '';
+      // give the bubble a fresh, shorter window to auto-dismiss now
+      // that the reader's done, rather than lingering forever
+      clearTimeout(this.pensiaCloseTimer);
+      this.pensiaCloseTimer = setTimeout(() => {
+        this.pensiaOpen = false;
+      }, 4000);
     },
     openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; document.body.style.overflow = 'hidden'; },
     closeModal() { this.modal = null; this.success = false; document.body.style.overflow = ''; },
