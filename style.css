@@ -1152,9 +1152,9 @@ footer {
 
 /* ---------- Mascot ---------- */
 .pensia-wrap {
-  position: fixed;
+  position: absolute;
   width: clamp(110px, 10vw, 160px);
-  z-index: 400;
+  z-index: 30;
   cursor: grab;
   user-select: none;
   touch-action: none;
@@ -2421,9 +2421,9 @@ footer {
 
 /* ---------- Mascot ---------- */
 .pensia-wrap {
-  position: fixed;
+  position: absolute;
   width: clamp(110px, 10vw, 160px);
-  z-index: 400;
+  z-index: 30;
   cursor: grab;
   user-select: none;
   touch-action: none;
