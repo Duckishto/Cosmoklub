@@ -2763,19 +2763,27 @@ footer {
   }
 
 /* ---------- Pensia full-article modal ---------- */
-.pensia-article-modal {
-  max-width: 560px;
-  padding: 0;
+.pam-frame {
   position: relative;
-  overflow: hidden;
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
 }
 .pam-close {
   position: absolute;
-  top: 0.9rem;
-  right: 0.9rem;
-  z-index: 5;
-  background: rgba(13,11,30,0.65);
-  backdrop-filter: blur(6px);
+  top: -14px;
+  right: -14px;
+  z-index: 10;
+  background: #1a1530;
+  border: 1px solid rgba(192,132,252,0.5);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.pensia-article-modal {
+  width: 100%;
+  max-height: 88vh;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .pam-hero {
   position: relative;
@@ -2848,13 +2856,29 @@ footer {
   font-style: italic;
 }
 @media (max-width: 560px) {
-  .pensia-article-modal {
+  .pam-frame {
     max-width: 100%;
+    max-height: 90vh;
+  }
+  .pam-close {
+    top: -10px;
+    right: -10px;
+    width: 28px;
+    height: 28px;
+  }
+  .pensia-article-modal {
+    max-height: 90vh;
   }
   .pam-body {
     padding: 1.25rem 1.3rem 1.6rem;
   }
   .pam-title {
     font-size: 1.15rem;
+  }
+}
+@media (max-width: 380px) {
+  .pam-close {
+    top: -8px;
+    right: -8px;
   }
 }
