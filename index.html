@@ -330,23 +330,25 @@
     <!-- Pensia full-article modal -->
     <transition name="fade">
       <div class="modal-overlay" v-if="pensiaArticleOpen && pensiaArticle" @click.self="closePensiaArticle">
-        <div class="modal pensia-article-modal">
+        <div class="pam-frame">
           <button class="close-btn pam-close" @click="closePensiaArticle">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
-          <div class="pam-hero" v-if="pensiaArticle.image">
-            <img :src="pensiaArticle.image" :alt="pensiaArticle.title" />
-            <div class="pam-hero-fade"></div>
-          </div>
-          <div class="pam-body">
-            <div class="pam-eyebrow">
-              <span class="pam-badge">🐧 Pensia's pick</span>
-              <span class="pam-date" v-if="pensiaArticle.date">{{ pensiaArticle.date }}</span>
+          <div class="modal pensia-article-modal">
+            <div class="pam-hero" v-if="pensiaArticle.image">
+              <img :src="pensiaArticle.image" :alt="pensiaArticle.title" />
+              <div class="pam-hero-fade"></div>
             </div>
-            <h3 class="pam-title">{{ pensiaArticle.title }}</h3>
-            <p class="pam-explanation">{{ pensiaArticle.explanation }}</p>
-            <p class="pam-credit" v-if="pensiaArticle.copyright">Image © {{ pensiaArticle.copyright }}</p>
-            <p class="pam-credit" v-else>Image &amp; data via NASA's Astronomy Picture of the Day</p>
+            <div class="pam-body">
+              <div class="pam-eyebrow">
+                <span class="pam-badge">🐧 Pensia's pick</span>
+                <span class="pam-date" v-if="pensiaArticle.date">{{ pensiaArticle.date }}</span>
+              </div>
+              <h3 class="pam-title">{{ pensiaArticle.title }}</h3>
+              <p class="pam-explanation">{{ pensiaArticle.explanation }}</p>
+              <p class="pam-credit" v-if="pensiaArticle.copyright">Image © {{ pensiaArticle.copyright }}</p>
+              <p class="pam-credit" v-else>Image &amp; data via NASA's Astronomy Picture of the Day</p>
+            </div>
           </div>
         </div>
       </div>
