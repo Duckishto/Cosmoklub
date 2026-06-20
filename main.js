@@ -272,28 +272,6 @@ const translations = {
   }
 };
 
-// ---------- Pensia floating position helpers ----------
-const PENSIA_POS_KEY = 'cosmoklub_pensia_pos';
-
-function getSavedPensiaPos() {
-  try {
-    const raw = localStorage.getItem(PENSIA_POS_KEY);
-    if (raw) {
-      const p = JSON.parse(raw);
-      if (typeof p.x === 'number' && typeof p.y === 'number') return p;
-    }
-  } catch (_) {}
-  return null;
-}
-
-function defaultPensiaPos() {
-  const size = 160, margin = 24;
-  return {
-    x: Math.max(margin, window.innerWidth - size - margin),
-    y: Math.max(margin, window.innerHeight - size - margin)
-  };
-}
-
 // ---------- Vue App ----------
 createApp({
   data() {
@@ -307,8 +285,9 @@ createApp({
       pensiaHeadline: '',
       pensiaCloseTimer: null,
       _pensiaFetched: false,
-      pensiaPos: getSavedPensiaPos() || defaultPensiaPos(),
+      pensiaPos: { x: 0, y: 0 },
       pensiaDragging: false,
+      pensiaBubbleFlip: { below: false, left: false },
       currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
       langs: [
         { code: 'EN', name: 'English', flag: '🇬🇧' },
@@ -376,14 +355,10 @@ createApp({
         this.pensiaOpen = false;
       }
       if (d.moved) {
-        const el = this.$refs.pensiaWrap;
-        const w = el ? el.offsetWidth : 160;
-        const h = el ? el.offsetHeight : 160;
-        const maxX = Math.max(8, window.innerWidth - w - 8);
-        const maxY = Math.max(8, window.innerHeight - h - 8);
+        const bounds = this.pensiaBounds();
         this.pensiaPos = {
-          x: Math.min(Math.max(8, d.baseX + dx), maxX),
-          y: Math.min(Math.max(8, d.baseY + dy), maxY)
+          x: Math.min(Math.max(8, d.baseX + dx), bounds.maxX),
+          y: Math.min(Math.max(8, d.baseY + dy), bounds.maxY)
         };
       }
     },
@@ -392,26 +367,53 @@ createApp({
       if (!d) return;
       this._pensiaDrag = null;
       this.pensiaDragging = false;
-      if (d.moved) {
-        try { localStorage.setItem(PENSIA_POS_KEY, JSON.stringify(this.pensiaPos)); } catch (_) {}
-      } else {
+      if (!d.moved) {
         // no real movement happened — treat it as a click/tap
         this.pensiaClick();
       }
+      // note: by design, her position is NOT remembered between visits —
+      // she resets to her default spot next to the Features heading every load
+    },
+    pensiaBounds() {
+      const el = this.$refs.pensiaWrap;
+      const w = el ? el.offsetWidth : 160;
+      const h = el ? el.offsetHeight : 160;
+      return {
+        maxX: Math.max(8, document.documentElement.clientWidth - w - 8),
+        maxY: Math.max(8, document.documentElement.scrollHeight - h - 8)
+      };
     },
     clampPensiaPos() {
-      const el = this.$refs.pensiaWrap;
-      if (!el) return;
-      const w = el.offsetWidth, h = el.offsetHeight;
-      const maxX = Math.max(8, window.innerWidth - w - 8);
-      const maxY = Math.max(8, window.innerHeight - h - 8);
+      const bounds = this.pensiaBounds();
       this.pensiaPos = {
-        x: Math.min(Math.max(8, this.pensiaPos.x), maxX),
-        y: Math.min(Math.max(8, this.pensiaPos.y), maxY)
+        x: Math.min(Math.max(8, this.pensiaPos.x), bounds.maxX),
+        y: Math.min(Math.max(8, this.pensiaPos.y), bounds.maxY)
+      };
+    },
+    // Pensia's default home: just right of the "Features" heading,
+    // same spot the original design had her in
+    resetPensiaToDefault() {
+      const headerEl = document.querySelector('.features-header-row');
+      const el = this.$refs.pensiaWrap;
+      if (!headerEl || !el) return;
+      const rect = headerEl.getBoundingClientRect();
+      const w = el.offsetWidth, h = el.offsetHeight;
+      this.pensiaPos = {
+        x: Math.round(rect.right + window.scrollX - w),
+        y: Math.round(rect.top + window.scrollY + (rect.height - h) / 2)
       };
     },
     async pensiaClick() {
       clearTimeout(this.pensiaCloseTimer);
+      if (!this.pensiaOpen) {
+        // about to open — snapshot her current screen position so the
+        // bubble can flip to whichever side keeps it fully visible
+        const el = this.$refs.pensiaWrap;
+        if (el) {
+          const r = el.getBoundingClientRect();
+          this.pensiaBubbleFlip = { below: r.top < 170, left: r.left < 200 };
+        }
+      }
       this.pensiaOpen = !this.pensiaOpen;
       if (!this.pensiaOpen) return;
       this.pensiaLoading = true;
@@ -506,7 +508,7 @@ createApp({
     showToast(msg) { this.toast = msg; setTimeout(() => { this.toast = null; }, 3400); }
   },
   mounted() {
-    this.$nextTick(() => this.clampPensiaPos());
+    this.resetPensiaToDefault();
     window.addEventListener('resize', () => this.clampPensiaPos());
     document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) this.langOpen = false; });
     const nav = document.querySelector('nav');
