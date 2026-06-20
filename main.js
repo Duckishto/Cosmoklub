@@ -542,7 +542,9 @@ createApp({
     // several open surfaces can never leave a stray lock behind
     syncScrollLock() {
       const shouldLock = !!this.modal || this.pensiaArticleOpen;
-      document.body.style.overflow = shouldLock ? 'hidden' : '';
+      const value = shouldLock ? 'hidden' : '';
+      document.documentElement.style.overflow = value;
+      document.body.style.overflow = value;
     },
     clearForm() { this.form = { firstName: '', lastName: '', email: '', password: '', confirm: '', tos: false }; this.errors = {}; },
     validateRegister() {
