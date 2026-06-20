@@ -83,6 +83,7 @@
         src="pensia1.png"
         alt="Pensia the CosmoKlub mascot — click for astronomy news, drag to move"
         class="mascot-pensia"
+        :style="pensiaDragging ? { transform: 'rotate(' + pensiaTilt.toFixed(1) + 'deg)' } : {}"
       />
     </div>
 
