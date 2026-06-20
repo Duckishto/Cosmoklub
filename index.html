@@ -79,6 +79,8 @@
       </transition>
       <img
         src="pensia1.png"
+        width="1280"
+        height="1280"
         alt="Pensia the CosmoKlub mascot — click for astronomy news, drag to move"
         class="mascot-pensia"
       />
@@ -159,6 +161,25 @@
           <div class="section-eyebrow-row"><div class="section-label">{{ t.featLabel }}</div><div class="section-rule"></div></div>
           <h2>{{ t.featTitle }}</h2>
           <p class="section-sub" v-html="t.featSub"></p>
+        </div>
+        <!-- Pensia Mascot + Chat Bubble -->
+        <div class="pensia-wrap" @click="pensiaClick" :class="{active: pensiaOpen}">
+          <transition name="bubble">
+            <div class="pensia-bubble" v-if="pensiaOpen">
+              <div class="bubble-inner" v-if="!pensiaLoading && pensiaMsg">
+                <div class="bubble-headline">{{ pensiaHeadline }}</div>
+                <div class="bubble-msg">{{ pensiaMsg }}</div>
+              </div>
+              <div class="bubble-loading" v-else-if="pensiaLoading">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </transition>
+          <img
+            src="pensia1.png"
+            alt="Pensia the CosmoKlub mascot — click for astronomy news"
+            class="mascot-pensia"
+          />
         </div>
       </div>
       <div class="features-grid">
