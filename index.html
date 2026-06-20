@@ -55,11 +55,13 @@
     </nav>
 
     <!-- Pensia Mascot — defaults to her spot in the Features section,
-         scrolls with the page like normal content, drag to reposition -->
+         scrolls with the page like normal content, drag to reposition.
+         Hidden until pensiaReady so she never flashes at (0,0) before
+         her position is calculated. -->
     <div
       class="pensia-wrap"
       ref="pensiaWrap"
-      :class="{active: pensiaOpen, dragging: pensiaDragging}"
+      :class="{active: pensiaOpen, dragging: pensiaDragging, ready: pensiaReady}"
       :style="{ left: pensiaPos.x + 'px', top: pensiaPos.y + 'px' }"
       @pointerdown="onPensiaPointerDown"
       @pointermove="onPensiaPointerMove"
