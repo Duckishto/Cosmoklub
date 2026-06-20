@@ -2969,6 +2969,15 @@ footer {
 .tos-pam-content {
   padding-top: 2.3rem;
 }
+.tos-pam .pam-title {
+  background-image: linear-gradient(90deg, var(--white) 0%, var(--white) 38%, var(--violet) 88%, var(--glow) 100%);
+}
+.tos-pam .tos-content h3 {
+  background-image: linear-gradient(135deg, var(--violet), var(--glow));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .tos-pam-footer {
   flex-shrink: 0;
   display: flex;
