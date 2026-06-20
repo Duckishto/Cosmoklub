@@ -54,6 +54,35 @@
       </div>
     </nav>
 
+    <!-- Pensia Mascot — floats over the whole page, drag her anywhere -->
+    <div
+      class="pensia-wrap"
+      ref="pensiaWrap"
+      :class="{active: pensiaOpen, dragging: pensiaDragging}"
+      :style="{ left: pensiaPos.x + 'px', top: pensiaPos.y + 'px' }"
+      @pointerdown="onPensiaPointerDown"
+      @pointermove="onPensiaPointerMove"
+      @pointerup="onPensiaPointerUp"
+      @pointercancel="onPensiaPointerUp"
+    >
+      <transition name="bubble">
+        <div class="pensia-bubble" :class="{ 'bubble-below': pensiaPos.y < 170, 'bubble-left': pensiaPos.x < 200 }" v-if="pensiaOpen">
+          <div class="bubble-inner" v-if="!pensiaLoading && pensiaMsg">
+            <div class="bubble-headline">{{ pensiaHeadline }}</div>
+            <div class="bubble-msg">{{ pensiaMsg }}</div>
+          </div>
+          <div class="bubble-loading" v-else-if="pensiaLoading">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </transition>
+      <img
+        src="pensia1.png"
+        alt="Pensia the CosmoKlub mascot — click for astronomy news, drag to move"
+        class="mascot-pensia"
+      />
+    </div>
+
     <!-- Hero Section -->
     <div class="hero-section">
       <div class="hero-split">
@@ -129,25 +158,6 @@
           <div class="section-eyebrow-row"><div class="section-label">{{ t.featLabel }}</div><div class="section-rule"></div></div>
           <h2>{{ t.featTitle }}</h2>
           <p class="section-sub" v-html="t.featSub"></p>
-        </div>
-        <!-- Pensia Mascot + Chat Bubble -->
-        <div class="pensia-wrap" @click="pensiaClick" :class="{active: pensiaOpen}">
-          <transition name="bubble">
-            <div class="pensia-bubble" v-if="pensiaOpen">
-              <div class="bubble-inner" v-if="!pensiaLoading && pensiaMsg">
-                <div class="bubble-headline">{{ pensiaHeadline }}</div>
-                <div class="bubble-msg">{{ pensiaMsg }}</div>
-              </div>
-              <div class="bubble-loading" v-else-if="pensiaLoading">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
-          </transition>
-          <img
-            src="pensia1.png"
-            alt="Pensia the CosmoKlub mascot — click for astronomy news"
-            class="mascot-pensia"
-          />
         </div>
       </div>
       <div class="features-grid">
