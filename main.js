@@ -390,17 +390,23 @@ createApp({
         y: Math.min(Math.max(8, this.pensiaPos.y), bounds.maxY)
       };
     },
-    // Pensia's default home: just right of the "Features" heading,
-    // same spot the original design had her in
+    // Pensia's default home: to the right of "Everything the cosmos
+    // demands" (the Features heading), same spot the original design
+    // had her in. Re-run on load/resize/font-swap so she always lands
+    // here and never gets stuck wherever the last layout pass left her.
     resetPensiaToDefault() {
       const headerEl = document.querySelector('.features-header-row');
       const el = this.$refs.pensiaWrap;
-      if (!headerEl || !el) return;
+      if (!headerEl || !el || !el.offsetWidth) return;
       const rect = headerEl.getBoundingClientRect();
+      if (!rect.width && !rect.height) return; // section not laid out yet
       const w = el.offsetWidth, h = el.offsetHeight;
+      const bounds = this.pensiaBounds();
+      const x = Math.round(rect.right + window.scrollX - w);
+      const y = Math.round(rect.top + window.scrollY + (rect.height - h) / 2);
       this.pensiaPos = {
-        x: Math.round(rect.right + window.scrollX - w),
-        y: Math.round(rect.top + window.scrollY + (rect.height - h) / 2)
+        x: Math.min(Math.max(8, x), bounds.maxX),
+        y: Math.max(8, y)
       };
     },
     async pensiaClick() {
@@ -508,8 +514,36 @@ createApp({
     showToast(msg) { this.toast = msg; setTimeout(() => { this.toast = null; }, 3400); }
   },
   mounted() {
-    this.resetPensiaToDefault();
-    window.addEventListener('resize', () => this.clampPensiaPos());
+    // Wait for web fonts + a real layout/paint pass before placing Pensia.
+    // Measuring against the page before Inter has swapped in (or before
+    // images/canvas above the fold have settled their height) gives a
+    // stale rect and she ends up stranded near the top-left corner.
+    const placePensia = () => {
+      this.$nextTick(() => {
+        requestAnimationFrame(() => this.resetPensiaToDefault());
+      });
+    };
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(placePensia);
+    } else {
+      placePensia();
+    }
+    // Safety net: run again shortly after load in case anything above
+    // the Features section (hero art, stat badges, planet canvas) shifts
+    // height after fonts/images finish.
+    window.addEventListener('load', placePensia);
+    setTimeout(placePensia, 600);
+    // On resize, re-anchor to the heading rather than just clamping —
+    // otherwise resizing can leave her drifted away from her home spot.
+    // Skip while she's being dragged or her bubble is open so we don't
+    // yank her out from under the user mid-interaction.
+    window.addEventListener('resize', () => {
+      if (this.pensiaDragging || this.pensiaOpen) {
+        this.clampPensiaPos();
+      } else {
+        this.resetPensiaToDefault();
+      }
+    });
     document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) this.langOpen = false; });
     const nav = document.querySelector('nav');
     const featuresSection = document.getElementById('features');
