@@ -287,6 +287,7 @@ createApp({
       _pensiaFetched: false,
       pensiaArticle: null,
       pensiaArticleOpen: false,
+      pensiaImageLoaded: false,
       pensiaPos: { x: 0, y: 0 },
       pensiaReady: false,
       pensiaTilt: 0,
@@ -442,6 +443,7 @@ createApp({
       this.pensiaMsg = '';
       this.pensiaHeadline = '';
       this.pensiaArticle = null;
+      this.pensiaImageLoaded = false;
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4500);
@@ -457,7 +459,10 @@ createApp({
           this.pensiaArticle = {
             title: pick.title,
             date: pick.date,
-            image: pick.media_type === 'image' ? (pick.hdurl || pick.url) : null,
+            // prefer the standard-res image — hdurl can be enormous
+            // (multiple MB, sometimes 4000px+ on a side) and the modal
+            // never displays it bigger than half a ~900px-wide card
+            image: pick.media_type === 'image' ? (pick.url || pick.hdurl) : null,
             explanation: pick.explanation || '',
             headline,
             copyright: pick.copyright || null
