@@ -287,6 +287,7 @@ createApp({
       _pensiaFetched: false,
       pensiaPos: { x: 0, y: 0 },
       pensiaReady: false,
+      pensiaTilt: 0,
       pensiaDragging: false,
       pensiaBubbleFlip: { below: false, left: false },
       currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
@@ -361,6 +362,12 @@ createApp({
           x: Math.min(Math.max(8, d.baseX + dx), bounds.maxX),
           y: Math.min(Math.max(8, d.baseY + dy), bounds.maxY)
         };
+        // lean in the direction of horizontal motion, like she's
+        // swinging as she's carried — clamped to a believable range
+        const stepX = e.clientX - (d.lastX ?? e.clientX);
+        d.lastX = e.clientX;
+        const targetTilt = Math.max(-18, Math.min(18, stepX * 2.2));
+        this.pensiaTilt += (targetTilt - this.pensiaTilt) * 0.35;
       }
     },
     onPensiaPointerUp() {
@@ -368,6 +375,7 @@ createApp({
       if (!d) return;
       this._pensiaDrag = null;
       this.pensiaDragging = false;
+      this.pensiaTilt = 0;
       if (!d.moved) {
         // no real movement happened — treat it as a click/tap
         this.pensiaClick();
