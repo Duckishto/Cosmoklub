@@ -1171,9 +1171,20 @@ footer {
 }
 .pensia-wrap.dragging {
   cursor: grabbing;
+  transition: transform 0.12s ease-out;
+  transform: scale(1.12) translateY(-6px);
+  z-index: 40;
 }
 .pensia-wrap.dragging .mascot-pensia {
   animation: none;
+  filter: drop-shadow(0 0 30px rgba(168,85,247,0.85)) drop-shadow(0 14px 18px rgba(0,0,0,0.45));
+  transition: transform 0.08s ease-out;
+}
+.pensia-wrap:not(.dragging) {
+  transition: transform 0.45s cubic-bezier(.34,1.56,.64,1), opacity 0.25s ease;
+}
+.pensia-wrap:not(.dragging) .mascot-pensia {
+  transition: filter 0.3s ease, transform 0.45s cubic-bezier(.34,1.56,.64,1);
 }
 .pensia-wrap:hover .mascot-pensia {
   filter: drop-shadow(0 0 26px rgba(168,85,247,0.6));
@@ -2447,9 +2458,20 @@ footer {
 }
 .pensia-wrap.dragging {
   cursor: grabbing;
+  transition: transform 0.12s ease-out;
+  transform: scale(1.12) translateY(-6px);
+  z-index: 40;
 }
 .pensia-wrap.dragging .mascot-pensia {
   animation: none;
+  filter: drop-shadow(0 0 30px rgba(168,85,247,0.85)) drop-shadow(0 14px 18px rgba(0,0,0,0.45));
+  transition: transform 0.08s ease-out;
+}
+.pensia-wrap:not(.dragging) {
+  transition: transform 0.45s cubic-bezier(.34,1.56,.64,1), opacity 0.25s ease;
+}
+.pensia-wrap:not(.dragging) .mascot-pensia {
+  transition: filter 0.3s ease, transform 0.45s cubic-bezier(.34,1.56,.64,1);
 }
 .pensia-wrap:hover .mascot-pensia {
   filter: drop-shadow(0 0 26px rgba(168,85,247,0.6));
