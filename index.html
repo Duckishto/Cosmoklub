@@ -34,11 +34,11 @@
         </svg>
         CosmoKlub
       </a>
-      <ul class="nav-links">
-        <li><a href="#">Home</a></li>
+      <ul class="nav-links" :class="{open: mobileMenuOpen}">
+        <li><a href="#" @click="mobileMenuOpen=false">Home</a></li>
         <li><a href="dashboard.html">Explore</a></li>
-        <li><a href="#">Objects</a></li>
-        <li><a href="#">About</a></li>
+        <li><a href="#" @click="mobileMenuOpen=false">Objects</a></li>
+        <li><a href="#" @click="mobileMenuOpen=false">About</a></li>
       </ul>
       <div class="nav-right">
         <div class="lang-wrap">
@@ -51,6 +51,15 @@
             <button v-for="l in langs" :key="l.code" :class="{active:currentLang.code===l.code}" @click="setLang(l)">{{ l.flag }} {{ l.name }}</button>
           </div>
         </div>
+        <button
+          class="nav-menu-btn"
+          :class="{active: mobileMenuOpen}"
+          @click="mobileMenuOpen = !mobileMenuOpen"
+          aria-label="Toggle navigation menu"
+          :aria-expanded="mobileMenuOpen"
+        >
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </nav>
 
