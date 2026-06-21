@@ -1522,6 +1522,31 @@ footer {
   }
   }
 
+@media (max-width: 640px) {
+  footer {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 0.9rem;
+  }
+  .footer-logo,
+  .footer-copy {
+    justify-self: center;
+  }
+  .footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem 1.2rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
 /* ---------- Pensia full-article modal ---------- */
 .pam-frame {
   position: relative;
