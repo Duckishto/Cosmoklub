@@ -1,571 +1,127 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>CosmoKlub: Home & Library & Chat</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --purple: #7c3aed;
-      --violet: #a855f7;
-      --glow: #c084fc;
-      --stardust: #e9d5ff;
-      --white: #f5f3ff;
-      --muted: #8b7aa8;
-      --border: rgba(124, 58, 237, 0.25);
-      --glass: rgba(124, 58, 237, 0.08);
-      --glass2: rgba(255, 255, 255, 0.04);
-      --font: 'Inter', -apple-system, sans-serif;
-      --radius: 12px;
-      --tr: 0.22s cubic-bezier(.4, 0, .2, 1);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: #07061a;
-      color: var(--white);
-      font-family: var(--font);
-      font-size: 16px;
-      line-height: 1.5;
-      min-height: 100vh;
-      min-height: 100dvh;
-      width: 100%;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+const { createApp } = Vue;
 
-    /* Aurora background */
-    .aurora-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-    .aurora-base {
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 110% 60% at 20% 0%, #0d1b3e 0%, transparent 65%),
-                  radial-gradient(ellipse 90% 50% at 80% 5%, #160f35 0%, transparent 60%),
-                  linear-gradient(180deg, #07061a 0%, #05040d 55%, #040310 100%);
-    }
-    .aurora-1 {
-      position: absolute; top:-10%; left:-20%; width:80%; height:70%;
-      background: radial-gradient(ellipse 100% 100% at 50% 0%, rgba(20,200,160,0.13) 0%, rgba(10,120,180,0.07) 45%, transparent 75%);
-      filter: blur(60px); animation: aShift1 14s ease-in-out infinite;
-    }
-    .aurora-2 {
-      position: absolute; top:-15%; right:-15%; width:70%; height:80%;
-      background: radial-gradient(ellipse 100% 100% at 50% 0%, rgba(130,60,220,0.17) 0%, rgba(80,20,180,0.08) 50%, transparent 75%);
-      filter: blur(70px); animation: aShift2 18s ease-in-out infinite;
-    }
-    .aurora-3 {
-      position: absolute; top:10%; left:25%; width:55%; height:55%;
-      background: radial-gradient(ellipse 100% 100% at 50% 0%, rgba(40,80,220,0.08) 0%, transparent 80%);
-      filter: blur(80px); animation: aShift3 22s ease-in-out infinite;
-    }
-    @keyframes aShift1 { 0%,100%{transform:scaleX(1) skewY(0deg)} 40%{transform:scaleX(1.18) skewY(-2deg)} 70%{transform:scaleX(0.9) skewY(1.5deg)} }
-    @keyframes aShift2 { 0%,100%{transform:scaleX(1) skewY(0deg)} 30%{transform:scaleX(0.85) skewY(2deg)} 65%{transform:scaleX(1.12) skewY(-1.5deg)} }
-    @keyframes aShift3 { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
-    #star-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.5; }
-    .page-grid {
-      position: fixed; inset: 0; pointer-events: none; z-index: 1;
-      background-image: radial-gradient(circle, rgba(124,58,237,0.12) 1px, transparent 1px);
-      background-size: 36px 36px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
-    }
+// ---------- SVG Icon Templates ----------
+const SVGS = {
+  telescope: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  satellite: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="21"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></svg>`,
+  layers: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+  chart: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+  cpu: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>`,
+  book: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+};
 
-    #app { position: relative; z-index: 2; min-height: 100vh; min-height: 100dvh; }
-    .app-shell {
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex; flex-direction: column;
-      padding-left: clamp(1rem, 2.5vw, 2.5rem);
-      padding-right: clamp(1rem, 2.5vw, 2.5rem);
-    }
+const OBJ_SVGS = {
+  galaxy: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="18" ry="7" stroke="#a855f7" stroke-width="1.2" opacity="0.6" transform="rotate(-25 20 20)"/><ellipse cx="20" cy="20" rx="12" ry="4" stroke="#c084fc" stroke-width="1" opacity="0.5" transform="rotate(-25 20 20)"/><circle cx="20" cy="20" r="2.5" fill="#e9d5ff" opacity="0.9"/></svg>`,
+  nebula: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><radialGradient id="nb" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e9d5ff" stop-opacity="0.8"/><stop offset="60%" stop-color="#a855f7" stop-opacity="0.4"/><stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/></radialGradient><circle cx="20" cy="20" r="18" fill="url(#nb)"/><circle cx="20" cy="20" r="4" fill="#e9d5ff" opacity="0.9"/></svg>`,
+  cluster: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="1.8" fill="#f5f3ff"/><circle cx="14" cy="16" r="1.4" fill="#e9d5ff" opacity="0.9"/><circle cx="26" cy="16" r="1.4" fill="#e9d5ff" opacity="0.9"/><circle cx="14" cy="24" r="1.4" fill="#e9d5ff" opacity="0.8"/><circle cx="26" cy="24" r="1.4" fill="#e9d5ff" opacity="0.8"/><circle cx="20" cy="12" r="1.2" fill="#c084fc" opacity="0.8"/><circle cx="20" cy="28" r="1.2" fill="#c084fc" opacity="0.8"/></svg>`,
+  ring: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="#a855f7" stroke-width="1.5" opacity="0.5" stroke-dasharray="3 2"/><circle cx="20" cy="20" r="9" stroke="#c084fc" stroke-width="2" opacity="0.6"/><circle cx="20" cy="20" r="4" fill="#e9d5ff" opacity="0.85"/></svg>`,
+  supernova: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="5" fill="#f5f3ff" opacity="0.95"/><line x1="20" y1="4" x2="20" y2="12" stroke="#e9d5ff" stroke-width="1.5" stroke-linecap="round"/><line x1="20" y1="28" x2="20" y2="36" stroke="#e9d5ff" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="20" x2="12" y2="20" stroke="#e9d5ff" stroke-width="1.5" stroke-linecap="round"/><line x1="28" y1="20" x2="36" y2="20" stroke="#e9d5ff" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  whirlpool: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M20 20 Q28 10 32 20 Q28 32 20 28 Q12 24 14 16 Q18 8 26 12" stroke="#a855f7" stroke-width="1.4" fill="none" opacity="0.7" stroke-linecap="round"/><circle cx="20" cy="20" r="3" fill="#c084fc" opacity="0.9"/></svg>`,
+  globular: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" fill="none" stroke="#7c3aed" stroke-width="0.8" opacity="0.3"/><circle cx="20" cy="20" r="3" fill="#f5f3ff" opacity="0.95"/><circle cx="20" cy="12" r="1.5" fill="#e9d5ff" opacity="0.85"/><circle cx="20" cy="28" r="1.5" fill="#e9d5ff" opacity="0.85"/><circle cx="12" cy="20" r="1.5" fill="#e9d5ff" opacity="0.85"/><circle cx="28" cy="20" r="1.5" fill="#e9d5ff" opacity="0.85"/></svg>`,
+  lagoon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><radialGradient id="lg" cx="45%" cy="55%" r="50%"><stop offset="0%" stop-color="#c084fc" stop-opacity="0.8"/><stop offset="70%" stop-color="#7c3aed" stop-opacity="0.3"/><stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/></radialGradient><ellipse cx="20" cy="22" rx="16" ry="11" fill="url(#lg)"/><circle cx="18" cy="20" r="2.5" fill="#f5f3ff" opacity="0.9"/></svg>`,
+};
 
-    /* Top bar */
-    .topbar {
-      display: flex; align-items: center; gap: 0.7rem;
-      padding: 1rem 0 0.6rem;
-    }
-    .brand {
-      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.03em;
-      background: linear-gradient(135deg, var(--violet), var(--glow));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0;
-    }
-    .search-box {
-      flex: 1; display: flex; align-items: center; gap: 0.55rem;
-      background: var(--glass2); border: 1px solid var(--border);
-      border-radius: 30px; padding: 0.5rem 0.95rem;
-      color: var(--muted); font-size: 0.85rem;
-    }
-    .search-box svg { flex-shrink: 0; opacity: 0.75; }
-    .search-box span {
-      flex: 1; min-width: 0;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .topbar-actions { display: flex; align-items: center; gap: 0.8rem; flex-shrink: 0; }
-    .icon-btn {
-      position: relative; width: 36px; height: 36px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--glass2); border: 1px solid var(--border);
-      color: var(--stardust); cursor: pointer; transition: border-color var(--tr), color var(--tr);
-    }
-    .icon-btn:hover { border-color: var(--violet); color: var(--white); }
-    .icon-dot {
-      position: absolute; top: -3px; right: -3px; width: 8px; height: 8px;
-      background: var(--glow); border-radius: 50%; border: 2px solid #07061a;
-      box-shadow: 0 0 6px rgba(192,132,252,0.8);
-    }
-
-    .content { flex: 1; padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
-
-    /* Sky strip (only in home) */
-    .sky-strip {
-      margin: 0.3rem 0 1.1rem;
-      background: var(--glass2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.9rem 1rem;
-      display: flex; align-items: center; gap: 0.85rem;
-    }
-    .sky-strip .sb-icon {
-      width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px;
-      background: rgba(120,50,230,0.15);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .sky-strip-text { flex: 1; min-width: 0; }
-    .sky-strip-title { font-size: 0.9rem; font-weight: 700; }
-    .sky-strip-sub { font-size: 0.74rem; color: var(--muted); margin-top: 1px; }
-    .sky-strip-cta {
-      flex-shrink: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
-      color: var(--glow); border: 1px solid var(--border); border-radius: 20px;
-      padding: 0.35rem 0.8rem; white-space: nowrap; cursor: pointer;
-      transition: border-color var(--tr), color var(--tr);
-    }
-    .sky-strip-cta:hover { border-color: var(--violet); color: var(--white); }
-
-    /* Section headers */
-    .section { margin-bottom: 1.4rem; }
-    .section-eyebrow-row {
-      display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem;
-    }
-    .section-label {
-      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;
-      background: linear-gradient(135deg, #a855f7, #e879f9);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      flex-shrink: 0;
-    }
-    .section-rule { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
-    .section-link {
-      font-size: 0.7rem; font-weight: 700; color: var(--muted);
-      letter-spacing: 0.04em; cursor: pointer; transition: color var(--tr); flex-shrink: 0;
-    }
-    .section-link:hover { color: var(--glow); }
-
-    /* Chips (home) */
-    .chip-row {
-      display: flex; gap: 0.55rem; overflow-x: auto; padding-bottom: 1rem;
-      scrollbar-width: none;
-    }
-    .chip-row::-webkit-scrollbar { display: none; }
-    .chip {
-      flex: 0 0 auto; font-size: 0.78rem; font-weight: 600; white-space: nowrap;
-      padding: 0.4rem 0.95rem; border-radius: 30px;
-      background: var(--glass2); border: 1px solid var(--border); color: var(--muted);
-      cursor: pointer; transition: all var(--tr);
-    }
-    .chip:hover { color: var(--stardust); border-color: var(--violet); }
-    .chip.active { background: var(--purple); color: var(--white); border-color: var(--violet);
-      box-shadow: 0 0 16px rgba(124,58,237,0.35); }
-
-    /* Thread cards (home) */
-    .thread-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
-      gap: 0.8rem;
-      align-items: stretch;
-    }
-    .thread-card {
-      background: var(--glass2); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 1rem; transition: border-color var(--tr), transform var(--tr), box-shadow var(--tr);
-      cursor: pointer;
-      display: flex; flex-direction: column;
-    }
-    .thread-card:hover {
-      border-color: var(--violet); transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(124,58,237,0.16);
-    }
-    .thread-head {
-      display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.65rem;
-    }
-    .avatar {
-      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; font-weight: 800; color: var(--white);
-      border: 1px solid rgba(255,255,255,0.18);
-    }
-    .thread-meta { flex: 1; min-width: 0; }
-    .thread-author {
-      font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.35rem;
-      flex-wrap: wrap;
-    }
-    .thread-author .lvl {
-      font-size: 0.6rem; font-weight: 700; color: var(--glow); border: 1px solid var(--border);
-      border-radius: 6px; padding: 0.06rem 0.36rem; letter-spacing: 0.04em;
-    }
-    .thread-sub { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
-    .thread-tag {
-      flex-shrink: 0; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--glow); border: 1px solid var(--border);
-      border-radius: 6px; padding: 0.22rem 0.5rem; opacity: 0.85;
-    }
-    .thread-title {
-      font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.35rem;
-      line-height: 1.35;
-    }
-    .thread-body {
-      font-size: 0.82rem; color: var(--muted); line-height: 1.6;
-      display: -webkit-box; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .thread-foot {
-      display: flex; align-items: center; gap: 1.1rem; margin-top: auto; padding-top: 0.75rem;
-      font-size: 0.75rem; color: var(--muted);
-    }
-    .thread-foot .stat {
-      display: flex; align-items: center; gap: 0.35rem; transition: color var(--tr);
-    }
-    .thread-foot .stat:hover { color: var(--stardust); }
-    .thread-foot .stat svg { opacity: 0.8; }
-    .thread-foot .spacer { flex: 1; }
-    .thread-foot .stat.solved { color: #4ade80; }
-
-    /* Library – Lessons grid (Diamond/Platinum/Gold style) */
-    .lessons-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .lesson-card {
-      background: var(--glass2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      transition: transform var(--tr), border-color var(--tr);
-      cursor: pointer;
-    }
-    .lesson-card:hover {
-      transform: translateX(4px);
-      border-color: var(--violet);
-    }
-    .lesson-icon {
-      width: 48px;
-      height: 48px;
-      background: var(--glass);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      flex-shrink: 0;
-    }
-    .lesson-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .lesson-title {
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.2rem;
-    }
-    .lesson-desc {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-    .lesson-tier {
-      flex-shrink: 0;
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      padding: 0.3rem 0.9rem;
-      border-radius: 30px;
-      text-align: center;
-    }
-    .tier-diamond {
-      background: linear-gradient(135deg, #b9f2ff, #a0e7ff);
-      color: #0a0a2a;
-      box-shadow: 0 0 12px rgba(160, 231, 255, 0.4);
-    }
-    .tier-platinum {
-      background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
-      color: #0f172a;
-    }
-    .tier-gold {
-      background: linear-gradient(135deg, #fde047, #facc15);
-      color: #422006;
-      box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
-    }
-
-    /* Library saved items grid */
-    .library-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
-      gap: 1rem;
-      margin-top: 0.5rem;
-    }
-    .library-item {
-      background: var(--glass2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-      transition: transform var(--tr), border-color var(--tr);
-    }
-    .library-item:hover {
-      transform: translateY(-2px);
-      border-color: var(--violet);
-    }
-    .library-icon {
-      width: 48px; height: 48px;
-      background: var(--glass);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .library-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .library-name {
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin-bottom: 0.2rem;
-    }
-    .library-meta {
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-    .remove-btn {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #f87171;
-      padding: 0.3rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--tr);
-      flex-shrink: 0;
-    }
-    .remove-btn:hover {
-      background: #ef4444;
-      color: white;
-      border-color: #ef4444;
-    }
-    .empty-library {
-      text-align: center;
-      padding: 2rem;
-      color: var(--muted);
-    }
-
-    /* ========== CHAT STYLES ========== */
-    .chat-container {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .conversation-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-    .conversation-item {
-      background: var(--glass2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.8rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      cursor: pointer;
-      transition: all var(--tr);
-    }
-    .conversation-item:hover {
-      background: var(--glass);
-      border-color: var(--violet);
-    }
-    .conversation-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--glass);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.2rem;
-    }
-    .conversation-info {
-      flex: 1;
-    }
-    .conversation-name {
-      font-weight: 700;
-      margin-bottom: 0.2rem;
-    }
-    .conversation-preview {
-      font-size: 0.75rem;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .conversation-time {
-      font-size: 0.65rem;
-      color: var(--muted);
-    }
-    .chat-window {
-      background: var(--glass2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      display: flex;
-      flex-direction: column;
-      height: 500px;
-      max-height: 60vh;
-      max-height: 60dvh;
-    }
-    .chat-header {
-      padding: 0.8rem 1rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .chat-back {
-      background: none;
-      border: none;
-      color: var(--glow);
-      cursor: pointer;
-      font-size: 1.2rem;
-    }
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-    .message {
-      max-width: 80%;
-      padding: 0.5rem 0.8rem;
-      border-radius: 18px;
-      line-height: 1.4;
-      font-size: 0.85rem;
-    }
-    .message-outgoing {
-      align-self: flex-end;
-      background: var(--purple);
-      color: white;
-    }
-    .message-incoming {
-      align-self: flex-start;
-      background: var(--glass);
-      color: var(--stardust);
-    }
-    .chat-input-area {
-      padding: 0.8rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 0.5rem;
-    }
-    .chat-input {
-      flex: 1;
-      background: var(--glass2);
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      padding: 0.6rem 1rem;
-      color: white;
-      font-family: var(--font);
-      font-size: 0.85rem;
-    }
-    .chat-input:focus {
-      outline: none;
-      border-color: var(--violet);
-    }
-    .chat-send {
-      background: var(--purple);
-      border: none;
-      border-radius: 30px;
-      padding: 0 1rem;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .chat-send:hover {
-      background: var(--violet);
-    }
-
-    /* Bottom nav */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(13,11,30,0.96);
-      backdrop-filter: blur(18px);
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center; gap: clamp(1rem, 6vw, 4rem);
-      padding: 0.9rem 1rem calc(0.9rem + env(safe-area-inset-bottom));
-      z-index: 1000;
-    }
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
-      color: var(--muted); font-size: 0.75rem; font-weight: 600;
-      cursor: pointer; transition: color var(--tr);
-    }
-    .nav-item svg { width: 24px; height: 24px; }
-    .nav-item:hover { color: var(--stardust); }
-    .nav-item.active { color: var(--glow); }
-    .nav-item.active svg { filter: drop-shadow(0 0 8px rgba(192,132,252,0.65)); }
-    .nav-fab {
-      width: 52px; height: 52px; border-radius: 50%;
-      background: var(--purple);
-      display: flex; align-items: center; justify-content: center;
-      margin-top: -24px; color: #fff;
-      box-shadow: 0 0 28px rgba(124,58,237,0.7);
-      transition: background var(--tr), transform var(--tr);
-    }
-    .nav-fab svg { width: 26px; height: 26px; }
-    .nav-item.fab-item:hover .nav-fab { background: var(--violet); transform: translateY(-2px); }
-    .nav-item.fab-item { color: var(--muted); }
-    .nav-item.fab-item:hover { color: var(--muted); }
-
-    /* ---------- Mobile ---------- */
-    @media (max-width: 600px) {
-      /* Topbar: brand + icons stay on one compact row, search drops to its
-         own full-width row beneath instead of being squeezed into a sliver
-         and wrapping across multiple lines (that wrapping was what made the
-         topbar balloon in height on phones). */
-      .topbar {
-        flex-wrap: wrap;
-        row-gap: 0.55rem;
-        padding: 0.8rem 0 0.5rem;
-      }
-      .topbar-actions { order: 2; margin-left: auto; }
-      .search-box { order: 3; flex-basis: 100%; width: 100%; }
-
-      .sky-strip { padding: 0.75rem 0.85rem; gap: 0.65rem; }
-      .sky-strip .sb-icon { width: 34px; height: 34px; }
-      .sky-strip-cta { font-size: 0.64rem; padding: 0.3rem 0.6rem; }
-
-      .section { margin-bottom: 1.1rem; }
-      .thread-card { padding: 0.85rem; }
-      .lesson-card, .library-item { padding: 0.85rem; gap: 0.7rem; }
-      .lesson-icon, .library-icon { width: 42px; height: 42px; }
-      .lesson-icon { font-size: 1.5rem; }
-      .conversation-item { padding: 0.7rem 0.85rem; }
-     
+// ---------- Complete Translations ----------
+const translations = {
+  EN: {
+    navHome: 'Home', navExplore: 'Explore', navObjects: 'Objects', navAbout: 'About',
+    eyebrow: 'Next-Gen Astronomy Platform',
+    heroLine1: 'Explore the', heroAccent: 'Night Sky', heroLine2: 'with Precision',
+    heroSub: 'Discover celestial objects, plan observations, analyze astronomical data, and connect with the <span class="kw">global astronomy community</span>.',
+    startBtn: 'Start Exploring', learnBtn: 'Learn more',
+    featLabel: 'Features', featTitle: 'Everything the cosmos demands',
+    featSub: '<span class="kw">Precision tools</span> for amateur observers and professional researchers alike.',
+    objLabel: 'Objects', objTitle: 'Deep-sky catalogue',
+    objSub: '<span class="kw">Thousands of catalogued objects</span> from our expanding database.',
+    ctaLabel: 'Join CosmoKlub', ctaTitle: 'Your observatory awaits',
+    ctaSub: 'Create your <span class="kw">free account</span> and start mapping the cosmos tonight.',
+    signIn: 'Sign In', register: 'Register',
+    createAcc: 'Create Account', welcomeBack: 'Welcome back',
+    loginSub: 'Sign in to your observatory', joinUs: 'Join thousands of astronomers',
+    firstName: 'First Name', lastName: 'Last Name', firstPH: 'Galileo', lastPH: 'Galilei',
+    emailLabel: 'Email', emailPH: 'you@cosmos.space', passLabel: 'Password',
+    passPH: 'Min. 8 characters', confirmPass: 'Confirm Password', confirmPH: 'Repeat password',
+    tosAgree: 'I agree to the', tosAnd: 'and', forgotPass: 'Forgot password?',
+    orContinue: 'or continue with', loading: 'Loading...',
+    successReg: 'Welcome to CosmoKlub', successLogin: 'Welcome back',
+    successSub: 'Your observatory is ready. Start exploring the cosmos.',
+    exploreNow: 'Explore Now',
+    tos: 'Terms of Service', privacy: 'Privacy Policy', contact: 'Contact',
+    rights: 'All rights reserved.', tosDate: 'Last updated June 2026',
+    accept: 'I Accept',
+    tos1Title: 'Acceptance of Terms',
+    tos1Body: 'By accessing or using CosmoKlub ("the Service"), you confirm that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to all of these terms, you must not use the Service. We may update these Terms at any time; continued use after changes constitutes your acceptance of the revised Terms.',
+    tos2Title: 'Eligibility & Account Responsibility',
+    tos2Body: 'You must be at least 13 years old to create an account. You are responsible for keeping your login credentials confidential and for all activity that occurs under your account. Notify us immediately at hello@cosmoklub.space if you suspect any unauthorised access. CosmoKlub is not liable for losses arising from your failure to protect your credentials.',
+    tos3Title: 'Permitted Use of the Service',
+    tos3Body: 'CosmoKlub grants you a personal, non-exclusive, non-transferable licence to use the Service for lawful astronomical observation, research, education, and community discussion. You may not use the Service to violate any applicable law, infringe third-party rights, distribute malware, scrape data without permission, or engage in any activity that disrupts or damages the platform.',
+    tos4Title: 'Community Chat & Messaging',
+    tos4Body: 'Our chat and messaging features are provided to foster a respectful astronomy community. You agree not to send spam, unsolicited promotions, hate speech, harassment, threats, sexually explicit content, or any content that targets individuals on the basis of race, religion, gender, sexual orientation, disability, or nationality. CosmoKlub may monitor messages for safety purposes and reserves the right to remove content or terminate accounts that violate these standards without prior notice.',
+    tos5Title: 'User-Generated Content & Posts',
+    tos5Body: 'You retain ownership of content you post (observations, photos, comments, logbook entries). By posting, you grant CosmoKlub a worldwide, royalty-free, sublicensable licence to display, distribute, and promote that content within the Service. You represent that you own or have the necessary rights to all content you submit, and that it does not infringe any copyright, trademark, privacy, or other rights. CosmoKlub may remove any content that violates these Terms or that we deem harmful, misleading, or off-topic.',
+    tos6Title: 'AI Features & Automated Tools',
+    tos6Body: 'CosmoKlub offers AI-powered features including Pensia (our astronomy AI assistant) and AI Object Recognition for astrophotographs. These tools are provided as-is and may produce inaccurate, incomplete, or outdated results. Do not rely solely on AI output for critical decisions. You may not attempt to reverse-engineer, manipulate, or misuse AI features. Content submitted to AI tools (e.g., uploaded photos) may be processed by third-party model providers subject to their own data handling policies; no personally identifiable information is stored beyond session duration.',
+    tos7Title: 'Data, Privacy & Cookies',
+    tos7Body: 'We collect only the data necessary to operate, improve, and personalise the Service (account information, usage logs, observation data). Your personal information is never sold to third parties. We use cookies for authentication and analytics; you may disable non-essential cookies in your browser settings. Full details are in our Privacy Policy. Users in the EU/EEA have the right to access, correct, or delete their personal data by contacting hello@cosmoklub.space.',
+    tos8Title: 'Intellectual Property',
+    tos8Body: 'All original content, software, databases, 3D models, visual designs, and tools within the Service are the intellectual property of CosmoKlub and its licensors, protected by international copyright, trademark, and database laws. You may not copy, redistribute, or create derivative works from any CosmoKlub content without prior written permission. Astronomical data sourced from public catalogues (NASA, ESA, IAU) remains subject to their respective licences.',
+    tos9Title: 'Limitation of Liability & Disclaimers',
+    tos9Body: 'The Service and all astronomical data are provided "as is" without warranties of any kind, express or implied, including accuracy, completeness, or fitness for a particular purpose. To the maximum extent permitted by law, CosmoKlub shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of or inability to use the Service, even if advised of the possibility of such damages.',
+    tos10Title: 'Termination & Governing Law',
+    tos10Body: 'CosmoKlub reserves the right to suspend or permanently terminate your account at any time for breach of these Terms, without notice or liability. You may delete your account at any time via account settings. These Terms are governed by the laws of the jurisdiction in which CosmoKlub operates, and any disputes shall be resolved in the competent courts of that jurisdiction. If any provision of these Terms is found unenforceable, the remaining provisions remain in full effect.',
+    tos11Title: 'Third-Party Services & Indemnification',
+    tos11Body: 'CosmoKlub may link to or rely on third-party services, astronomical catalogues, or mapping data that we do not own or control; we are not responsible for their content, accuracy, or availability, and accessing them is at your own risk. You agree to indemnify and hold CosmoKlub and its team harmless from any claims, damages, or expenses (including reasonable legal fees) arising from your use of the Service, your content, or your violation of these Terms.',
+    tos12Title: 'Changes to These Terms & Contact',
+    tos12Body: 'We may revise these Terms from time to time to reflect changes to the Service or applicable law; the "Last updated" date above will always show the latest version, and continued use of the Service after changes constitutes acceptance. These Terms, together with our Privacy Policy, constitute the entire agreement between you and CosmoKlub regarding the Service. If you have any questions, reach out to us at hello@cosmoklub.space.',
+    errFirst: 'First name is required', errLast: 'Last name is required',
+    errEmail: 'A valid email is required', errPass: 'Password must be at least 8 characters',
+    errConfirm: 'Passwords do not match', errTos: 'You must accept the Terms of Service',
+    toastReg: 'Account created. Welcome to CosmoKlub.', toastLogin: 'Signed in successfully.'
+  },
+  ES: {
+    navHome: 'Inicio', navExplore: 'Explorar', navObjects: 'Objetos', navAbout: 'Acerca de',
+    eyebrow: 'Plataforma de astronomia de nueva generacion',
+    heroLine1: 'Navega por el', heroAccent: 'Universo', heroLine2: 'desde tu pantalla.',
+    heroSub: 'Datos celestes en tiempo real, catalogos y <span class="kw">mapas interactivos</span> — todo en un panel oscuro y elegante.',
+    startBtn: 'Comenzar', learnBtn: 'Mas info',
+    featLabel: 'Funciones', featTitle: 'Todo lo que el cosmos exige.',
+    featSub: '<span class="kw">Herramientas de precision</span> para observadores e investigadores.',
+    objLabel: 'Objetos', objTitle: 'Catalogo de cielo profundo.',
+    objSub: '<span class="kw">Miles de objetos catalogados</span> en nuestra base de datos.',
+    ctaLabel: 'Unete', ctaTitle: 'Tu observatorio te espera.',
+    ctaSub: 'Crea tu <span class="kw">cuenta gratuita</span> y empieza a mapear el cosmos esta noche.',
+    signIn: 'Iniciar sesion', register: 'Registrarse',
+    createAcc: 'Crear cuenta', welcomeBack: 'Bienvenido de nuevo',
+    loginSub: 'Inicia sesion en tu observatorio', joinUs: 'Unete a miles de astronomos',
+    firstName: 'Nombre', lastName: 'Apellido', firstPH: 'Galileo', lastPH: 'Galilei',
+    emailLabel: 'Correo', emailPH: 'tu@cosmos.space', passLabel: 'Contrasena',
+    passPH: 'Min. 8 caracteres', confirmPass: 'Confirmar', confirmPH: 'Repite la contrasena',
+    tosAgree: 'Acepto los', tosAnd: 'y la', forgotPass: 'Olvidaste tu contrasena?',
+    orContinue: 'o continuar con', loading: 'Cargando...',
+    successReg: 'Bienvenido a CosmoKlub!', successLogin: 'Bienvenido de nuevo!',
+    successSub: 'Tu observatorio esta listo.', exploreNow: 'Explorar ahora',
+    tos: 'Terminos', privacy: 'Privacidad', contact: 'Contacto',
+    rights: 'Todos los derechos reservados.', tosDate: 'Junio 2026', accept: 'Acepto',
+    tos1Title: 'Aceptacion de los Terminos',
+    tos1Body: 'Al acceder o utilizar CosmoKlub, confirmas que has leido, comprendido y aceptas estos Terminos de Servicio y nuestra Politica de Privacidad. Si no aceptas todos los terminos, no debes utilizar el Servicio. Podemos actualizar estos Terminos en cualquier momento; el uso continuado tras los cambios constituye tu aceptacion.',
+    tos2Title: 'Elegibilidad y Responsabilidad de la Cuenta',
+    tos2Body: 'Debes tener al menos 13 anos para crear una cuenta. Eres responsable de mantener la confidencialidad de tus credenciales y de toda la actividad que ocurra en tu cuenta. Notificanos de inmediato a hello@cosmoklub.space si sospechas de acceso no autorizado.',
+    tos3Title: 'Uso Permitido del Servicio',
+    tos3Body: 'CosmoKlub te otorga una licencia personal, no exclusiva e intransferible para usar el Servicio con fines de observacion astronomica, investigacion, educacion y discusion comunitaria legales. No puedes usar el Servicio para violar leyes, infringir derechos de terceros, distribuir malware o interferir con la plataforma.',
+    tos4Title: 'Chat Comunitario y Mensajeria',
+    tos4Body: 'Las funciones de chat estan pensadas para fomentar una comunidad de astronomia respetuosa. Queda prohibido enviar spam, discurso de odio, acoso, amenazas, contenido sexualmente explicito o contenido que discrimine por raza, religion, genero, orientacion sexual, discapacidad o nacionalidad. CosmoKlub puede eliminar contenido o cancelar cuentas que violen estas normas.',
+    tos5Title: 'Contenido Generado por Usuarios y Publicaciones',
+    tos5Body: 'Conservas la propiedad del contenido que publicas (observaciones, fotos, comentarios). Al publicar, otorgas a CosmoKlub una licencia mundial, libre de regalias para mostrar y distribuir ese contenido dentro del Servicio. Declaras que posees los derechos necesarios sobre el contenido enviado y que no infringe derechos de terceros.',
+    tos6Title: 'Funciones de IA y Herramientas Automatizadas',
+    tos6Body: 'CosmoKlub ofrece funciones de IA, incluyendo a Pensia (asistente de astronomia) y el Reconocimiento de Objetos con IA. Estas herramientas se proporcionan tal cual y pueden producir resultados inexactos. No debes depender exclusivamente de la IA para decisiones criticas. El contenido enviado a las herramientas de IA puede ser procesado por proveedores externos.',
+    tos7Title: 'Datos, Privacidad y Cookies',
+    tos7Body: 'Recopilamos solo los datos necesarios para operar y personalizar el Servicio. Tu informacion personal nunca se vende. Usamos cookies para autenticacion y analitica. Los usuarios en la UE/EEE tienen derecho a acceder, corregir o eliminar sus datos personales contactando hello@cosmoklub.space.',
+    tos8Title: 'Propiedad Intelectual',
+    tos8Body: 'Todo el contenido original, software, bases de datos, modelos 3D y disenos del Servicio son propiedad intelectual de CosmoKlub y sus licenciantes. No puedes copiar, redistribuir ni crear obras derivadas sin permiso previo por escrito.',
+    tos9Title: 'Limitacion de Responsabilidad',
+    tos9Body: 'El Servicio y todos los datos astronomicos se proporcionan "tal cual", sin garantias de ningun tipo. En la maxima medida permitida por la ley, CosmoKlub no sera responsable de danos indirectos, incidentales, especiales o consecuentes derivados del uso del Servicio.',
+    tos10Title: 'Terminacion y Ley Aplicable',
+    tos10Body: 'CosmoKlub puede suspender o cancelar tu cuenta en cualquier momento por incumplimiento de estos Terminos. Puedes eliminar tu cuenta en la configuracion. Estos Terminos se rigen por las leyes de la jurisdiccion donde opera CosmoKlub. Si alguna disposicion resulta inaplicable, el resto permanece vigente.',
+    tos11Title: 'Servicios de Terceros e Indemnizacion',
+    tos11Body: 'CosmoKlub puede enlazar con servicios o catalogos de terceros que no controlamos; no somos responsables de su contenido ni disponibilidad, y el acceso a ellos es bajo tu propio riesgo. Aceptas indemnizar a CosmoKlub y a su equipo frente a reclamaciones, danos o gastos derivados de tu uso del Servicio o del incumplimiento de estos Terminos.',
+    tos12Title: 'Cambios en es
