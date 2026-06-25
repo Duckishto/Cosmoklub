@@ -1751,55 +1751,63 @@ nav.nav-hidden {
   transition: opacity 0.28s ease, transform 0.28s cubic-bezier(.4,0,.2,1);
 }
 
-/* ---------- Legal overlay — wave gradient background ---------- */
-@keyframes legalWave1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%       { transform: translate(3%, 6%) scale(1.05); }
+/* ---------- Legal overlay — animated wave gradient background ---------- */
+@keyframes legalBlob1 {
+  0%   { transform: translate(0%,   0%)   scale(1);    }
+  25%  { transform: translate(10%,  16%)  scale(1.10); }
+  50%  { transform: translate(5%,   24%)  scale(1.06); }
+  75%  { transform: translate(-8%,  11%)  scale(1.13); }
+  100% { transform: translate(0%,   0%)   scale(1);    }
 }
-@keyframes legalWave2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%       { transform: translate(-4%, -5%) scale(1.04); }
+@keyframes legalBlob2 {
+  0%   { transform: translate(0%,    0%)   scale(1);    }
+  30%  { transform: translate(-14%,  -11%) scale(1.08); }
+  60%  { transform: translate(-7%,   -20%) scale(1.14); }
+  85%  { transform: translate(9%,    -9%)  scale(1.05); }
+  100% { transform: translate(0%,    0%)   scale(1);    }
 }
-@keyframes legalWave3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%       { transform: translate(5%, -3%) scale(1.06); }
+@keyframes legalBlob3 {
+  0%   { transform: translate(0%,   0%)   scale(1);    }
+  35%  { transform: translate(12%,  -13%) scale(1.09); }
+  65%  { transform: translate(-5%,  -7%)  scale(1.07); }
+  100% { transform: translate(0%,   0%)   scale(1);    }
 }
 
 .modal-overlay.legal-overlay {
-  background:
-    radial-gradient(ellipse 180% 55% at 0%   30%, rgba(14, 165, 233, 0.13) 0%, transparent 55%),
-    radial-gradient(ellipse 160% 50% at 100% 68%, rgba(168, 85, 247, 0.17) 0%, transparent 52%),
-    radial-gradient(ellipse 140% 45% at 55%  98%, rgba(20, 184, 166, 0.11) 0%, transparent 58%),
-    radial-gradient(ellipse 200% 38% at 22%  0%,  rgba(139, 92, 246, 0.10) 0%, transparent 50%),
-    radial-gradient(ellipse 120% 40% at 80%  10%, rgba(236, 72, 153, 0.08) 0%, transparent 48%),
-    linear-gradient(170deg, #050411 0%, #080722 45%, #060319 100%);
-  backdrop-filter: blur(6px);
+  background: linear-gradient(160deg, #040311 0%, #070520 55%, #050214 100%);
+  backdrop-filter: blur(4px);
   overflow: hidden;
 }
 
-/* Pseudo-element wave layers for the flowing animation */
-.modal-overlay.legal-overlay::before,
+/* First blob layer — indigo / violet */
+.modal-overlay.legal-overlay::before {
+  content: '';
+  position: absolute;
+  inset: -35%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 62% 52% at 22% 38%, rgba(99, 102, 241, 0.42) 0%, transparent 62%),
+    radial-gradient(ellipse 52% 44% at 78% 28%, rgba(168, 85, 247, 0.36) 0%, transparent 58%),
+    radial-gradient(ellipse 48% 40% at 50% 82%, rgba(14, 165, 233, 0.30) 0%, transparent 60%);
+  filter: blur(52px);
+  animation: legalBlob1 15s ease-in-out infinite;
+}
+
+/* Second blob layer — teal / pink / purple */
 .modal-overlay.legal-overlay::after {
   content: '';
   position: absolute;
-  inset: -20%;
+  inset: -35%;
   pointer-events: none;
-  border-radius: 50%;
-}
-.modal-overlay.legal-overlay::before {
   background:
-    radial-gradient(ellipse 70% 40% at 20% 50%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 35% at 80% 40%, rgba(168, 85, 247, 0.10) 0%, transparent 55%);
-  animation: legalWave1 14s ease-in-out infinite;
-}
-.modal-overlay.legal-overlay::after {
-  background:
-    radial-gradient(ellipse 65% 38% at 60% 70%, rgba(14, 165, 233, 0.10) 0%, transparent 58%),
-    radial-gradient(ellipse 55% 32% at 30% 20%, rgba(20, 184, 166, 0.09) 0%, transparent 52%);
-  animation: legalWave2 18s ease-in-out infinite;
+    radial-gradient(ellipse 58% 48% at 68% 62%, rgba(20, 184, 166, 0.34) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 42% at 28% 18%, rgba(236, 72, 153, 0.26) 0%, transparent 58%),
+    radial-gradient(ellipse 44% 38% at 82% 82%, rgba(139, 92, 246, 0.30) 0%, transparent 55%);
+  filter: blur(58px);
+  animation: legalBlob2 20s ease-in-out infinite;
 }
 
-/* Ensure pam-frame sits above the pseudo layers */
+/* Ensure pam-frame sits above the animated layers */
 .modal-overlay.legal-overlay .pam-frame {
   position: relative;
   z-index: 1;
