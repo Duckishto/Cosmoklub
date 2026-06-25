@@ -1751,9 +1751,9 @@ nav.nav-hidden {
   transition: opacity 0.28s ease, transform 0.28s cubic-bezier(.4,0,.2,1);
 }
 
-/* ---------- Legal overlay — canvas wave background ---------- */
+/* ---------- Legal overlay — canvas nebula background ---------- */
 .modal-overlay.legal-overlay {
-  background: #020110;
+  background: #000000;
   backdrop-filter: none;
   overflow: hidden;
 }
