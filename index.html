@@ -316,6 +316,7 @@
     <!-- ToS Modal — same card layout as Pensia's "read more" article modal -->
     <transition name="fade">
       <div class="modal-overlay legal-overlay" v-if="modal==='tos'" @click.self="closeModal">
+        <canvas class="legal-wave-canvas"></canvas>
         <div class="pam-frame no-image tos-pam">
           <button class="pam-close" @click="closeModal" aria-label="Close">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -345,6 +346,7 @@
     <!-- Privacy Policy Modal — reuses the exact ToS modal layout/CSS, separate content -->
     <transition name="fade">
       <div class="modal-overlay legal-overlay" v-if="modal==='privacy'" @click.self="closeModal">
+        <canvas class="legal-wave-canvas"></canvas>
         <div class="pam-frame no-image tos-pam">
           <button class="pam-close" @click="closeModal" aria-label="Close">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -429,6 +431,103 @@
 
   <!-- Vue app -->
   <script src="main.js"></script>
+
+  <!-- Legal overlay wave animation -->
+  <script>
+  (function () {
+    // ── Colour palette (RGB triples) ──────────────────────────────────────
+    var SRCS = [
+      { r: 99,  g: 102, b: 241, sx: 0.18, sy: 0.30, vx:  0.00018, vy:  0.00012, ph: 0.00, fr: 0.28 }, // indigo
+      { r: 168, g:  85, b: 247, sx: 0.78, sy: 0.62, vx: -0.00015, vy: -0.00010, ph: 1.26, fr: 0.22 }, // violet
+      { r:  14, g: 165, b: 233, sx: 0.50, sy: 0.08, vx:  0.00020, vy:  0.00016, ph: 2.51, fr: 0.35 }, // sky
+      { r:  20, g: 184, b: 166, sx: 0.10, sy: 0.80, vx: -0.00012, vy:  0.00014, ph: 3.77, fr: 0.26 }, // teal
+      { r: 236, g:  72, b: 153, sx: 0.88, sy: 0.20, vx: -0.00016, vy: -0.00013, ph: 5.03, fr: 0.31 }, // pink
+    ];
+
+    function startWave(canvas) {
+      var ctx = canvas.getContext('2d');
+      var raf = null;
+      var t   = 0;
+
+      function resize() {
+        var p = canvas.parentElement;
+        canvas.width  = p ? p.offsetWidth  : window.innerWidth;
+        canvas.height = p ? p.offsetHeight : window.innerHeight;
+      }
+
+      function frame() {
+        var W = canvas.width, H = canvas.height;
+
+        // Dark base
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = '#020110';
+        ctx.fillRect(0, 0, W, H);
+
+        // Additive colour blobs — overlapping colours brighten like real light
+        ctx.globalCompositeOperation = 'lighter';
+
+        for (var i = 0; i < SRCS.length; i++) {
+          var s = SRCS[i];
+
+          // Drift — bounce off soft margin
+          s.sx += s.vx;
+          s.sy += s.vy;
+          if (s.sx < 0.08 || s.sx > 0.92) s.vx *= -1;
+          if (s.sy < 0.08 || s.sy > 0.92) s.vy *= -1;
+
+          // Sine pulse drives both radius and alpha  → the "wave" feel
+          var pulse  = (Math.sin(t * s.fr + s.ph) + 1) * 0.5;   // 0 → 1
+          var radius = W  * (0.30 + pulse * 0.22);
+          var alpha  = 0.14 + pulse * 0.20;
+
+          var cx = s.sx * W;
+          var cy = s.sy * H;
+          var g  = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+          g.addColorStop(0,    'rgba(' + s.r + ',' + s.g + ',' + s.b + ',' + alpha.toFixed(3) + ')');
+          g.addColorStop(0.45, 'rgba(' + s.r + ',' + s.g + ',' + s.b + ',' + (alpha * 0.38).toFixed(3) + ')');
+          g.addColorStop(1,    'rgba(0,0,0,0)');
+
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, W, H);
+        }
+
+        ctx.globalCompositeOperation = 'source-over';
+        t  += 0.014;
+        raf = requestAnimationFrame(frame);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      frame();
+
+      return function stop() {
+        cancelAnimationFrame(raf);
+        window.removeEventListener('resize', resize);
+      };
+    }
+
+    // Watch DOM for Vue mounting / unmounting the canvas
+    var obs = new MutationObserver(function (mutations) {
+      mutations.forEach(function (m) {
+        m.addedNodes.forEach(function (node) {
+          if (node.nodeType !== 1) return;
+          var list = node.classList && node.classList.contains('legal-wave-canvas')
+            ? [node]
+            : Array.prototype.slice.call(node.querySelectorAll('.legal-wave-canvas'));
+          list.forEach(function (c) { if (!c._stopWave) c._stopWave = startWave(c); });
+        });
+        m.removedNodes.forEach(function (node) {
+          if (node.nodeType !== 1) return;
+          var list = node.classList && node.classList.contains('legal-wave-canvas')
+            ? [node]
+            : Array.prototype.slice.call(node.querySelectorAll('.legal-wave-canvas'));
+          list.forEach(function (c) { if (c._stopWave) { c._stopWave(); c._stopWave = null; } });
+        });
+      });
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+  })();
+  </script>
 
   <!-- 3D planet -->
   <script type="module" src="planet.js"></script>
