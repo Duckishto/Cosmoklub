@@ -20,7 +20,7 @@
 
   <div id="app" v-cloak>
     <!-- Navigation -->
-    <nav>
+    <nav :class="{ 'nav-hidden': modal === 'tos' || modal === 'privacy' }">
       <a class="nav-logo" href="#">
         <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
           <circle cx="13" cy="5" r="2.2" fill="#a855f7"/>
@@ -315,7 +315,7 @@
 
     <!-- ToS Modal — same card layout as Pensia's "read more" article modal -->
     <transition name="fade">
-      <div class="modal-overlay" v-if="modal==='tos'" @click.self="closeModal">
+      <div class="modal-overlay legal-overlay" v-if="modal==='tos'" @click.self="closeModal">
         <div class="pam-frame no-image tos-pam">
           <button class="pam-close" @click="closeModal" aria-label="Close">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -344,7 +344,7 @@
 
     <!-- Privacy Policy Modal — reuses the exact ToS modal layout/CSS, separate content -->
     <transition name="fade">
-      <div class="modal-overlay" v-if="modal==='privacy'" @click.self="closeModal">
+      <div class="modal-overlay legal-overlay" v-if="modal==='privacy'" @click.self="closeModal">
         <div class="pam-frame no-image tos-pam">
           <button class="pam-close" @click="closeModal" aria-label="Close">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
