@@ -432,22 +432,41 @@
   <!-- Vue app -->
   <script src="main.js"></script>
 
-  <!-- Legal overlay wave animation -->
+  <!-- Legal overlay background — black, grain-textured, diagonal nebula flow -->
   <script>
   (function () {
-    // ── Colour palette (RGB triples) ──────────────────────────────────────
-    var SRCS = [
-      { r: 99,  g: 102, b: 241, sx: 0.18, sy: 0.30, vx:  0.00018, vy:  0.00012, ph: 0.00, fr: 0.28 }, // indigo
-      { r: 168, g:  85, b: 247, sx: 0.78, sy: 0.62, vx: -0.00015, vy: -0.00010, ph: 1.26, fr: 0.22 }, // violet
-      { r:  14, g: 165, b: 233, sx: 0.50, sy: 0.08, vx:  0.00020, vy:  0.00016, ph: 2.51, fr: 0.35 }, // sky
-      { r:  20, g: 184, b: 166, sx: 0.10, sy: 0.80, vx: -0.00012, vy:  0.00014, ph: 3.77, fr: 0.26 }, // teal
-      { r: 236, g:  72, b: 153, sx: 0.88, sy: 0.20, vx: -0.00016, vy: -0.00013, ph: 5.03, fr: 0.31 }, // pink
+    // ── Colour palette — nebula tones carried along the diagonal ──────────
+    var PALETTE = [
+      { r: 124, g:  58, b: 237 }, // purple   (brand)
+      { r:  79, g:  70, b: 229 }, // indigo
+      { r:  59, g: 130, b: 246 }, // blue
+      { r:  34, g: 211, b: 238 }, // cyan
+      { r: 192, g: 132, b: 252 }, // glow violet (brand)
+      { r: 236, g:  72, b: 153 }, // magenta
     ];
 
+    // Pre-render a small grain tile once and reuse it every frame — a fixed,
+    // tactile "premium" texture rather than flickering TV-static.
+    function makeGrain(ctx) {
+      var size = 200;
+      var g = document.createElement('canvas');
+      g.width = size; g.height = size;
+      var gctx = g.getContext('2d');
+      var img = gctx.createImageData(size, size);
+      for (var i = 0; i < img.data.length; i += 4) {
+        var v = Math.random() * 255;
+        img.data[i] = v; img.data[i + 1] = v; img.data[i + 2] = v;
+        img.data[i + 3] = Math.random() * 16; // very subtle
+      }
+      gctx.putImageData(img, 0, 0);
+      return ctx.createPattern(g, 'repeat');
+    }
+
     function startWave(canvas) {
-      var ctx = canvas.getContext('2d');
-      var raf = null;
-      var t   = 0;
+      var ctx   = canvas.getContext('2d');
+      var raf   = null;
+      var t     = 0;
+      var grain = makeGrain(ctx);
 
       function resize() {
         var p = canvas.parentElement;
@@ -455,44 +474,72 @@
         canvas.height = p ? p.offsetHeight : window.innerHeight;
       }
 
+      // Point on a quadratic curve running from just off the top-left
+      // corner to just off the bottom-right corner.
+      function onCurve(pct, W, H, p1x, p1y) {
+        var u = 1 - pct;
+        var p0x = -0.35 * W, p0y = -0.35 * H;
+        var p2x =  1.35 * W, p2y =  1.35 * H;
+        return {
+          x: u * u * p0x + 2 * u * pct * p1x + pct * pct * p2x,
+          y: u * u * p0y + 2 * u * pct * p1y + pct * pct * p2y
+        };
+      }
+
       function frame() {
         var W = canvas.width, H = canvas.height;
 
-        // Dark base
+        // Pure black base
         ctx.globalCompositeOperation = 'source-over';
-        ctx.fillStyle = '#020110';
+        ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, W, H);
 
-        // Additive colour blobs — overlapping colours brighten like real light
+        // The curve bows gently in and out over time so it never feels static
+        var bow = Math.sin(t * 0.02) * 0.10;
+        var p1x = 0.5 * W + bow * H;
+        var p1y = 0.5 * H - bow * W;
+
+        // Nebula colours travel along the curve, top-left → bottom-right
         ctx.globalCompositeOperation = 'lighter';
+        var n = PALETTE.length;
+        for (var i = 0; i < n; i++) {
+          var pct = ((t * 0.03 + i / n) % 1 + 1) % 1;
+          var pos = onCurve(pct, W, H, p1x, p1y);
+          var c   = PALETTE[i];
 
-        for (var i = 0; i < SRCS.length; i++) {
-          var s = SRCS[i];
+          var pulse  = (Math.sin(t * 0.15 + i * 1.7) + 1) * 0.5;
+          var radius = Math.max(W, H) * (0.30 + pulse * 0.10);
+          var alpha  = 0.16 + pulse * 0.10;
 
-          // Drift — bounce off soft margin
-          s.sx += s.vx;
-          s.sy += s.vy;
-          if (s.sx < 0.08 || s.sx > 0.92) s.vx *= -1;
-          if (s.sy < 0.08 || s.sy > 0.92) s.vy *= -1;
+          var glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius);
+          glow.addColorStop(0,   'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + alpha.toFixed(3) + ')');
+          glow.addColorStop(0.5, 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + (alpha * 0.32).toFixed(3) + ')');
+          glow.addColorStop(1,   'rgba(0,0,0,0)');
+          ctx.fillStyle = glow;
+          ctx.fillRect(0, 0, W, H);
 
-          // Sine pulse drives both radius and alpha  → the "wave" feel
-          var pulse  = (Math.sin(t * s.fr + s.ph) + 1) * 0.5;   // 0 → 1
-          var radius = W  * (0.30 + pulse * 0.22);
-          var alpha  = 0.14 + pulse * 0.20;
-
-          var cx = s.sx * W;
-          var cy = s.sy * H;
-          var g  = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-          g.addColorStop(0,    'rgba(' + s.r + ',' + s.g + ',' + s.b + ',' + alpha.toFixed(3) + ')');
-          g.addColorStop(0.45, 'rgba(' + s.r + ',' + s.g + ',' + s.b + ',' + (alpha * 0.38).toFixed(3) + ')');
-          g.addColorStop(1,    'rgba(0,0,0,0)');
-
-          ctx.fillStyle = g;
+          // Bright core for a touch of sparkle at the heart of each glow
+          var core = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius * 0.16);
+          core.addColorStop(0, 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + (alpha * 1.6).toFixed(3) + ')');
+          core.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = core;
           ctx.fillRect(0, 0, W, H);
         }
 
+        // Static grain overlay — the "premium texture"
+        ctx.globalCompositeOperation = 'overlay';
+        ctx.fillStyle = grain;
+        ctx.fillRect(0, 0, W, H);
+
+        // Soft vignette keeps the corners inky black
         ctx.globalCompositeOperation = 'source-over';
-        t  += 0.014;
+        var vg = ctx.createRadialGradient(W * 0.5, H * 0.5, Math.min(W, H) * 0.35, W * 0.5, H * 0.5, Math.max(W, H) * 0.75);
+        vg.addColorStop(0, 'rgba(0,0,0,0)');
+        vg.addColorStop(1, 'rgba(0,0,0,0.55)');
+        ctx.fillStyle = vg;
+        ctx.fillRect(0, 0, W, H);
+
+        t  += 0.016;
         raf = requestAnimationFrame(frame);
       }
 
