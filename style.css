@@ -1821,34 +1821,70 @@ nav.nav-hidden {
   z-index: 1;
 }
 
-/* ---------- Legal modal open/close — bouncy pop, not a plain fade ---------- */
+/* ---------- Legal modal terrain-shift transition
+   Open:  overlay tears in from top-left corner via diagonal clip-path wipe,
+          card rises through as the terrain "breaks open"
+   Close: overlay folds back along the same fault line, space world re-emerges
+-------------------------------------------------------------------------- */
+
+/* OPEN — overlay fans in via diagonal polygon wipe */
 .legal-modal-enter-active {
-  transition: opacity 0.5s ease-out;
+  transition: clip-path 0.62s cubic-bezier(0.76, 0, 0.24, 1),
+              opacity    0.18s ease-out;
 }
+/* CLOSE — overlay collapses back along the same diagonal */
 .legal-modal-leave-active {
-  transition: opacity 0.32s ease-in;
+  transition: clip-path 0.52s cubic-bezier(0.76, 0, 0.24, 1),
+              opacity    0.15s ease-in 0.4s;
+  pointer-events: none;
 }
-.legal-modal-enter-from,
+
+/* Start: collapsed to top-left corner (zero-area triangle) */
+.legal-modal-enter-from {
+  opacity: 1;
+  clip-path: polygon(0% 0%, 0% 0%, 0% 0%);
+}
+/* End state for enter = fully revealed */
+.legal-modal-enter-to {
+  opacity: 1;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+/* Start of leave = fully visible */
+.legal-modal-leave-from {
+  opacity: 1;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+/* Collapse back to bottom-right corner — opposite corner from open */
 .legal-modal-leave-to {
   opacity: 0;
+  clip-path: polygon(100% 100%, 100% 100%, 100% 100%);
 }
+
+/* Card animation — enters with a vertical rise + subtle tilt, exits downward */
 .legal-modal-enter-active .pam-frame {
-  transition: opacity 0.46s ease-out, transform 0.46s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity  0.42s ease-out 0.18s,
+              transform 0.50s cubic-bezier(0.34, 1.42, 0.64, 1) 0.18s;
 }
 .legal-modal-leave-active .pam-frame {
-  transition: opacity 0.28s ease-in, transform 0.28s cubic-bezier(0.4, 0, 1, 1);
+  transition: opacity  0.22s ease-in,
+              transform 0.28s cubic-bezier(0.55, 0, 1, 0.45);
 }
 .legal-modal-enter-from .pam-frame {
   opacity: 0;
-  transform: translateY(50px) scale(0.8) rotate(-2.5deg);
+  transform: translateY(44px) scale(0.91) rotate(-1.5deg);
 }
 .legal-modal-leave-to .pam-frame {
   opacity: 0;
-  transform: translateY(-26px) scale(0.86) rotate(2deg);
+  transform: translateY(32px) scale(0.88) rotate(1deg);
 }
+
 @media (prefers-reduced-motion: reduce) {
   .legal-modal-enter-active,
-  .legal-modal-leave-active,
+  .legal-modal-leave-active {
+    transition: opacity 0.2s linear !important;
+    clip-path: none !important;
+  }
   .legal-modal-enter-active .pam-frame,
   .legal-modal-leave-active .pam-frame {
     transition: opacity 0.2s linear !important;
