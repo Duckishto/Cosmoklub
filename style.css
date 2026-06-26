@@ -1834,6 +1834,44 @@ nav.nav-hidden {
   z-index: 1;
 }
 
+/* ---------- Legal modal open/close — bouncy pop, not a plain fade ---------- */
+.legal-modal-enter-active {
+  transition: opacity 0.5s ease-out;
+}
+.legal-modal-leave-active {
+  transition: opacity 0.32s ease-in;
+}
+.legal-modal-enter-from,
+.legal-modal-leave-to {
+  opacity: 0;
+}
+.legal-modal-enter-active .pam-frame {
+  transition: opacity 0.46s ease-out, transform 0.46s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.legal-modal-leave-active .pam-frame {
+  transition: opacity 0.28s ease-in, transform 0.28s cubic-bezier(0.4, 0, 1, 1);
+}
+.legal-modal-enter-from .pam-frame {
+  opacity: 0;
+  transform: translateY(50px) scale(0.8) rotate(-2.5deg);
+}
+.legal-modal-leave-to .pam-frame {
+  opacity: 0;
+  transform: translateY(-26px) scale(0.86) rotate(2deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .legal-modal-enter-active,
+  .legal-modal-leave-active,
+  .legal-modal-enter-active .pam-frame,
+  .legal-modal-leave-active .pam-frame {
+    transition: opacity 0.2s linear !important;
+  }
+  .legal-modal-enter-from .pam-frame,
+  .legal-modal-leave-to .pam-frame {
+    transform: none !important;
+  }
+}
+
 /* ---------- ToS modal — reuses the pam-frame "read more" card layout ---------- */
 .pam-frame.tos-pam {
   max-height: 82vh;
