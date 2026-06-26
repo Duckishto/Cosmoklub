@@ -316,11 +316,15 @@
     <!-- ToS Modal — same card layout as Pensia's "read more" article modal -->
     <transition name="legal-modal">
       <div class="modal-overlay legal-overlay" v-if="modal==='tos'" @click.self="closeModal">
+        <svg class="legal-wave" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="legal-wave-glow" vector-effect="non-scaling-stroke" d="M -10.0,-10.0 L -7.78,-7.94 L -5.69,-5.74 L -3.72,-3.42 L -1.87,-0.99 L -0.13,1.56 L 1.54,4.17 L 3.16,6.84 L 4.77,9.52 L 6.4,12.17 L 8.09,14.76 L 9.89,17.25 L 11.81,19.62 L 13.89,21.82 L 16.15,23.85 L 18.58,25.7 L 21.2,27.37 L 23.99,28.87 L 26.93,30.22 L 29.99,31.44 L 33.14,32.58 L 36.33,33.67 L 39.53,34.76 L 42.67,35.9 L 45.73,37.12 L 48.66,38.48 L 51.42,40.01 L 53.99,41.73 L 56.34,43.66 L 58.47,45.82 L 60.38,48.2 L 62.07,50.79 L 63.58,53.57 L 64.92,56.51 L 66.15,59.57 L 67.29,62.71 L 68.4,65.89 L 69.51,69.06 L 70.68,72.17 L 71.95,75.19 L 73.34,78.09 L 74.88,80.83 L 76.6,83.4 L 78.49,85.79 L 80.57,88.01 L 82.8,90.05 L 85.19,91.96 L 87.69,93.74 L 90.28,95.44 L 92.91,97.09 L 95.57,98.72 L 98.19,100.38 L 100.76,102.09 L 103.25,103.9 L 105.62,105.81 L 107.87,107.84 L 110.0,110.0" />
+          <path class="legal-wave-line" vector-effect="non-scaling-stroke" d="M -10.0,-10.0 L -7.78,-7.94 L -5.69,-5.74 L -3.72,-3.42 L -1.87,-0.99 L -0.13,1.56 L 1.54,4.17 L 3.16,6.84 L 4.77,9.52 L 6.4,12.17 L 8.09,14.76 L 9.89,17.25 L 11.81,19.62 L 13.89,21.82 L 16.15,23.85 L 18.58,25.7 L 21.2,27.37 L 23.99,28.87 L 26.93,30.22 L 29.99,31.44 L 33.14,32.58 L 36.33,33.67 L 39.53,34.76 L 42.67,35.9 L 45.73,37.12 L 48.66,38.48 L 51.42,40.01 L 53.99,41.73 L 56.34,43.66 L 58.47,45.82 L 60.38,48.2 L 62.07,50.79 L 63.58,53.57 L 64.92,56.51 L 66.15,59.57 L 67.29,62.71 L 68.4,65.89 L 69.51,69.06 L 70.68,72.17 L 71.95,75.19 L 73.34,78.09 L 74.88,80.83 L 76.6,83.4 L 78.49,85.79 L 80.57,88.01 L 82.8,90.05 L 85.19,91.96 L 87.69,93.74 L 90.28,95.44 L 92.91,97.09 L 95.57,98.72 L 98.19,100.38 L 100.76,102.09 L 103.25,103.9 L 105.62,105.81 L 107.87,107.84 L 110.0,110.0" />
+        </svg>
         <div class="pam-frame no-image tos-pam">
           <button class="pam-close" @click="closeModal" aria-label="Close">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
-          <div class="pam-content tos-pam-content">
+          <div class="pam-content tos-pam-content" ref="legalScroll" @scroll="checkLegalScroll">
             <h3 class="pam-title">{{ t.tos }}</h3>
             <div class="tos-content">
               <h3>1. {{ t.tos1Title }}</h3><p>{{ t.tos1Body }}</p>
@@ -336,7 +340,7 @@
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
               <span>{{ t.tosDate }}</span>
             </div>
-            <button class="btn-submit" @click="closeModal">{{ t.accept }}</button>
+            <button class="btn-submit" :disabled="!legalScrollEnd" :title="legalScrollEnd ? '' : t.scrollHint" @click="closeModal">{{ t.accept }}</button>
           </div>
         </div>
       </div>
