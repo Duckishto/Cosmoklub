@@ -48,7 +48,7 @@ const translations = {
     exploreNow: 'Explore Now',
     tos: 'Terms of Service', privacy: 'Privacy Policy', contact: 'Contact',
     rights: 'All rights reserved.', tosDate: 'Last updated June 2026',
-    accept: 'I Accept', scrollHint: 'Scroll to the end to continue',
+    accept: 'I Accept',
     tos1Title: 'Acceptance of Terms',
     tos1Body: 'By accessing or using CosmoKlub ("the Service"), you confirm that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to all of these terms, you must not use the Service. We may update these Terms at any time; continued use after changes constitutes your acceptance of the revised Terms.',
     tos2Title: 'Eligibility & Account Responsibility',
@@ -123,7 +123,7 @@ const translations = {
     successReg: 'Bienvenido a CosmoKlub!', successLogin: 'Bienvenido de nuevo!',
     successSub: 'Tu observatorio esta listo.', exploreNow: 'Explorar ahora',
     tos: 'Terminos', privacy: 'Privacidad', contact: 'Contacto',
-    rights: 'Todos los derechos reservados.', tosDate: 'Junio 2026', accept: 'Acepto', scrollHint: 'Desplázate hasta el final para continuar',
+    rights: 'Todos los derechos reservados.', tosDate: 'Junio 2026', accept: 'Acepto',
     tos1Title: 'Aceptacion de los Terminos',
     tos1Body: 'Al acceder o utilizar CosmoKlub, confirmas que has leido, comprendido y aceptas estos Terminos de Servicio y nuestra Politica de Privacidad. Si no aceptas todos los terminos, no debes utilizar el Servicio. Podemos actualizar estos Terminos en cualquier momento; el uso continuado tras los cambios constituye tu aceptacion.',
     tos2Title: 'Elegibilidad y Responsabilidad de la Cuenta',
@@ -198,7 +198,7 @@ const translations = {
     successReg: 'Bienvenue sur CosmoKlub !', successLogin: 'Bon retour !',
     successSub: 'Votre observatoire est pret.', exploreNow: 'Explorer',
     tos: "Conditions", privacy: 'Confidentialite', contact: 'Contact',
-    rights: 'Tous droits reserves.', tosDate: 'Juin 2026', accept: "J'accepte", scrollHint: "Faites defiler jusqu'a la fin pour continuer",
+    rights: 'Tous droits reserves.', tosDate: 'Juin 2026', accept: "J'accepte",
     tos1Title: 'Acceptation des Conditions',
     tos1Body: "En accedant ou en utilisant CosmoKlub, vous confirmez avoir lu, compris et accepte les presentes Conditions d'Utilisation ainsi que notre Politique de Confidentialite. Si vous n'acceptez pas toutes ces conditions, vous ne devez pas utiliser le Service. Nous pouvons les mettre a jour a tout moment ; la poursuite de l'utilisation vaut acceptation des modifications.",
     tos2Title: 'Eligibilite et Responsabilite du Compte',
@@ -273,7 +273,7 @@ const translations = {
     successReg: 'ようこそ！', successLogin: 'おかえりなさい！',
     successSub: '天文台の準備ができました。', exploreNow: '今すぐ探索',
     tos: '利用規約', privacy: 'プライバシー', contact: 'お問い合わせ',
-    rights: 'All rights reserved.', tosDate: '2026年6月', accept: '同意する', scrollHint: '最後までスクロールすると続行できます',
+    rights: 'All rights reserved.', tosDate: '2026年6月', accept: '同意する',
     tos1Title: '利用規約への同意',
     tos1Body: 'CosmoKlub（以下「本サービス」）にアクセスまたは使用することで、本利用規約およびプライバシーポリシーを読み、理解し、同意したことを確認します。すべての条項に同意しない場合、本サービスを使用してはなりません。当社は随時本規約を更新することがあり、更新後の継続使用は改定規約への同意とみなされます。',
     tos2Title: '資格とアカウント責任',
@@ -348,7 +348,7 @@ const translations = {
     successReg: 'ยินดีต้อนรับ!', successLogin: 'ยินดีต้อนรับกลับ!',
     successSub: 'หอดูดาวพร้อมแล้ว สำรวจจักรวาลได้เลย', exploreNow: 'สำรวจเลย',
     tos: 'ข้อกำหนด', privacy: 'นโยบาย', contact: 'ติดต่อ',
-    rights: 'สงวนลิขสิทธิ์ทั้งหมด', tosDate: 'มิถุนายน 2026', accept: 'ยอมรับ', scrollHint: 'เลื่อนไปจนสุดเพื่อดำเนินการต่อ',
+    rights: 'สงวนลิขสิทธิ์ทั้งหมด', tosDate: 'มิถุนายน 2026', accept: 'ยอมรับ',
     tos1Title: 'การยอมรับข้อกำหนด',
     tos1Body: 'การเข้าถึงหรือใช้งาน CosmoKlub ("บริการ") ถือว่าคุณได้อ่าน เข้าใจ และยอมรับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัวของเรา หากคุณไม่ยอมรับข้อกำหนดทั้งหมด คุณต้องไม่ใช้บริการ เราอาจอัปเดตข้อกำหนดได้ตลอดเวลา การใช้งานต่อเนื่องหลังการเปลี่ยนแปลงถือว่ายอมรับข้อกำหนดที่แก้ไขแล้ว',
     tos2Title: 'คุณสมบัติและความรับผิดชอบของบัญชี',
@@ -435,8 +435,7 @@ createApp({
       errors: {},
       loading: false,
       success: false,
-      toast: null,
-      legalScrollEnd: false
+      toast: null
     };
   },
   computed: {
@@ -671,28 +670,8 @@ createApp({
         this.pensiaOpen = false;
       }, 4000);
     },
-    openModal(m) {
-      this.modal = m;
-      this.authTab = m === 'login' ? 'login' : 'register';
-      this.clearForm();
-      this.success = false;
-      this.syncScrollLock();
-      if (m === 'tos' || m === 'privacy') {
-        // require a read-through before "I Accept" becomes clickable —
-        // re-check after render in case the content is short enough to
-        // already fit on screen with nothing to scroll
-        this.legalScrollEnd = false;
-        this.$nextTick(() => this.checkLegalScroll());
-      }
-    },
+    openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; this.syncScrollLock(); },
     closeModal() { this.modal = null; this.success = false; this.syncScrollLock(); },
-    checkLegalScroll() {
-      const el = this.$refs.legalScroll;
-      if (!el) return;
-      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 16) {
-        this.legalScrollEnd = true;
-      }
-    },
     // single source of truth for the body scroll lock — recomputed from
     // whatever modals/overlays are currently open, so closing one of
     // several open surfaces can never leave a stray lock behind
