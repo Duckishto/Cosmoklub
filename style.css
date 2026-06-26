@@ -1751,7 +1751,7 @@ nav.nav-hidden {
   transition: opacity 0.28s ease, transform 0.28s cubic-bezier(.4,0,.2,1);
 }
 
-/* ---------- Legal overlay — drifting nebula sky (pure CSS, no canvas) ---------- */
+/* ---------- Legal overlay — drifting nebula sky + diagonal white wave groove ---------- */
 .modal-overlay.legal-overlay {
   background:
     /* scattered starfield */
@@ -1787,25 +1787,26 @@ nav.nav-hidden {
   overflow: hidden;
 }
 
-/* Two soft, slowly drifting glow blobs for a little life behind the card */
-.legal-overlay::before,
-.legal-overlay::after {
+/* Diagonal white wave groove — top-left to bottom-right, layered via SVG mask */
+.modal-overlay.legal-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cdefs%3E%3ClinearGradient id='wg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.07'/%3E%3Cstop offset='50%25' stop-color='%23ffffff' stop-opacity='0.03'/%3E%3Cstop offset='100%25' stop-color='%23ffffff' stop-opacity='0.06'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M-200,300 C100,100 300,-50 600,200 C900,450 1050,300 1400,0' stroke='url(%23wg)' stroke-width='90' fill='none'/%3E%3Cpath d='M-200,550 C50,350 350,150 650,420 C950,680 1100,500 1400,250' stroke='url(%23wg)' stroke-width='55' fill='none'/%3E%3Cpath d='M-100,800 C200,600 450,400 750,620 C1000,820 1150,680 1400,500' stroke='url(%23wg)' stroke-width='35' fill='none'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: top left;
+}
+
+/* Soft drifting glow blob — bottom right */
+.modal-overlay.legal-overlay::after {
   content: '';
   position: absolute;
   z-index: 0;
   border-radius: 50%;
   pointer-events: none;
   filter: blur(75px);
-}
-.legal-overlay::before {
-  width: 50%;
-  height: 50%;
-  top: -8%;
-  left: -8%;
-  background: radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%);
-  animation: legalDrift1 17s ease-in-out infinite;
-}
-.legal-overlay::after {
   width: 45%;
   height: 45%;
   bottom: -10%;
@@ -1874,8 +1875,9 @@ nav.nav-hidden {
 
 /* ---------- ToS modal — reuses the pam-frame "read more" card layout ---------- */
 .pam-frame.tos-pam {
-  max-height: 82vh;
-  max-height: 82dvh;
+  max-height: 90vh;
+  max-height: 90dvh;
+  max-width: 780px;
   display: flex;
   flex-direction: column;
 }
@@ -1915,16 +1917,41 @@ nav.nav-hidden {
   flex-shrink: 0;
   opacity: 0.75;
 }
+
+/* Scroll-to-read hint */
+.tos-scroll-hint {
+  font-size: 0.72rem;
+  color: rgba(192,132,252,0.7);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  animation: hintPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
 .tos-pam-footer .btn-submit {
   width: auto;
   flex: 1;
   max-width: 200px;
   padding: 0.66rem 1.3rem;
+  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.15s ease;
+}
+/* Locked state — greyed out, no pointer */
+.tos-pam-footer .btn-submit.btn-locked,
+.tos-pam-footer .btn-submit:disabled {
+  opacity: 0.35;
+  filter: grayscale(0.6);
+  cursor: not-allowed;
+  pointer-events: none;
 }
 @media (max-width: 760px) {
   .pam-frame.tos-pam {
-    max-height: 88vh;
-    max-height: 88dvh;
+    max-height: 94vh;
+    max-height: 94dvh;
+    max-width: 98vw;
   }
 }
 @media (max-width: 420px) {
@@ -1938,6 +1965,9 @@ nav.nav-hidden {
   }
   .tos-pam-meta {
     justify-content: center;
+  }
+  .tos-scroll-hint {
+    text-align: center;
   }
   .tos-pam-footer .btn-submit {
     max-width: none;
