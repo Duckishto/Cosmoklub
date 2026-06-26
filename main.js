@@ -435,7 +435,8 @@ createApp({
       errors: {},
       loading: false,
       success: false,
-      toast: null
+      toast: null,
+      legalScrolled: false
     };
   },
   computed: {
@@ -670,8 +671,14 @@ createApp({
         this.pensiaOpen = false;
       }, 4000);
     },
-    openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; this.syncScrollLock(); },
+    openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; this.legalScrolled = false; this.syncScrollLock(); },
     closeModal() { this.modal = null; this.success = false; this.syncScrollLock(); },
+    onLegalScroll(e) {
+      const el = e.target;
+      if (!this.legalScrolled && el.scrollTop + el.clientHeight >= el.scrollHeight - 24) {
+        this.legalScrolled = true;
+      }
+    },
     // single source of truth for the body scroll lock — recomputed from
     // whatever modals/overlays are currently open, so closing one of
     // several open surfaces can never leave a stray lock behind
