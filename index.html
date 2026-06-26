@@ -314,7 +314,7 @@
     </transition>
 
     <!-- ToS Modal — same card layout as Pensia's "read more" article modal -->
-    <transition name="fade">
+    <transition name="legal-modal">
       <div class="modal-overlay legal-overlay" v-if="modal==='tos'" @click.self="closeModal">
         <div class="pam-frame no-image tos-pam">
           <button class="pam-close" @click="closeModal" aria-label="Close">
@@ -343,7 +343,7 @@
     </transition>
 
     <!-- Privacy Policy Modal — reuses the exact ToS modal layout/CSS, separate content -->
-    <transition name="fade">
+    <transition name="legal-modal">
       <div class="modal-overlay legal-overlay" v-if="modal==='privacy'" @click.self="closeModal">
         <div class="pam-frame no-image tos-pam">
           <button class="pam-close" @click="closeModal" aria-label="Close">
