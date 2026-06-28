@@ -21,9 +21,7 @@ const Library = {
             <div class="rank-panel-meta">{{ totalCompleted }} / {{ totalLessons }} lessons complete</div>
           </div>
         </div>
-        <div class="rank-ladder" aria-label="Rank ladder">
-          <div v-for="rank in ranks" :key="rank.name" class="rank-step" :class="[rank.className, { active: rank.name === overallRank }]">
-            <span class="rank-dot"></span><span>{{ rank.name }}</span>
+       
           </div>
         </div>
       </div>
