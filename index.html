@@ -8,13 +8,7 @@
        swipe, place the page off-screen immediately so it can animate in
        with no flash. See transition.js for the rest. -->
   <script>
-    (function () {
-      var h = document.documentElement;
-      h.style.background = '#07061a';
-      try {
-        if (sessionStorage.getItem('pt-enter')) h.style.opacity = '0';
-      } catch (e) {}
-    })();
+    /* background set via html { background } in style.css — no JS needed */
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
