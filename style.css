@@ -221,6 +221,10 @@ nav.compact .lang-btn svg:first-child {
   color: var(--white);
   background: rgba(124,58,237,0.15);
 }
+.nav-links a.active-link {
+  color: var(--white);
+  background: rgba(124,58,237,0.22);
+}
 .nav-right {
   display: flex;
   align-items: center;
