@@ -75,7 +75,18 @@
     <div v-if="tab === 'search'" class="section">
       <div class="section-eyebrow-row">
         <h2 class="tab-section-title">NASA Image &amp; Video Library</h2>
-        <span class="result-count-badge">{{ search.total ? search.total.toLocaleString() + ' results' : '' }}</span>
+      </div>
+
+      <div class="search-meta-row">
+        <div class="search-filters">
+          <button
+            v-for="f in searchFilters" :key="f.value"
+            class="filter-chip"
+            :class="{ active: search.mediaFilter === f.value }"
+            @click="search.mediaFilter = f.value; search.items.length && runSearch()"
+          >{{ f.label }}</button>
+        </div>
+        <span class="result-count-badge" v-if="search.total">{{ search.total.toLocaleString() }} results</span>
       </div>
 
       <div class="search-bar">
@@ -106,7 +117,7 @@
 
       <div v-else class="empty-state">
         <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <p>Search library of 100,000+ images, video, and audio.</p>
+        <p>Search NASA's library of 100,000+ images, video, and audio.</p>
         <p class="empty-sub">Try a planet, mission, telescope, or astronaut name.</p>
       </div>
 
@@ -153,15 +164,17 @@
           <iframe :src="apod.data.url" frameborder="0" allowfullscreen></iframe>
         </div>
         <div class="apod-body">
-          <div class="apod-title">{{ apod.data.title }}</div>
-          <div class="apod-date">{{ apod.data.date }} <span v-if="apod.data.copyright">• © {{ apod.data.copyright }}</span></div>
+          <div class="apod-title-row">
+            <div class="apod-title">{{ apod.data.title }}</div>
+            <div class="apod-date">{{ apod.data.date }}<span v-if="apod.data.copyright"> • © {{ apod.data.copyright }}</span></div>
+          </div>
           <p class="apod-explanation">{{ apod.data.explanation }}</p>
           <div v-if="apod.data.hdurl" class="apod-hd-row">
             <a :href="apod.data.hdurl" target="_blank" rel="noopener" class="apod-hd-btn">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               View full resolution
             </a>
-            <span class="apod-hd-url">{{ apod.data.hdurl }}</span>
+            <a :href="apod.data.hdurl" target="_blank" rel="noopener" class="apod-hd-url">{{ apod.data.hdurl }}</a>
           </div>
         </div>
       </div>
