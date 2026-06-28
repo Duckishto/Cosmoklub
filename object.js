@@ -30,10 +30,10 @@ function daysAgoISO(n) {
 // this directly with a caught error/response.
 function friendlyError(status, fallbackLabel) {
   if (status === 429) {
-    return "NASA's API rate limit was hit. This usually means the site is still running on the shared demo key — double-check the NASA_API_KEY secret is set in Cloudflare and redeploy. Otherwise, just wait a few minutes and try again.";
+    return "NASA API rate limit reached. Wait a few minutes and try again.";
   }
   if (status >= 500) {
-    return "NASA's servers are having trouble right now — try again shortly.";
+    return "NASA's servers are having trouble right now. Try again shortly.";
   }
   return `${fallbackLabel} (${status})`;
 }
@@ -119,7 +119,7 @@ createApp({
     // --------------------------------------------------- Image/Video Library
     async runSearch(loadMore = false) {
       if (!this.search.q.trim() && !loadMore) {
-        this.search.error = 'Type something to search for — a planet, mission, telescope, anything.';
+        this.search.error = 'Type something to search for: a planet, mission, telescope, anything.';
         return;
       }
       this.search.loading = true;
