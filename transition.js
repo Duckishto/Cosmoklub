@@ -13,6 +13,8 @@
 //     instead of a hard page cut.
 //
 // PT_MS must match the --pt-duration value in transition.css.
+// Uses transform:translateX() — no layout side-effects, GPU-composited,
+// and naturally carries position:fixed elements (nav) along with the page.
 (function () {
   var root = document.getElementById('app') || document.getElementById('object-app');
   var html = document.documentElement;
@@ -30,20 +32,18 @@
     } else {
       // Double rAF: make sure the off-screen starting position from the
       // pre-paint CSS rule has actually been painted at least once before
-      // we enable the transition and animate it back to left:0 — otherwise
-      // the browser can coalesce both into a single frame and nothing
-      // appears to move.
+      // we enable the transition and animate it back to translateX(0).
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           root.classList.add('pt-sliding');
-          root.style.left = '0';
+          root.style.transform = 'translateX(0)';
 
           var done = false;
           var clear = function () {
             if (done) return;
             done = true;
             root.classList.remove('pt-sliding');
-            root.style.left = '';
+            root.style.transform = '';
             html.removeAttribute('data-pt-enter');
             root.removeEventListener('transitionend', clear);
           };
@@ -96,7 +96,7 @@
     document.head.appendChild(pre);
 
     root.classList.add('pt-sliding');
-    root.style.left = direction === 'forward' ? '-100%' : '100%';
+    root.style.transform = direction === 'forward' ? 'translateX(-100%)' : 'translateX(100%)';
 
     setTimeout(function () {
       window.location.href = href;
