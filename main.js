@@ -580,7 +580,10 @@ createApp({
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4500);
-        const apodRes = await fetch(`https://api.nasa.gov/planetary/apod?api_key=TSTiFv4spdqyeg2tijUw3GwScNh2JA596I0qSnKa&count=3`, { signal: controller.signal });
+        // Routed through our own /api/nasa proxy (Cloudflare Pages Function)
+        // so the real NASA API key stays server-side as an environment
+        // secret and is never shipped in client-side JS.
+        const apodRes = await fetch(`/api/nasa?endpoint=apod&count=3`, { signal: controller.signal });
         clearTimeout(timeoutId);
         if (!apodRes.ok) throw new Error(`NASA APOD request failed (${apodRes.status})`);
         const apodData = await apodRes.json();
