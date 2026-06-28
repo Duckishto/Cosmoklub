@@ -195,7 +195,7 @@
       </div>
       <div class="section-eyebrow-row">
         <div class="section-rule"></div>
-        <span class="neo-date-range">{{ neo.startDate }} through {{ neo.endDate }}</span>
+        <span class="neo-date-range">{{ totalCatalogObjects }} objects in the catalog</span>
       </div>
 
       <!-- Planet body filter -->
@@ -211,36 +211,33 @@
         <span class="result-count-badge" v-if="filteredNeoItems.length">{{ filteredNeoItems.length }} objects</span>
       </div>
 
-      <div v-if="neo.loading" class="loading-row"><span class="spinner"></span> Scanning near-Earth space…</div>
-      <div v-else-if="neo.error" class="error-row">{{ neo.error }}</div>
-
-      <div v-else class="object-list">
+      <div class="object-list">
         <div v-if="filteredNeoItems.length === 0" class="empty-state">
           <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
-          <p>No objects approaching this body in the current window.</p>
+          <p v-if="neo.bodyFilter === 'Mercury' || neo.bodyFilter === 'Venus'">{{ neo.bodyFilter }} has no known natural moons.</p>
+          <p v-else>No catalogued objects for this body yet.</p>
         </div>
         <div class="neo-item" v-for="obj in filteredNeoItems" :key="obj.id" @click="neo.selected = (neo.selected === obj.id ? null : obj.id)">
           <div class="neo-row">
-            <div class="neo-icon" :class="{hazard: obj.is_potentially_hazardous_asteroid}">☄️</div>
+            <div class="neo-icon">🌙</div>
             <div class="neo-info">
-              <div class="neo-name">{{ obj.name }}</div>
+              <div class="neo-name">{{ obj.name }} <span class="neo-parent">· orbits {{ obj.parent }}</span></div>
               <div class="neo-meta">
-                ⌀ {{ formatKm(obj.estimated_diameter.kilometers.estimated_diameter_min) }}–{{ formatKm(obj.estimated_diameter.kilometers.estimated_diameter_max) }} km
-                <span v-if="obj.is_potentially_hazardous_asteroid" class="hazard-tag">Potentially Hazardous</span>
+                <span>📍 {{ formatKm(obj.distanceKm) }} km away</span>
+                <span>⌀ {{ formatKm(obj.diameterKm) }} km</span>
+                <span v-if="isClosestMoon(obj)" class="closest-tag">Closest to {{ obj.parent }}</span>
               </div>
             </div>
             <div class="neo-chevron" :class="{open: neo.selected === obj.id}">▾</div>
           </div>
           <div v-if="neo.selected === obj.id" class="neo-detail">
-            <div v-for="ca in obj.close_approach_data.slice(0,3)" :key="ca.epoch_date_close_approach" class="neo-approach">
-              <div class="neo-approach-date">{{ ca.close_approach_date_full || ca.close_approach_date }}</div>
-              <div class="neo-approach-grid">
-                <div><span class="lbl">Miss distance</span>{{ formatKm(ca.miss_distance.kilometers) }} km</div>
-                <div><span class="lbl">Velocity</span>{{ formatKm(ca.relative_velocity.kilometers_per_hour) }} km/h</div>
-                <div><span class="lbl">Orbits</span>{{ ca.orbiting_body }}</div>
-              </div>
+            <p class="neo-note">{{ obj.note }}</p>
+            <div class="neo-approach-grid">
+              <div><span class="lbl">Distance from {{ obj.parent }}</span>{{ formatKm(obj.distanceKm) }} km</div>
+              <div><span class="lbl">Diameter</span>{{ formatKm(obj.diameterKm) }} km</div>
+              <div><span class="lbl">Orbital period</span>{{ obj.orbitalPeriodDays }} days</div>
             </div>
-            <a :href="obj.nasa_jpl_url" target="_blank" rel="noopener" class="section-link">Full JPL data sheet →</a>
+            <div class="neo-discovered">Discovered: {{ obj.discovered }}</div>
           </div>
         </div>
       </div>
