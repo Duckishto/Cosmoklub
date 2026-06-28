@@ -1,72 +1,53 @@
-// ---------- Home <-> Object swipe transition ----------
-// Shared by index.html and object.html. Two halves:
-//
-//  1. ENTRANCE -- if this page was just navigated to via a link we
-//     intercepted below, a tiny inline <script> in <head> already set
-//     html[data-pt-enter] before the first paint so the content wrapper
-//     renders fully off-screen with no flash. Once this script runs we
-//     animate it back into place.
-//
-//  2. EXIT -- clicking a Home<->Object link slides the *current* page's
-//     content wrapper off-screen first, then completes the real
-//     navigation, so the two pages feel like one continuous swipe
-//     instead of a hard page cut.
-//
-// PT_MS must match the --pt-duration value in transition.css.
-// Uses transform:translateX() -- no layout side-effects, GPU-composited,
-// and naturally carries position:fixed elements (nav) along with the page.
+// ---------- Home <-> Object fade transition ----------
+// EXIT:    fade current page out, then navigate
+// ENTRANCE: page starts at opacity:0 (set by CSS via data-pt-enter),
+//           then JS fades it in once the DOM is ready
 (function () {
   var html = document.documentElement;
-  var PT_MS = 420;
+  var PT_MS = 350;
 
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Re-query root at call time so Vue has time to mount before we need it.
   function getRoot() {
     return document.getElementById('app') || document.getElementById('object-app');
   }
 
-  // ---------------------------------------------------------- entrance
-  var enterDir = html.getAttribute('data-pt-enter');
-  if (enterDir) {
+  // ── Entrance: fade in on page load ──────────────────────────────────
+  var entering = html.getAttribute('data-pt-enter');
+  if (entering) {
     try { sessionStorage.removeItem('pt-enter'); } catch (e) {}
 
     if (reduceMotion) {
       html.removeAttribute('data-pt-enter');
     } else {
-      // Double rAF: make sure the off-screen starting position from the
-      // pre-paint CSS rule has actually been painted at least once before
-      // we enable the transition and animate it back to translateX(0).
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           var root = getRoot();
           if (!root) { html.removeAttribute('data-pt-enter'); return; }
-          root.classList.add('pt-sliding');
-          root.style.transform = 'translateX(0)';
+          root.classList.add('pt-fading');
+          root.style.opacity = '1';
 
           var done = false;
           var clear = function () {
             if (done) return;
             done = true;
-            root.classList.remove('pt-sliding');
-            root.style.transform = '';
+            root.classList.remove('pt-fading');
+            root.style.opacity = '';
             html.removeAttribute('data-pt-enter');
             root.removeEventListener('transitionend', clear);
           };
           root.addEventListener('transitionend', clear);
-          setTimeout(clear, PT_MS + 100); // safety net if transitionend doesn't fire
+          setTimeout(clear, PT_MS + 100);
         });
       });
     }
   }
 
-  // -------------------------------------------------------------- exit
-  // Only Home <-> Object links get the swipe; everything else (anchors,
-  // external links, the language dropdown, etc.) navigates normally.
+  // ── Exit: fade out before navigating ────────────────────────────────
   var ROUTES = {
-    '': { 'object.html': 'forward' },
-    'index.html': { 'object.html': 'forward' },
-    'object.html': { 'index.html': 'back' },
+    '':            { 'object.html': true },
+    'index.html':  { 'object.html': true },
+    'object.html': { 'index.html':  true },
   };
 
   function currentPage() {
@@ -81,10 +62,8 @@
 
     var href = link.getAttribute('href');
     var map = ROUTES[currentPage()];
-    var direction = map && map[href];
-    if (!direction) return;
+    if (!map || !map[href]) return;
 
-    // Re-query at click time so we always have the live DOM node.
     var root = getRoot();
     if (!root) return;
 
@@ -95,18 +74,10 @@
       return;
     }
 
-    try { sessionStorage.setItem('pt-enter', direction); } catch (err) {}
+    try { sessionStorage.setItem('pt-enter', 'fade'); } catch (err) {}
 
-    // Start fetching the next page in the background while this one
-    // slides out, so the swipe doesn't add a full network round-trip
-    // of extra wait on top of the animation.
-    var pre = document.createElement('link');
-    pre.rel = 'prefetch';
-    pre.href = href;
-    document.head.appendChild(pre);
-
-    root.classList.add('pt-sliding');
-    root.style.transform = direction === 'forward' ? 'translateX(-100%)' : 'translateX(100%)';
+    root.classList.add('pt-fading');
+    root.style.opacity = '0';
 
     setTimeout(function () {
       window.location.href = href;
