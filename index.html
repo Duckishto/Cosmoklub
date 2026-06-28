@@ -258,20 +258,16 @@
       <span class="footer-copy">&copy; 2026 CosmoKlub. {{ t.rights }}</span>
     </footer>
 
-    <!-- Auth Modal -->
-    <transition name="fade">
-      <div class="modal-overlay" v-if="modal==='login'||modal==='register'" @click.self="closeModal">
-        <div class="modal">
-          <div class="modal-header">
-            <div>
-              <div class="modal-title"><span>{{ authTab==='register'?t.createAcc:t.welcomeBack }}</span></div>
-              <div class="modal-sub">{{ authTab==='register'?t.joinUs:t.loginSub }}</div>
-            </div>
-            <button class="close-btn" @click="closeModal">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>
-          <div class="modal-body">
+    <!-- Auth Modal — same legal-overlay backdrop + pam-frame card as ToS/Privacy -->
+    <transition name="legal-modal">
+      <div class="modal-overlay legal-overlay" v-if="modal==='login'||modal==='register'" @click.self="closeModal">
+        <div class="pam-frame no-image auth-pam">
+          <button class="pam-close" @click="closeModal" aria-label="Close">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <div class="pam-content auth-pam-content">
+            <h3 class="pam-title">{{ authTab==='register'?t.createAcc:t.welcomeBack }}</h3>
+            <div class="modal-sub auth-pam-sub">{{ authTab==='register'?t.joinUs:t.loginSub }}</div>
             <div class="tab-row">
               <button class="tab-btn" :class="{active:authTab==='login'}" @click="authTab='login';clearForm()">{{ t.signIn }}</button>
               <button class="tab-btn" :class="{active:authTab==='register'}" @click="authTab='register';clearForm()">{{ t.register }}</button>
