@@ -1,45 +1,18 @@
-/*
- * transition.css — Home ⇄ Object swipe
- *
- * Pairs with transition.js. --pt-duration must match PT_MS (420 ms).
- *
- * Uses transform:translateX() instead of `left` so:
- *  - No layout reflow, no scroll-width side-effects
- *  - GPU-composited — smooth on low-end devices
- *  - position:fixed nav moves with the page naturally (transform on a
- *    parent creates a new containing block for fixed descendants, so the
- *    nav slides as one unit with the rest of the page — exactly what a
- *    swipe should feel like)
- */
+/* transition.css — Home <-> Object fade */
 
 :root {
-  --pt-duration: 420ms;
-  --pt-ease:     cubic-bezier(0.4, 0, 0.2, 1);
+  --pt-duration: 350ms;
+  --pt-ease: ease;
 }
 
-/* ── Entrance: page starts off-screen before JS slides it in ────────
-   The inline <script> in each <head> reads sessionStorage and writes
-   data-pt-enter to <html> before the first paint, so this rule applies
-   from the very first frame — no flash, no jump.                      */
-html[data-pt-enter="forward"] #app,
-html[data-pt-enter="forward"] #object-app {
-  transform: translateX(100%);   /* Home → Object: arrive from right  */
+/* Entrance: page starts invisible before JS fades it in */
+html[data-pt-enter] #app,
+html[data-pt-enter] #object-app {
+  opacity: 0;
 }
 
-html[data-pt-enter="back"] #app,
-html[data-pt-enter="back"] #object-app {
-  transform: translateX(-100%);  /* Object → Home: arrive from left   */
-}
-
-/* Prevent any scroll/resize flash while the incoming page is off-screen */
-html[data-pt-enter] {
-  overflow: hidden;
-}
-
-/* ── Animated phase ─────────────────────────────────────────────────
-   JS adds .pt-sliding, then sets transform to translateX(0) (entrance)
-   or translateX(±100%) (exit), which triggers this transition.        */
-#app.pt-sliding,
-#object-app.pt-sliding {
-  transition: transform var(--pt-duration) var(--pt-ease);
+/* Animated phase: JS adds .pt-fading to trigger the transition */
+#app.pt-fading,
+#object-app.pt-fading {
+  transition: opacity var(--pt-duration) var(--pt-ease);
 }
