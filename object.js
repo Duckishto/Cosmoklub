@@ -57,13 +57,12 @@ createApp({
         { code: 'TH', name: 'ภาษาไทย', flag: '🇹🇭' },
       ],
 
-      search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '', mediaFilter: 'image' },
+      search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '', mediaTypes: { image: false, video: false, audio: false } },
 
       searchFilters: [
         { label: 'Images', value: 'image' },
         { label: 'Video', value: 'video' },
         { label: 'Audio', value: 'audio' },
-        { label: 'All', value: '' },
       ],
 
       apod: { date: todayISO(), data: null, loading: false, error: '', imgLoaded: false, yearScope: 'all' },
@@ -86,13 +85,23 @@ createApp({
 
       epic: { items: [], date: '', loading: false, error: '' },
 
-      detail: { open: false, loading: false, data: null },
+      detail: { open: false, loading: false, data: null, descExpanded: false },
     };
   },
 
   computed: {
     marsCamerasForRover() {
       return MARS_CAMERAS[this.mars.rover] || [];
+    },
+    // Which media-type checkboxes are ticked. Empty array = no filter = all results.
+    activeMediaTypes() {
+      return Object.keys(this.search.mediaTypes).filter(k => this.search.mediaTypes[k]);
+    },
+    // Short preview of the audio item's description, expanded via "Read full description".
+    truncatedDescription() {
+      const d = (this.detail.data && this.detail.data.description) || '';
+      if (d.length <= 220) return d;
+      return d.slice(0, 220).trimEnd() + '…';
     },
     filteredNeoItems() {
       if (this.neo.bodyFilter === 'all') return this.neo.items;
@@ -170,7 +179,8 @@ createApp({
       }
 
       try {
-        const mediaType = this.search.mediaFilter ? `&media_type=${this.search.mediaFilter}` : '';
+        const checked = this.activeMediaTypes;
+        const mediaType = checked.length ? `&media_type=${checked.join(',')}` : '';
         const url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(this.search.q)}${mediaType}&page=${this.search.page}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(friendlyError(res.status, 'Search failed'));
@@ -186,6 +196,7 @@ createApp({
             description: this.stripHtml(d.description),
             keywords: d.keywords,
             date_created: d.date_created,
+            media_type: d.media_type,
             thumb: it.links?.find(l => l.rel === 'preview')?.href || null,
           };
         });
@@ -204,10 +215,12 @@ createApp({
       this.detail.open = true;
       this.detail.loading = true;
       this.detail.data = null;
+      this.detail.descExpanded = false;
       try {
         const res = await fetch(`${PROXY}?endpoint=images_asset&nasa_id=${encodeURIComponent(item.nasa_id)}`);
         const data = await res.json();
         const assets = data.collection?.items?.map(i => i.href) || [];
+        const audioUrl = assets.find(a => /\.(mp3|wav|ogg|m4a|flac)$/i.test(a));
         const hiRes = assets.find(a => /orig|large/i.test(a)) || assets[0];
         this.detail.data = {
           title: item.title,
@@ -218,9 +231,11 @@ createApp({
           keywords: item.keywords || [],
           image: item.thumb,
           hiResUrl: hiRes,
+          media_type: item.media_type,
+          audioUrl: audioUrl || null,
         };
       } catch {
-        this.detail.data = { ...item, image: item.thumb, hiResUrl: null };
+        this.detail.data = { ...item, image: item.thumb, hiResUrl: null, media_type: item.media_type, audioUrl: null };
       }
       this.detail.loading = false;
     },
