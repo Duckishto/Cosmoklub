@@ -79,12 +79,20 @@
 
       <div class="search-meta-row">
         <div class="search-filters">
-          <button
+          <label
             v-for="f in searchFilters" :key="f.value"
-            class="filter-chip"
-            :class="{ active: search.mediaFilter === f.value }"
-            @click="search.mediaFilter = f.value; search.items.length && runSearch()"
-          >{{ f.label }}</button>
+            class="filter-checkbox"
+            :class="{ active: search.mediaTypes[f.value] }"
+          >
+            <input
+              type="checkbox"
+              v-model="search.mediaTypes[f.value]"
+              @change="search.items.length && runSearch()"
+            />
+            <span class="filter-checkbox-box"></span>
+            {{ f.label }}
+          </label>
+          <span class="filter-hint" v-if="!activeMediaTypes.length">All media types</span>
         </div>
         <span class="result-count-badge" v-if="search.total">{{ search.total.toLocaleString() }} results</span>
       </div>
@@ -106,7 +114,7 @@
         <div class="object-card" v-for="item in search.items" :key="item.nasa_id" @click="openImageItem(item)">
           <div class="object-thumb">
             <img v-if="item.thumb" :src="item.thumb" :alt="item.title" loading="lazy" />
-            <div v-else class="object-thumb-fallback">🛰️</div>
+            <div v-else class="object-thumb-fallback">{{ item.media_type === 'audio' ? '🎧' : item.media_type === 'video' ? '🎬' : '🛰️' }}</div>
           </div>
           <div class="object-card-body">
             <div class="object-card-title">{{ item.title }}</div>
@@ -249,19 +257,56 @@
         <button class="modal-close" @click="detail.open = false">✕</button>
         <div v-if="detail.loading" class="loading-row" style="padding:40px 0;"><span class="spinner"></span> Loading object data…</div>
         <template v-else-if="detail.data">
-          <img v-if="detail.data.image" :src="detail.data.image" :alt="detail.data.title" class="modal-image" />
+          <img v-if="detail.data.image && detail.data.media_type !== 'audio'" :src="detail.data.image" :alt="detail.data.title" class="modal-image" />
+
           <div class="modal-body">
-            <h2>{{ detail.data.title }}</h2>
-            <div class="modal-meta-row">
-              <span v-if="detail.data.date_created">{{ formatDate(detail.data.date_created) }}</span>
-              <span v-if="detail.data.center">• {{ detail.data.center }}</span>
-              <span v-if="detail.data.nasa_id">• ID: {{ detail.data.nasa_id }}</span>
-            </div>
-            <p class="modal-description">{{ detail.data.description }}</p>
-            <div v-if="detail.data.keywords && detail.data.keywords.length" class="keyword-row">
-              <span class="keyword-chip" v-for="k in detail.data.keywords" :key="k">{{ k }}</span>
-            </div>
-            <a v-if="detail.data.hiResUrl" :href="detail.data.hiResUrl" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block; margin-top:14px; text-decoration:none;">Open original asset →</a>
+            <!-- Audio items: compact card + player + expandable description -->
+            <template v-if="detail.data.media_type === 'audio'">
+              <div class="audio-card">
+                <div class="audio-card-icon">
+                  <img v-if="detail.data.image" :src="detail.data.image" :alt="detail.data.title" />
+                  <span v-else>🎧</span>
+                </div>
+                <div class="audio-card-info">
+                  <h2>{{ detail.data.title }}</h2>
+                  <div class="modal-meta-row">
+                    <span v-if="detail.data.date_created">{{ formatDate(detail.data.date_created) }}</span>
+                    <span v-if="detail.data.center">• {{ detail.data.center }}</span>
+                    <span v-if="detail.data.nasa_id">• ID: {{ detail.data.nasa_id }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <audio v-if="detail.data.audioUrl" :src="detail.data.audioUrl" controls preload="metadata" class="audio-player"></audio>
+              <div v-else class="audio-player-missing">No playable audio asset was found for this item — try the link below.</div>
+
+              <p class="modal-description">{{ detail.descExpanded ? detail.data.description : truncatedDescription }}</p>
+              <button
+                v-if="detail.data.description && detail.data.description.length > 220"
+                class="read-full-btn"
+                @click="detail.descExpanded = !detail.descExpanded"
+              >{{ detail.descExpanded ? 'Show less' : 'Read full description' }}</button>
+
+              <div v-if="detail.data.keywords && detail.data.keywords.length" class="keyword-row">
+                <span class="keyword-chip" v-for="k in detail.data.keywords" :key="k">{{ k }}</span>
+              </div>
+              <a v-if="detail.data.hiResUrl" :href="detail.data.hiResUrl" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block; margin-top:14px; text-decoration:none;">Open original asset →</a>
+            </template>
+
+            <!-- Image / video items: original layout -->
+            <template v-else>
+              <h2>{{ detail.data.title }}</h2>
+              <div class="modal-meta-row">
+                <span v-if="detail.data.date_created">{{ formatDate(detail.data.date_created) }}</span>
+                <span v-if="detail.data.center">• {{ detail.data.center }}</span>
+                <span v-if="detail.data.nasa_id">• ID: {{ detail.data.nasa_id }}</span>
+              </div>
+              <p class="modal-description">{{ detail.data.description }}</p>
+              <div v-if="detail.data.keywords && detail.data.keywords.length" class="keyword-row">
+                <span class="keyword-chip" v-for="k in detail.data.keywords" :key="k">{{ k }}</span>
+              </div>
+              <a v-if="detail.data.hiResUrl" :href="detail.data.hiResUrl" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block; margin-top:14px; text-decoration:none;">Open original asset →</a>
+            </template>
           </div>
         </template>
       </div>
