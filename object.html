@@ -125,6 +125,13 @@
 
       <div class="apod-controls">
         <input type="date" v-model="apod.date" :max="todayStr" @change="loadApod()" />
+        <select class="apod-year-scope" v-model="apod.yearScope">
+          <option value="all">All years</option>
+          <option value="1995">1995–1999</option>
+          <option value="2000">2000–2009</option>
+          <option value="2010">2010–2019</option>
+          <option value="2020">2020–today</option>
+        </select>
         <button class="btn-secondary apod-random-btn" @click="randomApod()">Random date</button>
       </div>
 
