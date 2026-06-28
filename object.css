@@ -605,3 +605,80 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+
+/* ---------- Filter chip count badge ---------- */
+.filter-chip { display: inline-flex; align-items: center; gap: 6px; }
+.filter-chip-count {
+  font-size: 10px; font-weight: 800;
+  background: rgba(124,58,237,0.18);
+  border: 1px solid rgba(124,58,237,0.3);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 1px 6px;
+  letter-spacing: 0.03em;
+  transition: background var(--tr), color var(--tr), border-color var(--tr);
+}
+.filter-chip.active .filter-chip-count {
+  background: rgba(168,85,247,0.22);
+  border-color: rgba(168,85,247,0.45);
+  color: #d8b4fe;
+}
+
+/* ---------- Object type badge on neo-name ---------- */
+.neo-type-badge {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  background: rgba(124,58,237,0.14);
+  border: 1px solid rgba(124,58,237,0.3);
+  color: var(--glow);
+  border-radius: 6px;
+  padding: 2px 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---------- Result count row (below search bar) ---------- */
+.result-count-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px; margin-bottom: 4px;
+}
+
+/* ---------- Learn more links on catalog objects ---------- */
+.neo-links {
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.neo-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 600;
+  padding: 5px 13px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  transition: all var(--tr);
+  letter-spacing: 0.01em;
+}
+.neo-link svg { flex-shrink: 0; opacity: 0.7; }
+.neo-link-wiki {
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+}
+.neo-link-wiki:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(200,200,200,0.3);
+  color: var(--stardust);
+}
+.neo-link-nasa {
+  background: rgba(168,85,247,0.08);
+  color: var(--violet);
+  border-color: rgba(168,85,247,0.28);
+}
+.neo-link-nasa:hover {
+  background: rgba(168,85,247,0.18);
+  border-color: var(--violet);
+  color: var(--glow);
+  box-shadow: 0 0 14px rgba(168,85,247,0.2);
+}
