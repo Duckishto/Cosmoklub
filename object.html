@@ -99,12 +99,6 @@
         <button class="search-btn" @click="runSearch()">Search</button>
       </div>
 
-      <!-- Prominent result count — shown once results arrive -->
-      <div v-if="search.total && search.items.length" class="search-total-row">
-        <span class="search-total-num">{{ search.total.toLocaleString() }}</span>
-        <span class="search-total-label">results found</span>
-      </div>
-
       <div v-if="search.loading" class="loading-row"><span class="spinner"></span> Searching the archive…</div>
       <div v-else-if="search.error && !search.items.length" class="error-row">{{ search.error }}</div>
 
