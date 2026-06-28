@@ -160,12 +160,9 @@ createApp({
       this.neo.items.forEach(obj => { counts[obj.type] = (counts[obj.type] || 0) + 1; });
       return counts;
     },
-    // Label shown next to the catalog heading — shows either total or filtered count
+    // Label shown next to the catalog heading — just shows total
     catalogCountLabel() {
-      const shown = this.filteredNeoItems.length;
-      const total = this.totalCatalogObjects;
-      if (this.neo.typeFilter === 'all') return `${total} objects in the catalog`;
-      return `${shown} of ${total} objects`;
+      return `${this.totalCatalogObjects} objects in the catalog`;
     },
   },
 
