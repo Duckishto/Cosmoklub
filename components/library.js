@@ -5,7 +5,7 @@ const Library = {
     <div class="library-roadmap">
       <div class="section library-hero">
         <div class="section-eyebrow-row">
-          <span class="section-label">Astronomy Lessons</span>
+          
           <div class="section-rule"></div>
           <span class="section-link">New lessons weekly</span>
         </div>
@@ -13,7 +13,7 @@ const Library = {
           <div>
             <div class="rank-kicker">Study Roadmap</div>
             <h2 class="rank-title">Level up each category to unlock deeper space knowledge.</h2>
-            <p class="rank-copy">Complete active learning, pass the quiz, and move through Bronze, Silver, Gold, Platinum, and Diamond.</p>
+           
           </div>
           <div class="rank-panel">
             <div class="rank-panel-label">Overall Rank</div>
