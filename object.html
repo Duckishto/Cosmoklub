@@ -68,7 +68,7 @@
     <div class="chip-row">
       <div class="chip" :class="{active: tab === 'search'}" @click="tab = 'search'">Image Library</div>
       <div class="chip" :class="{active: tab === 'apod'}" @click="tab = 'apod'">Picture of the Day</div>
-      <div class="chip" :class="{active: tab === 'neo'}" @click="tab = 'neo'">Near-Earth Objects</div>
+      <div class="chip" :class="{active: tab === 'neo'}" @click="tab = 'neo'">Object Catalog</div>
     </div>
 
     <!-- ───────────────────────── Image & Video Library search ───────────────────────── -->
@@ -180,21 +180,38 @@
       </div>
     </div>
 
-    <!-- ───────────────────────── Near Earth Objects (asteroids) ───────────────────────── -->
+    <!-- ───────────────────────── Solar System Object Catalog ───────────────────────── -->
     <div v-if="tab === 'neo'" class="section">
       <div class="section-eyebrow-row" style="margin-bottom:6px;">
-        <h2 class="tab-section-title">Near-Earth Object Catalog</h2>
+        <h2 class="tab-section-title">Solar System Object Catalog</h2>
       </div>
       <div class="section-eyebrow-row">
         <div class="section-rule"></div>
         <span class="neo-date-range">{{ neo.startDate }} through {{ neo.endDate }}</span>
       </div>
 
+      <!-- Planet body filter -->
+      <div class="search-meta-row" style="margin-bottom:18px;">
+        <div class="search-filters">
+          <button
+            v-for="body in neoBodies" :key="body.value"
+            class="filter-chip"
+            :class="{ active: neo.bodyFilter === body.value }"
+            @click="neo.bodyFilter = body.value"
+          >{{ body.label }}</button>
+        </div>
+        <span class="result-count-badge" v-if="filteredNeoItems.length">{{ filteredNeoItems.length }} objects</span>
+      </div>
+
       <div v-if="neo.loading" class="loading-row"><span class="spinner"></span> Scanning near-Earth space…</div>
       <div v-else-if="neo.error" class="error-row">{{ neo.error }}</div>
 
       <div v-else class="object-list">
-        <div class="neo-item" v-for="obj in neo.items" :key="obj.id" @click="neo.selected = (neo.selected === obj.id ? null : obj.id)">
+        <div v-if="filteredNeoItems.length === 0" class="empty-state">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+          <p>No objects approaching this body in the current window.</p>
+        </div>
+        <div class="neo-item" v-for="obj in filteredNeoItems" :key="obj.id" @click="neo.selected = (neo.selected === obj.id ? null : obj.id)">
           <div class="neo-row">
             <div class="neo-icon" :class="{hazard: obj.is_potentially_hazardous_asteroid}">☄️</div>
             <div class="neo-info">
