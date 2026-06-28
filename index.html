@@ -20,7 +20,7 @@
 
   <div id="app" v-cloak>
     <!-- Navigation -->
-    <nav :class="{ 'nav-hidden': modal === 'tos' || modal === 'privacy' }">
+    <nav :class="{ 'nav-hidden': modal === 'tos' || modal === 'privacy', 'scrolled': navScrolled, 'compact': navCompact }">
       <a class="nav-logo" href="#">
         <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
           <circle cx="13" cy="5" r="2.2" fill="#a855f7"/>
