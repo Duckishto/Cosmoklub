@@ -119,8 +119,13 @@ createApp({
         { code: 'TH', name: 'ภาษาไทย', flag: '🇹🇭' },
       ],
 
-      // Image Library — media type filters removed
-      search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '' },
+      search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '', mediaTypes: { image: false, video: false, audio: false } },
+
+      searchFilters: [
+        { label: 'Images', value: 'image' },
+        { label: 'Video',  value: 'video' },
+        { label: 'Audio',  value: 'audio' },
+      ],
 
       apod: { date: todayISO(), data: null, loading: false, error: '', imgLoaded: false, yearScope: 'all' },
 
@@ -149,6 +154,10 @@ createApp({
       if (d.length <= 220) return d;
       return d.slice(0, 220).trimEnd() + '…';
     },
+    // Which media-type checkboxes are ticked. Empty array = no filter = all results.
+    activeMediaTypes() {
+      return Object.keys(this.search.mediaTypes).filter(k => this.search.mediaTypes[k]);
+    },
     filteredNeoItems() {
       if (this.neo.typeFilter === 'all') return this.neo.items;
       return this.neo.items.filter(obj => obj.type === this.neo.typeFilter);
@@ -160,9 +169,9 @@ createApp({
       this.neo.items.forEach(obj => { counts[obj.type] = (counts[obj.type] || 0) + 1; });
       return counts;
     },
-    // Label shown next to the catalog heading — just shows total
+    // Shows "Total 39 objects" always
     catalogCountLabel() {
-      return `${this.totalCatalogObjects} objects in the catalog`;
+      return `Total ${this.totalCatalogObjects} objects`;
     },
   },
 
@@ -219,7 +228,9 @@ createApp({
       }
 
       try {
-        const url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(this.search.q)}&page=${this.search.page}`;
+        const checked = this.activeMediaTypes;
+        const mediaType = checked.length ? `&media_type=${checked.join(',')}` : '';
+        const url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(this.search.q)}${mediaType}&page=${this.search.page}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(friendlyError(res.status, 'Search failed'));
         const data = await res.json();
