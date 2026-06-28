@@ -190,7 +190,7 @@
             <span class="filter-chip-count">{{ countForType(t.value) }}</span>
           </button>
         </div>
-        <span class="result-count-badge" v-if="filteredNeoItems.length">{{ filteredNeoItems.length }} objects</span>
+
       </div>
 
       <div class="object-list">
@@ -214,7 +214,7 @@
                 <span class="neo-parent">· orbits {{ obj.parent }}</span>
               </div>
               <div class="neo-meta">
-                <span>📍 {{ formatKm(obj.distanceKm) }} km from {{ obj.parent }}</span>
+                <span>{{ formatKm(obj.distanceKm) }} km from {{ obj.parent }}</span>
                 <span>⌀ {{ formatKm(obj.diameterKm) }} km</span>
                 <span v-if="isClosest(obj)" class="closest-tag">Closest {{ obj.type }} to {{ obj.parent }}</span>
               </div>
