@@ -409,7 +409,7 @@ createApp({
       modal: null,
       authTab: 'register',
       langOpen: false,
-      stats: { objects: null, asteroids: null, apodDays: null, hazardous: null },
+      stats: { objects: null, asteroids: null, apodDays: null },
       pensiaOpen: false,
       pensiaLoading: false,
       pensiaMsg: '',
@@ -741,13 +741,7 @@ createApp({
         if (r.ok) {
           const d = await r.json();
           const total = d.page?.total_elements;
-          if (total) {
-            this.stats.asteroids = total >= 1000 ? Math.round(total / 1000) + 'K+' : total + '+';
-            // Hazardous NEOs: NASA doesn't expose a dedicated count endpoint,
-            // but the browse response includes total_elements; ~16% are flagged hazardous
-            const haz = Math.round(total * 0.16);
-            this.stats.hazardous = haz >= 1000 ? (haz / 1000).toFixed(1) + 'K+' : haz + '+';
-          }
+          if (total) this.stats.asteroids = total >= 1000 ? Math.round(total / 1000) + 'K+' : total + '+';
         }
       } catch (e) {}
     },
