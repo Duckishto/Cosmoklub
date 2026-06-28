@@ -60,7 +60,11 @@ const Library = {
           title: "Stars",
           desc: "Birth, life, and death of stars – from protostars to supernovae.",
           tier: "GOLD",
-          tierClass: "tier-gold"
+          tierClass: "tier-gold",
+          levelRequired: 1,
+          progress: 0,
+          totalLessons: 18,
+          completed: false
         },
         { 
           id: "planets",
@@ -69,7 +73,7 @@ const Library = {
           desc: "Our solar system's worlds and the hunt for exoplanets.", 
           tier: "PLATINUM",
           tierClass: "tier-platinum",
-          levelRequired: 2,
+          levelRequired: 1,
           progress: 0,
           totalLessons: 18,
           completed: false
@@ -79,28 +83,44 @@ const Library = {
           title: "Galaxies",
           desc: "Island universes: spirals, ellipticals, and the Milky Way.",
           tier: "DIAMOND",
-          tierClass: "tier-diamond"
+          tierClass: "tier-diamond",
+          levelRequired: 1,
+          progress: 0,
+          totalLessons: 18,
+          completed: false
         },
         { 
           icon: "☁️",
           title: "Nebulae",
           desc: "Cosmic clouds where stars and planets are forged.",
           tier: "PLATINUM",
-          tierClass: "tier-platinum"
+          tierClass: "tier-platinum",
+          levelRequired: 1,
+          progress: 0,
+          totalLessons: 18,
+          completed: false
         },
         { 
           icon: "🔭",
           title: "Cosmology",
           desc: "The origin, evolution, and fate of the universe.",
           tier: "DIAMOND",
-          tierClass: "tier-diamond"
+          tierClass: "tier-diamond",
+          levelRequired: 1,
+          progress: 0,
+          totalLessons: 18,
+          completed: false
         },
         { 
           icon: "🌙",
           title: "Observing",
           desc: "Tips for naked‑eye, binocular, and telescope astronomy.",
           tier: "GOLD",
-          tierClass: "tier-gold"
+          tierClass: "tier-gold",
+          levelRequired: 1,
+          progress: 0,
+          totalLessons: 18,
+          completed: false
         }
       ]
     };
