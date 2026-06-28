@@ -1753,11 +1753,10 @@ nav.nav-hidden {
 }
 /* Re-showing (modal closing): the legal overlay sits ABOVE nav in normal flow
    (nav z-index 1000 vs overlay z-index 500), so nav must not fade back in
-   until the terrain has fully folded shut over it — otherwise it pops through
-   the still-open seam. Delay matches the leave transition's total duration
-   (0.22s clip-path delay + 0.46s clip-path = 0.68s). */
+   until the overlay has fully faded out — otherwise it pops through while
+   still visible. Delay matches the leave transition's total duration (0.4s). */
 nav:not(.nav-hidden) {
-  transition: opacity 0.28s ease 0.68s, transform 0.28s cubic-bezier(.4,0,.2,1) 0.68s;
+  transition: opacity 0.28s ease 0.4s, transform 0.28s cubic-bezier(.4,0,.2,1) 0.4s;
 }
 
 /* ---------- Legal overlay — professional dark slate, deliberately NOT the main space theme ----------
@@ -1830,76 +1829,52 @@ nav:not(.nav-hidden) {
   z-index: 1;
 }
 
-/* ---------- Legal modal terrain-shift transition
-   Open:  overlay tears in from top-left corner via diagonal clip-path wipe,
-          card rises through as the terrain "breaks open"
-   Close: overlay folds back along the SAME fault line it opened from —
-          the terrain seam retreats to the top-left corner it tore from,
-          and the space world re-emerges from behind it. The card sinks
-          back down through the seam first, then the seam itself closes,
-          so it reads as one continuous fold rather than two unrelated fades.
+/* ---------- Legal modal crossfade transition
+   Open:  the main space background dissolves smoothly into the legal
+          overlay's charcoal/steel backdrop (pure opacity crossfade, no
+          wipe/seam), while the card gently rises and settles into place.
+   Close: the exact reverse — card eases back down and fades, then the
+          overlay dissolves back to reveal the space theme underneath.
 -------------------------------------------------------------------------- */
 
-/* OPEN — overlay fans in via diagonal polygon wipe */
+/* OPEN — background dissolves in smoothly */
 .legal-modal-enter-active {
-  transition: clip-path 0.62s cubic-bezier(0.76, 0, 0.24, 1),
-              opacity    0.18s ease-out;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
-/* CLOSE — overlay folds back along the same diagonal it opened from.
-   clip-path holds the seam open while the card/content fade out, then
-   collapses to the top-left corner so the close mirrors the open exactly. */
+/* CLOSE — background dissolves back out, slightly slower for a calm exit */
 .legal-modal-leave-active {
-  transition: clip-path 0.46s cubic-bezier(0.76, 0, 0.24, 1) 0.22s,
-              opacity    0.5s linear;
+  transition: opacity 0.4s ease;
   pointer-events: none;
 }
 
-/* Start: collapsed to top-left corner (zero-area triangle) */
-.legal-modal-enter-from {
-  opacity: 1;
-  clip-path: polygon(0% 0%, 0% 0%, 0% 0%);
-}
-/* End state for enter = fully revealed */
-.legal-modal-enter-to {
-  opacity: 1;
-  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-}
+.legal-modal-enter-from { opacity: 0; }
+.legal-modal-enter-to   { opacity: 1; }
+.legal-modal-leave-from { opacity: 1; }
+.legal-modal-leave-to   { opacity: 0; }
 
-/* Start of leave = fully visible, same revealed shape as enter-to */
-.legal-modal-leave-from {
-  opacity: 1;
-  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-}
-/* Collapse back to the top-left corner — the exact fault line it tore open from */
-.legal-modal-leave-to {
-  opacity: 0;
-  clip-path: polygon(0% 0%, 0% 0%, 0% 0%);
-}
-
-/* Card animation — enters with a vertical rise + subtle tilt, mirrored on exit:
-   sinks back down and tilts the opposite way, like settling back into the seam */
+/* Card animation — gentle rise + fade with NO overshoot/bounce, just a
+   smooth deceleration into place. Mirrored (smaller, quicker) on exit. */
 .legal-modal-enter-active .pam-frame {
-  transition: opacity  0.42s ease-out 0.18s,
-              transform 0.50s cubic-bezier(0.34, 1.42, 0.64, 1) 0.18s;
+  transition: opacity  0.4s ease-out 0.06s,
+              transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.06s;
 }
 .legal-modal-leave-active .pam-frame {
-  transition: opacity  0.26s ease-in,
-              transform 0.3s cubic-bezier(0.55, 0, 1, 0.45);
+  transition: opacity  0.25s ease-in,
+              transform 0.25s ease-in;
 }
 .legal-modal-enter-from .pam-frame {
   opacity: 0;
-  transform: translateY(44px) scale(0.91) rotate(-1.5deg);
+  transform: translateY(22px) scale(0.97);
 }
 .legal-modal-leave-to .pam-frame {
   opacity: 0;
-  transform: translateY(40px) scale(0.9) rotate(-1.5deg);
+  transform: translateY(16px) scale(0.98);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .legal-modal-enter-active,
   .legal-modal-leave-active {
     transition: opacity 0.2s linear !important;
-    clip-path: none !important;
   }
   .legal-modal-enter-active .pam-frame,
   .legal-modal-leave-active .pam-frame {
