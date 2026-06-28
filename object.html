@@ -86,7 +86,7 @@
       <div class="section-eyebrow-row">
         <span class="section-label">NASA Image &amp; Video Library</span>
         <div class="section-rule"></div>
-        <span class="section-link">{{ search.total ? search.total.toLocaleString() + ' results' : '' }}</span>
+        <span class="result-count-badge">{{ search.total ? search.total.toLocaleString() + ' results' : '' }}</span>
       </div>
 
       <div class="search-bar">
@@ -97,6 +97,12 @@
           placeholder="Search any object"
         />
         <button class="search-btn" @click="runSearch()">Search</button>
+      </div>
+
+      <!-- Prominent result count — shown once results arrive -->
+      <div v-if="search.total && search.items.length" class="search-total-row">
+        <span class="search-total-num">{{ search.total.toLocaleString() }}</span>
+        <span class="search-total-label">results found</span>
       </div>
 
       <div v-if="search.loading" class="loading-row"><span class="spinner"></span> Searching the archive…</div>
