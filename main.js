@@ -709,6 +709,14 @@ createApp({
       }, 4000);
     },
     openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; this.legalScrolled = false; this.syncScrollLock(); },
+    startExploring() {
+      if (this.currentUser) {
+        window.location.href = 'dashboard.html';
+      } else {
+        this.openModal('register');
+      }
+    },
+    goToDashboard() { window.location.href = 'dashboard.html'; },
     closeModal() { this.modal = null; this.success = false; this.syncScrollLock(); },
     onLegalScroll(e) {
       const el = e.target;
