@@ -281,7 +281,7 @@
                 <div class="form-group"><label>{{ t.usernameLabel }}</label><input v-model="form.username" :class="{err:errors.username}" type="text" :placeholder="t.usernamePH" autocomplete="username"/><div class="error-msg" v-if="errors.username">{{ errors.username }}</div></div>
                 <div class="form-group">
                   <label>{{ t.genderLabel }}</label>
-                  <select v-model="form.gender" :class="{err:errors.gender}">
+                  <select v-model="form.gender" required :class="{err:errors.gender, 'placeholder-selected':!form.gender}">
                     <option value="" disabled>{{ t.genderPH }}</option>
                     <option value="male">{{ t.genderMale }}</option>
                     <option value="female">{{ t.genderFemale }}</option>
