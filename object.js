@@ -31,6 +31,19 @@ createApp({
       tab: 'search',
       todayStr: todayISO(),
 
+      // Nav state — mirrors the main page's nav (logo, links, language switcher)
+      mobileMenuOpen: false,
+      langOpen: false,
+      navScrolled: false,
+      currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
+      langs: [
+        { code: 'EN', name: 'English', flag: '🇬🇧' },
+        { code: 'ES', name: 'Español', flag: '🇪🇸' },
+        { code: 'FR', name: 'Français', flag: '🇫🇷' },
+        { code: 'JA', name: '日本語', flag: '🇯🇵' },
+        { code: 'TH', name: 'ภาษาไทย', flag: '🇹🇭' },
+      ],
+
       search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, error: '' },
 
       apod: { date: todayISO(), data: null, loading: false, error: '' },
@@ -64,9 +77,15 @@ createApp({
   mounted() {
     this.loadApod();
     this.initStarfield();
+    window.addEventListener('scroll', () => { this.navScrolled = window.scrollY > 20; }, { passive: true });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.lang-wrap')) this.langOpen = false;
+    });
   },
 
   methods: {
+    setLang(l) { this.currentLang = l; this.langOpen = false; },
+
     // ---------------------------------------------------------------- utils
     formatKm(n) {
       const num = parseFloat(n);
