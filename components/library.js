@@ -7,7 +7,7 @@ const Library = {
         <div class="section-eyebrow-row">
           
           <div class="section-rule"></div>
-          <span class="section-link">New lessons weekly</span>
+         
         </div>
         <div class="rank-summary">
           <div>
