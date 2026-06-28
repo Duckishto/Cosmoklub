@@ -68,7 +68,19 @@ createApp({
 
       apod: { date: todayISO(), data: null, loading: false, error: '', imgLoaded: false, yearScope: 'all' },
 
-      neo: { items: [], startDate: '2026-07-04', endDate: '2026-07-10', selected: null, loading: false, error: '' },
+      neo: { items: [], startDate: '2026-07-04', endDate: '2026-07-10', selected: null, loading: false, error: '', bodyFilter: 'all' },
+
+      neoBodies: [
+        { label: 'All', value: 'all' },
+        { label: '☿ Mercury', value: 'Mercury' },
+        { label: '♀ Venus', value: 'Venus' },
+        { label: '🌍 Earth', value: 'Earth' },
+        { label: '♂ Mars', value: 'Mars' },
+        { label: '♃ Jupiter', value: 'Jupiter' },
+        { label: '♄ Saturn', value: 'Saturn' },
+        { label: '⛢ Uranus', value: 'Uranus' },
+        { label: '♆ Neptune', value: 'Neptune' },
+      ],
 
       mars: { rover: 'curiosity', camera: '', photos: [], loading: false, error: '' },
 
@@ -81,6 +93,14 @@ createApp({
   computed: {
     marsCamerasForRover() {
       return MARS_CAMERAS[this.mars.rover] || [];
+    },
+    filteredNeoItems() {
+      if (this.neo.bodyFilter === 'all') return this.neo.items;
+      return this.neo.items.filter(obj =>
+        obj.close_approach_data?.some(ca =>
+          (ca.orbiting_body || '').toLowerCase() === this.neo.bodyFilter.toLowerCase()
+        )
+      );
     },
   },
 
@@ -107,6 +127,11 @@ createApp({
     setLang(l) { this.currentLang = l; this.langOpen = false; },
 
     // ---------------------------------------------------------------- utils
+    stripHtml(str) {
+      if (!str) return '';
+      // Remove all HTML tags, collapse whitespace
+      return str.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+    },
     formatKm(n) {
       const num = parseFloat(n);
       if (Number.isNaN(num)) return n;
@@ -158,7 +183,7 @@ createApp({
             title: d.title,
             dateStr: d.date_created ? this.formatDate(d.date_created) : '',
             center: d.center,
-            description: d.description,
+            description: this.stripHtml(d.description),
             keywords: d.keywords,
             date_created: d.date_created,
             thumb: it.links?.find(l => l.rel === 'preview')?.href || null,
@@ -186,7 +211,7 @@ createApp({
         const hiRes = assets.find(a => /orig|large/i.test(a)) || assets[0];
         this.detail.data = {
           title: item.title,
-          description: item.description,
+          description: this.stripHtml(item.description),
           date_created: item.date_created,
           center: item.center,
           nasa_id: item.nasa_id,
