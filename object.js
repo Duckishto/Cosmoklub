@@ -57,7 +57,7 @@ createApp({
         { code: 'TH', name: 'ภาษาไทย', flag: '🇹🇭' },
       ],
 
-      search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, error: '' },
+      search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '' },
 
       apod: { date: todayISO(), data: null, loading: false, error: '' },
 
@@ -122,12 +122,18 @@ createApp({
         this.search.error = 'Type something to search for: a planet, mission, telescope, anything.';
         return;
       }
-      this.search.loading = true;
       this.search.error = '';
       if (!loadMore) {
-        this.search.page = 1;
+        // Initial search: clear results and show full-screen spinner
+        this.search.loading    = true;
+        this.search.loadingMore = false;
+        this.search.page  = 1;
         this.search.items = [];
+        this.search.total = 0;
+        this.search.hasMore = false;
       } else {
+        // Pagination: keep existing grid on screen, show inline spinner only
+        this.search.loadingMore = true;
         this.search.page += 1;
       }
 
@@ -157,7 +163,8 @@ createApp({
       } catch (e) {
         this.search.error = e.message || "Couldn't reach the NASA image library.";
       }
-      this.search.loading = false;
+      this.search.loading    = false;
+      this.search.loadingMore = false;
     },
 
     async openImageItem(item) {
