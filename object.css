@@ -289,7 +289,8 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
   outline: none;
 }
 .apod-controls input[type="date"] {
-  flex: 1; min-width: 160px;
+  width: 160px;
+  flex: none;
   background: rgba(124,58,237,0.07); border: 1px solid var(--border);
   padding: 0 14px; color: var(--stardust);
   transition: border-color var(--tr); color-scheme: dark;
