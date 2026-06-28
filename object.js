@@ -61,7 +61,7 @@ createApp({
 
       apod: { date: todayISO(), data: null, loading: false, error: '' },
 
-      neo: { items: [], startDate: daysAgoISO(0), endDate: daysAgoISO(0), selected: null, loading: false, error: '' },
+      neo: { items: [], startDate: '2026-07-04', endDate: '2026-07-10', selected: null, loading: false, error: '' },
 
       mars: { rover: 'curiosity', camera: '', photos: [], loading: false, error: '' },
 
@@ -218,9 +218,9 @@ createApp({
     async loadNeo() {
       this.neo.loading = true;
       this.neo.error = '';
-      const start = daysAgoISO(0);
+      const start = '2026-07-04';
       const end = (() => {
-        const d = new Date();
+        const d = new Date('2026-07-04');
         d.setDate(d.getDate() + 6);
         return d.toISOString().slice(0, 10);
       })();
