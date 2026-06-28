@@ -717,8 +717,7 @@ createApp({
     },
     async submitRegister() { if (!this.validateRegister()) return; this.loading = true; await new Promise(r => setTimeout(r, 1100)); this.loading = false; this.success = true; this.showToast(this.t.toastReg); },
     async submitLogin() { if (!this.validateLogin()) return; this.loading = true; await new Promise(r => setTimeout(r, 900)); this.loading = false; this.success = true; this.showToast(this.t.toastLogin); },
-    showToast(msg) { this.toast = msg; setTimeout(() => { this.toast = null; }, 3400); }
-  },
+    showToast(msg) { this.toast = msg; setTimeout(() => { this.toast = null; }, 3400); },
     async loadStats() {
       // APOD days: archive started June 16 1995 — calculate immediately, no API needed
       const start = new Date('1995-06-16');
@@ -745,6 +744,7 @@ createApp({
         }
       } catch (e) {}
     },
+  },
   mounted() {
     // Wait for web fonts + a real layout/paint pass before placing Pensia.
     // Measuring against the page before Inter has swapped in (or before
