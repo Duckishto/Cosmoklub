@@ -131,11 +131,12 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
 
 /* ---------- Tab section gradient titles (match main page h2 treatment) ---------- */
 .tab-section-title {
-  font-size: clamp(1.65rem, 3.2vw, 2.6rem);
+  font-size: 1rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.08;
-  margin: 0 0 2px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0;
   background: linear-gradient(135deg, #a855f7 0%, #e879f9 55%, #c084fc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -241,7 +242,19 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
 .load-more-row { display: flex; justify-content: center; margin-top: 24px; }
 
 /* ---------- States ---------- */
-.loading-row { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; padding: 32px 0; }
+.loading-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 80px 20px;
+  text-align: center;
+  min-height: 220px;
+}
+.loading-row .spinner { width: 28px; height: 28px; border-width: 2.5px; }
 .error-row {
   color: #fca5a5; font-size: 14px;
   padding: 18px 20px;
@@ -272,8 +285,21 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
   flex: 1; min-width: 160px;
 }
 .apod-controls input[type="date"]:focus { border-color: var(--violet); }
+.apod-year-scope {
+  background: rgba(124,58,237,0.07); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 11px 14px; color: var(--stardust); font-family: var(--font); font-size: 14px;
+  outline: none; cursor: pointer; transition: border-color var(--tr);
+  color-scheme: dark; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a855f7' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  white-space: nowrap;
+}
+.apod-year-scope:focus { border-color: var(--violet); }
+.apod-year-scope option { background: #0d0b1e; color: var(--stardust); }
 .apod-random-btn {
-  flex: 1; min-width: 0;
+  white-space: nowrap;
   display: flex; align-items: center; justify-content: center;
 }
 .apod-card {
