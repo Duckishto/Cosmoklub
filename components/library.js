@@ -126,12 +126,18 @@ const Library = {
     };
   },
   methods: {
-    removeSavedItem(index)
-    { this.savedItems.splice(index, 1); },
-    clearAllSaved()
-    { this.savedItems = []; },
-    startLesson(lesson)
-    { console.log(lesson);
+    removeSavedItem(index) {
+      this.savedItems.splice(index, 1);
+    },
+    clearAllSaved() {
+      this.savedItems = [];
+    },
+    startLesson(lesson) {
+      this.selectedLesson = lessonl;
+      alert(
+        'You clicked ${lesson.title}\n\n' +
+        'Progress: ${lesson.progress}/${lesson.totalLessons}'
+      );
     }
   }
 };
