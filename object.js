@@ -25,6 +25,19 @@ function daysAgoISO(n) {
   return d.toISOString().slice(0, 10);
 }
 
+// Turns a failed fetch/response into a consistent, friendly message —
+// callers just do: throw new ProxyError(res) and catch it below, or call
+// this directly with a caught error/response.
+function friendlyError(status, fallbackLabel) {
+  if (status === 429) {
+    return "NASA's API rate limit was hit. This usually means the site is still running on the shared demo key — double-check the NASA_API_KEY secret is set in Cloudflare and redeploy. Otherwise, just wait a few minutes and try again.";
+  }
+  if (status >= 500) {
+    return "NASA's servers are having trouble right now — try again shortly.";
+  }
+  return `${fallbackLabel} (${status})`;
+}
+
 createApp({
   data() {
     return {
@@ -121,7 +134,7 @@ createApp({
       try {
         const url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(this.search.q)}&media_type=image&page=${this.search.page}`;
         const res = await fetch(url);
-        if (!res.ok) throw new Error(`Search failed (${res.status})`);
+        if (!res.ok) throw new Error(friendlyError(res.status, 'Search failed'));
         const data = await res.json();
 
         const items = (data.collection?.items || []).map((it) => {
@@ -142,7 +155,7 @@ createApp({
         this.search.total = data.collection?.metadata?.total_hits || items.length;
         this.search.hasMore = items.length > 0 && this.search.items.length < this.search.total;
       } catch (e) {
-        this.search.error = `Couldn't reach the NASA image library. ${e.message || ''}`.trim();
+        this.search.error = e.message || "Couldn't reach the NASA image library.";
       }
       this.search.loading = false;
     },
@@ -178,10 +191,10 @@ createApp({
       this.apod.error = '';
       try {
         const res = await fetch(`${PROXY}?endpoint=apod&date=${this.apod.date}`);
-        if (!res.ok) throw new Error(`APOD request failed (${res.status})`);
+        if (!res.ok) throw new Error(friendlyError(res.status, 'APOD request failed'));
         this.apod.data = await res.json();
       } catch (e) {
-        this.apod.error = `Couldn't load the picture of the day. ${e.message || ''}`.trim();
+        this.apod.error = e.message || "Couldn't load the picture of the day.";
       }
       this.apod.loading = false;
     },
@@ -208,7 +221,7 @@ createApp({
       this.neo.endDate = end;
       try {
         const res = await fetch(`${PROXY}?endpoint=neo_feed&start_date=${start}&end_date=${end}`);
-        if (!res.ok) throw new Error(`NEO request failed (${res.status})`);
+        if (!res.ok) throw new Error(friendlyError(res.status, 'NEO request failed'));
         const data = await res.json();
         const all = Object.values(data.near_earth_objects || {}).flat();
         // De-dupe (same object can appear on multiple close-approach days)
@@ -221,7 +234,7 @@ createApp({
           return da - db;
         });
       } catch (e) {
-        this.neo.error = `Couldn't load near-Earth object data. ${e.message || ''}`.trim();
+        this.neo.error = e.message || "Couldn't load near-Earth object data.";
       }
       this.neo.loading = false;
     },
@@ -236,7 +249,7 @@ createApp({
         let url = `${PROXY}?endpoint=mars_latest&rover=${this.mars.rover}`;
         if (this.mars.camera) url += `&camera=${this.mars.camera}`;
         const res = await fetch(url);
-        if (!res.ok) throw new Error(`Mars rover request failed (${res.status})`);
+        if (!res.ok) throw new Error(friendlyError(res.status, 'Mars rover request failed'));
         const data = await res.json();
         let photos = data.latest_photos || [];
         if (this.mars.camera) {
@@ -244,7 +257,7 @@ createApp({
         }
         this.mars.photos = photos.slice(0, 40);
       } catch (e) {
-        this.mars.error = `Couldn't load rover photos. ${e.message || ''}`.trim();
+        this.mars.error = e.message || "Couldn't load rover photos.";
       }
       this.mars.loading = false;
     },
@@ -255,7 +268,7 @@ createApp({
       this.epic.error = '';
       try {
         const res = await fetch(`${PROXY}?endpoint=epic_natural`);
-        if (!res.ok) throw new Error(`EPIC request failed (${res.status})`);
+        if (!res.ok) throw new Error(friendlyError(res.status, 'EPIC request failed'));
         const data = await res.json();
         const items = (data || []).slice(0, 12).map(img => {
           const [date] = img.date.split(' ');
@@ -272,7 +285,7 @@ createApp({
         this.epic.items = items;
         this.epic.date = items[0]?.date?.split(' ')[0] || '';
       } catch (e) {
-        this.epic.error = `Couldn't load Earth imagery. ${e.message || ''}`.trim();
+        this.epic.error = e.message || "Couldn't load Earth imagery.";
       }
       this.epic.loading = false;
     },
