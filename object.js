@@ -59,7 +59,7 @@ createApp({
 
       search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '' },
 
-      apod: { date: todayISO(), data: null, loading: false, error: '', imgLoaded: false },
+      apod: { date: todayISO(), data: null, loading: false, error: '', imgLoaded: false, yearScope: 'all' },
 
       neo: { items: [], startDate: '2026-07-04', endDate: '2026-07-10', selected: null, loading: false, error: '' },
 
@@ -208,8 +208,17 @@ createApp({
     },
     randomApod() {
       // APOD has existed since 1995-06-16.
-      const start = new Date('1995-06-16').getTime();
-      const end = Date.now();
+      const APOD_START = '1995-06-16';
+      const scopeMap = {
+        all:  [APOD_START,   null],
+        1995: [APOD_START,   '1999-12-31'],
+        2000: ['2000-01-01', '2009-12-31'],
+        2010: ['2010-01-01', '2019-12-31'],
+        2020: ['2020-01-01', null],
+      };
+      const [startStr, endStr] = scopeMap[this.apod.yearScope] || scopeMap.all;
+      const start = new Date(startStr).getTime();
+      const end   = endStr ? new Date(endStr).getTime() : Date.now();
       const randomTime = start + Math.random() * (end - start);
       this.apod.date = new Date(randomTime).toISOString().slice(0, 10);
       this.loadApod();
