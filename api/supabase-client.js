@@ -1,49 +1,44 @@
 // ---------------------------------------------------------------------------
-// Supabase client setup for CosmoKlub.
+// CosmoKlub — Supabase client (local / static hosting version)
 //
-// No project URL or key is hardcoded here. Instead, this file calls
-// /api/supabase-config (a Cloudflare Pages Function — see
-// functions/api/supabase-config.js) which reads SUPABASE_URL and
-// SUPABASE_PUBLISHABLE_KEY from Cloudflare's environment variables and
-// hands them back at request time.
-//
-// `window.supabaseReady` is a Promise that resolves to the initialized
-// client (or null if not configured / the request failed). main.js awaits
-// this before using `window.supabaseClient` for register / login / logout.
-//
-// SETUP — do this before auth will work:
+// HOW TO SET UP:
 //   1. Create a free project at https://supabase.com
-//   2. Project → Settings → API Keys → copy "Project URL" and the
-//      "Publishable key" (starts with sb_publishable_...). Older projects
-//      may instead show a legacy "anon public" key (eyJ...) — that works
-//      here too, no code change needed.
-//   3. In the Cloudflare Pages dashboard: Settings → Environment variables
-//      → add SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY (Production + Preview)
-//      → redeploy. For local dev with `wrangler pages dev`, put them in a
-//      .dev.vars file instead (see .dev.vars.example).
-//   4. Run the SQL in supabase/schema.sql (Supabase dashboard → SQL Editor)
-//      — creates the `profiles` table (username, email, gender, uid) and
-//      the trigger that fills it in automatically on signup.
+//   2. Go to Project Settings → API
+//   3. Copy your "Project URL" and "anon public" key (starts with eyJ...)
+//   4. Paste them into the two constants below, then save.
+//
+// NOTE: The api/supabase-config.js file is a Cloudflare Pages serverless
+// function used in production to keep credentials out of source code.
+// This file is the local/static equivalent — fill it in directly.
 // ---------------------------------------------------------------------------
+
+const SUPABASE_URL = '';   // e.g. 'https://xyzxyz.supabase.co'
+const SUPABASE_KEY = '';   // e.g. 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
 
 window.supabaseClient = null;
 
 window.supabaseReady = (async () => {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.warn(
+      '[CosmoKlub] Supabase is not configured. ' +
+      'Open supabase-client.js and fill in SUPABASE_URL and SUPABASE_KEY ' +
+      'with your project credentials from https://supabase.com → Settings → API.'
+    );
+    return null;
+  }
+
   try {
-    const res = await fetch('/api/supabase-config');
-    if (!res.ok) {
-      console.warn(
-        '[CosmoKlub] Supabase is not configured yet. ' +
-        'Set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY as environment ' +
-        'variables on your Cloudflare Pages project, then redeploy.'
-      );
-      return null;
-    }
-    const { url, key } = await res.json();
-    window.supabaseClient = supabase.createClient(url, key);
+    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        // Store session in localStorage under a site-specific key.
+        // Using persistSession: true (default) keeps users logged in across reloads.
+        persistSession: true,
+        storageKey: 'cosmoklub-auth',
+      }
+    });
     return window.supabaseClient;
   } catch (err) {
-    console.warn('[CosmoKlub] Could not reach /api/supabase-config:', err);
+    console.error('[CosmoKlub] Failed to initialise Supabase client:', err);
     return null;
   }
 })();
