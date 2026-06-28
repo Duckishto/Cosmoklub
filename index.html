@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
   <title>CosmoKlub</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="transition.css">
@@ -281,6 +282,18 @@
                   <div class="form-group"><label>{{ t.firstName }}</label><input v-model="form.firstName" :class="{err:errors.firstName}" type="text" :placeholder="t.firstPH"/><div class="error-msg" v-if="errors.firstName">{{ errors.firstName }}</div></div>
                   <div class="form-group"><label>{{ t.lastName }}</label><input v-model="form.lastName" :class="{err:errors.lastName}" type="text" :placeholder="t.lastPH"/><div class="error-msg" v-if="errors.lastName">{{ errors.lastName }}</div></div>
                 </div>
+                <div class="form-group"><label>{{ t.usernameLabel }}</label><input v-model="form.username" :class="{err:errors.username}" type="text" :placeholder="t.usernamePH" autocomplete="username"/><div class="error-msg" v-if="errors.username">{{ errors.username }}</div></div>
+                <div class="form-group">
+                  <label>{{ t.genderLabel }}</label>
+                  <select v-model="form.gender" :class="{err:errors.gender}">
+                    <option value="" disabled>{{ t.genderPH }}</option>
+                    <option value="male">{{ t.genderMale }}</option>
+                    <option value="female">{{ t.genderFemale }}</option>
+                    <option value="other">{{ t.genderOther }}</option>
+                    <option value="prefer_not_to_say">{{ t.genderPNTS }}</option>
+                  </select>
+                  <div class="error-msg" v-if="errors.gender">{{ errors.gender }}</div>
+                </div>
                 <div class="form-group"><label>{{ t.emailLabel }}</label><input v-model="form.email" :class="{err:errors.email}" type="email" :placeholder="t.emailPH"/><div class="error-msg" v-if="errors.email">{{ errors.email }}</div></div>
                 <div class="form-group"><label>{{ t.passLabel }}</label><input v-model="form.password" :class="{err:errors.password}" type="password" :placeholder="t.passPH"/><div class="error-msg" v-if="errors.password">{{ errors.password }}</div></div>
                 <div class="form-group"><label>{{ t.confirmPass }}</label><input v-model="form.confirm" :class="{err:errors.confirm}" type="password" :placeholder="t.confirmPH"/><div class="error-msg" v-if="errors.confirm">{{ errors.confirm }}</div></div>
@@ -289,12 +302,14 @@
                   <label for="tos-chk">{{ t.tosAgree }} <a href="#" @click.prevent="openModal('tos')">{{ t.tos }}</a> {{ t.tosAnd }} <a href="#" @click.prevent="openModal('privacy')">{{ t.privacy }}</a>.</label>
                 </div>
                 <div class="error-msg" v-if="errors.tos" style="margin-bottom:0.7rem">{{ errors.tos }}</div>
+                <div class="error-msg" v-if="errors.submit" style="margin-bottom:0.7rem">{{ errors.submit }}</div>
                 <button class="btn-submit" @click="submitRegister" :disabled="loading">{{ loading?t.loading:t.createAcc }}</button>
               </div>
               <div v-else>
                 <div class="form-group"><label>{{ t.emailLabel }}</label><input v-model="form.email" :class="{err:errors.email}" type="email" :placeholder="t.emailPH"/><div class="error-msg" v-if="errors.email">{{ errors.email }}</div></div>
                 <div class="form-group"><label>{{ t.passLabel }}</label><input v-model="form.password" :class="{err:errors.password}" type="password" :placeholder="t.passPH"/><div class="error-msg" v-if="errors.password">{{ errors.password }}</div></div>
                 <div style="text-align:right;margin-bottom:0.88rem"><a href="#" style="font-size:0.76rem;color:var(--violet);text-decoration:none">{{ t.forgotPass }}</a></div>
+                <div class="error-msg" v-if="errors.submit" style="margin-bottom:0.7rem">{{ errors.submit }}</div>
                 <button class="btn-submit" @click="submitLogin" :disabled="loading">{{ loading?t.loading:t.signIn }}</button>
                 <div class="divider">{{ t.orContinue }}</div>
                 <div class="social-login">
@@ -427,6 +442,9 @@
       }
     }
   </script>
+
+  <!-- Supabase client (configure your project URL + anon key in this file) -->
+  <script src="supabase-client.js"></script>
 
   <!-- Vue app -->
   <script src="main.js"></script>
