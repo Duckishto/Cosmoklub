@@ -120,9 +120,9 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
 .section { margin-bottom: 32px; }
 .section-eyebrow-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
 .section-label {
-  font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
   text-transform: uppercase; color: var(--violet); flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 .section-rule { flex: 1; height: 1px; background: var(--border); min-width: 24px; }
 .section-link { font-size: 12px; color: var(--violet); cursor: pointer; flex-shrink: 0; transition: opacity var(--tr); text-decoration: none; }
