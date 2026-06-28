@@ -1,30 +1,34 @@
-// ---------- Home ⇄ Object swipe transition ----------
+// ---------- Home <-> Object swipe transition ----------
 // Shared by index.html and object.html. Two halves:
 //
-//  1. ENTRANCE — if this page was just navigated to via a link we
+//  1. ENTRANCE -- if this page was just navigated to via a link we
 //     intercepted below, a tiny inline <script> in <head> already set
 //     html[data-pt-enter] before the first paint so the content wrapper
 //     renders fully off-screen with no flash. Once this script runs we
 //     animate it back into place.
 //
-//  2. EXIT — clicking a Home<->Object link slides the *current* page's
+//  2. EXIT -- clicking a Home<->Object link slides the *current* page's
 //     content wrapper off-screen first, then completes the real
 //     navigation, so the two pages feel like one continuous swipe
 //     instead of a hard page cut.
 //
 // PT_MS must match the --pt-duration value in transition.css.
-// Uses transform:translateX() — no layout side-effects, GPU-composited,
+// Uses transform:translateX() -- no layout side-effects, GPU-composited,
 // and naturally carries position:fixed elements (nav) along with the page.
 (function () {
-  var root = document.getElementById('app') || document.getElementById('object-app');
   var html = document.documentElement;
   var PT_MS = 420;
 
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Re-query root at call time so Vue has time to mount before we need it.
+  function getRoot() {
+    return document.getElementById('app') || document.getElementById('object-app');
+  }
+
   // ---------------------------------------------------------- entrance
   var enterDir = html.getAttribute('data-pt-enter');
-  if (enterDir && root) {
+  if (enterDir) {
     try { sessionStorage.removeItem('pt-enter'); } catch (e) {}
 
     if (reduceMotion) {
@@ -35,6 +39,8 @@
       // we enable the transition and animate it back to translateX(0).
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
+          var root = getRoot();
+          if (!root) { html.removeAttribute('data-pt-enter'); return; }
           root.classList.add('pt-sliding');
           root.style.transform = 'translateX(0)';
 
@@ -76,7 +82,11 @@
     var href = link.getAttribute('href');
     var map = ROUTES[currentPage()];
     var direction = map && map[href];
-    if (!direction || !root) return;
+    if (!direction) return;
+
+    // Re-query at click time so we always have the live DOM node.
+    var root = getRoot();
+    if (!root) return;
 
     e.preventDefault();
 
