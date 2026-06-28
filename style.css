@@ -2001,3 +2001,28 @@ nav:not(.nav-hidden) {
     max-width: none;
   }
 }
+
+/* ---------- Auth modal — reuses the pam-frame "read more" card chrome,
+   sized for a login/register form rather than a long scrolling document ---------- */
+.pam-frame.auth-pam {
+  max-width: 440px;
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+.pam-frame.auth-pam .auth-pam-content {
+  padding-top: 2.3rem;
+}
+.auth-pam-sub {
+  margin-top: -0.6rem;
+  margin-bottom: 1.3rem;
+}
+@media (max-width: 760px) {
+  .pam-frame.auth-pam {
+    max-width: 94vw;
+  }
+}
+@media (max-width: 420px) {
+  .pam-frame.auth-pam .auth-pam-content {
+    padding-top: 2rem;
+  }
+}
