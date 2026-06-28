@@ -4,12 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>CosmoKlub: Object Library</title>
-  <!-- Runs before first paint: if we arrived here via the Object<->Home
-       swipe, place the page off-screen immediately so it can animate in
-       with no flash. See transition.js for the rest. -->
-  <script>
-    /* background set via html { background } in object.css — no JS needed */
-  </script>
+  <!-- Inline style blocks first paint — eliminates white flash before object.css loads -->
+  <style>html,body{background:#07061a!important}</style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="object.css">
