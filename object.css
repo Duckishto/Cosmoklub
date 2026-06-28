@@ -127,6 +127,7 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
 .section-rule { flex: 1; height: 1px; background: var(--border); min-width: 24px; }
 .section-link { font-size: 12px; color: var(--violet); cursor: pointer; flex-shrink: 0; transition: opacity var(--tr); text-decoration: none; }
 .section-link:hover { opacity: 0.75; }
+.neo-date-range { font-size: 15px; font-weight: 600; color: var(--stardust); flex-shrink: 0; }
 
 /* ---------- Chip row ---------- */
 .chip-row {
