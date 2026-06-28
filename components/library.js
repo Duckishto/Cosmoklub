@@ -14,8 +14,15 @@ const Library = {
           <div class="lesson-card" v-for="lesson in lessons" :key="lesson.title" @click="startLesson(lesson)">
             <div class="lesson-icon">{{ lesson.icon }}</div>
             <div class="lesson-info">
-              <div class="lesson-title">{{ lesson.title }}</div>
-              <div class="lesson-desc">{{ lesson.desc }}</div>
+              <div class="lesson-title">
+              {{ lesson.title }}
+               </div>
+              <div class="lesson-desc">
+              {{ lesson.desc }}
+               </div>
+              <div class="lesson-progress">
+              {{ lesson.progress }} / {{ lesson.totalLessons }} Lessons
+              </div>
             </div>
             <div class="lesson-tier" :class="lesson.tierClass">{{ lesson.tier }}</div>
           </div>
@@ -48,18 +55,63 @@ const Library = {
         { name: "Pleiades (M45)", type: "Open Cluster", date: "2 weeks ago" }
       ],
       lessons: [
-        { icon: "⭐", title: "Stars", desc: "Birth, life, and death of stars – from protostars to supernovae.", tier: "GOLD", tierClass: "tier-gold" },
-        { icon: "🪐", title: "Planets", desc: "Our solar system's worlds and the hunt for exoplanets.", tier: "PLATINUM", tierClass: "tier-platinum" },
-        { icon: "🌌", title: "Galaxies", desc: "Island universes: spirals, ellipticals, and the Milky Way.", tier: "DIAMOND", tierClass: "tier-diamond" },
-        { icon: "☁️", title: "Nebulae", desc: "Cosmic clouds where stars and planets are forged.", tier: "PLATINUM", tierClass: "tier-platinum" },
-        { icon: "🔭", title: "Cosmology", desc: "The origin, evolution, and fate of the universe.", tier: "DIAMOND", tierClass: "tier-diamond" },
-        { icon: "🌙", title: "Observing", desc: "Tips for naked‑eye, binocular, and telescope astronomy.", tier: "GOLD", tierClass: "tier-gold" }
+        { 
+          icon: "⭐",
+          title: "Stars",
+          desc: "Birth, life, and death of stars – from protostars to supernovae.",
+          tier: "GOLD",
+          tierClass: "tier-gold"
+        },
+        { 
+          id: "planets",
+          icon: "🪐",
+          title: "Planets",
+          desc: "Our solar system's worlds and the hunt for exoplanets.", 
+          tier: "PLATINUM",
+          tierClass: "tier-platinum",
+          levelRequired: 2,
+          progress: 0,
+          totalLessons: 18,
+          completed: false
+        },
+        { 
+          icon: "🌌",
+          title: "Galaxies",
+          desc: "Island universes: spirals, ellipticals, and the Milky Way.",
+          tier: "DIAMOND",
+          tierClass: "tier-diamond"
+        },
+        { 
+          icon: "☁️",
+          title: "Nebulae",
+          desc: "Cosmic clouds where stars and planets are forged.",
+          tier: "PLATINUM",
+          tierClass: "tier-platinum"
+        },
+        { 
+          icon: "🔭",
+          title: "Cosmology",
+          desc: "The origin, evolution, and fate of the universe.",
+          tier: "DIAMOND",
+          tierClass: "tier-diamond"
+        },
+        { 
+          icon: "🌙",
+          title: "Observing",
+          desc: "Tips for naked‑eye, binocular, and telescope astronomy.",
+          tier: "GOLD",
+          tierClass: "tier-gold"
+        }
       ]
     };
   },
   methods: {
-    removeSavedItem(index) { this.savedItems.splice(index, 1); },
-    clearAllSaved() { this.savedItems = []; },
-    startLesson(lesson) { alert(`Opening lesson: ${lesson.title}\n(Full course content would appear here.)`); }
+    removeSavedItem(index)
+    { this.savedItems.splice(index, 1); },
+    clearAllSaved()
+    { this.savedItems = []; },
+    startLesson(lesson)
+    { console.log(lesson);
+    }
   }
 };
