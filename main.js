@@ -751,7 +751,8 @@ createApp({
     },
     async submitRegister() {
       if (!this.validateRegister()) return;
-      if (!window.supabaseClient) {
+      const client = window.supabaseClient || await window.supabaseReady;
+      if (!client) {
         this.errors = { submit: this.t.errNoSupabase };
         return;
       }
@@ -759,7 +760,7 @@ createApp({
       this.errors = {};
       try {
         const username = this.form.username.trim();
-        const { data, error } = await window.supabaseClient.auth.signUp({
+        const { data, error } = await client.auth.signUp({
           email: this.form.email.trim(),
           password: this.form.password,
           options: {
@@ -790,14 +791,15 @@ createApp({
     },
     async submitLogin() {
       if (!this.validateLogin()) return;
-      if (!window.supabaseClient) {
+      const client = window.supabaseClient || await window.supabaseReady;
+      if (!client) {
         this.errors = { submit: this.t.errNoSupabase };
         return;
       }
       this.loading = true;
       this.errors = {};
       try {
-        const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+        const { data, error } = await client.auth.signInWithPassword({
           email: this.form.email.trim(),
           password: this.form.password
         });
@@ -816,7 +818,8 @@ createApp({
       }
     },
     async logout() {
-      if (window.supabaseClient) await window.supabaseClient.auth.signOut();
+      const client = window.supabaseClient || await window.supabaseReady;
+      if (client) await client.auth.signOut();
       this.currentUser = null;
     },
     showToast(msg) { this.toast = msg; setTimeout(() => { this.toast = null; }, 3400); },
@@ -850,12 +853,17 @@ createApp({
   mounted() {
     // Restore any existing Supabase session (e.g. user refreshed the page
     // after logging in) so currentUser is populated without a re-login.
-    if (window.supabaseClient) {
-      window.supabaseClient.auth.getSession().then(({ data }) => {
-        if (data && data.session) this.currentUser = data.session.user;
-      });
-      window.supabaseClient.auth.onAuthStateChange((_event, session) => {
-        this.currentUser = session ? session.user : null;
+    // window.supabaseReady resolves once /api/supabase-config has loaded
+    // (or to null if Supabase isn't configured / unreachable).
+    if (window.supabaseReady) {
+      window.supabaseReady.then(client => {
+        if (!client) return;
+        client.auth.getSession().then(({ data }) => {
+          if (data && data.session) this.currentUser = data.session.user;
+        });
+        client.auth.onAuthStateChange((_event, session) => {
+          this.currentUser = session ? session.user : null;
+        });
       });
     }
     // Wait for web fonts + a real layout/paint pass before placing Pensia.
