@@ -4,9 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
   <title>CosmoKlub</title>
+  <!-- Runs before first paint: if we arrived here via the Object<->Home
+       swipe, place the page off-screen immediately so it can animate in
+       with no flash. See transition.js for the rest. -->
+  <script>
+    (function () {
+      try {
+        var dir = sessionStorage.getItem('pt-enter');
+        if (dir) document.documentElement.setAttribute('data-pt-enter', dir);
+      } catch (e) {}
+    })();
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="transition.css">
 </head>
 <body>
   <div class="aurora-wrap" aria-hidden="true">
@@ -428,6 +440,9 @@
 
   <!-- Vue app -->
   <script src="main.js"></script>
+
+  <!-- Home <-> Object swipe transition -->
+  <script src="transition.js"></script>
 
   <!-- 3D planet -->
   <script type="module" src="planet.js"></script>
