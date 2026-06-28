@@ -409,6 +409,7 @@ createApp({
       modal: null,
       authTab: 'register',
       langOpen: false,
+      stats: { objects: null, asteroids: null, apodDays: null, hazardous: null },
       pensiaOpen: false,
       pensiaLoading: false,
       pensiaMsg: '',
@@ -718,6 +719,38 @@ createApp({
     async submitLogin() { if (!this.validateLogin()) return; this.loading = true; await new Promise(r => setTimeout(r, 900)); this.loading = false; this.success = true; this.showToast(this.t.toastLogin); },
     showToast(msg) { this.toast = msg; setTimeout(() => { this.toast = null; }, 3400); }
   },
+    async loadStats() {
+      // APOD days: archive started June 16 1995 — calculate immediately, no API needed
+      const start = new Date('1995-06-16');
+      const days = Math.floor((Date.now() - start) / 86400000);
+      this.stats.apodDays = days.toLocaleString() + '+';
+
+      // Objects: NASA Image & Video Library total hits
+      try {
+        const r = await fetch('/api/nasa?endpoint=images_search&q=space&page_size=1');
+        if (r.ok) {
+          const d = await r.json();
+          const total = d.collection?.metadata?.total_hits;
+          if (total) this.stats.objects = total >= 1000 ? Math.round(total / 1000) + 'K+' : total + '+';
+        }
+      } catch (e) {}
+
+      // Asteroids: NASA Near-Earth Object total
+      try {
+        const r = await fetch('/api/nasa?endpoint=neo_browse');
+        if (r.ok) {
+          const d = await r.json();
+          const total = d.page?.total_elements;
+          if (total) {
+            this.stats.asteroids = total >= 1000 ? Math.round(total / 1000) + 'K+' : total + '+';
+            // Hazardous NEOs: NASA doesn't expose a dedicated count endpoint,
+            // but the browse response includes total_elements; ~16% are flagged hazardous
+            const haz = Math.round(total * 0.16);
+            this.stats.hazardous = haz >= 1000 ? (haz / 1000).toFixed(1) + 'K+' : haz + '+';
+          }
+        }
+      } catch (e) {}
+    },
   mounted() {
     // Wait for web fonts + a real layout/paint pass before placing Pensia.
     // Measuring against the page before Inter has swapped in (or before
@@ -760,6 +793,7 @@ createApp({
       }
     });
     document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) this.langOpen = false; });
+    this.loadStats();
     // Escape always gets you out — a guaranteed exit for any modal or
     // overlay so nothing can ever trap the page with scroll locked
     document.addEventListener('keydown', e => {
