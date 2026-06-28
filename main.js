@@ -35,7 +35,7 @@ const translations = {
     objSub: '<span class="kw">Thousands of catalogued objects</span> from our expanding database.',
     ctaLabel: 'Join CosmoKlub', ctaTitle: 'Your observatory awaits',
     ctaSub: 'Create your <span class="kw">free account</span> and start mapping the cosmos tonight.',
-    signIn: 'Sign In', register: 'Register',
+    signIn: 'Sign in', register: 'Register',
     createAcc: 'Create Account', welcomeBack: 'Welcome back',
     loginSub: 'Sign in to your observatory', joinUs: 'Join thousands of astronomers',
     firstName: 'First Name', lastName: 'Last Name', firstPH: 'Galileo', lastPH: 'Galilei',
