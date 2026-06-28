@@ -57,7 +57,14 @@ createApp({
         { code: 'TH', name: 'ภาษาไทย', flag: '🇹🇭' },
       ],
 
-      search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '' },
+      search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '', mediaFilter: 'image' },
+
+      searchFilters: [
+        { label: 'Images', value: 'image' },
+        { label: 'Video', value: 'video' },
+        { label: 'Audio', value: 'audio' },
+        { label: 'All', value: '' },
+      ],
 
       apod: { date: todayISO(), data: null, loading: false, error: '', imgLoaded: false, yearScope: 'all' },
 
@@ -138,7 +145,8 @@ createApp({
       }
 
       try {
-        const url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(this.search.q)}&media_type=image&page=${this.search.page}`;
+        const mediaType = this.search.mediaFilter ? `&media_type=${this.search.mediaFilter}` : '';
+        const url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(this.search.q)}${mediaType}&page=${this.search.page}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(friendlyError(res.status, 'Search failed'));
         const data = await res.json();
