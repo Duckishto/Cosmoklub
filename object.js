@@ -15,6 +15,42 @@ const MARS_CAMERAS = {
   spirit:        ['FHAZ', 'RHAZ', 'NAVCAM', 'PANCAM', 'MINITES'],
 };
 
+// Solar System Object Catalog — a static, curated list of notable moons per
+// planet. This is deliberately NOT a live API feed: moon orbits don't change
+// week to week, so there's no need to burn a NASA request (or tie the page
+// to a date range) just to show what's already settled astronomy. distanceKm
+// is the moon's average distance from its parent planet — i.e. "closeness" —
+// and entries are pre-sorted ascending by that distance within each planet.
+const SOLAR_MOONS = [
+  // Earth
+  { id: 'moon', name: 'The Moon', parent: 'Earth', distanceKm: 384400, diameterKm: 3474.8, orbitalPeriodDays: 27.3, discovered: 'Known since antiquity', note: "Earth's only natural satellite, and the fifth-largest moon in the solar system." },
+  // Mars
+  { id: 'phobos', name: 'Phobos', parent: 'Mars', distanceKm: 9376, diameterKm: 22.2, orbitalPeriodDays: 0.32, discovered: 'Asaph Hall, 1877', note: 'Orbits so close and fast that it crosses the Martian sky three times a day.' },
+  { id: 'deimos', name: 'Deimos', parent: 'Mars', distanceKm: 23463, diameterKm: 12.4, orbitalPeriodDays: 1.26, discovered: 'Asaph Hall, 1877', note: "The smaller and more distant of Mars's two moons." },
+  // Jupiter — the four Galilean moons
+  { id: 'io', name: 'Io', parent: 'Jupiter', distanceKm: 421700, diameterKm: 3643.2, orbitalPeriodDays: 1.77, discovered: 'Galileo Galilei, 1610', note: 'The most volcanically active body in the solar system.' },
+  { id: 'europa', name: 'Europa', parent: 'Jupiter', distanceKm: 671100, diameterKm: 3121.6, orbitalPeriodDays: 3.55, discovered: 'Galileo Galilei, 1610', note: 'An icy shell likely hides a global ocean of liquid water underneath.' },
+  { id: 'ganymede', name: 'Ganymede', parent: 'Jupiter', distanceKm: 1070400, diameterKm: 5268.2, orbitalPeriodDays: 7.15, discovered: 'Galileo Galilei, 1610', note: 'The largest moon in the solar system — bigger than the planet Mercury.' },
+  { id: 'callisto', name: 'Callisto', parent: 'Jupiter', distanceKm: 1882700, diameterKm: 4820.6, orbitalPeriodDays: 16.69, discovered: 'Galileo Galilei, 1610', note: 'One of the most heavily cratered surfaces in the solar system.' },
+  // Saturn
+  { id: 'mimas', name: 'Mimas', parent: 'Saturn', distanceKm: 185540, diameterKm: 396.4, orbitalPeriodDays: 0.94, discovered: 'William Herschel, 1789', note: 'Its giant Herschel crater gives it a "Death Star" look.' },
+  { id: 'enceladus', name: 'Enceladus', parent: 'Saturn', distanceKm: 238040, diameterKm: 504.2, orbitalPeriodDays: 1.37, discovered: 'William Herschel, 1789', note: 'Geysers at its south pole spray water-ice plumes into space.' },
+  { id: 'tethys', name: 'Tethys', parent: 'Saturn', distanceKm: 294670, diameterKm: 1062, orbitalPeriodDays: 1.89, discovered: 'Giovanni Domenico Cassini, 1684', note: 'Almost entirely made of water ice.' },
+  { id: 'dione', name: 'Dione', parent: 'Saturn', distanceKm: 377420, diameterKm: 1122.8, orbitalPeriodDays: 2.74, discovered: 'Giovanni Domenico Cassini, 1684', note: 'Wispy bright streaks across its surface are actually ice cliffs.' },
+  { id: 'rhea', name: 'Rhea', parent: 'Saturn', distanceKm: 527070, diameterKm: 1527.6, orbitalPeriodDays: 4.52, discovered: 'Giovanni Domenico Cassini, 1672', note: "Saturn's second-largest moon." },
+  { id: 'titan', name: 'Titan', parent: 'Saturn', distanceKm: 1221870, diameterKm: 5149.5, orbitalPeriodDays: 15.95, discovered: 'Christiaan Huygens, 1655', note: "Saturn's largest moon, with a thick atmosphere and lakes of liquid methane." },
+  { id: 'iapetus', name: 'Iapetus', parent: 'Saturn', distanceKm: 3560820, diameterKm: 1469, orbitalPeriodDays: 79.3, discovered: 'Giovanni Domenico Cassini, 1671', note: 'One hemisphere is bright ice, the other dark as coal.' },
+  // Uranus
+  { id: 'miranda', name: 'Miranda', parent: 'Uranus', distanceKm: 129390, diameterKm: 471.6, orbitalPeriodDays: 1.41, discovered: 'Gerard Kuiper, 1948', note: 'Home to some of the tallest known cliffs in the solar system.' },
+  { id: 'ariel', name: 'Ariel', parent: 'Uranus', distanceKm: 190900, diameterKm: 1157.8, orbitalPeriodDays: 2.52, discovered: 'William Lassell, 1851', note: "The brightest of Uranus's major moons." },
+  { id: 'umbriel', name: 'Umbriel', parent: 'Uranus', distanceKm: 266000, diameterKm: 1169.4, orbitalPeriodDays: 4.14, discovered: 'William Lassell, 1851', note: 'One of the darkest moons in the solar system.' },
+  { id: 'titania', name: 'Titania', parent: 'Uranus', distanceKm: 436300, diameterKm: 1576.8, orbitalPeriodDays: 8.71, discovered: 'William Herschel, 1787', note: "Uranus's largest moon." },
+  { id: 'oberon', name: 'Oberon', parent: 'Uranus', distanceKm: 583500, diameterKm: 1522.8, orbitalPeriodDays: 13.46, discovered: 'William Herschel, 1787', note: 'The outermost of the major Uranian moons.' },
+  // Neptune
+  { id: 'triton', name: 'Triton', parent: 'Neptune', distanceKm: 354800, diameterKm: 2706.8, orbitalPeriodDays: 5.88, discovered: 'William Lassell, 1846', note: 'Orbits backwards (retrograde) and has active nitrogen geysers.' },
+  { id: 'nereid', name: 'Nereid', parent: 'Neptune', distanceKm: 5513400, diameterKm: 340, orbitalPeriodDays: 360.1, discovered: 'Gerard Kuiper, 1949', note: 'One of the most eccentric, elongated orbits of any moon.' },
+];
+
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -67,7 +103,7 @@ createApp({
 
       apod: { date: todayISO(), data: null, loading: false, error: '', imgLoaded: false, yearScope: 'all' },
 
-      neo: { items: [], startDate: '2026-07-04', endDate: '2026-07-10', selected: null, loading: false, error: '', bodyFilter: 'all' },
+      neo: { items: SOLAR_MOONS, selected: null, bodyFilter: 'all' },
 
       neoBodies: [
         { label: 'All', value: 'all' },
@@ -105,11 +141,10 @@ createApp({
     },
     filteredNeoItems() {
       if (this.neo.bodyFilter === 'all') return this.neo.items;
-      return this.neo.items.filter(obj =>
-        obj.close_approach_data?.some(ca =>
-          (ca.orbiting_body || '').toLowerCase() === this.neo.bodyFilter.toLowerCase()
-        )
-      );
+      return this.neo.items.filter(obj => obj.parent === this.neo.bodyFilter);
+    },
+    totalCatalogObjects() {
+      return this.neo.items.length;
     },
   },
 
@@ -117,7 +152,6 @@ createApp({
     tab(newTab) {
       // Lazy-load each tab's data the first time it's opened.
       if (newTab === 'apod' && !this.apod.data) this.loadApod();
-      if (newTab === 'neo' && this.neo.items.length === 0) this.loadNeo();
       if (newTab === 'mars' && this.mars.photos.length === 0) this.loadMars();
       if (newTab === 'epic' && this.epic.items.length === 0) this.loadEpic();
     },
@@ -272,36 +306,13 @@ createApp({
       this.loadApod();
     },
 
-    // ------------------------------------------------------ Near Earth Objects
-    async loadNeo() {
-      this.neo.loading = true;
-      this.neo.error = '';
-      const start = '2026-07-04';
-      const end = (() => {
-        const d = new Date('2026-07-04');
-        d.setDate(d.getDate() + 6);
-        return d.toISOString().slice(0, 10);
-      })();
-      this.neo.startDate = start;
-      this.neo.endDate = end;
-      try {
-        const res = await fetch(`${PROXY}?endpoint=neo_feed&start_date=${start}&end_date=${end}`);
-        if (!res.ok) throw new Error(friendlyError(res.status, 'NEO request failed'));
-        const data = await res.json();
-        const all = Object.values(data.near_earth_objects || {}).flat();
-        // De-dupe (same object can appear on multiple close-approach days)
-        // and sort by closest upcoming approach distance.
-        const seen = new Map();
-        all.forEach(o => { if (!seen.has(o.id)) seen.set(o.id, o); });
-        this.neo.items = Array.from(seen.values()).sort((a, b) => {
-          const da = parseFloat(a.close_approach_data?.[0]?.miss_distance?.kilometers || Infinity);
-          const db = parseFloat(b.close_approach_data?.[0]?.miss_distance?.kilometers || Infinity);
-          return da - db;
-        });
-      } catch (e) {
-        this.neo.error = e.message || "Couldn't load near-Earth object data.";
-      }
-      this.neo.loading = false;
+    // ----------------------------------------------- Solar System Object Catalog
+    // Static data (see SOLAR_MOONS above) — no fetch, no date window needed.
+    isClosestMoon(obj) {
+      const siblings = this.neo.items.filter(o => o.parent === obj.parent);
+      if (!siblings.length) return false;
+      const minDist = Math.min(...siblings.map(o => o.distanceKm));
+      return obj.distanceKm === minDist;
     },
 
     // --------------------------------------------------------- Mars Rover Photos
