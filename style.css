@@ -519,10 +519,10 @@ nav.compact .lang-btn svg:first-child {
   color: #f0eaff;
 }
 .sb-lbl {
-  font-size: 0.56rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  color: rgba(168,140,210,0.6);
-  letter-spacing: 0.12em;
+  color: rgba(230,215,255,0.75);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-top: 0.22rem;
 }
