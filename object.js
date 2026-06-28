@@ -59,7 +59,7 @@ createApp({
 
       search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '' },
 
-      apod: { date: todayISO(), data: null, loading: false, error: '' },
+      apod: { date: todayISO(), data: null, loading: false, error: '', imgLoaded: false },
 
       neo: { items: [], startDate: '2026-07-04', endDate: '2026-07-10', selected: null, loading: false, error: '' },
 
@@ -196,6 +196,7 @@ createApp({
     async loadApod() {
       this.apod.loading = true;
       this.apod.error = '';
+      this.apod.imgLoaded = false;
       try {
         const res = await fetch(`${PROXY}?endpoint=apod&date=${this.apod.date}`);
         if (!res.ok) throw new Error(friendlyError(res.status, 'APOD request failed'));
