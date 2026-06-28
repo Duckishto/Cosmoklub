@@ -4,9 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>CosmoKlub: Object Library</title>
+  <!-- Runs before first paint: if we arrived here via the Object<->Home
+       swipe, place the page off-screen immediately so it can animate in
+       with no flash. See transition.js for the rest. -->
+  <script>
+    (function () {
+      try {
+        var dir = sessionStorage.getItem('pt-enter');
+        if (dir) document.documentElement.setAttribute('data-pt-enter', dir);
+      } catch (e) {}
+    })();
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="object.css">
+  <link rel="stylesheet" href="transition.css">
 </head>
 <body>
 
@@ -88,7 +100,7 @@
       </div>
 
       <div v-if="search.loading" class="loading-row"><span class="spinner"></span> Searching the archive…</div>
-      <div v-else-if="search.error" class="error-row">{{ search.error }}</div>
+      <div v-else-if="search.error && !search.items.length" class="error-row">{{ search.error }}</div>
 
       <div v-else-if="search.items.length" class="object-grid">
         <div class="object-card" v-for="item in search.items" :key="item.nasa_id" @click="openImageItem(item)">
@@ -109,9 +121,11 @@
         <p class="empty-sub">Try a planet, mission, telescope, or astronaut name.</p>
       </div>
 
-      <div v-if="search.items.length && search.hasMore" class="load-more-row">
-        <button class="btn-secondary" :disabled="search.loading" @click="runSearch(true)">Load more</button>
+      <div v-if="search.items.length && (search.hasMore || search.loadingMore)" class="load-more-row">
+        <div v-if="search.loadingMore" class="loading-row"><span class="spinner"></span> Loading more…</div>
+        <button v-else class="btn-secondary" @click="runSearch(true)">Load more</button>
       </div>
+      <div v-if="search.error && search.items.length" class="error-row" style="margin-top:14px;">{{ search.error }}</div>
     </div>
 
     <!-- ───────────────────────── Astronomy Picture of the Day ───────────────────────── -->
@@ -215,5 +229,6 @@
 </div>
 
 <script src="object.js"></script>
+<script src="transition.js"></script>
 </body>
 </html>
