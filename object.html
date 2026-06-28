@@ -64,11 +64,9 @@
 
     <!-- Category tabs: each pulls from a different NASA dataset -->
     <div class="chip-row">
-      <div class="chip" :class="{active: tab === 'search'}" @click="tab = 'search'">🔎 Image Library</div>
-      <div class="chip" :class="{active: tab === 'apod'}" @click="tab = 'apod'">🌌 Picture of the Day</div>
-      <div class="chip" :class="{active: tab === 'neo'}" @click="tab = 'neo'">☄️ Near-Earth Objects</div>
-      <div class="chip" :class="{active: tab === 'mars'}" @click="tab = 'mars'">🔴 Mars Rover Photos</div>
-      <div class="chip" :class="{active: tab === 'epic'}" @click="tab = 'epic'">🌍 Earth (EPIC)</div>
+      <div class="chip" :class="{active: tab === 'search'}" @click="tab = 'search'">Image Library</div>
+      <div class="chip" :class="{active: tab === 'apod'}" @click="tab = 'apod'">Picture of the Day</div>
+      <div class="chip" :class="{active: tab === 'neo'}" @click="tab = 'neo'">Near-Earth Objects</div>
     </div>
 
     <!-- ───────────────────────── Image & Video Library search ───────────────────────── -->
@@ -184,69 +182,7 @@
       </div>
     </div>
 
-    <!-- ───────────────────────── Mars Rover Photos ───────────────────────── -->
-    <div v-if="tab === 'mars'" class="section">
-      <div class="section-eyebrow-row">
-        <span class="section-label">Mars Rover Photo Library</span>
-        <div class="section-rule"></div>
-      </div>
 
-      <div class="rover-controls">
-        <select v-model="mars.rover" @change="loadMars()">
-          <option value="curiosity">Curiosity</option>
-          <option value="perseverance">Perseverance</option>
-          <option value="opportunity">Opportunity</option>
-          <option value="spirit">Spirit</option>
-        </select>
-        <select v-model="mars.camera" @change="loadMars()">
-          <option value="">All cameras</option>
-          <option v-for="c in marsCamerasForRover" :key="c" :value="c">{{ c }}</option>
-        </select>
-      </div>
-
-      <div v-if="mars.loading" class="loading-row"><span class="spinner"></span> Pulling images from the rover's latest sol…</div>
-      <div v-else-if="mars.error" class="error-row">{{ mars.error }}</div>
-
-      <div v-else-if="mars.photos.length" class="object-grid">
-        <div class="object-card" v-for="p in mars.photos" :key="p.id" @click="openImageUrl(p.img_src)">
-          <div class="object-thumb"><img :src="p.img_src" :alt="p.camera.full_name" loading="lazy" /></div>
-          <div class="object-card-body">
-            <div class="object-card-title">{{ p.camera.full_name }}</div>
-            <div class="object-card-meta">Sol {{ p.sol }} • {{ p.earth_date }}</div>
-          </div>
-        </div>
-      </div>
-
-      <div v-else class="empty-state">
-        <p>No photos found for this rover/camera combination.</p>
-      </div>
-    </div>
-
-    <!-- ───────────────────────── EPIC Earth imagery ───────────────────────── -->
-    <div v-if="tab === 'epic'" class="section">
-      <div class="section-eyebrow-row">
-        <span class="section-label">EPIC Earth Imagery (DSCOVR satellite)</span>
-        <div class="section-rule"></div>
-        <span class="section-link" v-if="epic.date">{{ epic.date }}</span>
-      </div>
-
-      <div v-if="epic.loading" class="loading-row"><span class="spinner"></span> Downlinking imagery from L1 orbit…</div>
-      <div v-else-if="epic.error" class="error-row">{{ epic.error }}</div>
-
-      <div v-else-if="epic.items.length" class="object-grid">
-        <div class="object-card" v-for="img in epic.items" :key="img.identifier" @click="openImageUrl(img.fullUrl)">
-          <div class="object-thumb"><img :src="img.thumbUrl" :alt="img.caption" loading="lazy" /></div>
-          <div class="object-card-body">
-            <div class="object-card-title">Full-disc Earth</div>
-            <div class="object-card-meta">{{ img.date }}</div>
-          </div>
-        </div>
-      </div>
-
-      <div v-else class="empty-state">
-        <p>No EPIC imagery available for the most recent date — NASA's archive can lag a few days.</p>
-      </div>
-    </div>
 
   </div>
 
