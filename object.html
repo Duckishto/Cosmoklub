@@ -74,8 +74,7 @@
     <!-- ───────────────────────── Image & Video Library search ───────────────────────── -->
     <div v-if="tab === 'search'" class="section">
       <div class="section-eyebrow-row">
-        <span class="section-label">NASA Image &amp; Video Library</span>
-        <div class="section-rule"></div>
+        <h2 class="tab-section-title">NASA Image &amp; Video Library</h2>
         <span class="result-count-badge">{{ search.total ? search.total.toLocaleString() + ' results' : '' }}</span>
       </div>
 
@@ -121,20 +120,28 @@
     <!-- ───────────────────────── Astronomy Picture of the Day ───────────────────────── -->
     <div v-if="tab === 'apod'" class="section">
       <div class="section-eyebrow-row">
-        <span class="section-label">Astronomy Picture of the Day</span>
-        <div class="section-rule"></div>
+        <h2 class="tab-section-title">Astronomy Picture of the Day</h2>
       </div>
 
       <div class="apod-controls">
         <input type="date" v-model="apod.date" :max="todayStr" @change="loadApod()" />
-        <button class="btn-secondary" @click="randomApod()">🎲 Random date</button>
+        <button class="btn-secondary apod-random-btn" @click="randomApod()">Random date</button>
       </div>
 
       <div v-if="apod.loading" class="loading-row"><span class="spinner"></span> Loading today's cosmic pick…</div>
       <div v-else-if="apod.error" class="error-row">{{ apod.error }}</div>
 
       <div v-else-if="apod.data" class="apod-card">
-        <img v-if="apod.data.media_type === 'image'" :src="apod.data.url" :alt="apod.data.title" class="apod-media" />
+        <div class="apod-media-wrap" v-if="apod.data.media_type === 'image'">
+          <div class="apod-media-shimmer" v-if="!apod.imgLoaded"></div>
+          <img
+            :src="apod.data.url"
+            :alt="apod.data.title"
+            class="apod-media"
+            :class="{ loaded: apod.imgLoaded }"
+            @load="apod.imgLoaded = true"
+          />
+        </div>
         <div v-else-if="apod.data.media_type === 'video'" class="apod-video-wrap">
           <iframe :src="apod.data.url" frameborder="0" allowfullscreen></iframe>
         </div>
@@ -142,15 +149,23 @@
           <div class="apod-title">{{ apod.data.title }}</div>
           <div class="apod-date">{{ apod.data.date }} <span v-if="apod.data.copyright">• © {{ apod.data.copyright }}</span></div>
           <p class="apod-explanation">{{ apod.data.explanation }}</p>
-          <a v-if="apod.data.hdurl" :href="apod.data.hdurl" target="_blank" rel="noopener" class="section-link">View full resolution →</a>
+          <div v-if="apod.data.hdurl" class="apod-hd-row">
+            <a :href="apod.data.hdurl" target="_blank" rel="noopener" class="apod-hd-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              View full resolution
+            </a>
+            <span class="apod-hd-url">{{ apod.data.hdurl }}</span>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- ───────────────────────── Near Earth Objects (asteroids) ───────────────────────── -->
     <div v-if="tab === 'neo'" class="section">
+      <div class="section-eyebrow-row" style="margin-bottom:6px;">
+        <h2 class="tab-section-title">Near-Earth Object Catalog</h2>
+      </div>
       <div class="section-eyebrow-row">
-        <span class="section-label">Near-Earth Object Catalog</span>
         <div class="section-rule"></div>
         <span class="neo-date-range">{{ neo.startDate }} through {{ neo.endDate }}</span>
       </div>
