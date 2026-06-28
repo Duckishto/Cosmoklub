@@ -162,7 +162,7 @@
       <div class="section-eyebrow-row">
         <span class="section-label">Near-Earth Object Catalog</span>
         <div class="section-rule"></div>
-        <span class="section-link">{{ neo.startDate }} → {{ neo.endDate }}</span>
+        <span class="neo-date-range">{{ neo.startDate }} through {{ neo.endDate }}</span>
       </div>
 
       <div v-if="neo.loading" class="loading-row"><span class="spinner"></span> Scanning near-Earth space…</div>
