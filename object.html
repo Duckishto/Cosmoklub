@@ -18,7 +18,7 @@
 
 <div id="object-app" v-cloak>
 
-  <!-- Navigation — same layout/style as the main page nav -->
+  <!-- Navigation -->
   <nav :class="{ scrolled: navScrolled }">
     <a class="nav-logo" href="index.html">
       <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
@@ -64,47 +64,32 @@
 
   <div class="content">
 
-    <!-- Category tabs: each pulls from a different NASA dataset -->
+    <!-- Tab chips -->
     <div class="chip-row">
       <div class="chip" :class="{active: tab === 'search'}" @click="tab = 'search'">Image Library</div>
       <div class="chip" :class="{active: tab === 'apod'}" @click="tab = 'apod'">Picture of the Day</div>
       <div class="chip" :class="{active: tab === 'neo'}" @click="tab = 'neo'">Object Catalog</div>
     </div>
 
-    <!-- ───────────────────────── Image & Video Library search ───────────────────────── -->
+    <!-- ──────────────────────── Image & Video Library ──────────────────────── -->
     <div v-if="tab === 'search'" class="section">
       <div class="section-eyebrow-row">
         <h2 class="tab-section-title">Image &amp; Video Library</h2>
       </div>
 
-      <div class="search-meta-row">
-        <div class="search-filters">
-          <label
-            v-for="f in searchFilters" :key="f.value"
-            class="filter-checkbox"
-            :class="{ active: search.mediaTypes[f.value] }"
-          >
-            <input
-              type="checkbox"
-              v-model="search.mediaTypes[f.value]"
-              @change="search.items.length && runSearch()"
-            />
-            <span class="filter-checkbox-box"></span>
-            {{ f.label }}
-          </label>
-          <span class="filter-hint" v-if="!activeMediaTypes.length">All media types</span>
-        </div>
-        <span class="result-count-badge" v-if="search.total">{{ search.total.toLocaleString() }} results</span>
-      </div>
-
-      <div class="search-bar">
+      <!-- search bar only — media type filters removed -->
+      <div class="search-bar" style="margin-top:14px;">
         <input
           v-model="search.q"
           @keyup.enter="runSearch()"
           type="text"
-          placeholder="Search any object"
+          placeholder="Search any object, mission, or telescope…"
         />
         <button class="search-btn" @click="runSearch()">Search</button>
+      </div>
+
+      <div v-if="search.total" class="result-count-row">
+        <span class="result-count-badge">{{ search.total.toLocaleString() }} results</span>
       </div>
 
       <div v-if="search.loading" class="loading-row"><span class="spinner"></span> Searching the archive…</div>
@@ -125,7 +110,7 @@
 
       <div v-else class="empty-state">
         <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <p>Search NASA's library of 100,000+ images, video, and audio.</p>
+        <p>Search NASA's library of 100,000+ images, videos, and audio.</p>
         <p class="empty-sub">Try a planet, mission, telescope, or astronaut name.</p>
       </div>
 
@@ -136,7 +121,7 @@
       <div v-if="search.error && search.items.length" class="error-row" style="margin-top:14px;">{{ search.error }}</div>
     </div>
 
-    <!-- ───────────────────────── Astronomy Picture of the Day ───────────────────────── -->
+    <!-- ──────────────────────── Astronomy Picture of the Day ──────────────────────── -->
     <div v-if="tab === 'apod'" class="section">
       <div class="section-eyebrow-row">
         <h2 class="tab-section-title">Astronomy Picture of the Day</h2>
@@ -160,13 +145,7 @@
       <div v-else-if="apod.data" class="apod-card">
         <div class="apod-media-wrap" v-if="apod.data.media_type === 'image'">
           <div class="apod-media-shimmer" v-if="!apod.imgLoaded"></div>
-          <img
-            :src="apod.data.url"
-            :alt="apod.data.title"
-            class="apod-media"
-            :class="{ loaded: apod.imgLoaded }"
-            @load="apod.imgLoaded = true"
-          />
+          <img :src="apod.data.url" :alt="apod.data.title" class="apod-media" :class="{ loaded: apod.imgLoaded }" @load="apod.imgLoaded = true" />
         </div>
         <div v-else-if="apod.data.media_type === 'video'" class="apod-video-wrap">
           <iframe :src="apod.data.url" frameborder="0" allowfullscreen></iframe>
@@ -188,25 +167,28 @@
       </div>
     </div>
 
-    <!-- ───────────────────────── Solar System Object Catalog ───────────────────────── -->
+    <!-- ──────────────────────── Solar System Object Catalog ──────────────────────── -->
     <div v-if="tab === 'neo'" class="section">
       <div class="section-eyebrow-row" style="margin-bottom:6px;">
         <h2 class="tab-section-title">Solar System Object Catalog</h2>
       </div>
       <div class="section-eyebrow-row">
         <div class="section-rule"></div>
-        <span class="neo-date-range">{{ totalCatalogObjects }} objects in the catalog</span>
+        <span class="neo-date-range">{{ catalogCountLabel }}</span>
       </div>
 
-      <!-- Planet body filter -->
+      <!-- Type filter chips with per-category counts -->
       <div class="search-meta-row" style="margin-bottom:18px;">
         <div class="search-filters">
           <button
-            v-for="body in neoBodies" :key="body.value"
+            v-for="t in neoTypes" :key="t.value"
             class="filter-chip"
-            :class="{ active: neo.bodyFilter === body.value }"
-            @click="neo.bodyFilter = body.value"
-          >{{ body.label }}</button>
+            :class="{ active: neo.typeFilter === t.value }"
+            @click="neo.typeFilter = t.value"
+          >
+            {{ t.label }}
+            <span class="filter-chip-count">{{ countForType(t.value) }}</span>
+          </button>
         </div>
         <span class="result-count-badge" v-if="filteredNeoItems.length">{{ filteredNeoItems.length }} objects</span>
       </div>
@@ -214,40 +196,60 @@
       <div class="object-list">
         <div v-if="filteredNeoItems.length === 0" class="empty-state">
           <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
-          <p v-if="neo.bodyFilter === 'Mercury' || neo.bodyFilter === 'Venus'">{{ neo.bodyFilter }} has no known natural moons.</p>
-          <p v-else>No catalogued objects for this body yet.</p>
+          <p>No objects match this filter.</p>
         </div>
-        <div class="neo-item" v-for="obj in filteredNeoItems" :key="obj.id" @click="neo.selected = (neo.selected === obj.id ? null : obj.id)">
+
+        <div
+          class="neo-item"
+          v-for="obj in filteredNeoItems"
+          :key="obj.id"
+          @click="neo.selected = (neo.selected === obj.id ? null : obj.id)"
+        >
           <div class="neo-row">
-            <div class="neo-icon">🌙</div>
+            <div class="neo-icon">{{ typeIcon(obj.type) }}</div>
             <div class="neo-info">
-              <div class="neo-name">{{ obj.name }} <span class="neo-parent">· orbits {{ obj.parent }}</span></div>
+              <div class="neo-name">
+                {{ obj.name }}
+                <span class="neo-type-badge">{{ obj.type }}</span>
+                <span class="neo-parent">· orbits {{ obj.parent }}</span>
+              </div>
               <div class="neo-meta">
-                <span>📍 {{ formatKm(obj.distanceKm) }} km away</span>
+                <span>📍 {{ formatKm(obj.distanceKm) }} km from {{ obj.parent }}</span>
                 <span>⌀ {{ formatKm(obj.diameterKm) }} km</span>
-                <span v-if="isClosestMoon(obj)" class="closest-tag">Closest to {{ obj.parent }}</span>
+                <span v-if="isClosest(obj)" class="closest-tag">Closest {{ obj.type }} to {{ obj.parent }}</span>
               </div>
             </div>
             <div class="neo-chevron" :class="{open: neo.selected === obj.id}">▾</div>
           </div>
-          <div v-if="neo.selected === obj.id" class="neo-detail">
+
+          <!-- Expanded detail panel -->
+          <div v-if="neo.selected === obj.id" class="neo-detail" @click.stop>
             <p class="neo-note">{{ obj.note }}</p>
             <div class="neo-approach-grid">
               <div><span class="lbl">Distance from {{ obj.parent }}</span>{{ formatKm(obj.distanceKm) }} km</div>
               <div><span class="lbl">Diameter</span>{{ formatKm(obj.diameterKm) }} km</div>
-              <div><span class="lbl">Orbital period</span>{{ obj.orbitalPeriodDays }} days</div>
+              <div><span class="lbl">Orbital period</span>{{ obj.orbitalPeriodDays.toLocaleString() }} days</div>
             </div>
             <div class="neo-discovered">Discovered: {{ obj.discovered }}</div>
+            <!-- Learn more links -->
+            <div class="neo-links">
+              <a :href="obj.wikiUrl" target="_blank" rel="noopener" class="neo-link neo-link-wiki">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                Wikipedia
+              </a>
+              <a :href="obj.nasaUrl" target="_blank" rel="noopener" class="neo-link neo-link-nasa">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                NASA Science
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-
-
   </div>
 
-  <!-- ───────────────────────── Detail modal (Image Library item) ───────────────────────── -->
+  <!-- ─────────────── Detail modal (Image Library) ─────────────── -->
   <transition name="fade">
     <div class="modal-backdrop" v-if="detail.open" @click.self="detail.open = false">
       <div class="modal-card">
@@ -255,9 +257,7 @@
         <div v-if="detail.loading" class="loading-row" style="padding:40px 0;"><span class="spinner"></span> Loading object data…</div>
         <template v-else-if="detail.data">
           <img v-if="detail.data.image && detail.data.media_type !== 'audio'" :src="detail.data.image" :alt="detail.data.title" class="modal-image" />
-
           <div class="modal-body">
-            <!-- Audio items: compact card + player + expandable description -->
             <template v-if="detail.data.media_type === 'audio'">
               <div class="audio-card">
                 <div class="audio-card-icon">
@@ -273,24 +273,15 @@
                   </div>
                 </div>
               </div>
-
               <audio v-if="detail.data.audioUrl" :src="detail.data.audioUrl" controls preload="metadata" class="audio-player"></audio>
               <div v-else class="audio-player-missing">No playable audio asset was found for this item — try the link below.</div>
-
               <p class="modal-description">{{ detail.descExpanded ? detail.data.description : truncatedDescription }}</p>
-              <button
-                v-if="detail.data.description && detail.data.description.length > 220"
-                class="read-full-btn"
-                @click="detail.descExpanded = !detail.descExpanded"
-              >{{ detail.descExpanded ? 'Show less' : 'Read full description' }}</button>
-
+              <button v-if="detail.data.description && detail.data.description.length > 220" class="read-full-btn" @click="detail.descExpanded = !detail.descExpanded">{{ detail.descExpanded ? 'Show less' : 'Read full description' }}</button>
               <div v-if="detail.data.keywords && detail.data.keywords.length" class="keyword-row">
                 <span class="keyword-chip" v-for="k in detail.data.keywords" :key="k">{{ k }}</span>
               </div>
-              <a v-if="detail.data.hiResUrl" :href="detail.data.hiResUrl" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block; margin-top:14px; text-decoration:none;">Open original asset →</a>
+              <a v-if="detail.data.hiResUrl" :href="detail.data.hiResUrl" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block;margin-top:14px;text-decoration:none;">Open original asset →</a>
             </template>
-
-            <!-- Image / video items: original layout -->
             <template v-else>
               <h2>{{ detail.data.title }}</h2>
               <div class="modal-meta-row">
@@ -302,7 +293,7 @@
               <div v-if="detail.data.keywords && detail.data.keywords.length" class="keyword-row">
                 <span class="keyword-chip" v-for="k in detail.data.keywords" :key="k">{{ k }}</span>
               </div>
-              <a v-if="detail.data.hiResUrl" :href="detail.data.hiResUrl" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block; margin-top:14px; text-decoration:none;">Open original asset →</a>
+              <a v-if="detail.data.hiResUrl" :href="detail.data.hiResUrl" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block;margin-top:14px;text-decoration:none;">Open original asset →</a>
             </template>
           </div>
         </template>
