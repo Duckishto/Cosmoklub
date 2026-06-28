@@ -1754,9 +1754,9 @@ nav.nav-hidden {
 /* Re-showing (modal closing): the legal overlay sits ABOVE nav in normal flow
    (nav z-index 1000 vs overlay z-index 500), so nav must not fade back in
    until the overlay has fully faded out — otherwise it pops through while
-   still visible. Delay matches the leave transition's total duration (0.4s). */
+   still visible. Delay matches the leave transition's total duration (0.45s). */
 nav:not(.nav-hidden) {
-  transition: opacity 0.28s ease 0.4s, transform 0.28s cubic-bezier(.4,0,.2,1) 0.4s;
+  transition: opacity 0.28s ease 0.45s, transform 0.28s cubic-bezier(.4,0,.2,1) 0.45s;
 }
 
 /* ---------- Legal overlay — professional dark slate, deliberately NOT the main space theme ----------
@@ -1841,9 +1841,11 @@ nav:not(.nav-hidden) {
 .legal-modal-enter-active {
   transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
-/* CLOSE — background dissolves back out, slightly slower for a calm exit */
+/* CLOSE — background dissolves back out. Uses cubic-bezier(0.64,0,0.78,0),
+   the exact time-reverse of the open curve (0.22,1,0.36,1), so the close
+   reads as a true mirror of the open rather than a generic/abrupt fade. */
 .legal-modal-leave-active {
-  transition: opacity 0.4s ease;
+  transition: opacity 0.45s cubic-bezier(0.64, 0, 0.78, 0);
   pointer-events: none;
 }
 
@@ -1859,8 +1861,8 @@ nav:not(.nav-hidden) {
               transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.06s;
 }
 .legal-modal-leave-active .pam-frame {
-  transition: opacity  0.25s ease-in,
-              transform 0.25s ease-in;
+  transition: opacity  0.35s cubic-bezier(0.64, 0, 0.78, 0),
+              transform 0.4s cubic-bezier(0.64, 0, 0.78, 0);
 }
 .legal-modal-enter-from .pam-frame {
   opacity: 0;
