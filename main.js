@@ -39,6 +39,9 @@ const translations = {
     createAcc: 'Create Account', welcomeBack: 'Welcome back',
     loginSub: 'Sign in to your observatory', joinUs: 'Join thousands of astronomers',
     firstName: 'First Name', lastName: 'Last Name', firstPH: 'Galileo', lastPH: 'Galilei',
+    usernameLabel: 'Username', usernamePH: 'galileo_g',
+    genderLabel: 'Gender', genderPH: 'Select gender',
+    genderMale: 'Male', genderFemale: 'Female', genderOther: 'Other', genderPNTS: 'Prefer not to say',
     emailLabel: 'Email', emailPH: 'you@cosmos.space', passLabel: 'Password',
     passPH: 'Min. 8 characters', confirmPass: 'Confirm Password', confirmPH: 'Repeat password',
     tosAgree: 'I agree to the', tosAnd: 'and', forgotPass: 'Forgot password?',
@@ -96,8 +99,11 @@ const translations = {
     privacy11Title: 'Changes to This Policy & Contact',
     privacy11Body: 'We may update this Privacy Policy from time to time to reflect changes to our practices or applicable law; the "Last updated" date will always show the latest version, and continued use of the Service after changes constitutes acceptance. If you have questions about this Policy or how we handle your data, contact us at hello@cosmoklub.space.',
     errFirst: 'First name is required', errLast: 'Last name is required',
+    errUsername: 'Username is required', errUsernameShort: 'Username must be at least 3 characters',
+    errGender: 'Please select a gender',
     errEmail: 'A valid email is required', errPass: 'Password must be at least 8 characters',
     errConfirm: 'Passwords do not match', errTos: 'You must accept the Terms of Service',
+    errNoSupabase: 'Sign-up is not configured yet. Please try again later.',
     toastReg: 'Account created. Welcome to CosmoKlub.', toastLogin: 'Signed in successfully.'
   },
   ES: {
@@ -116,6 +122,9 @@ const translations = {
     createAcc: 'Crear cuenta', welcomeBack: 'Bienvenido de nuevo',
     loginSub: 'Inicia sesion en tu observatorio', joinUs: 'Unete a miles de astronomos',
     firstName: 'Nombre', lastName: 'Apellido', firstPH: 'Galileo', lastPH: 'Galilei',
+    usernameLabel: 'Nombre de usuario', usernamePH: 'galileo_g',
+    genderLabel: 'Genero', genderPH: 'Selecciona genero',
+    genderMale: 'Masculino', genderFemale: 'Femenino', genderOther: 'Otro', genderPNTS: 'Prefiero no decirlo',
     emailLabel: 'Correo', emailPH: 'tu@cosmos.space', passLabel: 'Contrasena',
     passPH: 'Min. 8 caracteres', confirmPass: 'Confirmar', confirmPH: 'Repite la contrasena',
     tosAgree: 'Acepto los', tosAnd: 'y la', forgotPass: 'Olvidaste tu contrasena?',
@@ -171,8 +180,11 @@ const translations = {
     privacy11Title: 'Cambios a esta Politica y Contacto',
     privacy11Body: 'Podemos actualizar esta Politica de Privacidad periodicamente para reflejar cambios en nuestras practicas o en la ley aplicable; la fecha de "ultima actualizacion" siempre mostrara la version mas reciente, y el uso continuado del Servicio tras los cambios constituye aceptacion. Si tienes preguntas sobre esta Politica o como manejamos tus datos, contactanos en hello@cosmoklub.space.',
     errFirst: 'El nombre es obligatorio', errLast: 'El apellido es obligatorio',
+    errUsername: 'El nombre de usuario es obligatorio', errUsernameShort: 'Minimo 3 caracteres',
+    errGender: 'Selecciona un genero',
     errEmail: 'Correo valido requerido', errPass: 'Minimo 8 caracteres',
     errConfirm: 'Las contrasenlas no coinciden', errTos: 'Debes aceptar los Terminos',
+    errNoSupabase: 'El registro aun no esta configurado. Intenta mas tarde.',
     toastReg: 'Cuenta creada.', toastLogin: 'Sesion iniciada.'
   },
   FR: {
@@ -191,6 +203,9 @@ const translations = {
     createAcc: 'Creer un compte', welcomeBack: 'Bon retour',
     loginSub: 'Connectez-vous a votre observatoire', joinUs: "Rejoignez des milliers d'astronomes",
     firstName: 'Prenom', lastName: 'Nom', firstPH: 'Galilee', lastPH: 'Galilei',
+    usernameLabel: "Nom d'utilisateur", usernamePH: 'galileo_g',
+    genderLabel: 'Genre', genderPH: 'Selectionnez un genre',
+    genderMale: 'Homme', genderFemale: 'Femme', genderOther: 'Autre', genderPNTS: 'Je prefere ne pas le dire',
     emailLabel: 'E-mail', emailPH: 'vous@cosmos.space', passLabel: 'Mot de passe',
     passPH: 'Min. 8 caracteres', confirmPass: 'Confirmer', confirmPH: 'Repetez le mot de passe',
     tosAgree: "J'accepte les", tosAnd: 'et la', forgotPass: 'Mot de passe oublie ?',
@@ -246,8 +261,11 @@ const translations = {
     privacy11Title: 'Modifications de cette Politique et Contact',
     privacy11Body: "Nous pouvons mettre a jour cette Politique de Confidentialite periodiquement pour refleter des changements dans nos pratiques ou la loi applicable ; la date de \"derniere mise a jour\" indiquera toujours la version la plus recente, et la poursuite de l'utilisation du Service apres les changements vaut acceptation. Pour toute question sur cette Politique ou sur la maniere dont nous traitons vos donnees, contactez-nous a hello@cosmoklub.space.",
     errFirst: 'Le prenom est obligatoire', errLast: 'Le nom est obligatoire',
+    errUsername: "Le nom d'utilisateur est obligatoire", errUsernameShort: 'Minimum 3 caracteres',
+    errGender: 'Veuillez selectionner un genre',
     errEmail: 'E-mail valide requis', errPass: 'Minimum 8 caracteres',
     errConfirm: 'Les mots de passe ne correspondent pas', errTos: "Vous devez accepter les conditions",
+    errNoSupabase: "L'inscription n'est pas encore configuree. Reessayez plus tard.",
     toastReg: 'Compte cree.', toastLogin: 'Connexion reussie.'
   },
   JA: {
@@ -266,6 +284,9 @@ const translations = {
     createAcc: 'アカウント作成', welcomeBack: 'おかえり',
     loginSub: '天文台にログイン', joinUs: '何千人もの天文学者に参加',
     firstName: '名', lastName: '姓', firstPH: 'ガリレオ', lastPH: 'ガリレイ',
+    usernameLabel: 'ユーザー名', usernamePH: 'galileo_g',
+    genderLabel: '性別', genderPH: '性別を選択',
+    genderMale: '男性', genderFemale: '女性', genderOther: 'その他', genderPNTS: '回答しない',
     emailLabel: 'メール', emailPH: 'you@cosmos.space', passLabel: 'パスワード',
     passPH: '8文字以上', confirmPass: '確認', confirmPH: 'パスワードを繰り返す',
     tosAgree: '私は', tosAnd: 'と', forgotPass: 'パスワードを忘れた？',
@@ -321,8 +342,11 @@ const translations = {
     privacy11Title: '本ポリシーの変更とお問い合わせ',
     privacy11Body: '当社の業務や適用法の変更を反映するため、本プライバシーポリシーは随時更新される場合があり、上部の「最終更新日」が常に最新版を示します。変更後も本サービスを継続して利用した場合、変更内容に同意したものとみなされます。本ポリシーまたは当社のデータの取り扱いについてご質問がある場合は、hello@cosmoklub.spaceまでお問い合わせください。',
     errFirst: '名前は必須です', errLast: '姓は必須です',
+    errUsername: 'ユーザー名は必須です', errUsernameShort: '3文字以上で入力してください',
+    errGender: '性別を選択してください',
     errEmail: '有効なメールが必要です', errPass: '8文字以上必要です',
     errConfirm: 'パスワードが一致しません', errTos: '利用規約に同意が必要です',
+    errNoSupabase: '登録機能はまだ設定されていません。後でもう一度お試しください。',
     toastReg: 'アカウント作成完了。', toastLogin: 'ログイン成功。'
   },
   TH: {
@@ -341,6 +365,9 @@ const translations = {
     createAcc: 'สร้างบัญชี', welcomeBack: 'ยินดีต้อนรับกลับ',
     loginSub: 'เข้าสู่หอดูดาวของคุณ', joinUs: 'ร่วมกับนักดาราศาสตร์หลายพันคน',
     firstName: 'ชื่อ', lastName: 'นามสกุล', firstPH: 'กาลิเลโอ', lastPH: 'กาลิเลอี',
+    usernameLabel: 'ชื่อผู้ใช้', usernamePH: 'galileo_g',
+    genderLabel: 'เพศ', genderPH: 'เลือกเพศ',
+    genderMale: 'ชาย', genderFemale: 'หญิง', genderOther: 'อื่นๆ', genderPNTS: 'ไม่ต้องการระบุ',
     emailLabel: 'อีเมล', emailPH: 'you@cosmos.space', passLabel: 'รหัสผ่าน',
     passPH: 'ขั้นต่ำ 8 ตัวอักษร', confirmPass: 'ยืนยันรหัสผ่าน', confirmPH: 'ทำซ้ำรหัสผ่าน',
     tosAgree: 'ฉันยอมรับ', tosAnd: 'และ', forgotPass: 'ลืมรหัสผ่าน?',
@@ -396,8 +423,11 @@ const translations = {
     privacy11Title: 'การเปลี่ยนแปลงนโยบายนี้และการติดต่อ',
     privacy11Body: 'เราอาจปรับปรุงนโยบายความเป็นส่วนตัวนี้เป็นครั้งคราวเพื่อสะท้อนการเปลี่ยนแปลงในวิธีปฏิบัติของเราหรือกฎหมายที่เกี่ยวข้อง วันที่ "อัปเดตล่าสุด" จะแสดงเวอร์ชันล่าสุดเสมอ การใช้บริการต่อไปหลังการเปลี่ยนแปลงถือว่ายอมรับ หากคุณมีคำถามเกี่ยวกับนโยบายนี้หรือวิธีที่เราจัดการข้อมูลของคุณ โปรดติดต่อเราที่ hello@cosmoklub.space',
     errFirst: 'ต้องระบุชื่อ', errLast: 'ต้องระบุนามสกุล',
+    errUsername: 'ต้องระบุชื่อผู้ใช้', errUsernameShort: 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร',
+    errGender: 'กรุณาเลือกเพศ',
     errEmail: 'ต้องใช้อีเมลที่ถูกต้อง', errPass: 'รหัสผ่านต้องมีอย่างน้อย 8 ตัว',
     errConfirm: 'รหัสผ่านไม่ตรงกัน', errTos: 'ต้องยอมรับข้อกำหนด',
+    errNoSupabase: 'ระบบลงทะเบียนยังไม่ได้ตั้งค่า กรุณาลองใหม่ในภายหลัง',
     toastReg: 'สร้างบัญชีแล้ว ยินดีต้อนรับ', toastLogin: 'เข้าสู่ระบบสำเร็จ'
   }
 };
@@ -432,10 +462,11 @@ createApp({
         { code: 'JA', name: '日本語', flag: '🇯🇵' },
         { code: 'TH', name: 'ภาษาไทย', flag: '🇹🇭' }
       ],
-      form: { firstName: '', lastName: '', email: '', password: '', confirm: '', tos: false },
+      form: { firstName: '', lastName: '', username: '', gender: '', email: '', password: '', confirm: '', tos: false },
       errors: {},
       loading: false,
       success: false,
+      currentUser: null,
       toast: null,
       legalScrolled: false,
       navScrolled: false,
@@ -694,12 +725,15 @@ createApp({
       document.documentElement.style.overflow = value;
       document.body.style.overflow = value;
     },
-    clearForm() { this.form = { firstName: '', lastName: '', email: '', password: '', confirm: '', tos: false }; this.errors = {}; },
+    clearForm() { this.form = { firstName: '', lastName: '', username: '', gender: '', email: '', password: '', confirm: '', tos: false }; this.errors = {}; },
     validateRegister() {
       const e = {};
       const t = this.t;
       if (!this.form.firstName.trim()) e.firstName = t.errFirst;
       if (!this.form.lastName.trim()) e.lastName = t.errLast;
+      if (!this.form.username.trim()) e.username = t.errUsername;
+      else if (this.form.username.trim().length < 3) e.username = t.errUsernameShort;
+      if (!this.form.gender) e.gender = t.errGender;
       if (!this.form.email.includes('@')) e.email = t.errEmail;
       if (this.form.password.length < 8) e.password = t.errPass;
       if (this.form.password !== this.form.confirm) e.confirm = t.errConfirm;
@@ -715,8 +749,76 @@ createApp({
       this.errors = e;
       return !Object.keys(e).length;
     },
-    async submitRegister() { if (!this.validateRegister()) return; this.loading = true; await new Promise(r => setTimeout(r, 1100)); this.loading = false; this.success = true; this.showToast(this.t.toastReg); },
-    async submitLogin() { if (!this.validateLogin()) return; this.loading = true; await new Promise(r => setTimeout(r, 900)); this.loading = false; this.success = true; this.showToast(this.t.toastLogin); },
+    async submitRegister() {
+      if (!this.validateRegister()) return;
+      if (!window.supabaseClient) {
+        this.errors = { submit: this.t.errNoSupabase };
+        return;
+      }
+      this.loading = true;
+      this.errors = {};
+      try {
+        const username = this.form.username.trim();
+        const { data, error } = await window.supabaseClient.auth.signUp({
+          email: this.form.email.trim(),
+          password: this.form.password,
+          options: {
+            data: {
+              username,
+              gender: this.form.gender,
+              first_name: this.form.firstName.trim(),
+              last_name: this.form.lastName.trim()
+            }
+          }
+        });
+        if (error) {
+          this.errors = { submit: error.message };
+          this.loading = false;
+          return;
+        }
+        // data.user.id is the Supabase Auth UID — the `profiles` table is
+        // filled in automatically by the on_auth_user_created DB trigger
+        // (see supabase/schema.sql), using the username/gender passed above.
+        this.currentUser = data.user;
+        this.loading = false;
+        this.success = true;
+        this.showToast(this.t.toastReg);
+      } catch (err) {
+        this.errors = { submit: err.message || String(err) };
+        this.loading = false;
+      }
+    },
+    async submitLogin() {
+      if (!this.validateLogin()) return;
+      if (!window.supabaseClient) {
+        this.errors = { submit: this.t.errNoSupabase };
+        return;
+      }
+      this.loading = true;
+      this.errors = {};
+      try {
+        const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+          email: this.form.email.trim(),
+          password: this.form.password
+        });
+        if (error) {
+          this.errors = { submit: error.message };
+          this.loading = false;
+          return;
+        }
+        this.currentUser = data.user;
+        this.loading = false;
+        this.success = true;
+        this.showToast(this.t.toastLogin);
+      } catch (err) {
+        this.errors = { submit: err.message || String(err) };
+        this.loading = false;
+      }
+    },
+    async logout() {
+      if (window.supabaseClient) await window.supabaseClient.auth.signOut();
+      this.currentUser = null;
+    },
     showToast(msg) { this.toast = msg; setTimeout(() => { this.toast = null; }, 3400); },
     async loadStats() {
       // APOD days: archive started June 16 1995 — calculate immediately, no API needed
@@ -746,6 +848,16 @@ createApp({
     },
   },
   mounted() {
+    // Restore any existing Supabase session (e.g. user refreshed the page
+    // after logging in) so currentUser is populated without a re-login.
+    if (window.supabaseClient) {
+      window.supabaseClient.auth.getSession().then(({ data }) => {
+        if (data && data.session) this.currentUser = data.session.user;
+      });
+      window.supabaseClient.auth.onAuthStateChange((_event, session) => {
+        this.currentUser = session ? session.user : null;
+      });
+    }
     // Wait for web fonts + a real layout/paint pass before placing Pensia.
     // Measuring against the page before Inter has swapped in (or before
     // images/canvas above the fold have settled their height) gives a
