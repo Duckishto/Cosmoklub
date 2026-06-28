@@ -683,3 +683,61 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
   color: var(--glow);
   box-shadow: 0 0 14px rgba(168,85,247,0.2);
 }
+
+/* ---------- Image Library — filter + search stack ---------- */
+.lib-search-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 4px;
+}
+.lib-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Catalog filter chips — horizontal scroll on mobile ---------- */
+.catalog-filter-row {
+  margin-bottom: 18px;
+  /* negative margin trick so the scroll gutter bleeds to screen edge on mobile */
+}
+.catalog-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* desktop: wrap naturally */
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .catalog-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    /* hide scrollbar but keep scrollability */
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .catalog-chips::-webkit-scrollbar { display: none; }
+  .catalog-chips .filter-chip {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+  /* Also keep the lib filter checkboxes from jamming */
+  .lib-filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .lib-filter-row::-webkit-scrollbar { display: none; }
+  .lib-filter-row .filter-checkbox {
+    flex-shrink: 0;
+  }
+}
