@@ -1,5 +1,6 @@
 // Fade transition between Home <-> Object
-// Fades the content wrapper only — never hides html/body so page always renders.
+// transition.css starts #app / #object-app at opacity:0 to prevent flash-of-content.
+// This script fades them in on load and fades out before navigation.
 (function () {
   var PT_MS = 280;
 
@@ -13,22 +14,15 @@
     return document.getElementById('app') || document.getElementById('object-app');
   }
 
-  // Fade in on load
+  // Fade in on load — CSS already has opacity:0 so no flash before this fires
   window.addEventListener('load', function () {
     var root = getRoot();
     if (!root) return;
-    root.style.opacity = '0';
-    root.style.transition = 'none';
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        root.style.transition = 'opacity ' + PT_MS + 'ms ease';
-        root.style.opacity = '1';
-        setTimeout(function () {
-          root.style.transition = '';
-          root.style.opacity = '';
-        }, PT_MS + 100);
-      });
-    });
+    // Force a style recalc so the browser registers the starting opacity:0
+    // from CSS before we begin transitioning to 1.
+    root.getBoundingClientRect();
+    root.style.transition = 'opacity ' + PT_MS + 'ms ease';
+    root.style.opacity = '1';
   });
 
   // Fade out before navigating
