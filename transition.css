@@ -1,19 +1,15 @@
 /*
- * transition.css — Home ⇄ Object horizontal swipe
+ * transition.css — Home ⇄ Object swipe
  *
- * This file pairs with transition.js.
- * --pt-duration must match PT_MS in transition.js (420 ms).
+ * Pairs with transition.js. --pt-duration must match PT_MS (420 ms).
  *
- * How it works
- * ────────────
- * EXIT  : transition.js adds .pt-sliding to the current page's root
- *         and sets `left` to ±100%, triggering the CSS transition below.
- *
- * ENTER : An inline <script> in each page's <head> reads sessionStorage
- *         and writes `data-pt-enter` to <html> before the first paint,
- *         so the matching rule here places the root off-screen from the
- *         very start. transition.js then adds .pt-sliding and sets
- *         left: 0, sliding the page back into view.
+ * Uses transform:translateX() instead of `left` so:
+ *  - No layout reflow, no scroll-width side-effects
+ *  - GPU-composited — smooth on low-end devices
+ *  - position:fixed nav moves with the page naturally (transform on a
+ *    parent creates a new containing block for fixed descendants, so the
+ *    nav slides as one unit with the rest of the page — exactly what a
+ *    swipe should feel like)
  */
 
 :root {
@@ -21,33 +17,29 @@
   --pt-ease:     cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Both app roots need `position: relative` so that JS can shift them
-   via `left`. html + body already have `overflow-x: hidden` which
-   prevents the displaced element from widening the scroll area.       */
-#app,
-#object-app {
-  position: relative;
-}
-
-/* ── Entrance: place the incoming page off-screen before first paint ─ */
+/* ── Entrance: page starts off-screen before JS slides it in ────────
+   The inline <script> in each <head> reads sessionStorage and writes
+   data-pt-enter to <html> before the first paint, so this rule applies
+   from the very first frame — no flash, no jump.                      */
 html[data-pt-enter="forward"] #app,
 html[data-pt-enter="forward"] #object-app {
-  left: 100%;          /* arriving from the right  (Home → Object) */
+  transform: translateX(100%);   /* Home → Object: arrive from right  */
 }
 
 html[data-pt-enter="back"] #app,
 html[data-pt-enter="back"] #object-app {
-  left: -100%;         /* arriving from the left   (Object → Home) */
+  transform: translateX(-100%);  /* Object → Home: arrive from left   */
 }
 
-/* Lock scroll while an entrance is playing so the displaced root
-   cannot accidentally expand the scrollable area mid-animation.      */
+/* Prevent any scroll/resize flash while the incoming page is off-screen */
 html[data-pt-enter] {
   overflow: hidden;
 }
 
-/* ── Animated phase: JS adds .pt-sliding then moves `left` ─────────  */
+/* ── Animated phase ─────────────────────────────────────────────────
+   JS adds .pt-sliding, then sets transform to translateX(0) (entrance)
+   or translateX(±100%) (exit), which triggers this transition.        */
 #app.pt-sliding,
 #object-app.pt-sliding {
-  transition: left var(--pt-duration) var(--pt-ease);
+  transition: transform var(--pt-duration) var(--pt-ease);
 }
