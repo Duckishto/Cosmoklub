@@ -5,13 +5,17 @@
   --pt-ease: ease;
 }
 
-/* Entrance: page starts invisible before JS fades it in */
-html[data-pt-enter] #app,
-html[data-pt-enter] #object-app {
+/* Entrance: whole page starts invisible so v-cloak doesn't interfere */
+html[data-pt-enter] {
   opacity: 0;
 }
 
-/* Animated phase: JS adds .pt-fading to trigger the transition */
+/* Animated phase */
+html.pt-fading {
+  transition: opacity var(--pt-duration) var(--pt-ease);
+}
+
+/* Exit: fade the app root out */
 #app.pt-fading,
 #object-app.pt-fading {
   transition: opacity var(--pt-duration) var(--pt-ease);
