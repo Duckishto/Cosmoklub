@@ -9,9 +9,10 @@
        with no flash. See transition.js for the rest. -->
   <script>
     (function () {
+      var h = document.documentElement;
+      h.style.background = '#07061a';
       try {
-        var dir = sessionStorage.getItem('pt-enter');
-        if (dir) document.documentElement.setAttribute('data-pt-enter', dir);
+        if (sessionStorage.getItem('pt-enter')) h.style.opacity = '0';
       } catch (e) {}
     })();
   </script>
