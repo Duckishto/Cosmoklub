@@ -1,7 +1,8 @@
 // ---------- Home <-> Object fade transition ----------
-// EXIT:    fade current page out, then navigate
-// ENTRANCE: page starts at opacity:0 (set by CSS via data-pt-enter),
-//           then JS fades it in once the DOM is ready
+// EXIT:     fade the app root to opacity 0, then navigate
+// ENTRANCE: <html> starts at opacity 0 (via CSS data-pt-enter attr set
+//           in the inline <head> script), then fades in via <html> itself
+//           — avoids the v-cloak / display:none conflict on #app
 (function () {
   var html = document.documentElement;
   var PT_MS = 350;
@@ -12,38 +13,36 @@
     return document.getElementById('app') || document.getElementById('object-app');
   }
 
-  // ── Entrance: fade in on page load ──────────────────────────────────
-  var entering = html.getAttribute('data-pt-enter');
-  if (entering) {
+  // ── Entrance: fade in the whole page ────────────────────────────────
+  if (html.getAttribute('data-pt-enter')) {
     try { sessionStorage.removeItem('pt-enter'); } catch (e) {}
 
     if (reduceMotion) {
       html.removeAttribute('data-pt-enter');
     } else {
+      // Wait for paint with opacity:0 applied, then transition to 1
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
-          var root = getRoot();
-          if (!root) { html.removeAttribute('data-pt-enter'); return; }
-          root.classList.add('pt-fading');
-          root.style.opacity = '1';
+          html.classList.add('pt-fading');
+          html.style.opacity = '1';
 
           var done = false;
           var clear = function () {
             if (done) return;
             done = true;
-            root.classList.remove('pt-fading');
-            root.style.opacity = '';
+            html.classList.remove('pt-fading');
+            html.style.opacity = '';
             html.removeAttribute('data-pt-enter');
-            root.removeEventListener('transitionend', clear);
+            html.removeEventListener('transitionend', clear);
           };
-          root.addEventListener('transitionend', clear);
+          html.addEventListener('transitionend', clear);
           setTimeout(clear, PT_MS + 100);
         });
       });
     }
   }
 
-  // ── Exit: fade out before navigating ────────────────────────────────
+  // ── Exit: fade out app root before navigating ────────────────────────
   var ROUTES = {
     '':            { 'object.html': true },
     'index.html':  { 'object.html': true },
