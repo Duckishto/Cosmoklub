@@ -77,15 +77,28 @@
         <h2 class="tab-section-title">Image &amp; Video Library</h2>
       </div>
 
-      <!-- search bar only — media type filters removed -->
-      <div class="search-bar" style="margin-top:14px;">
-        <input
-          v-model="search.q"
-          @keyup.enter="runSearch()"
-          type="text"
-          placeholder="Search any object, mission, or telescope…"
-        />
-        <button class="search-btn" @click="runSearch()">Search</button>
+      <!-- Media type filter + search bar -->
+      <div class="lib-search-wrap">
+        <div class="lib-filter-row">
+          <label
+            v-for="f in searchFilters" :key="f.value"
+            class="filter-checkbox"
+            :class="{ active: search.mediaTypes[f.value] }"
+          >
+            <input type="checkbox" v-model="search.mediaTypes[f.value]" @change="search.items.length && runSearch()" />
+            <span class="filter-checkbox-box"></span>
+            {{ f.label }}
+          </label>
+        </div>
+        <div class="search-bar">
+          <input
+            v-model="search.q"
+            @keyup.enter="runSearch()"
+            type="text"
+            placeholder="Search any object, mission, or telescope…"
+          />
+          <button class="search-btn" @click="runSearch()">Search</button>
+        </div>
       </div>
 
       <div v-if="search.total" class="result-count-row">
@@ -177,9 +190,9 @@
         <span class="neo-date-range">{{ catalogCountLabel }}</span>
       </div>
 
-      <!-- Type filter chips with per-category counts -->
-      <div class="search-meta-row" style="margin-bottom:18px;">
-        <div class="search-filters">
+      <!-- Type filter chips with per-category counts — scrolls horizontally on mobile -->
+      <div class="catalog-filter-row">
+        <div class="catalog-chips">
           <button
             v-for="t in neoTypes" :key="t.value"
             class="filter-chip"
@@ -190,7 +203,6 @@
             <span class="filter-chip-count">{{ countForType(t.value) }}</span>
           </button>
         </div>
-
       </div>
 
       <div class="object-list">
