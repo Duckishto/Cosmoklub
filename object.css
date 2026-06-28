@@ -16,7 +16,7 @@
 
 [v-cloak] { display: none !important; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; overflow-x: hidden; }
+html { scroll-behavior: smooth; overflow-x: hidden; background: #07061a; }
 body {
   background: #050410;
   color: var(--white);
