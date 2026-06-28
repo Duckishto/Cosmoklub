@@ -436,7 +436,9 @@ createApp({
       loading: false,
       success: false,
       toast: null,
-      legalScrolled: false
+      legalScrolled: false,
+      navScrolled: false,
+      navCompact: false
     };
   },
   computed: {
@@ -767,12 +769,11 @@ createApp({
     window.addEventListener('scroll', () => {
       const y = window.scrollY;
       // scrolled: subtle shadow/border on any scroll
-      if (y > 20) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+      this.navScrolled = y > 20;
       // compact: squeeze nav when features section reaches the top
       if (featuresSection) {
         const rect = featuresSection.getBoundingClientRect();
-        const inFeatures = rect.top <= nav.offsetHeight + 20;
-        if (inFeatures) nav.classList.add('compact'); else nav.classList.remove('compact');
+        this.navCompact = rect.top <= nav.offsetHeight + 20;
       }
     }, { passive: true });
     const canvas = document.getElementById('star-canvas');
