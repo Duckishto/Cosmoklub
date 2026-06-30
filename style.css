@@ -1131,6 +1131,11 @@ footer {
 }
 .social-login {
   display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.social-login-row {
+  display: flex;
   gap: 0.7rem;
 }
 .social-btn {
