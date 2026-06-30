@@ -321,7 +321,11 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
 .apod-random-btn {
   white-space: nowrap; padding: 0 20px;
   display: flex; align-items: center; justify-content: center;
+  appearance: none; -webkit-appearance: none;
+  background: #1d1736; border: 1px solid var(--border); color: var(--stardust);
+  cursor: pointer; transition: border-color var(--tr), background var(--tr), transform var(--tr), box-shadow var(--tr);
 }
+.apod-random-btn:hover { border-color: var(--violet); background: #2c2154; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(124,58,237,0.25); }
 .apod-card {
   background: #161229;
   border: 1px solid var(--border);
