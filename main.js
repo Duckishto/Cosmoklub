@@ -475,6 +475,7 @@ createApp({
       form: { firstName: '', lastName: '', username: '', gender: '', email: '', password: '', confirm: '', tos: false },
       errors: {},
       loading: false,
+      socialLoading: false,
       success: false,
       currentUser: null,
       pendingEmailConfirm: false,
@@ -843,6 +844,34 @@ createApp({
       } catch (err) {
         this.errors = { submit: err.message || String(err) };
         this.loading = false;
+      }
+    },
+    async socialLogin(provider) {
+      const client = window.supabaseClient || await window.supabaseReady;
+      if (!client) {
+        this.errors = { social: this.t.errNoSupabase };
+        return;
+      }
+      this.socialLoading = true;
+      this.errors = {};
+      try {
+        // signInWithOAuth navigates the browser away to the provider's
+        // consent screen, then back to redirectTo with a session in the
+        // URL — there's no in-page session to read here. dashboard.html
+        // will pick it up via supabase-js's own auth-state listener.
+        const { error } = await client.auth.signInWithOAuth({
+          provider,
+          options: { redirectTo: window.location.origin + '/dashboard.html' }
+        });
+        if (error) {
+          this.errors = { social: error.message };
+          this.socialLoading = false;
+        }
+        // No success branch / no socialLoading reset on the happy path —
+        // the page is navigating away.
+      } catch (err) {
+        this.errors = { social: err.message || String(err) };
+        this.socialLoading = false;
       }
     },
     async logout() {
