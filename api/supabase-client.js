@@ -24,6 +24,14 @@
 //   4. Run the SQL in supabase/schema.sql (Supabase dashboard → SQL Editor)
 //      — creates the `profiles` table (username, email, gender, uid) and
 //      the trigger that fills it in automatically on signup.
+//   5. For the social login buttons (Google, Apple, GitHub, Facebook) on
+//      the auth modal: Supabase dashboard → Authentication → Providers →
+//      enable each one and fill in its Client ID / Secret from that
+//      provider's own developer console. Each provider also needs the
+//      callback URL Supabase shows you added to its allowed redirect
+//      list. Until a given provider is enabled, clicking its button will
+//      surface that provider's error message inline in the modal rather
+//      than silently doing nothing.
 // ---------------------------------------------------------------------------
 
 window.supabaseClient = null;
