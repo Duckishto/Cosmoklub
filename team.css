@@ -1,0 +1,140 @@
+/* team.css — Our Team page.
+   Reuses tokens/components from style.css (nav, aurora, footer, section
+   eyebrow) and only adds what's specific to this page. */
+
+#team-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
+
+.content {
+  max-width: 1240px; width: 100%;
+  margin: 0 auto;
+  padding: 90px 24px 72px;
+  flex: 1;
+}
+
+/* ---------- Page hero ---------- */
+.team-hero {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.team-hero .hero-eyebrow {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #a855f7 0%, #c084fc 50%, #e879f9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.team-h1 {
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  text-shadow: 0 0 20px rgba(124,58,237,0.2);
+}
+.team-h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--violet) 20%, var(--glow) 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.team-sub {
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  max-width: 480px;
+}
+
+/* ---------- Section groups ---------- */
+.team-group { margin-bottom: 48px; }
+
+/* ---------- Card grid ---------- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+/* Project Lead gets one centred, slightly larger card */
+.team-grid-lead {
+  grid-template-columns: minmax(220px, 280px);
+  justify-content: center;
+}
+
+.team-card {
+  background: #0c0a1c;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.8rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: background var(--tr), box-shadow var(--tr), transform var(--tr), border-color var(--tr);
+}
+.team-card:hover {
+  background: #131028;
+  border-color: rgba(168,85,247,0.35);
+  box-shadow: 0 0 20px rgba(124,58,237,0.12), inset 0 0 0 1px rgba(168,85,247,0.08);
+  transform: translateY(-2px);
+}
+
+.team-card-photo {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  flex-shrink: 0;
+  transition: border-color var(--tr), box-shadow var(--tr);
+}
+.team-card:hover .team-card-photo {
+  border-color: var(--violet);
+  box-shadow: 0 0 10px rgba(168,85,247,0.3);
+}
+.team-card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.team-grid-lead .team-card-photo {
+  width: 132px;
+  height: 132px;
+}
+
+.team-card-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.3rem;
+  color: var(--white);
+}
+.team-card-role {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--violet);
+  margin-bottom: 0.6rem;
+}
+.team-card-bio {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .content { padding: 80px 16px 60px; }
+  .team-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+}
