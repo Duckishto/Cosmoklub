@@ -1154,6 +1154,14 @@ footer {
   border-color: var(--violet);
   background: var(--glass);
 }
+.social-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.social-btn-icon {
+  flex: 1 1 0;
+  padding: 0.7rem 0;
+}
 .success-screen {
   text-align: center;
   padding: 0.5rem 0;
