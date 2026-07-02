@@ -123,6 +123,16 @@
           <span class="team-card-role">{{ m.role }}</span>
           <p class="team-card-bio" v-if="m.bio">{{ m.bio }}</p>
         </div>
+
+        <!-- Mystery card — the open seat on the research team -->
+        <a class="team-card team-card-mystery" href="#">
+          <div class="team-card-photo team-card-photo-mystery">
+            <span class="mystery-qmark">?</span>
+          </div>
+          <h3 class="team-card-name team-card-name-mystery">???</h3>
+          <span class="team-card-role">Researcher</span>
+          <p class="team-card-bio">It might be you next.</p>
+        </a>
       </div>
     </section>
 
