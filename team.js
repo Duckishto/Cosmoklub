@@ -22,12 +22,12 @@ createApp({
       // Photos live at team/1.png .. team/6.png — swap the files in that
       // folder to update headshots without touching this list.
       projectLead: [
-        { name: 'Name Surname', role: 'Project Lead', img: 'team/1.png', bio: '' },
+        { name: 'Kittikawin Sawanglab', role: 'Project Lead', img: 'team/1.png', bio: '' },
       ],
       developerTeam: [
         { name: 'Name Surname', role: 'Developer', img: 'team/2.png', bio: '' },
         { name: 'Name Surname', role: 'Developer', img: 'team/3.png', bio: '' },
-        { name: 'Name Surname', role: 'Developer', img: 'team/4.png', bio: '' },
+        { name: 'Name Surname', role: 'Creative', img: 'team/4.png', bio: '' },
       ],
       researchTeam: [
         { name: 'Name Surname', role: 'Researcher', img: 'team/5.png', bio: '' },
