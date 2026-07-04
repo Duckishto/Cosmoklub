@@ -1,0 +1,5 @@
+/* transition.css — sets initial hidden state before JS runs to prevent flash */
+#app,
+#object-app {
+  opacity: 0;
+}
