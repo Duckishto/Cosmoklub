@@ -617,7 +617,7 @@ const Planetarium = {
         <div class="calc-main">
           <div class="calc-display" @click="focusInput">
             <div class="calc-line" :class="{ dim: !expression.trim() }" aria-live="polite"><span ref="lineRender"></span></div>
-            <input ref="expr" class="calc-input-overlay" v-model="expression" type="text" inputmode="text" autocomplete="off" spellcheck="false" @keydown.enter.prevent="evaluate" aria-label="Calculator expression" />
+            <input ref="expr" class="calc-input-overlay" v-model="expression" type="text" inputmode="none" autocomplete="off" spellcheck="false" @keydown.enter.prevent="evaluate" aria-label="Calculator expression" />
           </div>
           <div class="calc-controls">
             <div class="calc-seg" role="group" aria-label="Angle unit">
@@ -626,7 +626,7 @@ const Planetarium = {
             </div>
             <div class="calc-util">
               <button class="calc-util-btn" :class="{ active: fractionView }" @click="fractionView = !fractionView">{{ fractionView ? 'Decimal' : 'Fraction' }}</button>
-              <button class="calc-util-btn" @click="insertToken('Ans')">Ans</button>
+              <button class="calc-util-btn" @click="insertAns">Ans</button>
             </div>
           </div>
           <div class="calc-tabs">
@@ -716,6 +716,7 @@ const Planetarium = {
       fractionView: false,
       history: [],
       ans: 0,
+      justEvaluated: false,
       _histId: 0,
       tabs: [{ id: 'basic', label: 'Basic' }, { id: 'functions', label: 'Functions' }, { id: 'trig', label: 'Trig' }],
       graph: {
@@ -748,7 +749,7 @@ const Planetarium = {
     },
     // Any change here re-renders the KaTeX display line.
     mathState() {
-      return [this.mode, this.expression, this.fractionView, this.angleMode, this.ans].join('|');
+      return [this.mode, this.expression, this.fractionView, this.angleMode, this.ans, this.justEvaluated].join('|');
     },
   },
   watch: {
@@ -763,9 +764,15 @@ const Planetarium = {
       return [k.tone ? 'tone-' + k.tone : '', k.span === 2 ? 'span-2' : '', size];
     },
     press(k) {
-      if (k.action === 'backspace') return this.backspace();
-      if (k.action === 'clear') return this.clearAll();
+      if (k.action === 'backspace') { this.justEvaluated = false; return this.backspace(); }
+      if (k.action === 'clear') { this.justEvaluated = false; return this.clearAll(); }
       if (k.action === 'evaluate') return this.evaluate();
+      if (this.justEvaluated) {
+        this.justEvaluated = false;
+        // Tapping +, −, ×, ÷ continues from the result (e.g. 18 → 18+); anything
+        // else (a digit, a function, a constant...) starts a brand new expression.
+        if (k.tone !== 'operator') this.expression = '';
+      }
       this.insertToken(k.token != null ? k.token : k.label);
     },
     selection() {
@@ -776,6 +783,10 @@ const Planetarium = {
     },
     setCaret(el, caret) { this.$nextTick(() => { if (el) { el.focus(); try { el.setSelectionRange(caret, caret); } catch (e) {} } }); },
     focusInput() { const el = this.$refs.expr; if (el) el.focus(); },
+    insertAns() {
+      if (this.justEvaluated) { this.justEvaluated = false; this.expression = ''; }
+      this.insertToken('Ans');
+    },
     insertToken(token) {
       const { el, start, end } = this.selection();
       this.expression = this.expression.slice(0, start) + token + this.expression.slice(end);
@@ -789,10 +800,11 @@ const Planetarium = {
     },
     clearAll() { this.expression = ''; this.setCaret(this.$refs.expr, 0); },
     evaluate() {
+      if (this.justEvaluated) return; // already resting on a result — nothing new to compute
       if (!this.expression.trim()) return;
-      let result, error = false;
+      let result, error = false, value;
       try {
-        const value = evaluateExpression(this.expression, { angleMode: this.angleMode, ans: this.ans });
+        value = evaluateExpression(this.expression, { angleMode: this.angleMode, ans: this.ans });
         const frac = this.fractionView ? toFraction(value) : null;
         result = frac || formatNumber(value);
         this.ans = value;
@@ -803,9 +815,14 @@ const Planetarium = {
         this.history.unshift({ id: ++this._histId, expression: committed, result, error });
         if (this.history.length > 20) this.history.pop();
       }
+      if (!error) {
+        // Collapse "9+9" down to just "18" so the next operator tap continues from it (18+9...).
+        this.expression = formatNumber(value);
+        this.justEvaluated = true;
+      }
       this.focusInput();
     },
-    reuse(h) { this.expression = h.expression; this.setCaret(this.$refs.expr, this.expression.length); },
+    reuse(h) { this.justEvaluated = false; this.expression = h.expression; this.setCaret(this.$refs.expr, this.expression.length); },
     renderKatex(el, latex, fallback) {
       if (!el) return;
       const K = window.katex;
@@ -818,7 +835,7 @@ const Planetarium = {
       if (!el) return;
       if (!this.expression.trim()) { this.renderKatex(el, '0', '0'); return; }
       const exprL = exprToLatex(this.expression);
-      if (!this.live.empty && !this.live.error) {
+      if (!this.justEvaluated && !this.live.empty && !this.live.error) {
         const resL = '\\textcolor{#c084fc}{' + resultToLatex(this.live.text) + '}';
         const latex = (exprL != null ? exprL : this.expression) + '\\;=\\;' + resL;
         this.renderKatex(el, latex, this.expression + ' = ' + this.live.text);
