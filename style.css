@@ -1550,6 +1550,11 @@ footer {
     border-radius: 0;
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
+  .nav-links a.active-link {
+    background: rgba(124,58,237,0.12);
+    border-left: 3px solid var(--violet);
+    padding-left: calc(0.5rem - 3px);
+  }
   .nav-links li:last-child a {
     border-bottom: none;
   }
