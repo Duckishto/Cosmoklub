@@ -110,6 +110,7 @@ createApp({
       mobileMenuOpen: false,
       langOpen: false,
       navScrolled: false,
+      navCompact: false,
       currentLang: window.CosmoKlub.LANGS[0],
       langs: window.CosmoKlub.LANGS,
 
@@ -180,7 +181,11 @@ createApp({
   mounted() {
     this.loadApod();
     window.CosmoKlub.initStarfield();
-    window.addEventListener('scroll', () => { this.navScrolled = window.scrollY > 20; }, { passive: true });
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      this.navScrolled = y > 20;
+      this.navCompact = y > 80;
+    }, { passive: true });
     document.addEventListener('click', (e) => { if (!e.target.closest('.lang-wrap')) this.langOpen = false; });
   },
 
