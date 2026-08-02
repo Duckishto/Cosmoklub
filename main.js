@@ -481,7 +481,8 @@ createApp({
       toast: null,
       legalScrolled: false,
       navScrolled: false,
-      navCompact: false
+      navCompact: false,
+      mobileMenuOpen: false
     };
   },
   computed: {
