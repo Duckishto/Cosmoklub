@@ -101,7 +101,7 @@ nav.scrolled { border-bottom-color: rgba(124,58,237,0.28); box-shadow: 0 1px 0 0
 @media(max-width:900px) {
   nav { padding: 0 1.5rem; grid-template-columns: 1fr auto; }
   .nav-menu-btn { display: flex; }
-  .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0.1rem; background: rgba(12,10,28,0.97); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(124,58,237,0.28); box-shadow: 0 16px 40px rgba(0,0,0,0.5); padding: 0.6rem 1.5rem calc(0.8rem + env(safe-area-inset-bottom)); }
+  .nav-links { display: none; position: absolute; justify-self: stretch; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0.1rem; background: rgba(12,10,28,0.97); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(124,58,237,0.28); box-shadow: 0 16px 40px rgba(0,0,0,0.5); padding: 0.6rem 1.5rem calc(0.8rem + env(safe-area-inset-bottom)); }
   .nav-links.open { display: flex; }
   .nav-links a { width: 100%; padding: 0.8rem 0.5rem; font-size: 1rem; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
   .nav-links li:last-child a { border-bottom: none; }
