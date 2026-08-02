@@ -40,7 +40,7 @@
         <li><a href="index.html" class="active-link" @click="mobileMenuOpen=false">Home</a></li>
         <li><a href="object.html">Object</a></li>
         <li><a href="team.html" @click="mobileMenuOpen=false">Our Team</a></li>
-        <li><a href="#" @click="mobileMenuOpen=false">Staff Application</a></li>
+        <li><a href="staff-application.html" @click="mobileMenuOpen=false">Staff Application</a></li>
       </ul>
       <div class="nav-right">
         <div class="lang-wrap">
@@ -252,7 +252,7 @@
       <ul class="footer-links">
         <li><a href="#" @click.prevent="openModal('tos')">{{ t.tos }}</a></li>
         <li><a href="#" @click.prevent="openModal('privacy')">{{ t.privacy }}</a></li>
-        <li><a href="#">{{ t.applyStaff }}</a></li>
+        <li><a href="staff-application.html">{{ t.applyStaff }}</a></li>
       </ul>
       <span class="footer-copy">&copy; 2026 CosmoKlub. {{ t.rights }}</span>
     </footer>
@@ -462,6 +462,9 @@
 
   <!-- Supabase client (configure your project URL + anon key in this file) -->
   <script src="/api/supabase-client.js"></script>
+
+  <!-- Shared helpers (language menu + starfield) — must load before main.js -->
+  <script src="common.js"></script>
 
   <!-- Vue app -->
   <script src="main.js"></script>

@@ -38,7 +38,7 @@
       <li><a href="index.html" @click="mobileMenuOpen=false">Home</a></li>
       <li><a href="object.html" @click="mobileMenuOpen=false">Object</a></li>
       <li><a href="team.html" class="active-link" @click="mobileMenuOpen=false">Our Team</a></li>
-      <li><a href="#" @click="mobileMenuOpen=false">Staff Application</a></li>
+      <li><a href="staff-application.html" @click="mobileMenuOpen=false">Staff Application</a></li>
     </ul>
     <div class="nav-right">
       <div class="lang-wrap">
@@ -124,15 +124,13 @@
           <p class="team-card-bio" v-if="m.bio">{{ m.bio }}</p>
         </div>
 
-        <!-- Mystery card — the open seat on the research team -->
-        <a class="team-card team-card-mystery" href="#">
-          <div class="team-card-photo team-card-photo-mystery">
-            <span class="mystery-qmark">?</span>
-          </div>
-          <h3 class="team-card-name team-card-name-mystery">???</h3>
-          <span class="team-card-role">Researcher</span>
-          <p class="team-card-bio">It might be you next.</p>
-        </a>
+        <!-- Mystery/recruit card removed — the open seat is now a normal
+             researcher card driven by the researchTeam array in team.js.
+             If you want an "open seat" card back in the future, its styles
+             are still in team.css under "Mystery / recruit here card"
+             (.team-card-mystery, .team-card-photo-mystery, .mystery-qmark,
+             .team-card-name-mystery) — just add a card with those classes
+             back here. -->
       </div>
     </section>
 
@@ -144,7 +142,7 @@
       <ul class="footer-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="object.html">Object</a></li>
-        <li><a href="#">Staff Application</a></li>
+        <li><a href="staff-application.html">Staff Application</a></li>
       </ul>
       <span class="footer-copy">&copy; 2026 CosmoKlub. All rights reserved.</span>
     </footer>
@@ -153,6 +151,7 @@
 
 </div>
 
+<script src="common.js"></script>
 <script src="team.js"></script>
 <script src="transition.js"></script>
 </body>

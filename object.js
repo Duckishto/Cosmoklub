@@ -110,14 +110,8 @@ createApp({
       mobileMenuOpen: false,
       langOpen: false,
       navScrolled: false,
-      currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
-      langs: [
-        { code: 'EN', name: 'English', flag: '🇬🇧' },
-        { code: 'ES', name: 'Español', flag: '🇪🇸' },
-        { code: 'FR', name: 'Français', flag: '🇫🇷' },
-        { code: 'JA', name: '日本語', flag: '🇯🇵' },
-        { code: 'TH', name: 'ภาษาไทย', flag: '🇹🇭' },
-      ],
+      currentLang: window.CosmoKlub.LANGS[0],
+      langs: window.CosmoKlub.LANGS,
 
       search: { q: '', items: [], page: 1, total: 0, hasMore: false, loading: false, loadingMore: false, error: '', mediaTypes: { image: false, video: false, audio: false } },
 
@@ -185,7 +179,7 @@ createApp({
 
   mounted() {
     this.loadApod();
-    this.initStarfield();
+    window.CosmoKlub.initStarfield();
     window.addEventListener('scroll', () => { this.navScrolled = window.scrollY > 20; }, { passive: true });
     document.addEventListener('click', (e) => { if (!e.target.closest('.lang-wrap')) this.langOpen = false; });
   },
@@ -374,36 +368,5 @@ createApp({
       this.epic.loading = false;
     },
 
-    // -------------------------------------------------------------- starfield
-    initStarfield() {
-      const canvas = document.getElementById('star-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let stars = [];
-      const resize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        stars = Array.from({ length: 200 }, () => ({
-          x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-          r: Math.random() * 1.3 + 0.2, o: Math.random() * 0.75 + 0.1,
-          s: Math.random() * 0.0025 + 0.001, t: Math.random() * Math.PI * 2,
-        }));
-      };
-      resize();
-      window.addEventListener('resize', resize);
-      const draw = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        stars.forEach(s => {
-          s.t += s.s;
-          const a = s.o * (0.5 + 0.5 * Math.sin(s.t));
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(196,168,255,${a})`;
-          ctx.fill();
-        });
-        requestAnimationFrame(draw);
-      };
-      draw();
-    },
   },
 }).mount('#object-app');

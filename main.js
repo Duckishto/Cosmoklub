@@ -1,5 +1,16 @@
 const { createApp } = Vue;
 
+// ---------- Feature flags ----------
+// Login/Register system is disabled (hidden) for now, per request.
+// Nothing below this file or in index.html was deleted — the auth modal
+// markup, translations, form validation, Supabase calls, and session
+// listener are all still in place. This single flag just stops any of
+// it from being reachable: openModal() refuses to open 'login'/'register',
+// startExploring() skips straight to the dashboard instead of requiring
+// an account, and the session-restore listener in mounted() is skipped.
+// To bring the system back, set this to true.
+const AUTH_ENABLED = false;
+
 // ---------- SVG Icon Templates ----------
 const SVGS = {
   telescope: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
@@ -24,7 +35,6 @@ const OBJ_SVGS = {
 // ---------- Complete Translations ----------
 const translations = {
   EN: {
-    navHome: 'Home', navExplore: 'Explore', navObjects: 'Objects', navAbout: 'About',
     eyebrow: 'Next-Gen Astronomy Platform',
     heroLine1: 'Explore the', heroAccent: 'Night Sky', heroLine2: 'with Precision',
     heroSub: 'Discover celestial objects, plan observations, analyze astronomical data, and connect with the <span class="kw">global astronomy community</span>.',
@@ -51,7 +61,7 @@ const translations = {
     gotIt: 'Got it',
     successSub: 'Your observatory is ready. Start exploring the cosmos.',
     exploreNow: 'Explore Now',
-    tos: 'Terms of Service', privacy: 'Privacy Policy', contact: 'Contact',
+    tos: 'Terms of Service', privacy: 'Privacy Policy', applyStaff: 'Staff Application',
     rights: 'All rights reserved.', tosDate: 'Last updated June 2026',
     accept: 'I Accept',
     tos1Title: 'Acceptance of Terms',
@@ -109,7 +119,6 @@ const translations = {
     toastReg: 'Account created. Welcome to CosmoKlub.', toastLogin: 'Signed in successfully.'
   },
   ES: {
-    navHome: 'Inicio', navExplore: 'Explorar', navObjects: 'Objetos', navAbout: 'Acerca de',
     eyebrow: 'Plataforma de astronomia de nueva generacion',
     heroLine1: 'Navega por el', heroAccent: 'Universo', heroLine2: 'desde tu pantalla.',
     heroSub: 'Datos celestes en tiempo real, catalogos y <span class="kw">mapas interactivos</span> — todo en un panel oscuro y elegante.',
@@ -135,7 +144,7 @@ const translations = {
     confirmEmailTitle: 'Revisa tu correo', confirmEmailSub: 'Hemos enviado un enlace de confirmacion a',
     gotIt: 'Entendido',
     successSub: 'Tu observatorio esta listo.', exploreNow: 'Explorar ahora',
-    tos: 'Terminos', privacy: 'Privacidad', contact: 'Contacto',
+    tos: 'Terminos', privacy: 'Privacidad', applyStaff: 'Solicitud de personal',
     rights: 'Todos los derechos reservados.', tosDate: 'Junio 2026', accept: 'Acepto',
     tos1Title: 'Aceptacion de los Terminos',
     tos1Body: 'Al acceder o utilizar CosmoKlub, confirmas que has leido, comprendido y aceptas estos Terminos de Servicio y nuestra Politica de Privacidad. Si no aceptas todos los terminos, no debes utilizar el Servicio. Podemos actualizar estos Terminos en cualquier momento; el uso continuado tras los cambios constituye tu aceptacion.',
@@ -192,7 +201,6 @@ const translations = {
     toastReg: 'Cuenta creada.', toastLogin: 'Sesion iniciada.'
   },
   FR: {
-    navHome: 'Accueil', navExplore: 'Explorer', navObjects: 'Objets', navAbout: 'A propos',
     eyebrow: 'Plateforme astronomique nouvelle generation',
     heroLine1: "Naviguez dans l'", heroAccent: 'Univers', heroLine2: 'depuis votre ecran.',
     heroSub: "Donnees celestes en temps reel, catalogues et <span class=\"kw\">cartes interactives</span> — dans un tableau de bord sombre et elegant.",
@@ -218,7 +226,7 @@ const translations = {
     confirmEmailTitle: 'Verifiez vos e-mails', confirmEmailSub: 'Nous avons envoye un lien de confirmation a',
     gotIt: 'Compris',
     successSub: 'Votre observatoire est pret.', exploreNow: 'Explorer',
-    tos: "Conditions", privacy: 'Confidentialite', contact: 'Contact',
+    tos: "Conditions", privacy: 'Confidentialite', applyStaff: 'Candidature staff',
     rights: 'Tous droits reserves.', tosDate: 'Juin 2026', accept: "J'accepte",
     tos1Title: 'Acceptation des Conditions',
     tos1Body: "En accedant ou en utilisant CosmoKlub, vous confirmez avoir lu, compris et accepte les presentes Conditions d'Utilisation ainsi que notre Politique de Confidentialite. Si vous n'acceptez pas toutes ces conditions, vous ne devez pas utiliser le Service. Nous pouvons les mettre a jour a tout moment ; la poursuite de l'utilisation vaut acceptation des modifications.",
@@ -275,7 +283,6 @@ const translations = {
     toastReg: 'Compte cree.', toastLogin: 'Connexion reussie.'
   },
   JA: {
-    navHome: 'ホーム', navExplore: '探索', navObjects: '天体', navAbout: '概要',
     eyebrow: '次世代天文学プラットフォーム',
     heroLine1: '宇宙を', heroAccent: '探索', heroLine2: 'あなたの画面から。',
     heroSub: 'リアルタイム天体データ、深宇宙カタログ、<span class="kw">インタラクティブ星図</span> — 美しいダッシュボードで。',
@@ -301,7 +308,7 @@ const translations = {
     confirmEmailTitle: 'メールをご確認ください', confirmEmailSub: '確認リンクを送信しました：',
     gotIt: 'わかりました',
     successSub: '天文台の準備ができました。', exploreNow: '今すぐ探索',
-    tos: '利用規約', privacy: 'プライバシー', contact: 'お問い合わせ',
+    tos: '利用規約', privacy: 'プライバシー', applyStaff: 'スタッフ応募',
     rights: 'All rights reserved.', tosDate: '2026年6月', accept: '同意する',
     tos1Title: '利用規約への同意',
     tos1Body: 'CosmoKlub（以下「本サービス」）にアクセスまたは使用することで、本利用規約およびプライバシーポリシーを読み、理解し、同意したことを確認します。すべての条項に同意しない場合、本サービスを使用してはなりません。当社は随時本規約を更新することがあり、更新後の継続使用は改定規約への同意とみなされます。',
@@ -358,7 +365,6 @@ const translations = {
     toastReg: 'アカウント作成完了。', toastLogin: 'ログイン成功。'
   },
   TH: {
-    navHome: 'หน้าแรก', navExplore: 'สำรวจ', navObjects: 'วัตถุ', navAbout: 'เกี่ยวกับ',
     eyebrow: 'แพลตฟอร์มดาราศาสตร์ยุคใหม่',
     heroLine1: 'สำรวจ', heroAccent: 'จักรวาล', heroLine2: 'จากหน้าจอของคุณ',
     heroSub: 'ข้อมูลท้องฟ้าแบบเรียลไทม์ แคตตาล็อกวัตถุท้องฟ้าลึก และ<span class="kw">แผนที่ดาวแบบโต้ตอบ</span> — ในแดชบอร์ดที่สวยงาม',
@@ -384,7 +390,7 @@ const translations = {
     confirmEmailTitle: 'ตรวจสอบอีเมลของคุณ', confirmEmailSub: 'เราได้ส่งลิงก์ยืนยันไปที่',
     gotIt: 'เข้าใจแล้ว',
     successSub: 'หอดูดาวพร้อมแล้ว สำรวจจักรวาลได้เลย', exploreNow: 'สำรวจเลย',
-    tos: 'ข้อกำหนด', privacy: 'นโยบาย', contact: 'ติดต่อ',
+    tos: 'ข้อกำหนด', privacy: 'นโยบาย', applyStaff: 'สมัครทีมงาน',
     rights: 'สงวนลิขสิทธิ์ทั้งหมด', tosDate: 'มิถุนายน 2026', accept: 'ยอมรับ',
     tos1Title: 'การยอมรับข้อกำหนด',
     tos1Body: 'การเข้าถึงหรือใช้งาน CosmoKlub ("บริการ") ถือว่าคุณได้อ่าน เข้าใจ และยอมรับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัวของเรา หากคุณไม่ยอมรับข้อกำหนดทั้งหมด คุณต้องไม่ใช้บริการ เราอาจอัปเดตข้อกำหนดได้ตลอดเวลา การใช้งานต่อเนื่องหลังการเปลี่ยนแปลงถือว่ายอมรับข้อกำหนดที่แก้ไขแล้ว',
@@ -455,7 +461,6 @@ createApp({
       pensiaMsg: '',
       pensiaHeadline: '',
       pensiaCloseTimer: null,
-      _pensiaFetched: false,
       pensiaArticle: null,
       pensiaArticleOpen: false,
       pensiaImageLoaded: false,
@@ -464,14 +469,8 @@ createApp({
       pensiaTilt: 0,
       pensiaDragging: false,
       pensiaBubbleFlip: { below: false, left: false },
-      currentLang: { code: 'EN', name: 'English', flag: '🇬🇧' },
-      langs: [
-        { code: 'EN', name: 'English', flag: '🇬🇧' },
-        { code: 'ES', name: 'Español', flag: '🇪🇸' },
-        { code: 'FR', name: 'Français', flag: '🇫🇷' },
-        { code: 'JA', name: '日本語', flag: '🇯🇵' },
-        { code: 'TH', name: 'ภาษาไทย', flag: '🇹🇭' }
-      ],
+      currentLang: window.CosmoKlub.LANGS[0],
+      langs: window.CosmoKlub.LANGS,
       form: { firstName: '', lastName: '', username: '', gender: '', email: '', password: '', confirm: '', tos: false },
       errors: {},
       loading: false,
@@ -720,8 +719,17 @@ createApp({
         this.pensiaOpen = false;
       }, 4000);
     },
-    openModal(m) { this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; this.legalScrolled = false; this.syncScrollLock(); },
+    openModal(m) {
+      // Login/register is hidden for now — see AUTH_ENABLED at the top of
+      // this file. 'tos' and 'privacy' still work as before.
+      if (!AUTH_ENABLED && (m === 'login' || m === 'register')) return;
+      this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; this.legalScrolled = false; this.syncScrollLock();
+    },
     startExploring() {
+      if (!AUTH_ENABLED) {
+        window.location.href = 'dashboard.html';
+        return;
+      }
       if (this.currentUser) {
         window.location.href = 'dashboard.html';
       } else {
@@ -912,7 +920,7 @@ createApp({
     // after logging in) so currentUser is populated without a re-login.
     // window.supabaseReady resolves once /api/supabase-config has loaded
     // (or to null if Supabase isn't configured / unreachable).
-    if (window.supabaseReady) {
+    if (AUTH_ENABLED && window.supabaseReady) {
       window.supabaseReady.then(client => {
         if (!client) return;
         client.auth.getSession().then(({ data }) => {
@@ -984,35 +992,8 @@ createApp({
         this.navCompact = rect.top <= nav.offsetHeight + 20;
       }
     }, { passive: true });
-    const canvas = document.getElementById('star-canvas');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-    const resizeStars = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      stars = Array.from({ length: 220 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.3 + 0.2,
-        o: Math.random() * 0.75 + 0.1,
-        s: Math.random() * 0.0025 + 0.001,
-        t: Math.random() * Math.PI * 2
-      }));
-    };
-    resizeStars();
-    window.addEventListener('resize', resizeStars);
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      stars.forEach(s => {
-        s.t += s.s;
-        const a = s.o * (0.5 + 0.5 * Math.sin(s.t));
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(196,168,255,${a})`;
-        ctx.fill();
-      });
-      requestAnimationFrame(draw);
-    };
-    draw();
+    // Background starfield (shared helper — see common.js). 220 keeps the
+    // slightly denser star count this page originally shipped with.
+    window.CosmoKlub.initStarfield(220);
   }
 }).mount('#app');
