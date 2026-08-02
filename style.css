@@ -1518,6 +1518,7 @@ footer {
   .nav-links {
     display: none;
     position: absolute;
+    justify-self: stretch;
     top: 100%;
     left: 0;
     right: 0;
