@@ -12,5 +12,10 @@ createApp({
         planetarium: Planetarium,
       }
     };
+  },
+  mounted() {
+    // Animated starfield backdrop (shared helper — see common.js), matching
+    // the other pages. Draws onto the <canvas id="star-canvas"> in dashboard.html.
+    window.CosmoKlub.initStarfield();
   }
 }).mount('#app');

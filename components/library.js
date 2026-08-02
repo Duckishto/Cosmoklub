@@ -4,24 +4,15 @@ const Library = {
   template: `
     <div class="library-roadmap">
       <div class="section library-hero">
-        <div class="section-eyebrow-row">
-          
-          <div class="section-rule"></div>
-         
-        </div>
         <div class="rank-summary">
           <div>
             <div class="rank-kicker">Study Roadmap</div>
             <h2 class="rank-title">Level up each category to unlock deeper space knowledge.</h2>
-           
           </div>
           <div class="rank-panel">
             <div class="rank-panel-label">Overall Rank</div>
             <div class="rank-panel-rank">{{ overallRank }}</div>
             <div class="rank-panel-meta">{{ totalCompleted }} / {{ totalLessons }} lessons complete</div>
-          </div>
-        </div>
-       
           </div>
         </div>
       </div>
@@ -117,15 +108,10 @@ const Library = {
         .rank-summary { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 14px; align-items: stretch; margin-bottom: 14px; }
         .rank-kicker { color: var(--violet); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 5px; }
         .rank-title { color: var(--stardust); font-size: clamp(22px, 4vw, 34px); line-height: 1.05; letter-spacing: 0; max-width: 720px; }
-        .rank-copy { color: var(--muted); font-size: 13px; line-height: 1.65; max-width: 620px; margin-top: 8px; }
         .rank-panel { background: rgba(124, 58, 237, 0.1); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; display: flex; flex-direction: column; justify-content: center; min-height: 118px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.04); }
         .rank-panel-label { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
         .rank-panel-rank { color: var(--stardust); font-size: 26px; font-weight: 900; line-height: 1; margin-top: 9px; }
         .rank-panel-meta { color: var(--muted); font-size: 11px; margin-top: 8px; }
-        .rank-ladder { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-        .rank-step { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; border: 1px solid var(--border); border-radius: 8px; background: rgba(255,255,255,0.035); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: 0.08em; }
-        .rank-step.active { color: var(--stardust); border-color: rgba(192,132,252,0.7); box-shadow: 0 0 18px rgba(168,85,247,0.22); }
-        .rank-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
         .roadmap-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
         .roadmap-card { min-height: 216px; display: flex; flex-direction: column; gap: 9px; background: linear-gradient(135deg, rgba(14, 42, 74, 0.34), rgba(42, 15, 61, 0.3)), rgba(124,58,237,0.07); position: relative; overflow: hidden; }
         .roadmap-card::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(124,58,237,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.045) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; }
@@ -151,7 +137,7 @@ const Library = {
         .saved-item { min-height: 66px; }
         .saved-icon, .empty-icon { display: flex; color: var(--violet); }
         .empty-sub { font-size: 12px; margin-top: 6px; }
-        @media (max-width: 760px) { .rank-summary, .roadmap-grid, .library-grid { grid-template-columns: 1fr; } .rank-ladder { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rank-step:last-child { grid-column: 1 / -1; } }
+        @media (max-width: 760px) { .rank-summary, .roadmap-grid, .library-grid { grid-template-columns: 1fr; } }
       `;
       document.head.appendChild(style);
     }

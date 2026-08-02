@@ -1,7 +1,16 @@
 -- ---------------------------------------------------------------------------
--- CosmoKlub — Supabase schema for account registration / login.
+-- CosmoKlub — Supabase schema.
 --
 -- Run this once in: Supabase Dashboard → SQL Editor → New query → Run.
+-- The table/trigger/function statements are safe to re-run, but the
+-- `create policy` statements are not (Postgres has no "or replace" for
+-- policies) — if you ever need to re-run this whole file, drop the
+-- existing policies first or re-run only the parts you changed.
+--
+-- Two independent pieces:
+--   A. Account registration / login (profiles table + auto-create trigger)
+--   B. Staff applications (staff_applications table) — see that section
+--      further down for details.
 --
 -- What this does:
 --   1. Creates a `profiles` table that stores, for every user:
@@ -76,3 +85,41 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- ---------------------------------------------------------------------------
+-- Staff applications (staff-application.html / staff-application.js)
+--
+-- Applying is intentionally NOT gated behind an account — anyone can submit
+-- one without signing in, so this uses the Supabase anon key directly
+-- rather than auth.uid(). Rows can be inserted by anyone but not read back
+-- by anyone (no select policy for anon/authenticated); review submissions
+-- from the Supabase Dashboard → Table Editor, which uses your project's
+-- privileged access and bypasses RLS.
+-- ---------------------------------------------------------------------------
+
+-- 1. Table -------------------------------------------------------------------
+create table if not exists public.staff_applications (
+  id           bigint generated always as identity primary key,
+  full_name    text not null,
+  email        text not null,
+  discord      text,
+  role_applied text not null check (role_applied in ('developer', 'researcher', 'creative', 'moderator', 'other')),
+  links        text,
+  why          text not null,
+  experience   text,
+  availability text,
+  status       text not null default 'pending' check (status in ('pending', 'reviewing', 'accepted', 'rejected')),
+  created_at   timestamptz not null default now()
+);
+
+-- 2. Row Level Security -------------------------------------------------------
+alter table public.staff_applications enable row level security;
+
+-- Anyone (including anonymous visitors) can submit an application.
+create policy "Anyone can submit a staff application"
+  on public.staff_applications for insert
+  with check (true);
+
+-- No select/update/delete policy is defined for anon or authenticated —
+-- applications are only readable via the Dashboard (service role), so
+-- applicants can't see each other's submissions or their status here.
