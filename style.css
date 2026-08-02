@@ -1532,6 +1532,13 @@ footer {
     border-bottom: 1px solid rgba(124,58,237,0.28);
     box-shadow: 0 16px 40px rgba(0,0,0,0.5);
     padding: 0.6rem 1.5rem calc(0.8rem + env(safe-area-inset-bottom));
+    /* Some mobile browsers only partially paint a blurred background when
+       it sits inside a position:fixed ancestor (the box's background can
+       appear to "collapse"/cut off partway down the list). Forcing this
+       element onto its own compositing layer fixes that. */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    isolation: isolate;
   }
   .nav-links.open {
     display: flex;
