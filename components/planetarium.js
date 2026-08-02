@@ -673,7 +673,6 @@ const Planetarium = {
             </div>
           </div>
           <button class="graph-add" @click="addRow">+ Add expression</button>
-          <p class="graph-hint">Plot <b>y=f(x)</b>, <b>x=g(y)</b>, implicit <b>x²+y²=25</b>, points <b>(1,2)</b>, or a slider <b>a=2</b>. Drag to pan · scroll to zoom · graphs use radians.</p>
         </div>
 
         <div class="graph-canvas-host" ref="graphHost">
@@ -725,11 +724,9 @@ const Planetarium = {
         analysisOpen: false,
         trace: null,
         marks: [],
-        nextId: 4,
+        nextId: 2,
         rows: [
-          { id: 1, text: '', color: GRAPH_PALETTE[0], visible: true, error: false, msg: '', slider: null, name: null },
-          { id: 2, text: '', color: GRAPH_PALETTE[1], visible: true, error: false, msg: '', slider: null, name: null },
-          { id: 3, text: '', color: GRAPH_PALETTE[2], visible: true, error: false, msg: '', slider: null, name: null },
+          { id: 1, text: 'y = x', color: GRAPH_PALETTE[0], visible: true, error: false, msg: '', slider: null, name: null },
         ],
       },
     };
@@ -893,8 +890,16 @@ const Planetarium = {
       row.msg = c.kind === 'invalid' ? c.msg : '';
       if (c.kind === 'variable') {
         row.name = c.name;
-        if (!row.slider) row.slider = { min: -10, max: 10, step: 0.1, value: c.value, playing: false, _dir: 1 };
-        else row.slider.value = c.value;
+        const bound = Math.max(10, Math.abs(c.value) * 2);
+        if (!row.slider) row.slider = { min: -bound, max: bound, step: bound / 100, value: c.value, playing: false, _dir: 1 };
+        else {
+          row.slider.value = c.value;
+          // Keep the thumb in sync: if the typed value no longer fits the current
+          // range, re-center the range around it instead of letting it clamp.
+          if (c.value < row.slider.min || c.value > row.slider.max) {
+            row.slider.min = -bound; row.slider.max = bound; row.slider.step = bound / 100;
+          }
+        }
       } else { row.slider = null; row.name = null; }
     },
     onRowInput(row) { this.compileRow(row); this.scheduleDraw(); this.scheduleAnalysis(); },
@@ -1182,7 +1187,7 @@ const Planetarium = {
       style.id = 'mirai-calc-styles';
       style.textContent = `
         .calc-wrap { max-width: 920px; margin: 0 auto; }
-        .calc-wrap.calc-graphing { max-width: 980px; }
+        .calc-wrap.calc-graphing { max-width: none; }
         .calc-mode-switch { flex-shrink: 0; }
         .calc-sci { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
         .calc-main { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
@@ -1251,9 +1256,7 @@ const Planetarium = {
         .graph-row-msg { font-size: 11px; color: #fca5a5; padding-left: 8px; }
         .graph-add { align-self: flex-start; background: #1d1736; border: 1px solid var(--border); color: var(--glow); font-family: var(--font); font-size: 12.5px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: all var(--tr); }
         .graph-add:hover { border-color: var(--violet); background: #2c2154; transform: translateY(-1px); }
-        .graph-hint { color: var(--muted); font-size: 11.5px; line-height: 1.6; margin-top: 2px; }
-        .graph-hint b { color: var(--glow); font-weight: 700; }
-        .graph-canvas-host { position: relative; height: clamp(340px, 60vh, 560px); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: rgba(8,6,22,0.55); }
+        .graph-canvas-host { position: relative; height: clamp(420px, 78vh, 1100px); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: rgba(8,6,22,0.55); }
         .graph-canvas-host canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
         .graph-controls { position: absolute; top: 10px; left: 10px; display: flex; gap: 4px; padding: 4px; background: rgba(13,11,30,0.85); border: 1px solid var(--border); border-radius: 10px; backdrop-filter: blur(6px); }
         .graph-controls button { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: none; border: none; border-radius: 7px; color: var(--stardust); font-size: 16px; line-height: 1; cursor: pointer; transition: background var(--tr), color var(--tr); }
