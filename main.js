@@ -917,6 +917,19 @@ createApp({
     },
   },
   mounted() {
+    // Open the Terms / Privacy modal when arriving from another page's footer
+    // (e.g. team.html / staff-application.html link to index.html#tos and
+    // index.html#privacy). Runs once on load; clears the hash afterwards so a
+    // refresh doesn't reopen it.
+    const legalFromHash = () => {
+      const h = (window.location.hash || '').replace('#', '');
+      if (h === 'tos' || h === 'privacy') {
+        this.openModal(h);
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    };
+    legalFromHash();
+
     // Restore any existing Supabase session (e.g. user refreshed the page
     // after logging in) so currentUser is populated without a re-login.
     // window.supabaseReady resolves once /api/supabase-config has loaded
