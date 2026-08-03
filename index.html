@@ -133,26 +133,36 @@
         </div>
       </div>
 
-      <!-- Product stage: central image + 6 floating cards -->
+      <!-- Product stage: one big central screenshot with floating satellite cards -->
       <div class="hero-stage">
         <div class="stage-glow" aria-hidden="true"></div>
-        <div class="planet-wrap stage-planet" aria-hidden="true">
-          <div class="planet-glow"></div>
-          <canvas id="planet-canvas"></canvas>
-          <div class="planet-loading" id="planet-loading">
-            <span class="planet-loading-dots"><span></span><span></span><span></span></span>
-            <span class="planet-loading-text">Loading planet…</span>
-          </div>
-        </div>
 
+        <!-- Main product screenshot (center) -->
         <button
-          v-for="(shot, i) in heroShots"
+          class="hero-main"
+          :class="{ focused: activeShot === 0 }"
+          @click="openShot(heroShots[0])"
+          @mouseenter="activeShot = 0"
+        >
+          <div class="stage-card-bar">
+            <span class="scb-dot"></span><span class="scb-dot"></span><span class="scb-dot"></span>
+            <span class="scb-title">{{ t[heroShots[0].key] }}</span>
+          </div>
+          <div class="hero-main-body">
+            <img :src="heroShots[0].img" :alt="t[heroShots[0].key]" />
+          </div>
+          <div class="stage-card-glow" aria-hidden="true"></div>
+        </button>
+
+        <!-- Satellite cards around the main image -->
+        <button
+          v-for="(shot, i) in satelliteShots"
           :key="shot.key"
           class="stage-card"
-          :class="['sc-' + shot.pos, { focused: activeShot === i }]"
-          :style="{ '--d': i * 0.09 + 's' }"
+          :class="['sc-' + shot.pos, { focused: activeShot === shot.idx }]"
+          :style="{ '--d': i * 0.12 + 's' }"
           @click="openShot(shot)"
-          @mouseenter="activeShot = i"
+          @mouseenter="activeShot = shot.idx"
         >
           <div class="stage-card-bar">
             <span class="scb-dot"></span><span class="scb-dot"></span><span class="scb-dot"></span>
