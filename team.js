@@ -39,7 +39,7 @@ createApp({
         { name: 'Weerawit Watjanarat', role: 'Creative', img: 'team/4.jpg', bio: '' },
       ],
       researchTeam: [
-        { name: 'Pattanan naosaran', role: 'Researcher', img: 'team/5.png', bio: '' },
+        { name: 'Pattanan naosaran', role: 'Researcher', img: 'team/5.jpg', bio: '' },
         { name: 'Watcharaphon Pisutwatthanasakul', role: 'Researcher', img: 'team/6.png', bio: '' },
         { name: 'Name Surname', role: 'Project Helper', img: 'team/7.png', bio: '' },
       ],
