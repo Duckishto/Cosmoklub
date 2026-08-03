@@ -35,7 +35,7 @@ createApp({
       ],
       developerTeam: [
         { name: 'Kritsadaphas Sangthong', role: 'Developer', img: 'team/2.jpg', bio: '' },
-        { name: 'Siraphop Larbninjinda', role: 'Developer', img: 'team/3.png', bio: '' },
+        { name: 'Siraphop Larbninjinda', role: 'Developer', img: 'team/3.jpg', bio: '' },
         { name: 'Weerawit Watjanarat', role: 'Creative', img: 'team/4.jpg', bio: '' },
       ],
       researchTeam: [
