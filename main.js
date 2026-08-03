@@ -32,6 +32,23 @@ const OBJ_SVGS = {
   lagoon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><radialGradient id="lg" cx="45%" cy="55%" r="50%"><stop offset="0%" stop-color="#c084fc" stop-opacity="0.8"/><stop offset="70%" stop-color="#7c3aed" stop-opacity="0.3"/><stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/></radialGradient><ellipse cx="20" cy="22" rx="16" ry="11" fill="url(#lg)"/><circle cx="18" cy="20" r="2.5" fill="#f5f3ff" opacity="0.9"/></svg>`,
 };
 
+// ---------- Hero product-card art + pill icons ----------
+// Two of the six hero cards are drawn UI (planetarium + community) so they
+// scale crisply; the other four are real product screenshots (hero/*.png).
+const HERO_SVGS = {
+  // 3D planetarium viewer mock
+  planetarium: `<svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="hp-sky" cx="50%" cy="42%" r="70%"><stop offset="0%" stop-color="#1a0f3d"/><stop offset="100%" stop-color="#08040f"/></radialGradient><radialGradient id="hp-planet" cx="38%" cy="34%" r="70%"><stop offset="0%" stop-color="#c084fc"/><stop offset="55%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#2a0f5c"/></radialGradient></defs><rect width="320" height="200" fill="url(#hp-sky)"/><g fill="#e9d5ff"><circle cx="34" cy="30" r="1.1" opacity=".8"/><circle cx="286" cy="26" r="1.3" opacity=".7"/><circle cx="250" cy="60" r="0.9" opacity=".6"/><circle cx="60" cy="150" r="1" opacity=".7"/><circle cx="290" cy="150" r="1.2" opacity=".6"/><circle cx="18" cy="96" r="0.9" opacity=".5"/><circle cx="140" cy="24" r="0.9" opacity=".6"/></g><ellipse cx="160" cy="112" rx="86" ry="28" stroke="#a855f7" stroke-width="1.4" opacity=".45" fill="none" stroke-dasharray="4 4"/><ellipse cx="160" cy="112" rx="58" ry="18" stroke="#c084fc" stroke-width="1.2" opacity=".35" fill="none"/><circle cx="160" cy="104" r="34" fill="url(#hp-planet)"/><ellipse cx="160" cy="104" rx="52" ry="13" stroke="#e9d5ff" stroke-width="3" opacity=".55" fill="none" transform="rotate(-14 160 104)"/><circle cx="218" cy="112" r="4" fill="#e9d5ff" opacity=".9"/></svg>`,
+  // Community / forum mock
+  community: `<svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="320" height="200" fill="#0c0820"/><g><rect x="20" y="26" width="200" height="46" rx="10" fill="rgba(168,85,247,0.10)" stroke="rgba(168,85,247,0.30)"/><circle cx="42" cy="49" r="12" fill="#7c3aed"/><rect x="62" y="40" width="70" height="7" rx="3.5" fill="#c084fc" opacity=".85"/><rect x="62" y="53" width="140" height="6" rx="3" fill="#5b4a7d"/></g><g><rect x="60" y="86" width="240" height="46" rx="10" fill="rgba(192,132,252,0.10)" stroke="rgba(192,132,252,0.30)"/><circle cx="278" cy="109" r="12" fill="#a855f7"/><rect x="150" y="100" width="60" height="7" rx="3.5" fill="#e9d5ff" opacity=".8"/><rect x="80" y="113" width="180" height="6" rx="3" fill="#5b4a7d"/></g><g><rect x="20" y="146" width="200" height="40" rx="10" fill="rgba(168,85,247,0.10)" stroke="rgba(168,85,247,0.30)"/><circle cx="42" cy="166" r="11" fill="#7c3aed"/><rect x="62" y="160" width="120" height="6" rx="3" fill="#c084fc" opacity=".8"/><rect x="62" y="171" width="150" height="5" rx="2.5" fill="#5b4a7d"/></g></svg>`,
+  // small pill icons
+  pinGrid: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/><rect x="3" y="14" width="7" height="7" rx="1.4"/><rect x="14" y="14" width="7" height="7" rx="1.4"/></svg>`,
+  image: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
+  grid: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+  graph: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-4 4"/></svg>`,
+  orbit: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(-25 12 12)"/></svg>`,
+  chat: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg>`
+};
+
 // ---------- Complete Translations ----------
 const translations = {
   EN: {
@@ -39,6 +56,13 @@ const translations = {
     heroLine1: 'Explore the', heroAccent: 'Night Sky', heroLine2: 'with Precision',
     heroSub: 'Discover celestial objects, plan observations, analyze astronomical data, and connect with the <span class="kw">global astronomy community</span>.',
     startBtn: 'Start Exploring', learnBtn: 'Learn more',
+    openTool: 'Open tool',
+    shotObject: 'Object Browser', shotObjectDesc: 'Search 22,000+ NASA images, videos, and mission media in one place.',
+    shotApod: 'Astronomy Picture', shotApodDesc: 'A new featured image every day, with the full story behind it.',
+    shotGallery: 'Media Gallery', shotGalleryDesc: 'Browse curated collections from the Moon, Mars, and deep space.',
+    shotGraph: 'Function Grapher', shotGraphDesc: 'Plot equations and explore orbits with an interactive graphing tool.',
+    shotPlanet: '3D Planetarium', shotPlanetDesc: 'Spin real planet models and trace their orbits in your browser.',
+    shotForum: 'Community', shotForumDesc: 'Share observations and talk astronomy with the CosmoKlub crew.',
     featLabel: 'Features', featTitle: 'Everything the cosmos demands',
     featSub: '<span class="kw">Precision tools</span> for amateur observers and professional researchers alike.',
     objLabel: 'Objects', objTitle: 'Deep-sky catalogue',
@@ -123,6 +147,13 @@ const translations = {
     heroLine1: 'Navega por el', heroAccent: 'Universo', heroLine2: 'desde tu pantalla.',
     heroSub: 'Datos celestes en tiempo real, catalogos y <span class="kw">mapas interactivos</span> — todo en un panel oscuro y elegante.',
     startBtn: 'Comenzar', learnBtn: 'Mas info',
+    openTool: 'Abrir herramienta',
+    shotObject: 'Explorador de objetos', shotObjectDesc: 'Busca mas de 22.000 imagenes, videos y material de misiones de la NASA.',
+    shotApod: 'Imagen astronomica', shotApodDesc: 'Una imagen destacada cada dia, con la historia completa detras.',
+    shotGallery: 'Galeria multimedia', shotGalleryDesc: 'Explora colecciones de la Luna, Marte y el espacio profundo.',
+    shotGraph: 'Graficador de funciones', shotGraphDesc: 'Traza ecuaciones y explora orbitas con una herramienta interactiva.',
+    shotPlanet: 'Planetario 3D', shotPlanetDesc: 'Gira modelos reales de planetas y traza sus orbitas en tu navegador.',
+    shotForum: 'Comunidad', shotForumDesc: 'Comparte observaciones y habla de astronomia con CosmoKlub.',
     featLabel: 'Funciones', featTitle: 'Todo lo que el cosmos exige.',
     featSub: '<span class="kw">Herramientas de precision</span> para observadores e investigadores.',
     objLabel: 'Objetos', objTitle: 'Catalogo de cielo profundo.',
@@ -205,6 +236,13 @@ const translations = {
     heroLine1: "Naviguez dans l'", heroAccent: 'Univers', heroLine2: 'depuis votre ecran.',
     heroSub: "Donnees celestes en temps reel, catalogues et <span class=\"kw\">cartes interactives</span> — dans un tableau de bord sombre et elegant.",
     startBtn: 'Commencer', learnBtn: 'En savoir plus',
+    openTool: "Ouvrir l'outil",
+    shotObject: "Explorateur d'objets", shotObjectDesc: 'Cherchez plus de 22 000 images, videos et medias de missions NASA.',
+    shotApod: 'Image astronomique', shotApodDesc: 'Une image en vedette chaque jour, avec toute son histoire.',
+    shotGallery: 'Galerie multimedia', shotGalleryDesc: 'Parcourez des collections de la Lune, de Mars et de l espace lointain.',
+    shotGraph: 'Traceur de fonctions', shotGraphDesc: 'Tracez des equations et explorez les orbites de facon interactive.',
+    shotPlanet: 'Planetarium 3D', shotPlanetDesc: 'Faites tourner des planetes reelles et suivez leurs orbites.',
+    shotForum: 'Communaute', shotForumDesc: 'Partagez vos observations et discutez astronomie avec CosmoKlub.',
     featLabel: 'Fonctionnalites', featTitle: 'Tout ce que le cosmos exige.',
     featSub: "<span class=\"kw\">Outils de precision</span> pour observateurs et chercheurs.",
     objLabel: 'Objets', objTitle: 'Catalogue du ciel profond.',
@@ -287,6 +325,13 @@ const translations = {
     heroLine1: '宇宙を', heroAccent: '探索', heroLine2: 'あなたの画面から。',
     heroSub: 'リアルタイム天体データ、深宇宙カタログ、<span class="kw">インタラクティブ星図</span> — 美しいダッシュボードで。',
     startBtn: '探索を始める', learnBtn: '詳細を見る',
+    openTool: 'ツールを開く',
+    shotObject: 'オブジェクト検索', shotObjectDesc: 'NASAの画像・動画・ミッション資料22,000点以上をまとめて検索。',
+    shotApod: '今日の天文写真', shotApodDesc: '毎日更新される注目の一枚を、詳しい解説とともに。',
+    shotGallery: 'メディアギャラリー', shotGalleryDesc: '月・火星・深宇宙の厳選コレクションを閲覧。',
+    shotGraph: '関数グラフ', shotGraphDesc: '数式を描いて軌道を探れるインタラクティブなグラフツール。',
+    shotPlanet: '3Dプラネタリウム', shotPlanetDesc: '実際の惑星モデルを回して軌道をブラウザで体感。',
+    shotForum: 'コミュニティ', shotForumDesc: '観測を共有し、CosmoKlubの仲間と天文を語ろう。',
     featLabel: '機能', featTitle: '宇宙が求めるすべて。',
     featSub: 'アマチュアからプロまで対応した<span class="kw">精密ツール</span>。',
     objLabel: '天体', objTitle: '深宇宙カタログ。',
@@ -369,6 +414,13 @@ const translations = {
     heroLine1: 'สำรวจ', heroAccent: 'จักรวาล', heroLine2: 'จากหน้าจอของคุณ',
     heroSub: 'ข้อมูลท้องฟ้าแบบเรียลไทม์ แคตตาล็อกวัตถุท้องฟ้าลึก และ<span class="kw">แผนที่ดาวแบบโต้ตอบ</span> — ในแดชบอร์ดที่สวยงาม',
     startBtn: 'เริ่มสำรวจ', learnBtn: 'เรียนรู้เพิ่มเติม',
+    openTool: 'เปิดเครื่องมือ',
+    shotObject: 'ค้นหาวัตถุ', shotObjectDesc: 'ค้นภาพ วิดีโอ และสื่อภารกิจของ NASA กว่า 22,000 รายการในที่เดียว',
+    shotApod: 'ภาพดาราศาสตร์', shotApodDesc: 'ภาพเด่นใหม่ทุกวัน พร้อมเรื่องราวเบื้องหลังแบบเต็ม',
+    shotGallery: 'แกลเลอรีสื่อ', shotGalleryDesc: 'ชมคอลเลกชันคัดสรรจากดวงจันทร์ ดาวอังคาร และห้วงอวกาศลึก',
+    shotGraph: 'เครื่องวาดกราฟ', shotGraphDesc: 'พล็อตสมการและสำรวจวงโคจรด้วยเครื่องมือกราฟแบบโต้ตอบ',
+    shotPlanet: 'ท้องฟ้าจำลอง 3 มิติ', shotPlanetDesc: 'หมุนโมเดลดาวจริงและติดตามวงโคจรได้ในเบราว์เซอร์',
+    shotForum: 'ชุมชน', shotForumDesc: 'แชร์การสังเกตการณ์และพูดคุยดาราศาสตร์กับชาว CosmoKlub',
     featLabel: 'ฟีเจอร์', featTitle: 'ทุกสิ่งที่จักรวาลต้องการ',
     featSub: '<span class="kw">เครื่องมือแม่นยำ</span>สำหรับนักดูดาวและนักวิจัย',
     objLabel: 'วัตถุ', objTitle: 'แคตตาล็อกท้องฟ้าลึก',
@@ -482,7 +534,9 @@ createApp({
       legalScrolled: false,
       navScrolled: false,
       navCompact: false,
-      mobileMenuOpen: false
+      mobileMenuOpen: false,
+      activeShot: 0,
+      shotModal: null
     };
   },
   computed: {
@@ -507,6 +561,30 @@ createApp({
         { svg: OBJ_SVGS.whirlpool, type: 'Galaxy', name: 'Whirlpool (M51)', desc: 'Interacting galaxy pair in Canes Venatici.' },
         { svg: OBJ_SVGS.globular, type: 'Cluster', name: 'Hercules Cluster (M13)', desc: 'Brightest globular cluster in the northern sky.' },
         { svg: OBJ_SVGS.lagoon, type: 'Nebula', name: 'Lagoon Nebula (M8)', desc: 'Emission nebula and open cluster in Sagittarius.' }
+      ];
+    },
+    // Floating product cards in the hero — 4 real screenshots + 2 tool cards.
+    // `pos` drives placement (see .sc-* rules in style.css). `img` cards open
+    // a lightbox; `href` cards also deep-link into the app tool.
+    heroShots() {
+      return [
+        { key: 'shotObject',  descKey: 'shotObjectDesc',  pos: 'tl', img: 'hero/shot-object.png',  href: 'object.html' },
+        { key: 'shotApod',    descKey: 'shotApodDesc',    pos: 'tr', img: 'hero/shot-apod.png',    href: 'object.html' },
+        { key: 'shotGallery', descKey: 'shotGalleryDesc', pos: 'ml', img: 'hero/shot-gallery.png', href: 'object.html' },
+        { key: 'shotGraph',   descKey: 'shotGraphDesc',   pos: 'mr', img: 'hero/shot-graph.png',   href: 'object.html' },
+        { key: 'shotPlanet',  descKey: 'shotPlanetDesc',  pos: 'bl', svg: HERO_SVGS.planetarium,   href: 'object.html' },
+        { key: 'shotForum',   descKey: 'shotForumDesc',   pos: 'br', svg: HERO_SVGS.community,      href: 'object.html' }
+      ];
+    },
+    // Tool pills under the CTA — each focuses its matching card.
+    heroTools() {
+      return [
+        { key: 'shotObject',  svg: HERO_SVGS.pinGrid },
+        { key: 'shotApod',    svg: HERO_SVGS.image },
+        { key: 'shotGallery', svg: HERO_SVGS.grid },
+        { key: 'shotGraph',   svg: HERO_SVGS.graph },
+        { key: 'shotPlanet',  svg: HERO_SVGS.orbit },
+        { key: 'shotForum',   svg: HERO_SVGS.chat }
       ];
     }
   },
@@ -726,6 +804,23 @@ createApp({
       if (!AUTH_ENABLED && (m === 'login' || m === 'register')) return;
       this.modal = m; this.authTab = m === 'login' ? 'login' : 'register'; this.clearForm(); this.success = false; this.legalScrolled = false; this.syncScrollLock();
     },
+    focusShot(i) {
+      this.activeShot = i;
+      const shot = this.heroShots[i];
+      if (shot) this.openShot(shot);
+    },
+    openShot(shot) {
+      this.shotModal = shot;
+      this.syncScrollLock();
+    },
+    closeShot() {
+      this.shotModal = null;
+      this.syncScrollLock();
+    },
+    scrollToFeatures() {
+      const el = document.getElementById('features');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
     startExploring() {
       if (!AUTH_ENABLED) {
         window.location.href = 'dashboard.html';
@@ -749,7 +844,7 @@ createApp({
     // whatever modals/overlays are currently open, so closing one of
     // several open surfaces can never leave a stray lock behind
     syncScrollLock() {
-      const shouldLock = !!this.modal || this.pensiaArticleOpen;
+      const shouldLock = !!this.modal || this.pensiaArticleOpen || !!this.shotModal;
       const value = shouldLock ? 'hidden' : '';
       document.documentElement.style.overflow = value;
       document.body.style.overflow = value;
@@ -991,7 +1086,8 @@ createApp({
     // overlay so nothing can ever trap the page with scroll locked
     document.addEventListener('keydown', e => {
       if (e.key !== 'Escape') return;
-      if (this.pensiaArticleOpen) this.closePensiaArticle();
+      if (this.shotModal) { this.shotModal = null; this.syncScrollLock(); }
+      else if (this.pensiaArticleOpen) this.closePensiaArticle();
       else if (this.modal) this.closeModal();
     });
     const nav = document.querySelector('nav');
