@@ -34,9 +34,9 @@ createApp({
         { name: 'Kittikawin Sawanglab', role: 'Project Lead', img: 'team/1.png', bio: '' },
       ],
       developerTeam: [
-        { name: 'Kritsadaphas Sangthong', role: 'Developer', img: 'team/2.png', bio: '' },
+        { name: 'Kritsadaphas Sangthong', role: 'Developer', img: 'team/2.jpg', bio: '' },
         { name: 'Siraphop Larbninjinda', role: 'Developer', img: 'team/3.png', bio: '' },
-        { name: 'Weerawit Watjanarat', role: 'Creative', img: 'team/4.png', bio: '' },
+        { name: 'Weerawit Watjanarat', role: 'Creative', img: 'team/4.jpg', bio: '' },
       ],
       researchTeam: [
         { name: 'Pattanan naosaran', role: 'Researcher', img: 'team/5.png', bio: '' },
