@@ -34,13 +34,13 @@ createApp({
         { name: 'Kittikawin Sawanglab', role: 'Project Lead', img: 'team/1.png', bio: '' },
       ],
       developerTeam: [
-        { name: 'Name Surname', role: 'Developer', img: 'team/2.png', bio: '' },
-        { name: 'Name Surname', role: 'Developer', img: 'team/3.png', bio: '' },
-        { name: 'Name Surname', role: 'Creative', img: 'team/4.png', bio: '' },
+        { name: 'Kritsadaphas Sangthong', role: 'Developer', img: 'team/2.png', bio: '' },
+        { name: 'Siraphop Larbninjinda', role: 'Developer', img: 'team/3.png', bio: '' },
+        { name: 'Weerawit Watjanarat', role: 'Creative', img: 'team/4.png', bio: '' },
       ],
       researchTeam: [
-        { name: 'Name Surname', role: 'Researcher', img: 'team/5.png', bio: '' },
-        { name: 'Name Surname', role: 'Researcher', img: 'team/6.png', bio: '' },
+        { name: 'Pattanan naosaran', role: 'Researcher', img: 'team/5.png', bio: '' },
+        { name: 'Watcharaphon Pisutwatthanasakul', role: 'Researcher', img: 'team/6.png', bio: '' },
         { name: 'Name Surname', role: 'Researcher', img: 'team/7.png', bio: '' },
       ],
     };
