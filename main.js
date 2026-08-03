@@ -568,13 +568,18 @@ createApp({
     // a lightbox; `href` cards also deep-link into the app tool.
     heroShots() {
       return [
-        { key: 'shotObject',  descKey: 'shotObjectDesc',  pos: 'tl', img: 'hero/shot-object.png',  href: 'object.html' },
+        { key: 'shotObject',  descKey: 'shotObjectDesc',  img: 'hero/shot-object.png',  href: 'object.html' },
         { key: 'shotApod',    descKey: 'shotApodDesc',    pos: 'tr', img: 'hero/shot-apod.png',    href: 'object.html' },
-        { key: 'shotGallery', descKey: 'shotGalleryDesc', pos: 'ml', img: 'hero/shot-gallery.png', href: 'object.html' },
-        { key: 'shotGraph',   descKey: 'shotGraphDesc',   pos: 'mr', img: 'hero/shot-graph.png',   href: 'object.html' },
-        { key: 'shotPlanet',  descKey: 'shotPlanetDesc',  pos: 'bl', svg: HERO_SVGS.planetarium,   href: 'object.html' },
-        { key: 'shotForum',   descKey: 'shotForumDesc',   pos: 'br', svg: HERO_SVGS.community,      href: 'object.html' }
+        { key: 'shotGraph',   descKey: 'shotGraphDesc',   pos: 'tl', img: 'hero/shot-graph.png',   href: 'object.html' },
+        { key: 'shotGallery', descKey: 'shotGalleryDesc', pos: 'bl', img: 'hero/shot-gallery.png', href: 'object.html' },
+        { key: 'shotPlanet',  descKey: 'shotPlanetDesc',  pos: 'br', svg: HERO_SVGS.planetarium,   href: 'object.html' },
+        { key: 'shotForum',   descKey: 'shotForumDesc',   pos: 'rb', svg: HERO_SVGS.community,      href: 'object.html' }
       ];
+    },
+    // Everything except the big central image (index 0). `idx` keeps the
+    // original heroShots index so activeShot / pill highlighting stays in sync.
+    satelliteShots() {
+      return this.heroShots.slice(1).map((s, i) => ({ ...s, idx: i + 1 }));
     },
     // Tool pills under the CTA — each focuses its matching card.
     heroTools() {
