@@ -1,32 +1,447 @@
-const COURSE_BLUEPRINTS={"stars":{"title":"Stars","icon":"⭐","description":"Birth, life, and death of stars from protostars to stellar remnants.","sections":[["Stellar Foundations","Learn what stars are, how they form, and how they spend most of their lives.",[["What is a Star?","Learn what stars are made of and why they shine.","Sun star",["Stars are enormous self-gravitating spheres made mostly of hydrogen and helium.","During the main sequence, nuclear fusion converts hydrogen into helium in the core and releases energy.","A star remains stable for long periods when inward gravity is balanced by outward pressure."]],["How Stars Form","Follow a star from a molecular cloud to the main sequence.","star formation protostar molecular cloud",["Stars form inside cold molecular clouds containing gas and dust.","Gravity can collapse dense cloud cores into protostars.","A protostar enters the main sequence when stable hydrogen fusion begins in its core."]],["The Main Sequence","Explore the longest stage of a star's life.","Sun main sequence star",["Most stars spend most of their lifetimes on the main sequence.","Main-sequence stars generate energy mainly by fusing hydrogen into helium.","A star's mass strongly affects its temperature, luminosity, lifetime, and later evolution."]],["Color, Temperature and Mass","Discover why stars appear red, yellow, white, or blue.","blue red stars star cluster",["Blue stars generally have hotter surfaces than red stars.","Massive stars consume nuclear fuel much faster than lower-mass stars.","A star's luminosity depends strongly on both its temperature and its size."]]]],["Stellar Evolution","Follow lower-mass and massive stars beyond the main sequence.",[["Red Giants and Supergiants","Learn why aging stars expand dramatically.","red giant supergiant star",["When core hydrogen is depleted, a star leaves the main sequence.","The core contracts and heats while the outer layers can expand and cool.","Sun-like stars become red giants while very massive stars can become supergiants."]],["Planetary Nebulae","See how Sun-like stars release their outer layers.","planetary nebula Helix Ring Nebula",["Evolved lower-mass stars can eject their outer layers into space.","The exposed hot core ionizes the expanding gas and makes it glow.","Planetary nebulae are unrelated to planets despite their historical name."]],["White Dwarfs","Meet the dense remnants of Sun-like stars.","white dwarf star",["A white dwarf is the dense exposed remnant of a lower-mass star.","White dwarfs are roughly Earth-sized but contain a large fraction of a star's mass.","Without normal core fusion, white dwarfs gradually cool over immense timescales."]],["Massive Star Fusion","Discover how massive stars build heavier elements.","massive star fusion supergiant",["Massive stars can pass through several additional fusion stages after hydrogen and helium are depleted.","Successive stages can build elements through carbon, neon, oxygen, and silicon burning.","An iron-rich core cannot provide support through ordinary energy-releasing fusion."]],["Supernovae","Explore the explosive deaths of massive stars.","supernova remnant Cassiopeia Crab",["A massive stellar core can collapse when it can no longer support itself against gravity.","Core collapse can produce an enormous supernova explosion.","Supernovae eject and distribute elements into interstellar space."]]]],["Extreme Stellar Remnants","Explore neutron stars, pulsars, black holes, and interacting stars.",[["Neutron Stars","Explore some of the densest objects in the universe.","neutron star NICER",["Some massive-star supernovae leave neutron-star remnants.","A neutron star can pack more mass than the Sun into a region only tens of kilometers across.","Neutron stars allow scientists to study matter at extreme density and pressure."]],["Pulsars and Magnetars","Meet rapidly spinning and highly magnetic neutron stars.","pulsar neutron star magnetar",["Pulsars are rotating neutron stars whose radiation beams can sweep across Earth.","Some pulsars rotate many times each second.","Magnetars are neutron stars with exceptionally powerful magnetic fields."]],["Stellar-Mass Black Holes","Learn how the heaviest stellar cores can collapse even further.","stellar mass black hole",["A sufficiently massive collapsed stellar core can form a black hole.","The event horizon is the boundary beyond which escape is impossible.","Astronomers often detect black holes through their effects on nearby matter."]],["Binary Stars and Novae","Discover what happens when stars evolve with companions.","binary star nova white dwarf",["Binary systems contain two stars gravitationally bound to one another.","Close binary stars can exchange matter as they evolve.","A nova can occur when a white dwarf accretes material from a companion."]]]],["Understanding Stars","Learn how astronomers organize and study stellar populations.",[["Star Clusters","Explore groups of stars that formed together.","open star cluster globular cluster",["Open clusters are relatively loose groups of stars that formed together.","Globular clusters are dense, roughly spherical systems dominated by old stars.","Clusters help astronomers compare stellar evolution because many member stars share similar ages and origins."]],["Spectral Classification","Learn how astronomers classify stars using their light.","stellar spectrum stars spectroscopy",["A spectrum separates starlight by wavelength and reveals physical information.","The sequence O, B, A, F, G, K, M broadly orders stars from hotter to cooler surfaces.","The Sun is a G-type main-sequence star."]],["The Hertzsprung-Russell Diagram","Learn how astronomers organize stars by luminosity and temperature.","Hertzsprung Russell diagram star cluster",["The H-R diagram compares stellar luminosity with temperature or a related spectral property.","Most hydrogen-fusing stars lie along the main sequence.","Giants can be cool but luminous because they are large, while white dwarfs are hot but faint because they are small."]]]]]},"galaxies":{"title":"Galaxies","icon":"🌌","description":"Explore galaxy structure, evolution, black holes, collisions, and the cosmic web.","sections":[["Galaxy Foundations","Learn what galaxies are and how astronomers classify them.",[["What is a Galaxy?","Learn what galaxies contain and how they are held together.","galaxy Hubble",["A galaxy is a gravitationally bound system containing stars, gas, dust, stellar remnants, and dark matter.","Galaxies range from small dwarf systems to giants containing hundreds of billions of stars.","The Solar System lies inside the Milky Way galaxy."]],["The Milky Way","Explore the structure of our home galaxy.","Milky Way galaxy center",["The Milky Way is a barred spiral galaxy.","Its disk contains most visible gas, dust, and young stars, while a halo surrounds the disk.","Sagittarius A* is the supermassive black hole at the Galactic Center."]],["Types of Galaxies","Compare spiral, elliptical, and irregular galaxies.","spiral elliptical irregular galaxies",["Spiral galaxies contain rotating disks and can show prominent spiral arms.","Elliptical galaxies have smoother shapes and generally less cold gas than spirals.","Irregular galaxies lack a simple spiral or elliptical structure."]],["Inside a Galaxy","Meet the stars, gas, dust, and dark matter that make up galaxies.","galaxy dust gas stars",["Galaxies contain stellar populations with many different ages and compositions.","Cold gas and dust supply raw material for new stars.","Galaxy motions indicate large amounts of dark matter beyond visible matter."]]]],["Galaxy Structure and Activity","Explore star formation, spiral structure, active nuclei, and dwarf galaxies.",[["Star Formation in Galaxies","Learn why some galaxies form stars faster than others.","star forming galaxy Hubble",["Dense cold molecular gas is the direct raw material for star formation.","Young massive stars illuminate surrounding gas and produce strong feedback.","Radiation, winds, and supernovae can either compress or disperse star-forming gas."]],["Spiral Arms and Bars","Understand the patterns seen in disk galaxies.","barred spiral galaxy",["Spiral arms are regions where gas and stars are concentrated in disk galaxies.","Many spiral galaxies contain elongated central bars.","Bars and spiral patterns can redistribute gas and angular momentum."]],["Elliptical Galaxies","Explore smooth galaxies dominated by older stellar populations.","elliptical galaxy",["Elliptical galaxies range from nearly spherical to elongated shapes.","Many ellipticals contain little cold gas and have low present-day star formation.","Galaxy mergers can contribute to the formation and growth of elliptical galaxies."]],["Dwarf and Irregular Galaxies","Study small galaxies and systems with unusual shapes.","dwarf irregular galaxy",["Dwarf galaxies contain far fewer stars than giant galaxies but are extremely common.","Irregular shapes can result from low mass, star formation, or interactions.","Small galaxies can merge into larger systems over cosmic time."]],["Active Galaxies and Quasars","Learn how feeding black holes can outshine entire galaxies.","quasar active galactic nucleus",["Active galactic nuclei are powered by accretion onto supermassive black holes.","Infalling gas can form a hot luminous accretion disk.","Quasars are exceptionally luminous active galactic nuclei visible across enormous distances."]]]],["Galaxy Evolution","See how galaxies grow, collide, and live inside larger structures.",[["Galaxy Collisions and Mergers","Learn what happens when galaxies interact.","interacting galaxies merger",["Gravity can distort interacting galaxies into tails, bridges, and other structures.","Interactions can compress gas and trigger bursts of star formation.","Major mergers can transform the structure of galaxies."]],["Supermassive Black Holes","Explore giant black holes in galactic centers.","supermassive black hole galaxy center",["Most large galaxies appear to host supermassive black holes in their centers.","Supermassive black holes contain millions to billions of solar masses.","A black hole can be quiet when starved of gas or extremely luminous when rapidly accreting."]],["Dark Matter in Galaxies","See how invisible mass shapes galactic motion.","galaxy dark matter rotation curve",["Galaxy rotation curves often require more gravity than visible matter can provide.","Extended dark matter halos can explain much of the missing gravitational influence.","Gravitational lensing provides another way to map total mass."]],["The Local Group","Meet the Milky Way's galactic neighborhood.","Local Group Andromeda Milky Way",["The Milky Way belongs to the Local Group.","Andromeda and Triangulum are other major Local Group galaxies.","Most known Local Group members are dwarf galaxies."]]]],["The Galaxy Universe","Zoom out to clusters, deep fields, and cosmic evolution.",[["Galaxy Clusters and the Cosmic Web","Explore the largest structures that contain galaxies.","galaxy cluster cosmic web",["Galaxy clusters can contain hundreds or thousands of galaxies.","Clusters also contain hot intracluster gas and large amounts of dark matter.","On the largest scales, galaxies trace filaments and voids called the cosmic web."]],["Measuring Galaxy Distances","Learn how astronomers estimate distances to remote galaxies.","Cepheid supernova galaxy distance",["Astronomers combine several overlapping techniques in a cosmic distance ladder.","Standard candles have known intrinsic luminosities that can be compared with observed brightness.","Cosmological redshift becomes an important distance and expansion probe for remote galaxies."]],["Deep Fields and Galaxy Evolution","See how Hubble and Webb look back through cosmic time.","Hubble Deep Field Webb galaxies",["Because light takes time to travel, distant galaxies are observed as they were in the past.","Deep telescope exposures reveal thousands of faint galaxies.","Comparing galaxies across cosmic time reveals how gas, mergers, feedback, and black holes shape galaxy evolution."]]]]]},"cosmology":{"title":"Cosmology","icon":"✳","description":"Study the origin, expansion, composition, structure, and fate of the universe.","sections":[["Cosmology Foundations","Build a framework for thinking about the universe as a whole.",[["What is Cosmology?","Learn what cosmologists study.","deep universe galaxies",["Cosmology studies the universe as a whole, including its origin, evolution, contents, and possible future.","Cosmologists test models using observations rather than relying only on theory.","Modern cosmology describes a universe that changes dramatically over cosmic time."]],["The Scale of the Universe","Understand cosmic distances and large-scale structure.","deep field galaxies universe",["Astronomers use units such as light-years and parsecs because cosmic distances are enormous.","Galaxies gather into groups, clusters, filaments, and larger structures.","The observable universe is limited by the time light has had to reach us."]],["An Expanding Universe","Learn what it means for space to expand.","expanding universe galaxies",["On large scales, distant galaxies generally recede in a pattern consistent with cosmic expansion.","Cosmological expansion stretches traveling light to longer wavelengths.","The Big Bang model describes expansion of space itself, not an explosion into preexisting empty space."]],["The Big Bang Model","Explore the hot, dense early universe.","early universe Big Bang",["The Big Bang model describes an early universe that was much hotter and denser than today.","As the universe expanded, it cooled and allowed particles, atoms, stars, and galaxies to form in stages.","Cosmic expansion, primordial elements, and background radiation provide major evidence for the model."]]]],["The Early Universe","Explore the first atoms, background radiation, and growth of structure.",[["The Cosmic Microwave Background","Meet the oldest light we can observe directly.","cosmic microwave background",["The cosmic microwave background is relic radiation from the early universe.","It was released when the universe cooled enough for neutral atoms to form and photons to travel freely.","Tiny CMB temperature variations trace early density differences."]],["Big Bang Nucleosynthesis","Learn how the first light nuclei formed.","early universe nucleosynthesis",["During the first few minutes, protons and neutrons combined into light nuclei.","The main products were hydrogen and helium nuclei with small amounts of other light isotopes.","Observed primordial abundances test early-universe models."]],["From Atoms to the First Stars","Follow the universe from darkness to the first luminous objects.","first stars early universe Webb",["After neutral atoms formed, the universe entered a cosmic dark age before the first stars.","Gravity gradually collapsed matter into the first stars and galaxies.","Radiation from early luminous objects helped reionize intergalactic hydrogen."]],["Growth of Cosmic Structure","Learn how tiny density variations became galaxies and clusters.","cosmic web simulation galaxies",["Regions slightly denser than average attracted more matter through gravity.","Dark matter created gravitational scaffolding into which ordinary matter fell.","Over time, this growth produced halos, filaments, clusters, and voids."]],["Dark Matter","Examine evidence for unseen gravitating matter.","dark matter galaxy cluster lensing",["Dark matter does not emit ordinary light but reveals itself through gravity.","Galaxy rotation, cluster motions, and gravitational lensing all provide evidence for unseen mass.","Dark matter is essential in successful models of structure formation."]]]],["Modern Cosmology","Measure expansion, age, geometry, and dark energy.",[["The Hubble-Lemaître Relation","Connect galaxy recession with cosmic distance.","Hubble galaxies redshift",["On large scales, more distant galaxies tend to have larger recession velocities.","The Hubble constant describes the present expansion rate.","Astronomers combine distance indicators and redshifts to estimate this relation."]],["Redshift as a Cosmic Tool","Learn how stretched light reveals expansion and distance.","galaxy spectrum redshift",["Cosmological expansion stretches spectral features to longer wavelengths.","Redshift is measured by comparing observed spectral lines with known laboratory wavelengths.","High-redshift galaxies are often seen at much earlier cosmic times."]],["Dark Energy","Explore evidence for accelerated cosmic expansion.","dark energy supernova universe",["Observations of distant supernovae revealed that cosmic expansion is accelerating.","Dark energy is the name given to the component responsible for this acceleration in the standard model.","The physical nature of dark energy remains a major open question."]],["The Age and Geometry of the Universe","Learn how cosmologists estimate cosmic age and curvature.","cosmic microwave background universe geometry",["Modern measurements indicate an age of roughly 13.8 billion years.","Ages of ancient stars provide an independent consistency check.","Large-scale spatial geometry is observed to be very close to flat."]]]],["Cosmology Frontiers","Explore inflation, cosmic fate, and observations of the earliest eras.",[["Cosmic Inflation","Learn about a proposed burst of extremely rapid early expansion.","early universe inflation CMB",["Inflation proposes an extremely rapid expansion during a very early cosmic epoch.","It can help explain the large-scale uniformity and near-flatness of the universe.","Quantum fluctuations during inflation may have seeded later cosmic structure."]],["The Fate of the Universe","Explore possible long-term cosmic futures.","future universe galaxies",["The universe's long-term future depends strongly on the behavior of dark energy.","In the standard model, expansion continues indefinitely.","Over immense timescales, star formation declines as usable gas is depleted or locked into remnants."]],["Observing the Early Universe","See how modern telescopes probe cosmic dawn.","James Webb early galaxies",["High-redshift galaxies are observed as they existed when the universe was much younger.","Cosmic redshift moves much early-galaxy light into infrared wavelengths.","Deep infrared observations test models of early star and galaxy formation."]]]]]},"planets":{"title":"Planets","icon":"🪐","description":"Explore worlds in our Solar System and beyond.","sections":[["Planetary Foundations","Learn what planets are and how the main classes differ.",[["What is a Planet?","Learn the defining features of planets.","solar system planets",["Planets are large bodies that orbit stars and are shaped strongly by their own gravity.","A planet's orbit is governed by gravity.","Planetary worlds can be rocky, gas-rich, ice-rich, or unlike anything in our Solar System."]],["Terrestrial Planets","Compare Mercury, Venus, Earth, and Mars.","Mercury Venus Earth Mars",["Mercury, Venus, Earth, and Mars are rocky terrestrial planets.","They are dominated by silicate rock and metal rather than thick hydrogen-helium envelopes.","Their atmospheres and geologic histories differ dramatically."]],["Gas Giants and Ice Giants","Compare Jupiter, Saturn, Uranus, and Neptune.","Jupiter Saturn Uranus Neptune",["Jupiter and Saturn are gas giants dominated by hydrogen and helium.","Uranus and Neptune are ice giants with larger fractions of heavier volatile materials.","All four giant planets have ring systems and many moons."]],["Dwarf Planets","Learn why Pluto belongs to a different category.","Pluto dwarf planet Ceres",["Dwarf planets orbit the Sun and are rounded by gravity.","They have not cleared their orbital neighborhoods.","Pluto, Ceres, Eris, Haumea, and Makemake are recognized dwarf planets."]]]],["Building Planetary Systems","Learn how planets form and what controls their environments.",[["Protoplanetary Disks","See the disks where planets are born.","protoplanetary disk Webb ALMA",["Young stars are commonly surrounded by disks of gas and dust.","Dust grains in disks can collide and grow into larger solid bodies.","Rings and gaps in disks can trace planet formation and other disk processes."]],["How Planets Form","Follow material from dust to planets.","planet formation disk",["Small solids can grow into planetesimals and planetary embryos.","Accretion allows larger bodies to collect additional material.","Massive cores can capture gas before the protoplanetary disk disappears."]],["Planetary Atmospheres","Learn what controls an atmosphere's composition and evolution.","planet atmosphere Mars Venus Earth",["Atmospheres are shaped by gravity, temperature, chemistry, geology, impacts, and stellar radiation.","Atmospheric gases can be lost through thermal escape, solar wind, and impacts.","Atmospheric composition strongly affects climate and surface conditions."]],["Inside Planets","Explore cores, mantles, and internal heat.","planet interior Earth Mars Jupiter",["Many planets differentiate into layers as denser materials sink inward.","Internal heat can come from formation, radioactive decay, and tidal interactions.","High pressures inside giant planets create material states unlike ordinary surface conditions."]],["Planetary Magnetic Fields","Learn how planetary dynamos reveal interiors.","Earth Jupiter magnetic field aurora",["Motion of conducting material inside some planets creates global magnetic fields.","A magnetic field can carve out a magnetosphere that interacts with the stellar wind.","Charged particles guided by magnetic fields can produce auroras."]]]],["Worlds of the Solar System","Explore the diversity of Solar System environments.",[["Mercury","Explore the smallest major planet and its extreme environment.","Mercury planet MESSENGER",["Mercury is the closest major planet to the Sun.","It has a very large metallic core relative to its size.","Permanently shadowed polar craters can preserve water ice."]],["Venus","Study Earth's hot, cloud-covered neighbor.","Venus planet Magellan",["Venus has a dense carbon-dioxide atmosphere and an extreme greenhouse climate.","Its surface is hotter than Mercury despite being farther from the Sun.","Radar mapping reveals broad volcanic plains and other geologic features."]],["Earth, Moon and Mars","Compare nearby rocky worlds and their histories.","Earth Moon Mars NASA",["Earth has abundant liquid surface water and active plate tectonics.","The Moon preserves an ancient record of impacts and volcanism.","Mars is cold and dry today but preserves strong evidence for ancient rivers, lakes, and wetter climates."]],["Jupiter to Neptune","Tour the giant planets of the outer Solar System.","Jupiter Saturn Uranus Neptune Voyager",["Jupiter is the Solar System's largest planet.","Saturn is famous for its extensive ring system.","Uranus and Neptune are ice giants with diverse moons and active atmospheres."]]]],["Exoplanets and Habitability","Explore planets around other stars and the search for habitable environments.",[["Detecting Exoplanets","Learn how astronomers find planets around other stars.","exoplanet transit TESS",["The transit method detects small periodic dips when a planet crosses its star.","The radial-velocity method detects the gravitational wobble a planet induces in its star.","Direct imaging, microlensing, timing, and astrometry provide additional detection methods."]],["Habitability","Learn what makes an environment potentially suitable for life as we know it.","habitable zone exoplanet",["The habitable zone describes distances where liquid surface water could be possible under suitable atmospheric conditions.","Being in the habitable zone does not guarantee habitability.","Atmospheres, geology, stellar activity, chemistry, and subsurface environments all matter."]],["Strange Exoplanets","Discover worlds unlike anything in our Solar System.","hot Jupiter super Earth exoplanet",["Hot Jupiters are gas giants orbiting extremely close to their stars.","Super-Earths are larger than Earth but smaller than Neptune and can have diverse compositions.","Exoplanet systems show a much wider range of architectures than our Solar System alone suggests."]]]]]},"nebulae":{"title":"Nebulae","icon":"☁️","description":"Explore interstellar clouds, star-forming regions, and glowing stellar remnants.","sections":[["Nebula Foundations","Learn what nebulae are and why they look different.",[["What is a Nebula?","Learn what nebulae are made of.","nebula Hubble",["A nebula is a cloud of gas and dust in interstellar space.","Some nebulae are sites of star formation while others come from aging or dying stars.","Different wavelengths reveal different physical components of nebulae."]],["The Interstellar Medium","Explore the material between stars.","interstellar medium gas dust",["The interstellar medium includes gas, dust, cosmic rays, and magnetic fields between stars.","Interstellar gas exists in cold molecular, warm, and extremely hot phases.","Dust absorbs visible light, emits infrared radiation, and participates in interstellar chemistry."]],["Emission Nebulae","Learn why some nebulae glow brightly.","Orion Nebula emission nebula",["Hot stars can emit ultraviolet radiation that ionizes nearby gas.","Ionized atoms and ions emit characteristic wavelengths of light.","Many emission nebulae are associated with active star-forming regions."]],["Reflection and Dark Nebulae","See how dust can scatter or block starlight.","reflection nebula dark nebula",["Reflection nebulae shine by scattering light from nearby stars.","Dark nebulae are dense dusty clouds that block visible background light.","Infrared observations can penetrate dust and reveal hidden stars."]]]],["Stellar Nurseries","Learn how dense clouds fragment and create stars.",[["Molecular Clouds","Explore the coldest star-forming material.","molecular cloud star formation",["Molecular clouds are cold, dense regions where molecules and dust can survive.","Dust shields cloud interiors from harsh radiation.","Dense cores inside molecular clouds can collapse into protostars."]],["Protostars in Nebulae","See newborn stars still wrapped in dust.","protostar Webb nebula",["Protostars form inside collapsing cloud cores and often remain embedded in dust.","Infrared telescopes reveal warm dust, accretion disks, and hidden young stars.","Young stars often launch jets and winds."]],["Pillars, Globules and Dense Cores","Explore small structures inside giant clouds.","Pillars of Creation Eagle Nebula",["Radiation and winds can sculpt dense columns and globules inside star-forming clouds.","Dense structures can survive longer than surrounding lower-density gas.","Feedback can compress gas in some places while dispersing it in others."]],["Jets and Herbig-Haro Objects","Learn how young stars create glowing shocks.","Herbig Haro jet Webb",["Young stars can launch narrow high-speed jets.","When jets strike surrounding gas, shocks heat and ionize the material.","The glowing shocks are called Herbig-Haro objects."]],["Feedback from Massive Stars","See how hot stars reshape their birth clouds.","massive stars nebula bubbles",["Massive stars emit intense ultraviolet radiation that ionizes surrounding gas.","Powerful stellar winds can blow bubbles and shells into clouds.","Supernovae later inject even more energy and heavy elements."]]]],["Nebulae from Stellar Death","Explore planetary nebulae and supernova remnants.",[["Planetary Nebulae","Study the glowing shells around dying Sun-like stars.","planetary nebula Ring Helix",["Lower-mass stars can expel their outer envelopes late in life.","The hot exposed core ionizes the expanding gas.","Planetary nebulae disperse quickly compared with stellar lifetimes."]],["Supernova Remnants","Explore expanding debris from stellar explosions.","supernova remnant Crab Cassiopeia",["Fast supernova ejecta drive shock waves through surrounding interstellar gas.","Supernova remnants emit across radio, optical, X-ray, and other wavelengths.","The expanding debris distributes elements into interstellar space."]],["The Crab Nebula","Meet one of the best-studied supernova remnants.","Crab Nebula Hubble Chandra",["The Crab Nebula is linked to a supernova observed from Earth in 1054.","A rapidly rotating neutron star called a pulsar lies at its center.","The pulsar injects energetic particles into the expanding nebula."]],["Element Recycling","Learn how nebulae enrich future stars and planets.","supernova element enrichment nebula",["Stars create new elements and return material through winds and explosions.","Ejected matter mixes with interstellar gas and dust.","Later stars and planets form from material enriched by earlier generations."]]]],["Reading Nebulae","Learn how astronomers interpret famous nebulae and multiwavelength data.",[["Nebulae Across Wavelengths","See how different telescopes reveal different physics.","nebula infrared xray radio Hubble Webb",["Visible light traces ionized gas, reflection, and dust obscuration.","Infrared reveals warm dust and embedded young stars while radio observations trace cold molecules and ionized gas.","X-rays reveal extremely hot gas and energetic processes."]],["The Orion and Eagle Nebulae","Explore two famous stellar nurseries.","Orion Eagle Nebula Webb Hubble",["The Orion Nebula is a nearby massive star-forming region containing many young stars and disks.","The Eagle Nebula contains the famous Pillars of Creation.","Massive young stars sculpt both environments through radiation and winds."]],["How Nebulae Change","Understand why nebulae are temporary structures.","nebula evolution expanding cloud",["Gravity can collapse parts of a cloud into stars.","Radiation, winds, and supernova shocks can disperse other regions.","Nebulae continually form, fragment, transform, and mix back into the interstellar medium."]]]]]},"observing":{"title":"Observing","icon":"🔭","description":"Learn practical naked-eye, binocular, telescope, and imaging astronomy.","sections":[["Observing Foundations","Learn to navigate the night sky and plan simple sessions.",[["Reading the Night Sky","Learn how to orient yourself under the stars.","night sky stars Milky Way",["Cardinal directions and altitude above the horizon provide a simple local sky framework.","Earth's rotation makes the stars appear to move across the sky each night.","Earth's orbit changes which constellations are visible during different seasons."]],["Constellations and Star Hopping","Use recognizable patterns to find targets.","constellations star chart",["Modern astronomy recognizes 88 official constellations.","Asterisms are recognizable star patterns that may be only part of a constellation.","Star hopping uses bright reference stars to navigate toward fainter targets."]],["Sky Coordinates","Learn altitude-azimuth and equatorial coordinates.","celestial sphere star chart",["Altitude measures angular height above the horizon while azimuth measures direction around it.","Right ascension and declination provide a sky-fixed equatorial coordinate system.","Coordinates let observers locate and communicate target positions precisely."]],["Dark Adaptation and Light Pollution","Protect your night vision and choose better observing sites.","dark sky Milky Way light pollution",["Human eyes become more sensitive after spending time in darkness.","Dim red light can preserve dark adaptation better than bright white light.","Artificial skyglow reduces contrast and hides faint objects."]]]],["Binoculars and Telescopes","Learn how optical equipment works and how to use it well.",[["Using Binoculars","Turn simple binoculars into a powerful astronomy tool.","binocular astronomy Moon stars",["Binoculars provide a wide field useful for the Moon, star clusters, and large deep-sky objects.","A label such as 10×50 means 10 times magnification and 50-millimeter objective lenses.","Bracing or tripod mounting can improve stability."]],["Telescope Basics","Understand aperture, focal length, and magnification.","telescope observatory",["Aperture determines how much light a telescope collects and helps set its resolving power.","Telescope and eyepiece focal lengths determine magnification.","Atmospheric seeing and aperture limit useful magnification, so more magnification is not always better."]],["Refractors and Reflectors","Compare the main telescope optical designs.","refractor reflector telescope",["Refracting telescopes use lenses to collect and focus light.","Reflecting telescopes use mirrors.","Each design has tradeoffs in aperture, maintenance, field of view, and optical behavior."]],["Mounts and Tracking","Learn why a stable mount matters as much as the telescope.","equatorial telescope mount tracking",["Alt-azimuth mounts move in altitude and azimuth and are intuitive for visual observing.","Equatorial mounts align an axis with Earth's rotation axis.","Tracking compensates for Earth's rotation to keep objects centered."]],["Eyepieces and Filters","Use accessories effectively without expecting miracles.","telescope eyepiece Moon filter",["Magnification equals telescope focal length divided by eyepiece focal length.","Eyepiece design affects apparent field of view.","Filters can enhance certain features but cannot replace aperture or dark skies."]]]],["Observing Targets","Learn practical techniques for the Moon, planets, and deep-sky objects.",[["Observing the Moon","Use changing illumination to reveal lunar terrain.","Moon telescope craters",["The terminator casts long shadows that reveal lunar topography.","Lunar maria are ancient basaltic plains while craters record impacts.","Different phases illuminate different terrain from night to night."]],["Observing the Planets","Learn what visual details to expect from major planets.","Jupiter Saturn Mars telescope",["Jupiter can show cloud belts, the Galilean moons, and sometimes the Great Red Spot.","Saturn's ring system is visible through modest telescopes under good conditions.","Mars can reveal surface markings near favorable oppositions while Venus displays phases."]],["Star Clusters and Double Stars","Observe stellar targets that tolerate light pollution better than faint nebulae.","Pleiades double star cluster",["Open clusters are excellent wide-field targets.","Larger telescopes begin resolving stars in bright globular clusters.","Double stars can test atmospheric seeing and telescope resolution."]],["Nebulae and Galaxies","Learn how to observe faint extended objects.","Andromeda Orion Nebula amateur observing",["Averted vision can improve detection of faint deep-sky objects.","Low or moderate magnification can be effective for large nebulae and galaxies.","Dark skies greatly improve contrast for faint extended targets."]]]],["Observing Practice","Plan sessions, record observations, and begin astrophotography safely.",[["Meteors and Comets","Observe transient visitors and annual meteor showers.","meteor shower comet night sky",["Meteor showers are best observed with a wide naked-eye field rather than high magnification.","Many annual showers occur when Earth passes through debris streams left by comets or asteroids.","Bright comets can show a coma and one or more tails."]],["Planning and Observation Logs","Prepare efficient sessions and record what you see.","amateur astronomy observation notebook",["Clouds, transparency, seeing, Moon phase, wind, and target altitude affect observing quality.","A useful observing log records time, location, equipment, conditions, and target.","Sketching can improve attention to subtle detail."]],["Astrophotography Basics","Understand tracking, exposure, stacking, and calibration.","astrophotography telescope Milky Way",["Long exposures generally require tracking to prevent star trails.","Stacking many exposures improves signal-to-noise ratio.","Calibration frames can reduce sensor and optical artifacts."]]]]]}};
-const makeQuestion=(id,title,fact,i=0)=>({id,type:'multiple-choice',question:`Which statement about ${title} is correct?`,answers:[fact,'It is unrelated to astronomy.','It occurs only on Earth.','It has no measurable physical effects.'],correctAnswer:0,explanation:fact});
-const makeLesson=(categoryId,n,title,description,nasaSearch,facts,unlocked=false)=>({
-  id:`${categoryId}-${n}`,type:'lesson',title,description,duration:n<5?'6 min':'7 min',xp:n<5?25:35,unlocked,completed:false,nasaSearch,
-  content:{
-    intro:description,
-    sections:facts.map((text,i)=>({title:`Key Concept ${i+1}`,text})),
-    activities:categoryId==='stars'&&n===2?[{id:'stars-2-order',type:'ordering',title:'Build a Star',question:'Put these stages in the correct order.',items:['Molecular cloud','Dense region collapses','Protostar forms','Core heats and compresses','Hydrogen fusion begins','Main-sequence star'],explanation:'A star develops from a collapsing region of a molecular cloud into a protostar, then reaches the main sequence after stable hydrogen fusion begins.'}]:[],
-    questions:[makeQuestion(`${categoryId}-${n}-q1`,title,facts[0]),{id:`${categoryId}-${n}-q2`,type:'true-false',question:facts[1],answers:['True','False'],correctAnswer:0,explanation:facts[1]}],
-    keyFacts:facts
+const COURSE_BLUEPRINTS={
+  stars:{
+    title:'Stars',
+    icon:'⭐',
+    description:'Birth, life, and death of stars from protostars to stellar remnants.',
+    sections:[
+      {
+        title:'Stellar Foundations',
+        subtitle:'Learn what stars are, how they form, and how they spend most of their lives.',
+        lessons:[
+          ['What is a Star?','Learn what stars are made of and why they shine.','Sun star','Stars are enormous spheres of hot plasma held together by gravity.'],
+          ['How Stars Form','Follow a star from a molecular cloud to the main sequence.','star formation protostar molecular cloud','Stars form when dense regions inside molecular clouds collapse under gravity.'],
+          ['The Main Sequence','Explore the longest stage of a star’s life.','Sun main sequence star','Main-sequence stars generate energy by fusing hydrogen into helium.'],
+          ['Color, Temperature and Mass','Discover why stars appear red, yellow, white, or blue.','blue red stars star cluster','A star’s color provides an important clue to its surface temperature.']
+        ]
+      },
+      {
+        title:'Stellar Evolution',
+        subtitle:'Follow lower-mass and massive stars beyond the main sequence.',
+        lessons:[
+          ['Red Giants and Supergiants','Learn why aging stars expand dramatically.','red giant supergiant star','Stars expand after the hydrogen available for fusion in their cores becomes depleted.'],
+          ['Planetary Nebulae','See how Sun-like stars release their outer layers.','planetary nebula Helix Ring Nebula','Lower-mass stars can eject their outer layers near the ends of their lives.'],
+          ['White Dwarfs','Meet the dense remnants of Sun-like stars.','white dwarf star','White dwarfs are dense stellar remnants left by stars similar to the Sun.'],
+          ['Massive Star Fusion','Discover how massive stars build heavier elements.','massive star fusion supergiant','Massive stars can progress through several stages of fusion involving increasingly heavy elements.'],
+          ['Supernovae','Explore the explosive deaths of massive stars.','supernova remnant Cassiopeia Crab','Some massive stars end their lives in powerful core-collapse supernova explosions.']
+        ]
+      },
+      {
+        title:'Extreme Stellar Remnants',
+        subtitle:'Explore neutron stars, pulsars, black holes, and interacting stars.',
+        lessons:[
+          ['Neutron Stars','Explore some of the densest objects in the universe.','neutron star NICER','Neutron stars are extraordinarily dense remnants produced by some massive-star supernovae.'],
+          ['Pulsars and Magnetars','Meet rapidly spinning and highly magnetic neutron stars.','pulsar neutron star magnetar','Pulsars and magnetars are special types of neutron stars.'],
+          ['Stellar-Mass Black Holes','Learn how the heaviest stellar cores can collapse even further.','stellar mass black hole','Some sufficiently massive stellar cores collapse into black holes.'],
+          ['Binary Stars and Novae','Discover what happens when stars evolve with companions.','binary star nova white dwarf','Binary stars can exchange matter and produce phenomena such as novae.']
+        ]
+      },
+      {
+        title:'Understanding Stars',
+        subtitle:'Learn how astronomers organize and study stellar populations.',
+        lessons:[
+          ['Star Clusters','Explore groups of stars that formed together.','open star cluster globular cluster','Star clusters provide valuable laboratories for studying stellar evolution.'],
+          ['Spectral Classification','Learn how astronomers classify stars using their light.','stellar spectrum stars spectroscopy','Stellar spectra reveal temperature, composition, and other physical properties.'],
+          ['The Hertzsprung-Russell Diagram','Learn how astronomers organize stars by luminosity and temperature.','Hertzsprung Russell diagram star cluster','The H-R diagram compares stellar luminosity with temperature or spectral class.']
+        ]
+      }
+    ]
+  },
+  galaxies:{
+    title:'Galaxies',
+    icon:'🌌',
+    description:'Explore galaxy structure, evolution, black holes, collisions, and the cosmic web.',
+    sections:[
+      {
+        title:'Galaxy Foundations',
+        subtitle:'Learn what galaxies are and how astronomers classify them.',
+        lessons:[
+          ['What is a Galaxy?','Learn what galaxies contain and how they are held together.','galaxy Hubble','Galaxies are gravitationally bound systems containing stars, gas, dust, dark matter, and stellar remnants.'],
+          ['The Milky Way','Explore the structure of our home galaxy.','Milky Way galaxy center','The Milky Way is a barred spiral galaxy containing the Solar System.'],
+          ['Types of Galaxies','Compare spiral, elliptical, and irregular galaxies.','spiral elliptical irregular galaxies','Galaxies are commonly classified as spiral, elliptical, or irregular systems.'],
+          ['Inside a Galaxy','Meet the stars, gas, dust, and dark matter that make up galaxies.','galaxy dust gas stars','Galaxies contain multiple interacting components including stars, gas, dust, and dark matter.']
+        ]
+      },
+      {
+        title:'Galaxy Structure and Activity',
+        subtitle:'Explore star formation, spiral structure, active nuclei, and dwarf galaxies.',
+        lessons:[
+          ['Star Formation in Galaxies','Learn why some galaxies form stars faster than others.','star forming galaxy Hubble','Cold molecular gas provides the raw material for new stars inside galaxies.'],
+          ['Spiral Arms and Bars','Understand patterns seen in disk galaxies.','barred spiral galaxy','Spiral arms and bars are large-scale structures found in many disk galaxies.'],
+          ['Elliptical Galaxies','Explore smooth galaxies dominated by older stars.','elliptical galaxy','Many elliptical galaxies contain older stellar populations and relatively little cold gas.'],
+          ['Dwarf and Irregular Galaxies','Study small galaxies and systems with unusual shapes.','dwarf irregular galaxy','Dwarf galaxies are small but extremely common throughout the universe.'],
+          ['Active Galaxies and Quasars','Learn how feeding black holes can outshine entire galaxies.','quasar active galactic nucleus','Active galactic nuclei are powered by matter falling toward supermassive black holes.']
+        ]
+      },
+      {
+        title:'Galaxy Evolution',
+        subtitle:'See how galaxies grow, collide, and interact with their environments.',
+        lessons:[
+          ['Galaxy Collisions and Mergers','Learn what happens when galaxies interact.','interacting galaxies merger','Gravity can cause galaxies to interact, distort, and eventually merge.'],
+          ['Supermassive Black Holes','Explore giant black holes in galactic centers.','supermassive black hole galaxy center','Most large galaxies appear to contain supermassive black holes in their centers.'],
+          ['Dark Matter in Galaxies','See how invisible mass shapes galactic motion.','galaxy dark matter rotation curve','Galaxy motions provide strong evidence for large amounts of dark matter.'],
+          ['The Local Group','Meet the Milky Way’s galactic neighborhood.','Local Group Andromeda Milky Way','The Milky Way belongs to a gravitationally bound collection of galaxies called the Local Group.']
+        ]
+      },
+      {
+        title:'The Galaxy Universe',
+        subtitle:'Zoom out to clusters, deep fields, and cosmic evolution.',
+        lessons:[
+          ['Galaxy Clusters and the Cosmic Web','Explore enormous structures containing galaxies.','galaxy cluster cosmic web','Galaxies form groups, clusters, filaments, and voids across the cosmic web.'],
+          ['Measuring Galaxy Distances','Learn how astronomers estimate enormous cosmic distances.','Cepheid supernova galaxy distance','Astronomers use several overlapping methods to construct a cosmic distance ladder.'],
+          ['Deep Fields and Galaxy Evolution','See how Hubble and Webb look back through cosmic time.','Hubble Deep Field Webb galaxies','Deep observations reveal distant galaxies as they existed billions of years in the past.']
+        ]
+      }
+    ]
+  },
+  cosmology:{
+    title:'Cosmology',
+    icon:'✳',
+    description:'Study the origin, expansion, composition, structure, and fate of the universe.',
+    sections:[
+      {
+        title:'Cosmology Foundations',
+        subtitle:'Build a framework for thinking about the universe as a whole.',
+        lessons:[
+          ['What is Cosmology?','Learn what cosmologists study.','deep universe galaxies','Cosmology is the scientific study of the universe as a whole.'],
+          ['The Scale of the Universe','Understand cosmic distances and large-scale structure.','deep field galaxies universe','The observable universe contains galaxies spread across enormous distances.'],
+          ['An Expanding Universe','Learn what it means for space to expand.','expanding universe galaxies','Observations show that the universe is expanding on large scales.'],
+          ['The Big Bang Model','Explore the hot, dense early universe.','early universe Big Bang','The Big Bang model describes an early universe that was much hotter and denser than today.']
+        ]
+      },
+      {
+        title:'The Early Universe',
+        subtitle:'Explore the first atoms, background radiation, and growth of structure.',
+        lessons:[
+          ['The Cosmic Microwave Background','Meet the oldest light we can observe directly.','cosmic microwave background','The cosmic microwave background is relic radiation from the early universe.'],
+          ['Big Bang Nucleosynthesis','Learn how the first light nuclei formed.','early universe nucleosynthesis','Hydrogen and helium nuclei formed during the universe’s first few minutes.'],
+          ['From Atoms to the First Stars','Follow the universe from darkness to the first luminous objects.','first stars early universe Webb','The first stars formed after a long period known as the cosmic dark ages.'],
+          ['Growth of Cosmic Structure','Learn how tiny density variations became galaxies and clusters.','cosmic web simulation galaxies','Gravity amplified small density differences into large cosmic structures.'],
+          ['Dark Matter','Examine evidence for unseen gravitating matter.','dark matter galaxy cluster lensing','Dark matter is detected primarily through its gravitational influence.']
+        ]
+      },
+      {
+        title:'Modern Cosmology',
+        subtitle:'Measure expansion, age, geometry, and dark energy.',
+        lessons:[
+          ['The Hubble-Lemaître Relation','Connect galaxy recession with cosmic distance.','Hubble galaxies redshift','More distant galaxies generally recede faster because of cosmic expansion.'],
+          ['Redshift as a Cosmic Tool','Learn how stretched light reveals expansion and distance.','galaxy spectrum redshift','Cosmological expansion stretches traveling light toward longer wavelengths.'],
+          ['Dark Energy','Explore evidence for accelerated cosmic expansion.','dark energy supernova universe','Dark energy is associated with the observed acceleration of cosmic expansion.'],
+          ['The Age and Geometry of the Universe','Learn how cosmologists estimate cosmic age and curvature.','cosmic microwave background universe geometry','Modern observations indicate an age of roughly 13.8 billion years and nearly flat large-scale geometry.']
+        ]
+      },
+      {
+        title:'Cosmology Frontiers',
+        subtitle:'Explore inflation, cosmic fate, and observations of the earliest eras.',
+        lessons:[
+          ['Cosmic Inflation','Learn about a proposed burst of extremely rapid early expansion.','early universe inflation CMB','Inflation proposes an extremely rapid expansion during a very early cosmic epoch.'],
+          ['The Fate of the Universe','Explore possible long-term cosmic futures.','future universe galaxies','The long-term future of the universe depends strongly on the behavior of dark energy.'],
+          ['Observing the Early Universe','See how modern telescopes probe cosmic dawn.','James Webb early galaxies','Infrared telescopes can detect highly redshifted galaxies from very early cosmic history.']
+        ]
+      }
+    ]
+  },
+  planets:{
+    title:'Planets',
+    icon:'🪐',
+    description:'Explore worlds in our Solar System and beyond.',
+    sections:[
+      {
+        title:'Planetary Foundations',
+        subtitle:'Learn what planets are and how the major classes differ.',
+        lessons:[
+          ['What is a Planet?','Learn the defining features of planets.','solar system planets','Planets are large bodies orbiting stars and shaped strongly by their own gravity.'],
+          ['Terrestrial Planets','Compare Mercury, Venus, Earth, and Mars.','Mercury Venus Earth Mars','Mercury, Venus, Earth, and Mars are rocky terrestrial planets.'],
+          ['Gas Giants and Ice Giants','Compare Jupiter, Saturn, Uranus, and Neptune.','Jupiter Saturn Uranus Neptune','Jupiter and Saturn are gas giants while Uranus and Neptune are ice giants.'],
+          ['Dwarf Planets','Learn why Pluto belongs to a different category.','Pluto dwarf planet Ceres','Dwarf planets orbit the Sun and are rounded by gravity but have not cleared their orbital neighborhoods.']
+        ]
+      },
+      {
+        title:'Building Planetary Systems',
+        subtitle:'Learn how planets form and what controls their environments.',
+        lessons:[
+          ['Protoplanetary Disks','See the disks where planets are born.','protoplanetary disk Webb ALMA','Planets form from gas and dust inside disks around young stars.'],
+          ['How Planets Form','Follow material from dust to planets.','planet formation disk','Dust can grow into planetesimals, planetary embryos, and eventually planets through accretion.'],
+          ['Planetary Atmospheres','Learn what controls an atmosphere’s composition and evolution.','planet atmosphere Mars Venus Earth','Planetary atmospheres evolve through gravity, chemistry, geology, impacts, and stellar radiation.'],
+          ['Inside Planets','Explore cores, mantles, and internal heat.','planet interior Earth Mars Jupiter','Planetary interiors contain layered materials shaped by density, pressure, and heat.'],
+          ['Planetary Magnetic Fields','Learn how planetary dynamos reveal interiors.','Earth Jupiter magnetic field aurora','Motion of electrically conducting material can generate planetary magnetic fields.']
+        ]
+      },
+      {
+        title:'Worlds of the Solar System',
+        subtitle:'Explore the diversity of environments around our Sun.',
+        lessons:[
+          ['Mercury','Explore the smallest major planet and its extreme environment.','Mercury planet MESSENGER','Mercury is the closest major planet to the Sun and has a heavily cratered rocky surface.'],
+          ['Venus','Study Earth’s hot, cloud-covered neighbor.','Venus planet Magellan','Venus has a dense carbon-dioxide atmosphere and an extreme greenhouse climate.'],
+          ['Earth, Moon and Mars','Compare nearby rocky worlds and their histories.','Earth Moon Mars NASA','Earth, the Moon, and Mars preserve very different records of planetary evolution.'],
+          ['Jupiter to Neptune','Tour the giant planets of the outer Solar System.','Jupiter Saturn Uranus Neptune Voyager','The giant planets have deep atmospheres, rings, powerful weather, and diverse moon systems.']
+        ]
+      },
+      {
+        title:'Exoplanets and Habitability',
+        subtitle:'Explore planets around other stars and the search for habitable environments.',
+        lessons:[
+          ['Detecting Exoplanets','Learn how astronomers find planets around other stars.','exoplanet transit TESS','Astronomers detect exoplanets through methods including transits and radial velocity.'],
+          ['Habitability','Learn what makes an environment potentially suitable for life.','habitable zone exoplanet','Habitability depends on water, atmosphere, chemistry, energy, stellar activity, and many other factors.'],
+          ['Strange Exoplanets','Discover worlds unlike anything in our Solar System.','hot Jupiter super Earth exoplanet','Exoplanet surveys reveal hot Jupiters, super-Earths, mini-Neptunes, and many unusual systems.']
+        ]
+      }
+    ]
+  },
+  nebulae:{
+    title:'Nebulae',
+    icon:'☁️',
+    description:'Explore interstellar clouds, star-forming regions, and glowing stellar remnants.',
+    sections:[
+      {
+        title:'Nebula Foundations',
+        subtitle:'Learn what nebulae are and why they look different.',
+        lessons:[
+          ['What is a Nebula?','Learn what nebulae are made of.','nebula Hubble','Nebulae are enormous clouds of gas and dust in interstellar space.'],
+          ['The Interstellar Medium','Explore the material between stars.','interstellar medium gas dust','The interstellar medium contains gas, dust, cosmic rays, and magnetic fields.'],
+          ['Emission Nebulae','Learn why some nebulae glow brightly.','Orion Nebula emission nebula','Emission nebulae glow when energetic radiation ionizes surrounding gas.'],
+          ['Reflection and Dark Nebulae','See how dust can scatter or block starlight.','reflection nebula dark nebula','Interstellar dust can scatter nearby starlight or block light from objects behind it.']
+        ]
+      },
+      {
+        title:'Stellar Nurseries',
+        subtitle:'Learn how dense clouds fragment and create stars.',
+        lessons:[
+          ['Molecular Clouds','Explore the coldest star-forming material.','molecular cloud star formation','Cold molecular clouds are major sites of star formation.'],
+          ['Protostars in Nebulae','See newborn stars still wrapped in dust.','protostar Webb nebula','Protostars form inside collapsing cloud cores and often remain hidden by dust.'],
+          ['Pillars, Globules and Dense Cores','Explore structures inside giant clouds.','Pillars of Creation Eagle Nebula','Dense columns and globules are sculpted by gravity, radiation, winds, and magnetic fields.'],
+          ['Jets and Herbig-Haro Objects','Learn how young stars create glowing shocks.','Herbig Haro jet Webb','Young stellar jets striking surrounding gas create glowing Herbig-Haro objects.'],
+          ['Feedback from Massive Stars','See how hot stars reshape their birth clouds.','massive stars nebula bubbles','Massive stars reshape surrounding clouds through radiation, winds, and supernovae.']
+        ]
+      },
+      {
+        title:'Nebulae from Stellar Death',
+        subtitle:'Explore planetary nebulae and supernova remnants.',
+        lessons:[
+          ['Planetary Nebulae','Study glowing shells around dying Sun-like stars.','planetary nebula Ring Helix','Planetary nebulae form from material expelled by evolved lower-mass stars.'],
+          ['Supernova Remnants','Explore expanding debris from stellar explosions.','supernova remnant Crab Cassiopeia','Supernova remnants are expanding structures of shocked stellar debris and surrounding gas.'],
+          ['The Crab Nebula','Meet one of the best-studied supernova remnants.','Crab Nebula Hubble Chandra','The Crab Nebula contains a pulsar left by a supernova observed in 1054.'],
+          ['Element Recycling','Learn how nebulae enrich future stars and planets.','supernova element enrichment nebula','Stellar ejecta return elements to space that can later become part of new stars and planets.']
+        ]
+      },
+      {
+        title:'Reading Nebulae',
+        subtitle:'Learn how astronomers interpret famous nebulae and multiwavelength data.',
+        lessons:[
+          ['Nebulae Across Wavelengths','See how different telescopes reveal different physics.','nebula infrared xray radio Hubble Webb','Visible, infrared, radio, ultraviolet, and X-ray observations reveal different nebular components.'],
+          ['The Orion and Eagle Nebulae','Explore two famous stellar nurseries.','Orion Eagle Nebula Webb Hubble','The Orion and Eagle Nebulae contain active star-forming regions shaped by young massive stars.'],
+          ['How Nebulae Change','Understand why nebulae are temporary structures.','nebula evolution expanding cloud','Nebulae continually collapse, fragment, expand, erode, and mix back into interstellar space.']
+        ]
+      }
+    ]
+  },
+  observing:{
+    title:'Observing',
+    icon:'🔭',
+    description:'Learn practical naked-eye, binocular, telescope, and imaging astronomy.',
+    sections:[
+      {
+        title:'Observing Foundations',
+        subtitle:'Learn to navigate the night sky and plan simple sessions.',
+        lessons:[
+          ['Reading the Night Sky','Learn how to orient yourself under the stars.','night sky stars Milky Way','Earth’s rotation and orbit control much of the apparent motion and seasonal change of the night sky.'],
+          ['Constellations and Star Hopping','Use recognizable patterns to find targets.','constellations star chart','Constellations and bright stars can be used as reference points for locating fainter objects.'],
+          ['Sky Coordinates','Learn altitude-azimuth and equatorial coordinates.','celestial sphere star chart','Astronomers use coordinate systems to specify precise locations in the sky.'],
+          ['Dark Adaptation and Light Pollution','Protect your night vision and choose better observing sites.','dark sky Milky Way light pollution','Dark adaptation improves visual sensitivity while light pollution reduces contrast.']
+        ]
+      },
+      {
+        title:'Binoculars and Telescopes',
+        subtitle:'Learn how optical equipment works and how to use it well.',
+        lessons:[
+          ['Using Binoculars','Turn simple binoculars into a powerful astronomy tool.','binocular astronomy Moon stars','Binoculars provide bright, wide-field views ideal for many astronomical objects.'],
+          ['Telescope Basics','Understand aperture, focal length, and magnification.','telescope observatory','Aperture controls light-gathering power while focal length and eyepieces determine magnification.'],
+          ['Refractors and Reflectors','Compare the main telescope optical designs.','refractor reflector telescope','Refractors use lenses while reflectors use mirrors to collect and focus light.'],
+          ['Mounts and Tracking','Learn why a stable mount matters as much as the telescope.','equatorial telescope mount tracking','Telescope mounts provide stability and can track the apparent motion of the sky.'],
+          ['Eyepieces and Filters','Use accessories effectively without expecting miracles.','telescope eyepiece Moon filter','Eyepieces control magnification and field of view while filters can enhance selected features.']
+        ]
+      },
+      {
+        title:'Observing Targets',
+        subtitle:'Learn practical techniques for the Moon, planets, and deep-sky objects.',
+        lessons:[
+          ['Observing the Moon','Use changing illumination to reveal lunar terrain.','Moon telescope craters','Low-angle sunlight near the lunar terminator reveals craters, mountains, and other terrain.'],
+          ['Observing the Planets','Learn what visual details to expect from major planets.','Jupiter Saturn Mars telescope','Planets require steady atmospheric conditions because their visible disks are relatively small.'],
+          ['Star Clusters and Double Stars','Observe rewarding stellar targets.','Pleiades double star cluster','Clusters and double stars are accessible targets for binoculars and telescopes.'],
+          ['Nebulae and Galaxies','Learn how to observe faint extended objects.','Andromeda Orion Nebula amateur observing','Dark skies, dark adaptation, and averted vision help reveal faint deep-sky objects.']
+        ]
+      },
+      {
+        title:'Observing Practice',
+        subtitle:'Plan sessions, record observations, and begin astrophotography.',
+        lessons:[
+          ['Meteors and Comets','Observe transient visitors and meteor showers.','meteor shower comet night sky','Meteor showers and many bright comets are best enjoyed with wide-field observing.'],
+          ['Planning and Observation Logs','Prepare efficient sessions and record what you see.','amateur astronomy observation notebook','Planning around weather, Moon phase, target altitude, and equipment improves observing sessions.'],
+          ['Astrophotography Basics','Understand tracking, exposure, stacking, and calibration.','astrophotography telescope Milky Way','Astrophotography combines tracked exposures and image processing to reveal faint astronomical detail.']
+        ]
+      }
+    ]
   }
-});
-const makeQuiz=(categoryId,index,title,sourceLessons,isFinal=false)=>{
-  const facts=sourceLessons.flatMap(l=>l.content.keyFacts).slice(0,isFinal?8:5);
+};
+const makeLesson=(categoryId,number,title,description,nasaSearch,fact,unlocked=false)=>{
   return{
-    id:isFinal?`${categoryId}-final`:`${categoryId}-quiz-${index}`,type:'quiz',title,description:isFinal?`Complete the ${title.replace(' Final Challenge','')} category.`:'Test what you learned in this section.',duration:isFinal?'10 min':'7 min',xp:isFinal?100:60,unlocked:false,completed:false,nasaSearch:title,
-    content:{intro:isFinal?'Review the complete category and finish the final challenge.':'Review the section before moving forward.',sections:[],activities:[],questions:facts.map((fact,i)=>makeQuestion(`${categoryId}-${isFinal?'final':`quiz-${index}`}-q${i+1}`,title,fact,i)),keyFacts:isFinal?['Category complete.','You are ready for the next stage of CosmoKlub.']:['Section complete.']}
+    id:`${categoryId}-${number}`,
+    type:'lesson',
+    title,
+    description,
+    duration:number<=4?'6 min':'7 min',
+    xp:number<=4?25:35,
+    unlocked,
+    completed:false,
+    nasaSearch,
+    content:{
+      intro:description,
+      sections:[
+        {
+          title:'Core Idea',
+          text:fact
+        },
+        {
+          title:'Why It Matters',
+          text:`Understanding ${title.toLowerCase()} helps connect this topic to the wider study of ${COURSE_BLUEPRINTS[categoryId].title.toLowerCase()}.`
+        },
+        {
+          title:'NASA Connection',
+          text:`NASA missions, observatories, spacecraft, and scientific datasets help researchers investigate ${title.toLowerCase()} and related phenomena.`
+        }
+      ],
+      activities:categoryId==='stars'&&number===2?[
+        {
+          id:'stars-2-order',
+          type:'ordering',
+          title:'Build a Star',
+          question:'Put these stages of star formation in the correct order.',
+          items:[
+            'Molecular cloud',
+            'Dense region collapses',
+            'Protostar forms',
+            'Core becomes hotter and denser',
+            'Hydrogen fusion begins',
+            'Main-sequence star'
+          ],
+          explanation:'Stars develop from collapsing molecular-cloud material into protostars before stable hydrogen fusion begins.'
+        }
+      ]:[],
+      questions:[
+        {
+          id:`${categoryId}-${number}-q1`,
+          type:'multiple-choice',
+          question:`Which statement about ${title} is correct?`,
+          answers:[
+            fact,
+            'It is unrelated to astronomy.',
+            'It occurs only on Earth.',
+            'It has no measurable physical effects.'
+          ],
+          correctAnswer:0,
+          explanation:fact
+        },
+        {
+          id:`${categoryId}-${number}-q2`,
+          type:'true-false',
+          question:`${title} is an important topic in astronomy.`,
+          answers:['True','False'],
+          correctAnswer:0,
+          explanation:`${title} is part of the ${COURSE_BLUEPRINTS[categoryId].title} learning category.`
+        }
+      ],
+      keyFacts:[
+        fact,
+        description,
+        `NASA observations can be used to explore ${title.toLowerCase()}.`
+      ]
+    }
+  };
+};
+const makeQuiz=(categoryId,index,title,lessons,isFinal=false)=>{
+  const facts=lessons.flatMap(lesson=>lesson.content.keyFacts).filter((value,index,array)=>array.indexOf(value)===index).slice(0,isFinal?8:5);
+  return{
+    id:isFinal?`${categoryId}-final`:`${categoryId}-quiz-${index}`,
+    type:'quiz',
+    title,
+    description:isFinal?`Complete the ${COURSE_BLUEPRINTS[categoryId].title} category.`:'Test what you learned in this section.',
+    duration:isFinal?'10 min':'7 min',
+    xp:isFinal?100:60,
+    unlocked:false,
+    completed:false,
+    nasaSearch:`${COURSE_BLUEPRINTS[categoryId].title} NASA`,
+    content:{
+      intro:isFinal?'Review the complete category and finish the final challenge.':'Review the section before moving forward.',
+      sections:[],
+      activities:[],
+      questions:facts.map((fact,i)=>({
+        id:`${categoryId}-${isFinal?'final':`quiz-${index}`}-q${i+1}`,
+        type:'multiple-choice',
+        question:'Which statement is correct?',
+        answers:[
+          fact,
+          'This statement is unrelated to the topic.',
+          'This phenomenon occurs only on Earth.',
+          'Scientists cannot observe this phenomenon.'
+        ],
+        correctAnswer:0,
+        explanation:fact
+      })),
+      keyFacts:isFinal?[
+        `${COURSE_BLUEPRINTS[categoryId].title} category complete.`,
+        'You completed all four sections.'
+      ]:[
+        'Section complete.',
+        'The next section can now be unlocked.'
+      ]
+    }
   };
 };
 const COURSE_DATA={};
-Object.entries(COURSE_BLUEPRINTS).forEach(([categoryId,blueprint])=>{
+Object.entries(COURSE_BLUEPRINTS).forEach(([categoryId,category])=>{
   let lessonNumber=1;
   const sections=[];
-  blueprint.sections.forEach((sectionBlueprint,sectionIndex)=>{
-    const [sectionTitle,subtitle,lessonBlueprints]=sectionBlueprint;
-    const lessons=lessonBlueprints.map(([title,description,nasaSearch,facts])=>makeLesson(categoryId,lessonNumber++,title,description,nasaSearch,facts,sectionIndex===0&&lessonNumber===2));
-    const quizTitle=sectionIndex===blueprint.sections.length-1?`${blueprint.title} Final Challenge`:`${sectionTitle} Quiz`;
-    lessons.push(makeQuiz(categoryId,sectionIndex+1,quizTitle,lessons,sectionIndex===blueprint.sections.length-1));
-    sections.push({id:`${categoryId}-section-${sectionIndex+1}`,title:`${sectionIndex+1}. ${sectionTitle}`,subtitle,lessons});
+  category.sections.forEach((section,sectionIndex)=>{
+    const sectionLessons=[];
+    section.lessons.forEach(([title,description,nasaSearch,fact])=>{
+      const unlocked=sectionIndex===0&&lessonNumber===1;
+      sectionLessons.push(
+        makeLesson(
+          categoryId,
+          lessonNumber,
+          title,
+          description,
+          nasaSearch,
+          fact,
+          unlocked
+        )
+      );
+      lessonNumber++;
+    });
+    const isFinal=sectionIndex===category.sections.length-1;
+    const quizTitle=isFinal?`${category.title} Final Challenge`:`${section.title} Quiz`;
+    sectionLessons.push(
+      makeQuiz(
+        categoryId,
+        sectionIndex+1,
+        quizTitle,
+        sectionLessons,
+        isFinal
+      )
+    );
+    sections.push({
+      id:`${categoryId}-section-${sectionIndex+1}`,
+      title:`${sectionIndex+1}. ${section.title}`,
+      subtitle:section.subtitle,
+      lessons:sectionLessons
+    });
   });
-  COURSE_DATA[categoryId]={id:categoryId,title:blueprint.title,icon:blueprint.icon,description:blueprint.description,rank:'BRONZE',level:1,sections};
+  COURSE_DATA[categoryId]={
+    id:categoryId,
+    title:category.title,
+    icon:category.icon,
+    description:category.description,
+    rank:'BRONZE',
+    level:1,
+    sections
+  };
 });
