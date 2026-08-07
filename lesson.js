@@ -2,547 +2,408 @@ const params=new URLSearchParams(window.location.search);
 const categoryId=params.get('category');
 const lessonId=params.get('lesson');
 const category=COURSE_DATA[categoryId];
-
 if(!category){
-  window.location.replace('dashboard.html');
-  throw new Error('Invalid category.');
+  console.error('Category not found:',categoryId);
+  window.location.href='dashboard.html';
+  throw new Error('Unknown category');
 }
-
-let currentLesson=null;
-
-for(const section of category.sections){
-  const found=section.lessons.find(lesson=>lesson.id===lessonId);
-  if(found){
-    currentLesson=found;
-    break;
-  }
-}
-
+const allLessons=category.sections.flatMap(section=>section.lessons);
+const currentLesson=allLessons.find(lesson=>lesson.id===lessonId);
 if(!currentLesson){
-  window.location.replace(`roadmap.html?category=${category.id}`);
-  throw new Error('Invalid lesson.');
-}
-
-document.title=`${currentLesson.title} | CosmoKlub`;
-document.getElementById('coverCategory').textContent=category.title;
-document.getElementById('lessonTitle').textContent=currentLesson.title;
-document.getElementById('lessonDescription').textContent=currentLesson.description;
-document.getElementById('lessonType').textContent=currentLesson.type==='quiz'?'Quiz':`${category.title} Lesson`;
-document.getElementById('detailTitle').textContent=currentLesson.title;
-document.getElementById('detailDescription').textContent=currentLesson.description;
-document.getElementById('lessonDuration').textContent=currentLesson.duration;
-document.getElementById('lessonXp').textContent=`${currentLesson.xp} XP`;
-
-document.getElementById('backRoadmap').addEventListener('click',()=>{
+  console.error('Lesson not found:',lessonId);
+  console.log('Available lessons:',allLessons.map(lesson=>lesson.id));
   window.location.href=`roadmap.html?category=${category.id}`;
-});
-
+  throw new Error('Unknown lesson');
+}
 const lessonCover=document.getElementById('lessonCover');
 const learningExperience=document.getElementById('learningExperience');
 const learningStage=document.getElementById('learningStage');
 const progressFill=document.getElementById('learningProgressFill');
 const progressText=document.getElementById('learningProgressText');
-
-let learningSteps=[];
+const startButton=document.getElementById('startLearning');
+const exitButton=document.getElementById('exitLesson');
+const categoryElement=document.getElementById('lessonCategory');
+const titleElement=document.getElementById('lessonTitle');
+const descriptionElement=document.getElementById('lessonDescription');
+const durationElement=document.getElementById('lessonDuration');
+const xpElement=document.getElementById('lessonXp');
+document.title=`${currentLesson.title} | CosmoKlub`;
+if(categoryElement)categoryElement.textContent=category.title.toUpperCase();
+if(titleElement)titleElement.textContent=currentLesson.title;
+if(descriptionElement)descriptionElement.textContent=currentLesson.description;
+if(durationElement)durationElement.textContent=currentLesson.duration;
+if(xpElement)xpElement.textContent=`${currentLesson.xp} XP`;
+let steps=[];
 let currentStep=0;
-let selectedAnswer=null;
-let questionAnswered=false;
-
-document.getElementById('startLessonButton').addEventListener('click',startLearning);
-
-document.getElementById('exitLesson').addEventListener('click',()=>{
-  if(confirm('Leave this lesson and return to the roadmap?')){
-    window.location.href=`roadmap.html?category=${category.id}`;
+let lessonScore=0;
+let answeredQuestions=0;
+let nasaImage=null;
+function buildSteps(){
+  steps=[];
+  if(currentLesson.content?.intro){
+    steps.push({
+      type:'intro',
+      title:currentLesson.title,
+      text:currentLesson.content.intro
+    });
   }
-});
-
-async function startLearning(){
-  if(!currentLesson.content){
-    alert('This lesson does not have learning content yet.');
-    return;
-  }
-
-  lessonCover.classList.add('hidden');
-  learningExperience.classList.remove('hidden');
-
-  learningStage.innerHTML=`
-    <div class="learning-panel">
-      <div class="learning-panel-body">
-        <div class="learning-kicker">NASA</div>
-        <h2>Preparing your lesson...</h2>
-        <p>Loading official NASA imagery and learning content.</p>
-      </div>
-    </div>
-  `;
-
-  const nasaImage=await fetchNasaImage(currentLesson.nasaSearch||currentLesson.title);
-
-  learningSteps=buildLearningSteps(currentLesson,nasaImage);
-  currentStep=0;
-  renderCurrentStep();
-}
-
-function buildLearningSteps(lesson,nasaImage){
-  const steps=[];
-
-  steps.push({
-    type:'intro',
-    title:lesson.title,
-    text:lesson.content.intro
-  });
-
-  if(nasaImage){
+  if(currentLesson.nasaSearch){
     steps.push({
       type:'image',
-      image:nasaImage
+      query:currentLesson.nasaSearch
     });
   }
-
-  lesson.content.sections?.forEach(section=>{
-    steps.push({
-      type:'content',
-      title:section.title,
-      text:section.text
+  if(Array.isArray(currentLesson.content?.sections)){
+    currentLesson.content.sections.forEach(section=>{
+      steps.push({
+        type:'content',
+        title:section.title,
+        text:section.text
+      });
     });
-  });
-
-  lesson.content.activities?.forEach(activity=>{
-    steps.push({
-      type:'activity',
-      activity
+  }
+  if(Array.isArray(currentLesson.content?.activities)){
+    currentLesson.content.activities.forEach(activity=>{
+      steps.push({
+        type:'activity',
+        activity
+      });
     });
-  });
-
-  lesson.content.questions?.forEach(question=>{
-    steps.push({
-      type:'question',
-      question
+  }
+  if(Array.isArray(currentLesson.content?.questions)){
+    currentLesson.content.questions.forEach(question=>{
+      steps.push({
+        type:'question',
+        question
+      });
     });
-  });
-
-  if(lesson.content.keyFacts){
+  }
+  if(Array.isArray(currentLesson.content?.keyFacts)&&currentLesson.content.keyFacts.length){
     steps.push({
       type:'facts',
-      facts:lesson.content.keyFacts
+      facts:currentLesson.content.keyFacts
     });
   }
-
   steps.push({
     type:'complete'
   });
-
-  return steps;
 }
-
-function renderCurrentStep(){
-  const step=learningSteps[currentStep];
-
-  selectedAnswer=null;
-  questionAnswered=false;
+async function fetchNasaImage(){
+  if(!currentLesson.nasaSearch)return null;
+  try{
+    const url=`https://images-api.nasa.gov/search?q=${encodeURIComponent(currentLesson.nasaSearch)}&media_type=image`;
+    const response=await fetch(url);
+    if(!response.ok)throw new Error(`NASA request failed: ${response.status}`);
+    const data=await response.json();
+    const items=data.collection?.items||[];
+    const usableItem=items.find(item=>item.links?.[0]?.href);
+    if(!usableItem)return null;
+    return{
+      src:usableItem.links[0].href,
+      title:usableItem.data?.[0]?.title||currentLesson.title,
+      description:usableItem.data?.[0]?.description||''
+    };
+  }catch(error){
+    console.warn('NASA image could not be loaded:',error);
+    return null;
+  }
+}
+function updateProgress(){
+  if(!steps.length)return;
+  const displayStep=Math.min(currentStep+1,steps.length);
+  const percentage=(displayStep/steps.length)*100;
+  if(progressFill)progressFill.style.width=`${percentage}%`;
+  if(progressText)progressText.textContent=`${displayStep} / ${steps.length}`;
+}
+function renderStep(){
+  const step=steps[currentStep];
+  if(!step)return;
   updateProgress();
-
   if(step.type==='intro'){
-    learningStage.innerHTML=`
-      <div class="learning-panel">
-        <div class="learning-panel-body">
-          <div class="learning-kicker">${escapeHtml(category.title)}</div>
-          <h2>${escapeHtml(step.title)}</h2>
-          <p>${escapeHtml(step.text)}</p>
-          <div class="learning-actions">
-            <button class="learning-continue" id="continueButton">Continue</button>
-          </div>
-        </div>
-      </div>
-    `;
-    bindContinue();
+    renderIntro(step);
     return;
   }
-
   if(step.type==='image'){
-    learningStage.innerHTML=`
-      <div class="learning-panel">
-        <div class="nasa-image-wrap">
-          <img class="nasa-image" src="${escapeAttribute(step.image.url)}" alt="${escapeAttribute(step.image.title)}">
-          <div class="nasa-credit">NASA Image and Video Library • ${escapeHtml(step.image.title)}</div>
-        </div>
-        <div class="learning-panel-body">
-          <div class="learning-kicker">NASA Observation</div>
-          <h2>${escapeHtml(step.image.title)}</h2>
-          <p>${escapeHtml(step.image.description)}</p>
-          <div class="learning-actions">
-            <button class="learning-continue" id="continueButton">Continue</button>
-          </div>
-        </div>
-      </div>
-    `;
-    bindContinue();
+    renderImage(step);
     return;
   }
-
   if(step.type==='content'){
-    learningStage.innerHTML=`
-      <div class="learning-panel">
-        <div class="learning-panel-body">
-          <div class="learning-kicker">Learn</div>
-          <h2>${escapeHtml(step.title)}</h2>
-          <p>${escapeHtml(step.text)}</p>
-          <div class="learning-actions">
-            <button class="learning-continue" id="continueButton">Continue</button>
-          </div>
-        </div>
-      </div>
-    `;
-    bindContinue();
+    renderContent(step);
     return;
   }
-
   if(step.type==='activity'){
-    if(step.activity.type==='ordering'){
-      renderOrderingActivity(step.activity);
-    }
+    renderActivity(step.activity);
     return;
   }
-
   if(step.type==='question'){
     renderQuestion(step.question);
     return;
   }
-
   if(step.type==='facts'){
-    learningStage.innerHTML=`
-      <div class="learning-panel">
-        <div class="learning-panel-body">
-          <div class="learning-kicker">Key Facts</div>
-          <h2>What you learned</h2>
-          <div class="key-facts">
-            ${step.facts.map(fact=>`
-              <div class="key-fact">
-                <span>✦</span>
-                <span>${escapeHtml(fact)}</span>
-              </div>
-            `).join('')}
-          </div>
-          <div class="learning-actions">
-            <button class="learning-continue" id="continueButton">Finish Lesson</button>
-          </div>
-        </div>
-      </div>
-    `;
-    bindContinue();
+    renderFacts(step.facts);
     return;
   }
-
   if(step.type==='complete'){
-    learningStage.innerHTML=`
-      <div class="learning-panel lesson-complete">
-        <div class="complete-icon">★</div>
-        <h2>Lesson Complete!</h2>
-        <p>You completed <strong>${escapeHtml(currentLesson.title)}</strong>.</p>
-        <div class="complete-xp">+${currentLesson.xp} XP</div>
-        <div class="learning-actions" style="justify-content:center;">
-          <button class="learning-continue" id="finishButton">Return to Roadmap</button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('finishButton').addEventListener('click',finishLesson);
+    renderComplete();
   }
 }
-
-function renderQuestion(question){
+function renderIntro(step){
   learningStage.innerHTML=`
-    <div class="learning-panel">
-      <div class="learning-panel-body">
-        <div class="learning-kicker">Checkpoint</div>
-        <h2>${escapeHtml(question.question)}</h2>
-        <div class="answer-list">
-          ${question.answers.map((answer,index)=>`
-            <button class="answer-option" data-index="${index}">
-              ${escapeHtml(answer)}
-            </button>
-          `).join('')}
-        </div>
-        <div id="answerFeedback"></div>
-        <div class="learning-actions">
-          <button class="learning-continue" id="checkButton" disabled>Check Answer</button>
-        </div>
-      </div>
+    <div class="learning-card">
+      <div class="learning-label">${escapeHtml(category.title)}</div>
+      <h1>${escapeHtml(step.title)}</h1>
+      <p>${escapeHtml(step.text)}</p>
+      <button class="learning-next" id="nextStep">Continue</button>
     </div>
   `;
-
-  const answers=document.querySelectorAll('.answer-option');
-  const checkButton=document.getElementById('checkButton');
-
-  answers.forEach(button=>{
-    button.addEventListener('click',()=>{
-      if(questionAnswered)return;
-
-      answers.forEach(answer=>answer.classList.remove('selected'));
-      button.classList.add('selected');
-      selectedAnswer=Number(button.dataset.index);
-      checkButton.disabled=false;
-    });
-  });
-
-  checkButton.addEventListener('click',()=>{
-    if(selectedAnswer===null)return;
-
-    if(!questionAnswered){
-      questionAnswered=true;
-
-      const correct=selectedAnswer===question.correctAnswer;
-
-      answers.forEach((button,index)=>{
-        button.disabled=true;
-
-        if(index===question.correctAnswer){
-          button.classList.add('correct');
-        }
-
-        if(index===selectedAnswer&&!correct){
-          button.classList.add('incorrect');
-        }
-      });
-
-      document.getElementById('answerFeedback').innerHTML=`
-        <div class="answer-feedback">
-          <strong>${correct?'Correct!':'Not quite.'}</strong><br>
-          ${escapeHtml(question.explanation)}
-        </div>
-      `;
-
-      checkButton.textContent='Continue';
-      return;
-    }
-
+  document.getElementById('nextStep').addEventListener('click',nextStep);
+}
+function renderImage(){
+  if(!nasaImage){
     nextStep();
-  });
-}
-
-function renderOrderingActivity(activity){
-  const shuffledItems=shuffleArray(
-    activity.items.map((item,index)=>({
-      text:item,
-      correctIndex:index
-    }))
-  );
-
+    return;
+  }
   learningStage.innerHTML=`
-    <div class="learning-panel">
-      <div class="learning-panel-body">
-        <div class="learning-kicker">Interactive Activity</div>
-        <h2>${escapeHtml(activity.title)}</h2>
-        <p>${escapeHtml(activity.question)}</p>
-        <div class="ordering-help">Use ↑ and ↓ to arrange the stages from first to last.</div>
-        <div class="ordering-list" id="orderingList">
-          ${shuffledItems.map((item,index)=>`
-            <div class="ordering-item" data-correct-index="${item.correctIndex}">
-              <div class="ordering-number">${index+1}</div>
-              <div class="ordering-text">${escapeHtml(item.text)}</div>
-              <div class="ordering-controls">
-                <button class="ordering-button ordering-up" title="Move up">↑</button>
-                <button class="ordering-button ordering-down" title="Move down">↓</button>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        <div id="orderingFeedback"></div>
-        <div class="learning-actions">
-          <button class="learning-continue" id="checkOrderButton">Check Order</button>
-        </div>
-      </div>
+    <div class="learning-card image-learning-card">
+      <div class="nasa-label">NASA IMAGE</div>
+      <img class="nasa-image" src="${escapeAttribute(nasaImage.src)}" alt="${escapeAttribute(nasaImage.title)}">
+      <h2>${escapeHtml(nasaImage.title)}</h2>
+      <p>${escapeHtml(trimText(nasaImage.description,350))}</p>
+      <button class="learning-next" id="nextStep">Continue</button>
     </div>
   `;
-
-  const list=document.getElementById('orderingList');
-  const checkButton=document.getElementById('checkOrderButton');
-  let checked=false;
-
-  updateOrderingNumbers();
-
-  list.addEventListener('click',event=>{
-    if(checked)return;
-
-    const button=event.target.closest('.ordering-button');
-    if(!button)return;
-
-    const item=button.closest('.ordering-item');
-
-    if(button.classList.contains('ordering-up')){
-      const previous=item.previousElementSibling;
-      if(previous){
-        list.insertBefore(item,previous);
-      }
-    }
-
-    if(button.classList.contains('ordering-down')){
-      const next=item.nextElementSibling;
-      if(next){
-        list.insertBefore(next,item);
-      }
-    }
-
-    updateOrderingNumbers();
-  });
-
-  checkButton.addEventListener('click',()=>{
-    if(checked){
-      nextStep();
-      return;
-    }
-
-    const items=[...list.querySelectorAll('.ordering-item')];
-    const isCorrect=items.every((item,index)=>{
-      return Number(item.dataset.correctIndex)===index;
+  document.getElementById('nextStep').addEventListener('click',nextStep);
+}
+function renderContent(step){
+  learningStage.innerHTML=`
+    <div class="learning-card">
+      <div class="learning-label">LEARN</div>
+      <h2>${escapeHtml(step.title)}</h2>
+      <p>${escapeHtml(step.text)}</p>
+      <button class="learning-next" id="nextStep">Continue</button>
+    </div>
+  `;
+  document.getElementById('nextStep').addEventListener('click',nextStep);
+}
+function renderQuestion(question){
+  const answers=question.answers||[];
+  learningStage.innerHTML=`
+    <div class="learning-card">
+      <div class="learning-label">${currentLesson.type==='quiz'?'QUIZ':'CHECKPOINT'}</div>
+      <h2>${escapeHtml(question.question)}</h2>
+      <div class="answer-list">
+        ${answers.map((answer,index)=>`
+          <button class="answer-button" data-answer="${index}">
+            ${escapeHtml(answer)}
+          </button>
+        `).join('')}
+      </div>
+      <div id="questionFeedback"></div>
+    </div>
+  `;
+  const buttons=[...learningStage.querySelectorAll('.answer-button')];
+  buttons.forEach(button=>{
+    button.addEventListener('click',()=>{
+      const selected=Number(button.dataset.answer);
+      handleAnswer(question,selected,buttons);
     });
-
-    if(isCorrect){
-      checked=true;
-
-      items.forEach(item=>{
-        item.classList.add('ordering-correct');
-      });
-
-      document.getElementById('orderingFeedback').innerHTML=`
-        <div class="answer-feedback">
-          <strong>Correct!</strong><br>
-          ${escapeHtml(activity.explanation)}
+  });
+}
+function handleAnswer(question,selected,buttons){
+  const correct=selected===question.correctAnswer;
+  answeredQuestions++;
+  if(correct)lessonScore++;
+  buttons.forEach((button,index)=>{
+    button.disabled=true;
+    if(index===question.correctAnswer){
+      button.classList.add('answer-correct');
+    }else if(index===selected&&!correct){
+      button.classList.add('answer-wrong');
+    }
+  });
+  const feedback=document.getElementById('questionFeedback');
+  feedback.innerHTML=`
+    <div class="question-feedback ${correct?'feedback-correct':'feedback-wrong'}">
+      <strong>${correct?'Correct!':'Not quite.'}</strong>
+      <p>${escapeHtml(question.explanation||'')}</p>
+      <button class="learning-next" id="nextStep">Continue</button>
+    </div>
+  `;
+  document.getElementById('nextStep').addEventListener('click',nextStep);
+}
+function renderActivity(activity){
+  if(activity.type==='ordering'){
+    renderOrdering(activity);
+    return;
+  }
+  nextStep();
+}
+function renderOrdering(activity){
+  let items=[...activity.items].sort(()=>Math.random()-.5);
+  learningStage.innerHTML=`
+    <div class="learning-card">
+      <div class="learning-label">ACTIVITY</div>
+      <h2>${escapeHtml(activity.title)}</h2>
+      <p>${escapeHtml(activity.question)}</p>
+      <p class="ordering-help">Use the arrows to place the stages in the correct order.</p>
+      <div class="ordering-list" id="orderingList"></div>
+      <div id="orderingFeedback"></div>
+      <button class="learning-next" id="checkOrder">Check Order</button>
+    </div>
+  `;
+  const list=document.getElementById('orderingList');
+  function drawOrdering(){
+    list.innerHTML='';
+    items.forEach((item,index)=>{
+      const row=document.createElement('div');
+      row.className='ordering-item';
+      row.innerHTML=`
+        <div class="ordering-number">${index+1}</div>
+        <div>${escapeHtml(item)}</div>
+        <div class="ordering-controls">
+          <button class="ordering-button move-up" data-index="${index}" ${index===0?'disabled':''}>↑</button>
+          <button class="ordering-button move-down" data-index="${index}" ${index===items.length-1?'disabled':''}>↓</button>
         </div>
       `;
-
-      list.querySelectorAll('.ordering-button').forEach(button=>{
-        button.disabled=true;
+      list.appendChild(row);
+    });
+    list.querySelectorAll('.move-up').forEach(button=>{
+      button.addEventListener('click',()=>{
+        const index=Number(button.dataset.index);
+        if(index<=0)return;
+        [items[index-1],items[index]]=[items[index],items[index-1]];
+        drawOrdering();
       });
-
-      checkButton.textContent='Continue';
-      return;
+    });
+    list.querySelectorAll('.move-down').forEach(button=>{
+      button.addEventListener('click',()=>{
+        const index=Number(button.dataset.index);
+        if(index>=items.length-1)return;
+        [items[index+1],items[index]]=[items[index],items[index+1]];
+        drawOrdering();
+      });
+    });
+  }
+  drawOrdering();
+  document.getElementById('checkOrder').addEventListener('click',()=>{
+    const correct=items.every((item,index)=>item===activity.items[index]);
+    const feedback=document.getElementById('orderingFeedback');
+    if(correct){
+      list.querySelectorAll('.ordering-item').forEach(item=>item.classList.add('ordering-correct'));
+      feedback.innerHTML=`
+        <div class="question-feedback feedback-correct">
+          <strong>Correct!</strong>
+          <p>${escapeHtml(activity.explanation||'')}</p>
+        </div>
+      `;
+      const button=document.getElementById('checkOrder');
+      button.textContent='Continue';
+      button.onclick=nextStep;
+    }else{
+      feedback.innerHTML=`
+        <div class="question-feedback feedback-wrong">
+          <strong>Not quite.</strong>
+          <p>Try rearranging the stages again.</p>
+        </div>
+      `;
     }
-
-    document.getElementById('orderingFeedback').innerHTML=`
-      <div class="answer-feedback">
-        <strong>Not quite.</strong><br>
-        Some stages are still out of order. Try moving them again.
+  });
+}
+function renderFacts(facts){
+  learningStage.innerHTML=`
+    <div class="learning-card">
+      <div class="learning-label">KEY FACTS</div>
+      <h2>Remember These</h2>
+      <div class="key-facts">
+        ${facts.map(fact=>`
+          <div class="key-fact">
+            <span>✦</span>
+            <p>${escapeHtml(fact)}</p>
+          </div>
+        `).join('')}
       </div>
-    `;
-  });
+      <button class="learning-next" id="nextStep">Finish Lesson</button>
+    </div>
+  `;
+  document.getElementById('nextStep').addEventListener('click',nextStep);
 }
-
-function updateOrderingNumbers(){
-  document.querySelectorAll('.ordering-item').forEach((item,index)=>{
-    const number=item.querySelector('.ordering-number');
-    if(number){
-      number.textContent=index+1;
-    }
-  });
+function renderComplete(){
+  const totalQuestions=currentLesson.content?.questions?.length||0;
+  const percentage=totalQuestions?Math.round((lessonScore/totalQuestions)*100):100;
+  const alreadyCompleted=typeof isLessonCompleted==='function'
+    ?isLessonCompleted(category.id,currentLesson.id)
+    :false;
+  learningStage.innerHTML=`
+    <div class="learning-card completion-card">
+      <div class="completion-icon">✓</div>
+      <div class="learning-label">LESSON COMPLETE</div>
+      <h1>${escapeHtml(currentLesson.title)}</h1>
+      ${totalQuestions?`<p>You answered ${lessonScore} of ${totalQuestions} questions correctly (${percentage}%).</p>`:''}
+      <div class="completion-xp">
+        <span>✦</span>
+        <strong>${alreadyCompleted?'Already completed':`+${currentLesson.xp} XP`}</strong>
+      </div>
+      <button class="learning-next" id="finishLessonButton">
+        Back to Roadmap
+      </button>
+    </div>
+  `;
+  document.getElementById('finishLessonButton').addEventListener('click',finishLesson);
 }
-
-function shuffleArray(array){
-  const copy=[...array];
-
-  for(let i=copy.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [copy[i],copy[j]]=[copy[j],copy[i]];
-  }
-
-  const unchanged=copy.every((item,index)=>item.correctIndex===index);
-
-  if(unchanged&&copy.length>1){
-    [copy[0],copy[1]]=[copy[1],copy[0]];
-  }
-
-  return copy;
-}
-
-function bindContinue(){
-  document.getElementById('continueButton').addEventListener('click',nextStep);
-}
-
 function nextStep(){
-  if(currentStep>=learningSteps.length-1)return;
-
-  currentStep++;
-  renderCurrentStep();
-
-  window.scrollTo({
-    top:0,
-    behavior:'smooth'
-  });
-}
-
-function updateProgress(){
-  const total=learningSteps.length;
-  const displayedStep=currentStep+1;
-  const percentage=Math.round((displayedStep/total)*100);
-
-  progressText.textContent=`${displayedStep} / ${total}`;
-  progressFill.style.width=`${percentage}%`;
-}
-
-async function fetchNasaImage(query){
-  try{
-    const url=`https://images-api.nasa.gov/search?q=${encodeURIComponent(query)}&media_type=image`;
-    const response=await fetch(url);
-
-    if(!response.ok){
-      throw new Error(`NASA Image API returned HTTP ${response.status}`);
-    }
-
-    const data=await response.json();
-    const items=data.collection?.items||[];
-
-    if(items.length===0){
-      return null;
-    }
-
-    const item=items.find(result=>result.links?.[0]?.href)||items[0];
-    const metadata=item.data?.[0]||{};
-    const imageUrl=item.links?.[0]?.href;
-
-    if(!imageUrl){
-      return null;
-    }
-
-    return{
-      url:imageUrl,
-      title:metadata.title||'NASA astronomy image',
-      description:cleanNasaDescription(
-        metadata.description||
-        'Official astronomy imagery provided by NASA.'
-      )
-    };
-  }catch(error){
-    console.error('NASA image loading failed:',error);
-    return null;
+  if(currentStep<steps.length-1){
+    currentStep++;
+    renderStep();
   }
 }
-
-function cleanNasaDescription(description){
-  const text=String(description||'').replace(/\s+/g,' ').trim();
-
-  if(text.length<=650){
-    return text;
-  }
-
-  return text.slice(0,647).trim()+'...';
-}
-
 function finishLesson(){
-  const result=completeLesson(
-    category.id,
-    currentLesson.id,
-    ccurrentLesson.xp
-  };
-
-  console.log('CosmoKlub lesson completed:',result);
+  if(typeof completeLesson==='function'){
+    const result=completeLesson(
+      category.id,
+      currentLesson.id,
+      currentLesson.xp
+    );
+    console.log('CosmoKlub lesson completed:',result);
+  }else{
+    console.warn('progress.js is not loaded. Completion was not saved.');
+  }
   window.location.href=`roadmap.html?category=${category.id}`;
 }
-
 function escapeHtml(value){
   const div=document.createElement('div');
   div.textContent=String(value??'');
   return div.innerHTML;
 }
-
 function escapeAttribute(value){
-  return escapeHtml(value).replace(/"/g,'&quot;');
+  return String(value??'')
+    .replaceAll('&','&amp;')
+    .replaceAll('"','&quot;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;');
+}
+function trimText(value,maxLength){
+  const text=String(value??'').replace(/\s+/g,' ').trim();
+  if(text.length<=maxLength)return text;
+  return`${text.slice(0,maxLength).trim()}...`;
+}
+async function startLearning(){
+  if(!startButton)return;
+  startButton.disabled=true;
+  startButton.textContent='Loading...';
+  buildSteps();
+  nasaImage=await fetchNasaImage();
+  currentStep=0;
+  lessonCover.classList.add('hidden');
+  learningExperience.classList.remove('hidden');
+  renderStep();
+}
+if(startButton){
+  startButton.addEventListener('click',startLearning);
+}else{
+  console.error('Start Learning button #startLearning was not found.');
+}
+if(exitButton){
+  exitButton.addEventListener('click',()=>{
+    window.location.href=`roadmap.html?category=${category.id}`;
+  });
 }
