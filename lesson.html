@@ -48,14 +48,13 @@
     <div class="lesson-scroll">
       <main class="lesson-page">
         <div class="lesson-layout">
-
-          <div class="back-column" id="coverBackColumn">
+          <div class="back-column">
             <button id="roadmapBack" class="roadmap-back" type="button" aria-label="Back to roadmap">
               <span class="roadmap-back-arrow"></span>
             </button>
           </div>
 
-          <div class="lesson-shell" id="lessonShell">
+          <div class="lesson-shell">
             <article class="lesson-card" id="lessonCover">
               <div class="lesson-cover-art">
                 <div class="lesson-brand">COSMOKLUB</div>
@@ -88,24 +87,23 @@
                 </button>
               </div>
             </article>
-          </div>
 
-          <section id="learningExperience" class="learning-experience hidden">
-            <div class="learning-topbar">
-              <button id="exitLesson" class="learning-exit" type="button" aria-label="Exit lesson">
-                ✕
-              </button>
+            <section id="learningExperience" class="learning-experience hidden">
+              <div class="learning-topbar">
+                <button id="exitLesson" class="learning-exit" type="button" aria-label="Exit lesson">
+                  ✕
+                </button>
 
-              <div class="learning-progress">
-                <div id="learningProgressFill" class="learning-progress-fill"></div>
+                <div class="learning-progress">
+                  <div id="learningProgressFill" class="learning-progress-fill"></div>
+                </div>
+
+                <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
               </div>
 
-              <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
-            </div>
-
-            <div id="learningStage" class="learning-stage"></div>
-          </section>
-
+              <div id="learningStage" class="learning-stage"></div>
+            </section>
+          </div>
         </div>
       </main>
     </div>
@@ -120,36 +118,6 @@
 
     if(roadmapBack){
       roadmapBack.addEventListener('click',()=>{
-        const params=new URLSearchParams(window.location.search);
-        const category=params.get('category')||'stars';
-        window.location.href=`roadmap.html?category=${category}`;
-      });
-    }
-
-    const startLearningButton=document.getElementById('startLearning');
-    const coverBackColumn=document.getElementById('coverBackColumn');
-    const lessonShell=document.getElementById('lessonShell');
-    const learningExperience=document.getElementById('learningExperience');
-    const exitLessonButton=document.getElementById('exitLesson');
-
-    if(startLearningButton){
-      startLearningButton.addEventListener('click',()=>{
-        if(coverBackColumn){
-          coverBackColumn.classList.add('hidden');
-        }
-
-        if(lessonShell){
-          lessonShell.classList.add('hidden');
-        }
-
-        if(learningExperience){
-          learningExperience.classList.remove('hidden');
-        }
-      });
-    }
-
-    if(exitLessonButton){
-      exitLessonButton.addEventListener('click',()=>{
         const params=new URLSearchParams(window.location.search);
         const category=params.get('category')||'stars';
         window.location.href=`roadmap.html?category=${category}`;
