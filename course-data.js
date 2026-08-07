@@ -6,13 +6,11 @@ const COURSE_DATA = {
     description: 'Birth, life, and death of stars from protostars to supernovae.',
     rank: 'BRONZE',
     level: 1,
-
     sections: [
       {
         id: 'stars-foundations',
         title: 'Stellar Foundations',
         subtitle: 'Learn what stars are and how they are born.',
-
         lessons: [
           {
             id: 'stars-1',
@@ -25,26 +23,26 @@ const COURSE_DATA = {
             completed: false,
             nasaSearch: 'Sun star',
             content: {
-              intro: 'Stars are enormous self-gravitating spheres of hot gas. Most of their material is hydrogen, with helium and smaller amounts of other elements.',
+              intro: 'Stars are enormous self-gravitating spheres of extremely hot material. Most stars are made primarily of hydrogen and helium, and their immense gravity holds them together.',
               sections: [
                 {
                   title: 'A giant sphere held together by gravity',
-                  text: 'Gravity constantly pulls a star inward. At the same time, hot gas and energy generated inside the star create outward pressure. During most of a star’s life, these forces remain in balance.'
+                  text: 'Gravity constantly pulls the material inside a star inward. At the same time, the hot material and energy generated inside the star create pressure pushing outward. During most of a star’s life, these forces remain approximately balanced.'
                 },
                 {
                   title: 'What are stars made of?',
-                  text: 'Stars are composed mainly of hydrogen and helium. Their temperatures are so high that much of their matter exists as plasma, an electrically charged state of matter.'
+                  text: 'Stars are composed mainly of hydrogen and helium, with smaller amounts of heavier elements. Their temperatures can become so high that much of their matter exists as plasma, where electrons are separated from atomic nuclei.'
                 },
                 {
                   title: 'Why do stars shine?',
-                  text: 'In main-sequence stars, nuclear fusion in the core converts hydrogen into helium. Fusion releases energy that heats the star and produces the light and radiation that eventually escape into space.'
+                  text: 'Main-sequence stars generate energy through nuclear fusion in their cores. Hydrogen nuclei combine to form helium, releasing enormous amounts of energy. That energy eventually travels outward and escapes into space as light and other forms of radiation.'
                 }
               ],
               keyFacts: [
                 'The Sun is a star.',
                 'Stars are held together by their own gravity.',
-                'Hydrogen is the main fuel of most stars.',
-                'Nuclear fusion produces the energy that makes stars shine.'
+                'Hydrogen is the main fuel of most main-sequence stars.',
+                'Nuclear fusion releases the energy that makes stars shine.'
               ],
               questions: [
                 {
@@ -58,7 +56,7 @@ const COURSE_DATA = {
                     'Iron'
                   ],
                   correctAnswer: 1,
-                  explanation: 'Hydrogen is the main component and primary fuel of most stars.'
+                  explanation: 'Hydrogen is the most abundant element in most stars and is the main fuel used during the main-sequence stage.'
                 },
                 {
                   id: 'stars-1-q2',
@@ -69,7 +67,7 @@ const COURSE_DATA = {
                     'False'
                   ],
                   correctAnswer: 0,
-                  explanation: 'The Sun is the star at the center of our solar system.'
+                  explanation: 'Correct. The Sun is the star at the center of our solar system.'
                 },
                 {
                   id: 'stars-1-q3',
@@ -82,15 +80,11 @@ const COURSE_DATA = {
                     'Radio waves'
                   ],
                   correctAnswer: 1,
-                  explanation: 'Hydrogen nuclei fuse into helium in the core, releasing energy.'
+                  explanation: 'Nuclear fusion in the core combines hydrogen nuclei into helium and releases enormous amounts of energy.'
                 }
               ]
             }
-          }
-      }
-      },
           },
-
           {
             id: 'stars-2',
             type: 'lesson',
@@ -101,7 +95,6 @@ const COURSE_DATA = {
             unlocked: false,
             completed: false
           },
-
           {
             id: 'stars-quiz-1',
             type: 'quiz',
@@ -112,7 +105,6 @@ const COURSE_DATA = {
             unlocked: false,
             completed: false
           },
-
           {
             id: 'stars-3',
             type: 'lesson',
@@ -123,7 +115,6 @@ const COURSE_DATA = {
             unlocked: false,
             completed: false
           },
-
           {
             id: 'stars-4',
             type: 'lesson',
@@ -146,13 +137,11 @@ const COURSE_DATA = {
     description: 'Island universes: spirals, ellipticals, and the Milky Way.',
     rank: 'BRONZE',
     level: 1,
-
     sections: [
       {
         id: 'galaxies-foundations',
         title: 'Galaxy Foundations',
         subtitle: 'Explore the enormous structures of the universe.',
-
         lessons: [
           {
             id: 'galaxies-1',
@@ -164,7 +153,6 @@ const COURSE_DATA = {
             unlocked: true,
             completed: false
           },
-
           {
             id: 'galaxies-2',
             type: 'lesson',
@@ -175,7 +163,6 @@ const COURSE_DATA = {
             unlocked: false,
             completed: false
           },
-
           {
             id: 'galaxies-quiz-1',
             type: 'quiz',
@@ -198,13 +185,11 @@ const COURSE_DATA = {
     description: 'The origin, evolution, and fate of the universe.',
     rank: 'BRONZE',
     level: 1,
-
     sections: [
       {
         id: 'cosmology-foundations',
         title: 'Cosmology Foundations',
         subtitle: 'Begin exploring the universe as a whole.',
-
         lessons: [
           {
             id: 'cosmology-1',
@@ -216,7 +201,6 @@ const COURSE_DATA = {
             unlocked: true,
             completed: false
           },
-
           {
             id: 'cosmology-2',
             type: 'lesson',
@@ -227,7 +211,6 @@ const COURSE_DATA = {
             unlocked: false,
             completed: false
           },
-
           {
             id: 'cosmology-quiz-1',
             type: 'quiz',
@@ -250,13 +233,11 @@ const COURSE_DATA = {
     description: "Our solar system's worlds and the hunt for exoplanets.",
     rank: 'BRONZE',
     level: 1,
-
     sections: [
       {
         id: 'planets-foundations',
         title: 'Planetary Foundations',
         subtitle: 'Learn how planets form and how they differ.',
-
         lessons: [
           {
             id: 'planets-1',
@@ -268,7 +249,6 @@ const COURSE_DATA = {
             unlocked: true,
             completed: false
           },
-
           {
             id: 'planets-2',
             type: 'lesson',
@@ -279,7 +259,6 @@ const COURSE_DATA = {
             unlocked: false,
             completed: false
           },
-
           {
             id: 'planets-quiz-1',
             type: 'quiz',
@@ -302,13 +281,11 @@ const COURSE_DATA = {
     description: 'Cosmic clouds where stars and planets are forged.',
     rank: 'BRONZE',
     level: 1,
-
     sections: [
       {
         id: 'nebulae-foundations',
         title: 'Nebula Foundations',
         subtitle: 'Explore enormous clouds of gas and dust.',
-
         lessons: [
           {
             id: 'nebulae-1',
@@ -320,7 +297,6 @@ const COURSE_DATA = {
             unlocked: true,
             completed: false
           },
-
           {
             id: 'nebulae-2',
             type: 'lesson',
@@ -331,7 +307,6 @@ const COURSE_DATA = {
             unlocked: false,
             completed: false
           },
-
           {
             id: 'nebulae-quiz-1',
             type: 'quiz',
@@ -354,13 +329,11 @@ const COURSE_DATA = {
     description: 'Tips for naked-eye, binocular, and telescope astronomy.',
     rank: 'BRONZE',
     level: 1,
-
     sections: [
       {
         id: 'observing-foundations',
         title: 'Observing Foundations',
         subtitle: 'Learn how to explore the night sky.',
-
         lessons: [
           {
             id: 'observing-1',
@@ -372,7 +345,6 @@ const COURSE_DATA = {
             unlocked: true,
             completed: false
           },
-
           {
             id: 'observing-2',
             type: 'lesson',
@@ -383,7 +355,6 @@ const COURSE_DATA = {
             unlocked: false,
             completed: false
           },
-
           {
             id: 'observing-quiz-1',
             type: 'quiz',
