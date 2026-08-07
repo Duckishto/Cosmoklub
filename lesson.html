@@ -24,7 +24,9 @@
         </svg>
         CosmoKlub
       </a>
+
       <div class="topbar-spacer"></div>
+
       <div class="topbar-actions">
         <button class="icon-btn" type="button" aria-label="Notifications">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -33,6 +35,7 @@
           </svg>
           <span class="icon-dot"></span>
         </button>
+
         <button class="icon-btn" type="button" aria-label="Settings">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"/>
@@ -45,13 +48,14 @@
     <div class="lesson-scroll">
       <main class="lesson-page">
         <div class="lesson-layout">
-          <div class="back-column">
+
+          <div class="back-column" id="coverBackColumn">
             <button id="roadmapBack" class="roadmap-back" type="button" aria-label="Back to roadmap">
               <span class="roadmap-back-arrow"></span>
             </button>
           </div>
 
-          <div class="lesson-shell">
+          <div class="lesson-shell" id="lessonShell">
             <article class="lesson-card" id="lessonCover">
               <div class="lesson-cover-art">
                 <div class="lesson-brand">COSMOKLUB</div>
@@ -72,6 +76,7 @@
                     <span class="lesson-meta-icon">◷</span>
                     <span id="lessonDuration"></span>
                   </span>
+
                   <span class="lesson-meta-item">
                     <span class="lesson-meta-icon">✦</span>
                     <span id="lessonXp"></span>
@@ -83,21 +88,24 @@
                 </button>
               </div>
             </article>
+          </div>
 
-            <section id="learningExperience" class="learning-experience hidden">
-              <div class="learning-topbar">
-                <button id="exitLesson" class="learning-exit" type="button" aria-label="Exit lesson">
-                  ✕
-                </button>
-                <div class="learning-progress">
-                  <div id="learningProgressFill" class="learning-progress-fill"></div>
-                </div>
-                <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
+          <section id="learningExperience" class="learning-experience hidden">
+            <div class="learning-topbar">
+              <button id="exitLesson" class="learning-exit" type="button" aria-label="Exit lesson">
+                ✕
+              </button>
+
+              <div class="learning-progress">
+                <div id="learningProgressFill" class="learning-progress-fill"></div>
               </div>
 
-              <div id="learningStage" class="learning-stage"></div>
-            </section>
-          </div>
+              <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
+            </div>
+
+            <div id="learningStage" class="learning-stage"></div>
+          </section>
+
         </div>
       </main>
     </div>
@@ -109,8 +117,39 @@
 
   <script>
     const roadmapBack=document.getElementById('roadmapBack');
+
     if(roadmapBack){
       roadmapBack.addEventListener('click',()=>{
+        const params=new URLSearchParams(window.location.search);
+        const category=params.get('category')||'stars';
+        window.location.href=`roadmap.html?category=${category}`;
+      });
+    }
+
+    const startLearningButton=document.getElementById('startLearning');
+    const coverBackColumn=document.getElementById('coverBackColumn');
+    const lessonShell=document.getElementById('lessonShell');
+    const learningExperience=document.getElementById('learningExperience');
+    const exitLessonButton=document.getElementById('exitLesson');
+
+    if(startLearningButton){
+      startLearningButton.addEventListener('click',()=>{
+        if(coverBackColumn){
+          coverBackColumn.classList.add('hidden');
+        }
+
+        if(lessonShell){
+          lessonShell.classList.add('hidden');
+        }
+
+        if(learningExperience){
+          learningExperience.classList.remove('hidden');
+        }
+      });
+    }
+
+    if(exitLessonButton){
+      exitLessonButton.addEventListener('click',()=>{
         const params=new URLSearchParams(window.location.search);
         const category=params.get('category')||'stars';
         window.location.href=`roadmap.html?category=${category}`;
