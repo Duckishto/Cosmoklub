@@ -284,10 +284,10 @@ const COURSE_BLUEPRINTS={
 };
 
 const DIFFICULTY_STAGES=[
-  {name:'FOUNDATION',lessonQuestions:5,quizQuestions:10,duration:'10 min',quizDuration:'12 min'},
-  {name:'INTERMEDIATE',lessonQuestions:6,quizQuestions:12,duration:'12 min',quizDuration:'15 min'},
-  {name:'ADVANCED',lessonQuestions:7,quizQuestions:14,duration:'14 min',quizDuration:'18 min'},
-  {name:'EXPERT',lessonQuestions:8,quizQuestions:20,duration:'16 min',quizDuration:'25 min'}
+  {name:'FOUNDATION',lessonQuestions:5,quizQuestions:10,duration:'15 min',quizDuration:'15 min'},
+  {name:'INTERMEDIATE',lessonQuestions:6,quizQuestions:12,duration:'20 min',quizDuration:'18 min'},
+  {name:'ADVANCED',lessonQuestions:7,quizQuestions:14,duration:'25 min',quizDuration:'22 min'},
+  {name:'EXPERT',lessonQuestions:8,quizQuestions:20,duration:'30 min',quizDuration:'35 min'}
 ];
 
 const LESSON_DEPTH={
@@ -419,6 +419,42 @@ const CATEGORY_APPLICATION={
   observing:'Good observing decisions match the instrument, magnification, field, site conditions, and technique to the angular size, brightness, and contrast of the target.'
 };
 
+const CATEGORY_FOUNDATIONS={
+  stars:'Stellar astronomy is fundamentally a study of how gravity, pressure, nuclear physics, radiation, mass, and time interact. A star may appear as a point of light, but its observable spectrum and brightness contain information about an enormous physical system.',
+  galaxies:'Galaxies must be studied across many scales at once. Individual stars and gas clouds create local structure, while gravity from billions of stars and a much larger dark-matter distribution governs the system as a whole.',
+  cosmology:'Cosmology connects observations made today with physical conditions billions of years in the past. Because light has a finite speed, distant observations are also historical observations.',
+  planets:'Planetary science compares worlds using mass, radius, density, composition, atmosphere, geology, orbit, thermal history, and interaction with the host star. Similar-looking worlds may have radically different physical histories.',
+  nebulae:'Nebulae are not a single physical class. Their appearance depends on the material present, the source of energy, temperature, density, dust, ionization, and the wavelength used to observe them.',
+  observing:'Practical astronomy combines celestial motion, optics, human vision, atmospheric effects, and careful planning. Better equipment helps, but technique and observing conditions often matter just as much.'
+};
+
+const CATEGORY_VARIABLES={
+  stars:'When analyzing a star, pay attention to mass, radius, luminosity, surface temperature, core temperature, composition, age, rotation, magnetic activity, and evolutionary stage.',
+  galaxies:'Important galactic variables include total mass, stellar mass, dark-matter distribution, gas fraction, star-formation rate, metallicity, morphology, velocity structure, environment, and redshift.',
+  cosmology:'Cosmological interpretation frequently depends on redshift, distance, expansion rate, matter density, radiation density, dark-energy density, curvature, lookback time, and scale factor.',
+  planets:'Key planetary variables include mass, radius, density, orbital distance, eccentricity, rotation, atmospheric pressure and composition, albedo, internal heat, and surface or cloud temperature.',
+  nebulae:'Important nebular properties include gas density, temperature, ionization state, dust content, chemical abundance, velocity, magnetic field, radiation environment, and physical size.',
+  observing:'Observing decisions depend on target magnitude, surface brightness, angular size, altitude, seeing, transparency, aperture, focal length, magnification, exit pupil, field of view, exposure time, and tracking accuracy.'
+};
+
+const CATEGORY_MISCONCEPTIONS={
+  stars:'A brighter-looking star is not automatically more luminous. Apparent brightness depends on both intrinsic luminosity and distance. Likewise, red does not always mean old and blue does not always mean young without additional context.',
+  galaxies:'A galaxy image does not show its complete mass distribution. Most of a galaxy’s inferred matter can be invisible, and a dramatic-looking merger does not mean most individual stars physically collide.',
+  cosmology:'The Big Bang should not be imagined as matter exploding from one central point into surrounding empty space. Expansion occurs throughout space, and there is no known ordinary center of cosmic expansion.',
+  planets:'Being inside the traditional habitable zone does not prove that a planet is habitable. Atmospheric pressure, composition, stellar activity, geology, water inventory, and many other factors matter.',
+  nebulae:'The term planetary nebula is historical and misleading: planetary nebulae are produced by dying stars and are not clouds where planets are forming.',
+  observing:'Higher magnification does not automatically create more detail. Once atmospheric seeing, diffraction, optical quality, or target brightness becomes limiting, additional magnification mainly enlarges blur.'
+};
+
+const CATEGORY_CONNECTIONS={
+  stars:'Stellar evolution connects directly to galaxies and nebulae. Stars form from interstellar clouds, alter their surroundings with radiation and winds, synthesize elements, and later return enriched material to space.',
+  galaxies:'Galaxies connect stellar evolution to cosmology. Their stars record local history, while their distribution and redshifts trace the growth and expansion of the universe.',
+  cosmology:'Cosmology depends on astrophysics at smaller scales. Stars provide distance indicators, galaxies trace large-scale structure, and atomic physics explains spectral lines and the cosmic microwave background.',
+  planets:'Planet formation is linked to star formation because both emerge from collapsing molecular-cloud material. Planetary atmospheres and habitability are also strongly influenced by stellar radiation and activity.',
+  nebulae:'Nebulae connect the beginning and end of stellar evolution. Molecular clouds create stars, while stellar winds, planetary nebulae, and supernova remnants return material to the interstellar medium.',
+  observing:'Observational astronomy connects all other categories. The physical knowledge of stars, planets, nebulae, and galaxies determines which wavelength, aperture, magnification, exposure, and observing strategy will reveal the desired information.'
+};
+
 const SPECIAL_QUESTIONS={
   'stars-3':{
     type:'multiple-choice',
@@ -490,8 +526,7 @@ const rotateAnswers=(answers,correctIndex,shift)=>{
 
 const uniqueOptions=(correct,candidates)=>{
   const values=[correct,...candidates.filter(value=>value&&value!==correct)];
-  const unique=[...new Set(values)];
-  return unique.slice(0,4);
+  return[...new Set(values)].slice(0,4);
 };
 
 const getDistractorFacts=(categoryId,number)=>{
@@ -572,14 +607,7 @@ const makeLessonQuestions=(categoryId,number,title,fact,depth,sectionIndex)=>{
       `${categoryId}-${number}-q4`,
       'multiple-choice',
       `An astronomer wants to distinguish ${title} from other topics in this category. Which finding would be the strongest conceptual match?`,
-      uniqueOptions(
-        depth,
-        [
-          factDistractors[1],
-          depthDistractors[1],
-          factDistractors[2]
-        ]
-      ),
+      uniqueOptions(depth,[factDistractors[1],depthDistractors[1],factDistractors[2]]),
       0,
       `The strongest match is the statement that directly describes the mechanism or defining behavior of ${title}. ${depth}`,
       number+2
@@ -667,11 +695,7 @@ const makeLessonQuestions=(categoryId,number,title,fact,depth,sectionIndex)=>{
   const special=SPECIAL_QUESTIONS[`${categoryId}-${number}`];
 
   if(special){
-    const slot=Math.min(
-      questions.length-1,
-      Math.max(4,difficulty.lessonQuestions-1)
-    );
-
+    const slot=Math.min(questions.length-1,Math.max(4,difficulty.lessonQuestions-1));
     questions[slot]={
       id:`${categoryId}-${number}-q${slot+1}`,
       ...special
@@ -681,7 +705,7 @@ const makeLessonQuestions=(categoryId,number,title,fact,depth,sectionIndex)=>{
   return questions.slice(0,difficulty.lessonQuestions);
 };
 
-const makeActivities=(categoryId,number,sectionIndex)=>{
+const makeActivities=(categoryId,number)=>{
   const activities=[];
 
   if(categoryId==='stars'&&number===2){
@@ -759,6 +783,96 @@ const makeActivities=(categoryId,number,sectionIndex)=>{
   return activities;
 };
 
+const buildTeachingSections=(categoryId,number,title,description,fact,depth,sectionIndex,nasaSearch)=>{
+  const difficulty=DIFFICULTY_STAGES[sectionIndex];
+  const categoryTitle=COURSE_BLUEPRINTS[categoryId].title;
+
+  const sections=[
+    {
+      title:'1. Big Picture',
+      text:`${description} Before focusing on the details, place ${title.toLowerCase()} inside the broader subject of ${categoryTitle.toLowerCase()}. ${CATEGORY_FOUNDATIONS[categoryId]}`
+    },
+    {
+      title:'2. Core Idea',
+      text:fact
+    },
+    {
+      title:'3. Physical Mechanism',
+      text:depth
+    },
+    {
+      title:'4. Important Variables',
+      text:`When reasoning about ${title.toLowerCase()}, avoid thinking in terms of only one visible property. ${CATEGORY_VARIABLES[categoryId]} Which of these variables matters most depends on the specific object and observation.`
+    },
+    {
+      title:'5. Evidence and Measurement',
+      text:`Astronomers do not identify ${title.toLowerCase()} from definitions alone. ${CATEGORY_EVIDENCE[categoryId]} Measurements are compared with physical models to determine which interpretation is most consistent with the evidence.`
+    },
+    {
+      title:'6. Cause and Effect',
+      text:`Ask what causes the behavior instead of memorizing only what happens. For ${title.toLowerCase()}, connect the observed result to the physical mechanism described earlier. ${CATEGORY_APPLICATION[categoryId]}`
+    },
+    {
+      title:'7. Common Misconception',
+      text:`A useful way to strengthen understanding is to identify an explanation that sounds reasonable but is incomplete or wrong. ${CATEGORY_MISCONCEPTIONS[categoryId]} Keep this distinction in mind when you reach the practice questions, because several distractors may contain statements that are partly true but irrelevant to the question.`
+    }
+  ];
+
+  if(sectionIndex>=1){
+    sections.push({
+      title:'8. Compare and Contrast',
+      text:`At the ${difficulty.name.toLowerCase()} level, compare ${title.toLowerCase()} with nearby concepts rather than treating it in isolation. Ask which observations are shared, which mechanisms differ, and what measurement would allow an astronomer to distinguish between competing explanations.`
+    });
+  }
+
+  if(sectionIndex>=1){
+    sections.push({
+      title:'9. Scientific Reasoning',
+      text:`Suppose two observations appear to support different explanations of ${title.toLowerCase()}. The correct response is not to choose whichever observation looks more convincing. First check uncertainty, selection effects, wavelength, distance, geometry, assumptions, and whether both observations can be explained by a single physical model.`
+    });
+  }
+
+  if(sectionIndex>=2){
+    sections.push({
+      title:'10. Connection to Other Topics',
+      text:`${CATEGORY_CONNECTIONS[categoryId]} Understanding ${title.toLowerCase()} therefore improves your ability to reason about topics outside this individual lesson.`
+    });
+  }
+
+  if(sectionIndex>=2){
+    sections.push({
+      title:'11. Advanced Interpretation',
+      text:`Advanced astronomy rarely asks only "what is this?" A stronger question is "what combination of evidence would make this interpretation more likely than an alternative?" For ${title.toLowerCase()}, combine the core fact — ${fact} — with the deeper mechanism and observational evidence rather than relying on a single clue.`
+    });
+  }
+
+  if(sectionIndex>=3){
+    sections.push({
+      title:'12. Model Limitations',
+      text:`Scientific models simplify reality. When applying a model to ${title.toLowerCase()}, identify its assumptions and the range where it is valid. A useful approximation can still become inaccurate when conditions, scales, velocities, densities, wavelengths, or environments move outside the range for which the approximation was designed.`
+    });
+  }
+
+  if(sectionIndex>=3){
+    sections.push({
+      title:'13. Expert Reasoning',
+      text:`At expert level, separate observation from interpretation. First state what was actually measured. Then identify the physical inference. Finally ask what alternative process could produce a similar signal and what additional observation would discriminate between the possibilities.`
+    });
+  }
+
+  sections.push({
+    title:'Practice Preparation',
+    text:`Before moving into the questions, make sure you can explain ${title.toLowerCase()} without simply repeating its definition. You should be able to describe the mechanism, identify important variables, connect the concept to observations, recognize a common misconception, and explain why an alternative answer could be wrong.`
+  });
+
+  sections.push({
+    title:'NASA Connection',
+    text:`NASA missions, observatories, spacecraft, and scientific archives provide observations related to ${title.toLowerCase()}. The lesson searches NASA's image archive using the topic "${nasaSearch}", giving you a real observational example before the practice section.`
+  });
+
+  return sections;
+};
+
 const makeLesson=(
   categoryId,
   number,
@@ -771,52 +885,6 @@ const makeLesson=(
 )=>{
   const difficulty=DIFFICULTY_STAGES[sectionIndex];
   const depth=LESSON_DEPTH[categoryId][number-1]||fact;
-  const questions=makeLessonQuestions(
-    categoryId,
-    number,
-    title,
-    fact,
-    depth,
-    sectionIndex
-  );
-
-  const sections=[
-    {
-      title:'Core Idea',
-      text:fact
-    },
-    {
-      title:'Deeper Explanation',
-      text:depth
-    },
-    {
-      title:'Evidence and Observation',
-      text:CATEGORY_EVIDENCE[categoryId]
-    },
-    {
-      title:'How to Think About It',
-      text:CATEGORY_APPLICATION[categoryId]
-    }
-  ];
-
-  if(sectionIndex>=1){
-    sections.push({
-      title:'Reasoning Challenge',
-      text:`Do not memorize ${title.toLowerCase()} as an isolated definition. Ask what physical mechanism produces the observation, what measurements would distinguish competing explanations, and what assumptions could change the conclusion.`
-    });
-  }
-
-  if(sectionIndex>=2){
-    sections.push({
-      title:'Advanced Connection',
-      text:`At the ${difficulty.name.toLowerCase()} stage, connect ${title.toLowerCase()} with earlier lessons in ${COURSE_BLUEPRINTS[categoryId].title}. A strong explanation should remain consistent with both the local mechanism and the broader evolutionary or observational context.`
-    });
-  }
-
-  sections.push({
-    title:'NASA Connection',
-    text:`NASA missions, observatories, spacecraft, and scientific archives can provide real observations related to ${title.toLowerCase()}. The lesson's NASA image search uses "${nasaSearch}" as its topic query.`
-  });
 
   return{
     id:`${categoryId}-${number}`,
@@ -830,16 +898,32 @@ const makeLesson=(
     completed:false,
     nasaSearch,
     content:{
-      intro:`${description} This ${difficulty.name.toLowerCase()} lesson moves from the core concept into evidence, reasoning, and application.`,
-      sections,
-      activities:makeActivities(categoryId,number,sectionIndex),
-      questions,
+      intro:`${description} This ${difficulty.name.toLowerCase()} lesson teaches the concept in depth before the practice section begins.`,
+      sections:buildTeachingSections(
+        categoryId,
+        number,
+        title,
+        description,
+        fact,
+        depth,
+        sectionIndex,
+        nasaSearch
+      ),
+      activities:makeActivities(categoryId,number),
+      questions:makeLessonQuestions(
+        categoryId,
+        number,
+        title,
+        fact,
+        depth,
+        sectionIndex
+      ),
       keyFacts:[
         fact,
         depth,
         CATEGORY_APPLICATION[categoryId],
-        `Difficulty: ${difficulty.name}.`,
-        `NASA search topic: ${nasaSearch}.`
+        CATEGORY_CONNECTIONS[categoryId],
+        `Difficulty: ${difficulty.name}.`
       ]
     }
   };
@@ -865,25 +949,14 @@ const buildQuizQuestions=(categoryId,index,sourceLessons,isFinal)=>{
 
   sourceLessons.forEach(lesson=>{
     const questions=lesson.content.questions;
-
     if(!questions.length)return;
 
     if(isFinal){
       const hardStart=Math.max(0,questions.length-3);
-
-      questions
-        .slice(hardStart)
-        .forEach(question=>pool.push(question));
+      questions.slice(hardStart).forEach(question=>pool.push(question));
     }else{
-      const start=Math.min(
-        Math.max(1,index),
-        questions.length-1
-      );
-
-      const ordered=questions
-        .slice(start)
-        .concat(questions.slice(0,start));
-
+      const start=Math.min(Math.max(1,index),questions.length-1);
+      const ordered=questions.slice(start).concat(questions.slice(0,start));
       ordered.forEach(question=>pool.push(question));
     }
   });
@@ -892,15 +965,10 @@ const buildQuizQuestions=(categoryId,index,sourceLessons,isFinal)=>{
   const used=new Set();
   let cursor=0;
 
-  while(
-    selected.length<target&&
-    cursor<pool.length*3
-  ){
+  while(selected.length<target&&cursor<pool.length*3){
     const position=(cursor*5+index*3)%pool.length;
     const question=pool[position];
-
-    const signature=
-      `${question.question}|${question.answers.join('|')}`;
+    const signature=`${question.question}|${question.answers.join('|')}`;
 
     if(!used.has(signature)){
       used.add(signature);
@@ -912,8 +980,7 @@ const buildQuizQuestions=(categoryId,index,sourceLessons,isFinal)=>{
 
   if(selected.length<target){
     for(const question of pool){
-      const signature=
-        `${question.question}|${question.answers.join('|')}`;
+      const signature=`${question.question}|${question.answers.join('|')}`;
 
       if(!used.has(signature)){
         used.add(signature);
@@ -963,12 +1030,8 @@ const makeQuiz=(
     description:isFinal
       ?`Complete a cumulative ${COURSE_BLUEPRINTS[categoryId].title} challenge covering the entire category.`
       :`Test your understanding of this section with ${questions.length} increasingly demanding questions.`,
-    difficulty:isFinal
-      ?'FINAL CHALLENGE'
-      :difficulty.name,
-    duration:isFinal
-      ?'25 min'
-      :difficulty.quizDuration,
+    difficulty:isFinal?'FINAL CHALLENGE':difficulty.name,
+    duration:isFinal?'35 min':difficulty.quizDuration,
     xp:isFinal?100:60,
     unlocked:false,
     completed:false,
@@ -980,11 +1043,31 @@ const makeQuiz=(
       sections:isFinal
         ?[
           {
+            title:'Final Review: Core Principles',
+            text:`Review the major physical relationships from the complete ${COURSE_BLUEPRINTS[categoryId].title} category before attempting the final challenge. Focus on cause and effect instead of isolated definitions.`
+          },
+          {
+            title:'Final Review: Evidence',
+            text:CATEGORY_EVIDENCE[categoryId]
+          },
+          {
+            title:'Final Review: Connections',
+            text:CATEGORY_CONNECTIONS[categoryId]
+          },
+          {
             title:'Final Challenge Strategy',
             text:'Use relationships between concepts, eliminate answers that are true but irrelevant, check units in numerical questions, and prefer explanations that are consistent with multiple observations.'
           }
         ]
         :[
+          {
+            title:'Section Review',
+            text:`Before beginning the quiz, mentally connect the lessons in this section. Identify which ideas describe observations, which describe underlying mechanisms, and which variables determine the outcome.`
+          },
+          {
+            title:'Evidence Review',
+            text:CATEGORY_EVIDENCE[categoryId]
+          },
           {
             title:'Quiz Strategy',
             text:'Do not choose an answer merely because it sounds scientific. Identify exactly what the question asks, then connect the observation to the relevant physical mechanism.'
@@ -1009,81 +1092,71 @@ const makeQuiz=(
 
 const COURSE_DATA={};
 
-Object.entries(COURSE_BLUEPRINTS).forEach(
-  ([categoryId,category])=>{
-    let lessonNumber=1;
-    const sections=[];
-    const allCategoryLessons=[];
+Object.entries(COURSE_BLUEPRINTS).forEach(([categoryId,category])=>{
+  let lessonNumber=1;
+  const sections=[];
+  const allCategoryLessons=[];
 
-    category.sections.forEach(
-      (section,sectionIndex)=>{
-        const sectionLessons=[];
+  category.sections.forEach((section,sectionIndex)=>{
+    const sectionLessons=[];
 
-        section.lessons.forEach(
-          ([title,description,nasaSearch,fact])=>{
-            const unlocked=
-              sectionIndex===0&&
-              lessonNumber===1;
+    section.lessons.forEach(([title,description,nasaSearch,fact])=>{
+      const unlocked=sectionIndex===0&&lessonNumber===1;
 
-            const lesson=makeLesson(
-              categoryId,
-              lessonNumber,
-              title,
-              description,
-              nasaSearch,
-              fact,
-              sectionIndex,
-              unlocked
-            );
+      const lesson=makeLesson(
+        categoryId,
+        lessonNumber,
+        title,
+        description,
+        nasaSearch,
+        fact,
+        sectionIndex,
+        unlocked
+      );
 
-            sectionLessons.push(lesson);
-            allCategoryLessons.push(lesson);
-            lessonNumber++;
-          }
-        );
+      sectionLessons.push(lesson);
+      allCategoryLessons.push(lesson);
+      lessonNumber++;
+    });
 
-        const isFinal=
-          sectionIndex===
-          category.sections.length-1;
+    const isFinal=sectionIndex===category.sections.length-1;
 
-        const quizTitle=isFinal
-          ?`${category.title} Final Challenge`
-          :`${section.title} Quiz`;
+    const quizTitle=isFinal
+      ?`${category.title} Final Challenge`
+      :`${section.title} Quiz`;
 
-        const quizSource=isFinal
-          ?allCategoryLessons
-          :sectionLessons;
+    const quizSource=isFinal
+      ?allCategoryLessons
+      :sectionLessons;
 
-        sectionLessons.push(
-          makeQuiz(
-            categoryId,
-            sectionIndex+1,
-            quizTitle,
-            quizSource,
-            isFinal
-          )
-        );
-
-        sections.push({
-          id:`${categoryId}-section-${sectionIndex+1}`,
-          title:`${sectionIndex+1}. ${section.title}`,
-          subtitle:section.subtitle,
-          difficulty:isFinal
-            ?'EXPERT / FINAL'
-            :DIFFICULTY_STAGES[sectionIndex].name,
-          lessons:sectionLessons
-        });
-      }
+    sectionLessons.push(
+      makeQuiz(
+        categoryId,
+        sectionIndex+1,
+        quizTitle,
+        quizSource,
+        isFinal
+      )
     );
 
-    COURSE_DATA[categoryId]={
-      id:categoryId,
-      title:category.title,
-      icon:category.icon,
-      description:category.description,
-      rank:'BRONZE',
-      level:1,
-      sections
-    };
-  }
-);
+    sections.push({
+      id:`${categoryId}-section-${sectionIndex+1}`,
+      title:`${sectionIndex+1}. ${section.title}`,
+      subtitle:section.subtitle,
+      difficulty:isFinal
+        ?'EXPERT / FINAL'
+        :DIFFICULTY_STAGES[sectionIndex].name,
+      lessons:sectionLessons
+    });
+  });
+
+  COURSE_DATA[categoryId]={
+    id:categoryId,
+    title:category.title,
+    icon:category.icon,
+    description:category.description,
+    rank:'BRONZE',
+    level:1,
+    sections
+  };
+});
