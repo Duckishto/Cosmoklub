@@ -90,15 +90,26 @@
 
             <section id="learningExperience" class="learning-experience hidden">
               <div class="learning-topbar">
-                <button id="exitLesson" class="learning-exit" type="button" aria-label="Exit lesson">
-                  ✕
+                <button id="previousStep" class="step-nav-button step-nav-previous" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"/>
+                  </svg>
+                  <span>Previous</span>
                 </button>
 
-                <div class="learning-progress">
-                  <div id="learningProgressFill" class="learning-progress-fill"></div>
+                <div class="learning-progress-wrap">
+                  <div class="learning-progress">
+                    <div id="learningProgressFill" class="learning-progress-fill"></div>
+                  </div>
+                  <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
                 </div>
 
-                <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
+                <button id="forwardStep" class="step-nav-button step-nav-next" type="button">
+                  <span>Next</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </button>
               </div>
 
               <div id="learningStage" class="learning-stage"></div>
@@ -112,17 +123,5 @@
   <script src="course-data.js"></script>
   <script src="progress.js"></script>
   <script src="lesson.js"></script>
-
-  <script>
-    const roadmapBack=document.getElementById('roadmapBack');
-
-    if(roadmapBack){
-      roadmapBack.addEventListener('click',()=>{
-        const params=new URLSearchParams(window.location.search);
-        const category=params.get('category')||'stars';
-        window.location.href=`roadmap.html?category=${category}`;
-      });
-    }
-  </script>
 </body>
 </html>
