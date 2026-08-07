@@ -7,25 +7,36 @@
   <link rel="stylesheet" href="roadmap.css">
 </head>
 <body>
-  <header class="site-header">
-    <a href="dashboard.html" class="site-logo" aria-label="CosmoKlub home">
-      <svg class="site-logo-mark" viewBox="0 0 24 24" aria-hidden="true">
-        <defs>
-          <linearGradient id="roadmapLogoGradient" x1="3" y1="3" x2="21" y2="21">
-            <stop offset="0%" stop-color="#c084fc"/>
-            <stop offset="55%" stop-color="#a855f7"/>
-            <stop offset="100%" stop-color="#7c3aed"/>
-          </linearGradient>
-        </defs>
-        <path d="M12 3.5 4.4 18h15.2L12 3.5Z" fill="none" stroke="url(#roadmapLogoGradient)" stroke-width="1.7" stroke-linejoin="round"/>
-        <circle cx="12" cy="3.5" r="1.8" fill="#a855f7"/>
-        <circle cx="4.4" cy="18" r="1.5" fill="#c084fc"/>
-        <circle cx="19.6" cy="18" r="1.5" fill="#a855f7"/>
-        <circle cx="12" cy="12.8" r="1.2" fill="#a78bfa"/>
+  <div class="topbar">
+    <a href="dashboard.html" class="brand">
+      <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+        <circle cx="13" cy="5" r="2.2" fill="#a855f7"/>
+        <circle cx="5" cy="18" r="1.7" fill="#c084fc"/>
+        <circle cx="21" cy="18" r="1.7" fill="#c084fc"/>
+        <circle cx="13" cy="14" r="1.3" fill="#e9d5ff" opacity="0.7"/>
+        <line x1="13" y1="5" x2="5" y2="18" stroke="#a855f7" stroke-width="1" stroke-opacity="0.55"/>
+        <line x1="13" y1="5" x2="21" y2="18" stroke="#a855f7" stroke-width="1" stroke-opacity="0.55"/>
+        <line x1="5" y1="18" x2="21" y2="18" stroke="#c084fc" stroke-width="1" stroke-opacity="0.45"/>
       </svg>
-      <span>CosmoKlub</span>
+      CosmoKlub
     </a>
-  </header>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="icon-btn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="icon-dot"></span>
+      </div>
+      <div class="icon-btn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
 
   <main class="roadmap-page">
     <div class="roadmap-shell">
@@ -37,8 +48,10 @@
         <section class="category-hero">
           <div class="category-hero-main">
             <div class="category-kicker">Study Roadmap</div>
+
             <div class="category-heading">
               <div class="category-icon" id="categoryIcon">⭐</div>
+
               <div>
                 <h1 id="categoryTitle">Stars</h1>
                 <p id="categoryDescription"></p>
@@ -51,9 +64,11 @@
             <div class="category-rank" id="categoryRank">BRONZE</div>
             <div class="category-level" id="categoryLevel">Level 1</div>
             <div class="category-xp" id="categoryXp">0 XP</div>
+
             <div class="category-progress-track">
               <div id="categoryProgressFill" class="category-progress-fill"></div>
             </div>
+
             <div class="category-progress-meta">
               <span id="categoryProgressText">0 / 20 complete</span>
               <span id="categoryNextLevel">Next level: 20 XP</span>
