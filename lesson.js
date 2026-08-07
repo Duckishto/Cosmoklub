@@ -27,17 +27,21 @@ const titleElement=document.getElementById('lessonTitle');
 const descriptionElement=document.getElementById('lessonDescription');
 const durationElement=document.getElementById('lessonDuration');
 const xpElement=document.getElementById('lessonXp');
+
 document.title=`${currentLesson.title} | CosmoKlub`;
+
 if(categoryElement)categoryElement.textContent=category.title.toUpperCase();
 if(titleElement)titleElement.textContent=currentLesson.title;
 if(descriptionElement)descriptionElement.textContent=currentLesson.description;
 if(durationElement)durationElement.textContent=currentLesson.duration;
 if(xpElement)xpElement.textContent=`${currentLesson.xp} XP`;
+
 let steps=[];
 let currentStep=0;
 let lessonScore=0;
 let answeredQuestions=0;
 let nasaImage=null;
+
 function buildSteps(){
   steps=[];
   if(currentLesson.content?.intro){
@@ -88,12 +92,15 @@ function buildSteps(){
     type:'complete'
   });
 }
+
 async function fetchNasaImage(){
   if(!currentLesson.nasaSearch)return null;
   try{
     const url=`https://images-api.nasa.gov/search?q=${encodeURIComponent(currentLesson.nasaSearch)}&media_type=image`;
     const response=await fetch(url);
-    if(!response.ok)throw new Error(`NASA request failed: ${response.status}`);
+    if(!response.ok){
+      throw new Error(`NASA request failed: ${response.status}`);
+    }
     const data=await response.json();
     const items=data.collection?.items||[];
     const usableItem=items.find(item=>item.links?.[0]?.href);
@@ -108,6 +115,7 @@ async function fetchNasaImage(){
     return null;
   }
 }
+
 function updateProgress(){
   if(!steps.length)return;
   const displayStep=Math.min(currentStep+1,steps.length);
@@ -115,6 +123,7 @@ function updateProgress(){
   if(progressFill)progressFill.style.width=`${percentage}%`;
   if(progressText)progressText.textContent=`${displayStep} / ${steps.length}`;
 }
+
 function renderStep(){
   const step=steps[currentStep];
   if(!step)return;
@@ -124,7 +133,7 @@ function renderStep(){
     return;
   }
   if(step.type==='image'){
-    renderImage(step);
+    renderImage();
     return;
   }
   if(step.type==='content'){
@@ -147,6 +156,7 @@ function renderStep(){
     renderComplete();
   }
 }
+
 function renderIntro(step){
   learningStage.innerHTML=`
     <div class="learning-card">
@@ -158,9 +168,18 @@ function renderIntro(step){
   `;
   document.getElementById('nextStep').addEventListener('click',nextStep);
 }
+
 function renderImage(){
   if(!nasaImage){
-    nextStep();
+    learningStage.innerHTML=`
+      <div class="learning-card">
+        <div class="nasa-label">NASA IMAGE</div>
+        <h2>${escapeHtml(currentLesson.title)}</h2>
+        <p>The NASA image is still loading or could not be loaded.</p>
+        <button class="learning-next" id="nextStep">Continue</button>
+      </div>
+    `;
+    document.getElementById('nextStep').addEventListener('click',nextStep);
     return;
   }
   learningStage.innerHTML=`
@@ -174,6 +193,7 @@ function renderImage(){
   `;
   document.getElementById('nextStep').addEventListener('click',nextStep);
 }
+
 function renderContent(step){
   learningStage.innerHTML=`
     <div class="learning-card">
@@ -185,6 +205,7 @@ function renderContent(step){
   `;
   document.getElementById('nextStep').addEventListener('click',nextStep);
 }
+
 function renderQuestion(question){
   const answers=question.answers||[];
   learningStage.innerHTML=`
@@ -209,6 +230,7 @@ function renderQuestion(question){
     });
   });
 }
+
 function handleAnswer(question,selected,buttons){
   const correct=selected===question.correctAnswer;
   answeredQuestions++;
@@ -231,6 +253,7 @@ function handleAnswer(question,selected,buttons){
   `;
   document.getElementById('nextStep').addEventListener('click',nextStep);
 }
+
 function renderActivity(activity){
   if(activity.type==='ordering'){
     renderOrdering(activity);
@@ -238,6 +261,7 @@ function renderActivity(activity){
   }
   nextStep();
 }
+
 function renderOrdering(activity){
   let items=[...activity.items].sort(()=>Math.random()-.5);
   learningStage.innerHTML=`
@@ -289,7 +313,9 @@ function renderOrdering(activity){
     const correct=items.every((item,index)=>item===activity.items[index]);
     const feedback=document.getElementById('orderingFeedback');
     if(correct){
-      list.querySelectorAll('.ordering-item').forEach(item=>item.classList.add('ordering-correct'));
+      list.querySelectorAll('.ordering-item').forEach(item=>{
+        item.classList.add('ordering-correct');
+      });
       feedback.innerHTML=`
         <div class="question-feedback feedback-correct">
           <strong>Correct!</strong>
@@ -309,6 +335,7 @@ function renderOrdering(activity){
     }
   });
 }
+
 function renderFacts(facts){
   learningStage.innerHTML=`
     <div class="learning-card">
@@ -327,9 +354,12 @@ function renderFacts(facts){
   `;
   document.getElementById('nextStep').addEventListener('click',nextStep);
 }
+
 function renderComplete(){
   const totalQuestions=currentLesson.content?.questions?.length||0;
-  const percentage=totalQuestions?Math.round((lessonScore/totalQuestions)*100):100;
+  const percentage=totalQuestions
+    ?Math.round((lessonScore/totalQuestions)*100)
+    :100;
   const alreadyCompleted=typeof isLessonCompleted==='function'
     ?isLessonCompleted(category.id,currentLesson.id)
     :false;
@@ -338,7 +368,9 @@ function renderComplete(){
       <div class="completion-icon">✓</div>
       <div class="learning-label">LESSON COMPLETE</div>
       <h1>${escapeHtml(currentLesson.title)}</h1>
-      ${totalQuestions?`<p>You answered ${lessonScore} of ${totalQuestions} questions correctly (${percentage}%).</p>`:''}
+      ${totalQuestions?`
+        <p>You answered ${lessonScore} of ${totalQuestions} questions correctly (${percentage}%).</p>
+      `:''}
       <div class="completion-xp">
         <span>✦</span>
         <strong>${alreadyCompleted?'Already completed':`+${currentLesson.xp} XP`}</strong>
@@ -350,12 +382,14 @@ function renderComplete(){
   `;
   document.getElementById('finishLessonButton').addEventListener('click',finishLesson);
 }
+
 function nextStep(){
   if(currentStep<steps.length-1){
     currentStep++;
     renderStep();
   }
 }
+
 function finishLesson(){
   if(typeof completeLesson==='function'){
     const result=completeLesson(
@@ -369,11 +403,32 @@ function finishLesson(){
   }
   window.location.href=`roadmap.html?category=${category.id}`;
 }
+
+function startLearning(){
+  if(!startButton)return;
+  buildSteps();
+  currentStep=0;
+  lessonScore=0;
+  answeredQuestions=0;
+  lessonCover.classList.add('hidden');
+  learningExperience.classList.remove('hidden');
+  renderStep();
+  fetchNasaImage()
+    .then(image=>{
+      nasaImage=image;
+    })
+    .catch(error=>{
+      console.warn('NASA image failed to load:',error);
+      nasaImage=null;
+    });
+}
+
 function escapeHtml(value){
   const div=document.createElement('div');
   div.textContent=String(value??'');
   return div.innerHTML;
 }
+
 function escapeAttribute(value){
   return String(value??'')
     .replaceAll('&','&amp;')
@@ -381,27 +436,21 @@ function escapeAttribute(value){
     .replaceAll('<','&lt;')
     .replaceAll('>','&gt;');
 }
+
 function trimText(value,maxLength){
-  const text=String(value??'').replace(/\s+/g,' ').trim();
+  const text=String(value??'')
+    .replace(/\s+/g,' ')
+    .trim();
   if(text.length<=maxLength)return text;
   return`${text.slice(0,maxLength).trim()}...`;
 }
-async function startLearning(){
-  if(!startButton)return;
-  startButton.disabled=true;
-  startButton.textContent='Loading...';
-  buildSteps();
-  nasaImage=await fetchNasaImage();
-  currentStep=0;
-  lessonCover.classList.add('hidden');
-  learningExperience.classList.remove('hidden');
-  renderStep();
-}
+
 if(startButton){
   startButton.addEventListener('click',startLearning);
 }else{
   console.error('Start Learning button #startLearning was not found.');
 }
+
 if(exitButton){
   exitButton.addEventListener('click',()=>{
     window.location.href=`roadmap.html?category=${category.id}`;
