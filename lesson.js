@@ -527,27 +527,13 @@ function cleanNasaDescription(description){
 }
 
 function finishLesson(){
-  const completionResult={
-    categoryId:category.id,
-    lessonId:currentLesson.id,
-    xpEarned:currentLesson.xp,
-    completedAt:new Date().toISOString()
+  const result=completeLesson(
+    category.id,
+    currentLesson.id,
+    ccurrentLesson.xp
   };
 
-  console.log('CosmoKlub lesson completed:',completionResult);
-
-  /*
-  ACCOUNT/BACKEND TEAM:
-  Send completionResult to the account-progress system here.
-
-  The backend should:
-  - mark this lesson completed
-  - award XP only when appropriate
-  - unlock the next lesson
-  - update category level
-  - update category rank
-  */
-
+  console.log('CosmoKlub lesson completed:',result);
   window.location.href=`roadmap.html?category=${category.id}`;
 }
 
