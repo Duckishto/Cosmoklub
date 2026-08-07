@@ -19,7 +19,7 @@ const COURSE_DATA={
             description:'Learn what stars are made of and why they shine.',
             duration:'5 min',
             xp:25,
-            unlocked:false,
+            unlocked:true,
             completed:false,
             nasaSearch:'Sun star',
             content:{
