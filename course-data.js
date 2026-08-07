@@ -19,7 +19,7 @@ const COURSE_DATA={
             description:'Learn what stars are made of and why they shine.',
             duration:'5 min',
             xp:25,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'Sun star',
             content:{
@@ -44,7 +44,7 @@ const COURSE_DATA={
             description:'Follow a star from a molecular cloud to the main sequence.',
             duration:'7 min',
             xp:30,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'star formation protostar molecular cloud',
             content:{
@@ -72,7 +72,7 @@ const COURSE_DATA={
             description:'Explore the longest stage of a star’s life.',
             duration:'7 min',
             xp:30,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'Sun main sequence star',
             content:{
@@ -96,7 +96,7 @@ const COURSE_DATA={
             description:'Discover why stars appear red, yellow, white, or blue.',
             duration:'6 min',
             xp:30,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'blue red stars star cluster',
             content:{
@@ -120,7 +120,7 @@ const COURSE_DATA={
             description:'Test what you learned about stars, formation, and the main sequence.',
             duration:'6 min',
             xp:50,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'stars Milky Way',
             content:{
@@ -150,7 +150,7 @@ const COURSE_DATA={
             description:'Learn why aging stars expand dramatically.',
             duration:'7 min',
             xp:35,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'red giant supergiant star',
             content:{
@@ -174,7 +174,7 @@ const COURSE_DATA={
             description:'See how Sun-like stars release their outer layers.',
             duration:'6 min',
             xp:35,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'planetary nebula Helix Ring Nebula',
             content:{
@@ -198,7 +198,7 @@ const COURSE_DATA={
             description:'Meet the dense remnants of Sun-like stars.',
             duration:'7 min',
             xp:35,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'white dwarf star',
             content:{
@@ -222,7 +222,7 @@ const COURSE_DATA={
             description:'Discover how massive stars build heavier elements.',
             duration:'8 min',
             xp:40,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'massive star fusion supergiant',
             content:{
@@ -246,7 +246,7 @@ const COURSE_DATA={
             description:'Explore the explosive deaths of massive stars.',
             duration:'8 min',
             xp:40,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'supernova remnant Cassiopeia Crab',
             content:{
@@ -270,7 +270,7 @@ const COURSE_DATA={
             description:'Test your understanding of how stars age and die.',
             duration:'7 min',
             xp:60,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'stellar evolution',
             content:{
@@ -300,7 +300,7 @@ const COURSE_DATA={
             description:'Explore some of the densest objects in the universe.',
             duration:'7 min',
             xp:40,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'neutron star NICER',
             content:{
@@ -324,7 +324,7 @@ const COURSE_DATA={
             description:'Meet rapidly spinning and highly magnetic neutron stars.',
             duration:'7 min',
             xp:40,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'pulsar neutron star magnetar',
             content:{
@@ -348,7 +348,7 @@ const COURSE_DATA={
             description:'Learn how the heaviest stellar cores can collapse even further.',
             duration:'8 min',
             xp:45,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'stellar mass black hole',
             content:{
@@ -372,7 +372,7 @@ const COURSE_DATA={
             description:'Discover what happens when stars evolve with companions.',
             duration:'7 min',
             xp:40,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'binary star nova white dwarf',
             content:{
@@ -396,7 +396,7 @@ const COURSE_DATA={
             description:'Test yourself on neutron stars, pulsars, black holes, and binaries.',
             duration:'7 min',
             xp:60,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'neutron star black hole',
             content:{
@@ -426,7 +426,7 @@ const COURSE_DATA={
             description:'Explore groups of stars that formed together.',
             duration:'6 min',
             xp:35,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'open star cluster globular cluster',
             content:{
@@ -450,7 +450,7 @@ const COURSE_DATA={
             description:'Learn how astronomers classify stars using their light.',
             duration:'8 min',
             xp:40,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'stellar spectrum stars spectroscopy',
             content:{
@@ -474,7 +474,7 @@ const COURSE_DATA={
             description:'Learn how astronomers organize stars by luminosity and temperature.',
             duration:'8 min',
             xp:45,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'Hertzsprung Russell diagram star cluster',
             content:{
@@ -498,7 +498,7 @@ const COURSE_DATA={
             description:'Complete the Stars category by reviewing the entire stellar life cycle.',
             duration:'10 min',
             xp:100,
-            unlocked:true,
+            unlocked:false,
             completed:false,
             nasaSearch:'stellar life cycle stars',
             content:{
@@ -543,7 +543,7 @@ const COURSE_DATA={
             description:'Learn what galaxies contain and how large they can become.',
             duration:'5 min',
             xp:25,
-            unlocked:true,
+            unlocked:false,
             completed:false
           },
           {
@@ -563,7 +563,7 @@ const COURSE_DATA={
             description:'Test your knowledge of galaxy types.',
             duration:'5 min',
             xp:50,
-            unlocked:false,
+            :false,
             completed:false
           }
         ]
@@ -590,7 +590,7 @@ const COURSE_DATA={
             description:'Learn what cosmologists study.',
             duration:'5 min',
             xp:25,
-            unlocked:true,
+            :true,
             completed:false
           },
           {
@@ -600,7 +600,7 @@ const COURSE_DATA={
             description:'Explore the early history of the universe.',
             duration:'8 min',
             xp:35,
-            unlocked:false,
+            :false,
             completed:false
           },
           {
@@ -610,7 +610,7 @@ const COURSE_DATA={
             description:'Test your understanding of basic cosmology.',
             duration:'5 min',
             xp:50,
-            unlocked:false,
+            :false,
             completed:false
           }
         ]
@@ -637,7 +637,7 @@ const COURSE_DATA={
             description:'Learn the basic characteristics of planets.',
             duration:'5 min',
             xp:25,
-            unlocked:true,
+            :true,
             completed:false
           },
           {
@@ -647,7 +647,7 @@ const COURSE_DATA={
             description:'Explore Mercury, Venus, Earth, and Mars.',
             duration:'7 min',
             xp:30,
-            unlocked:false,
+            :false,
             completed:false
           },
           {
@@ -657,7 +657,7 @@ const COURSE_DATA={
             description:'Test your understanding of planets.',
             duration:'5 min',
             xp:50,
-            unlocked:false,
+            unlocked:true,
             completed:false
           }
         ]
