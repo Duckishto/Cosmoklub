@@ -5,11 +5,116 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Roadmap | CosmoKlub</title>
   <link rel="stylesheet" href="roadmap.css">
+  <style>
+    .cosmo-topbar{
+      display:flex!important;
+      align-items:center!important;
+      gap:14px!important;
+      width:100%!important;
+      height:56px!important;
+      min-height:56px!important;
+      padding:0 20px!important;
+      margin:0!important;
+      background:linear-gradient(180deg,rgba(12,9,34,.9),rgba(7,6,26,.82))!important;
+      backdrop-filter:blur(20px)!important;
+      -webkit-backdrop-filter:blur(20px)!important;
+      border-bottom:1px solid rgba(124,58,237,.25)!important;
+      position:relative!important;
+      z-index:100!important;
+      flex-shrink:0!important;
+      box-sizing:border-box!important;
+    }
+    .cosmo-brand{
+      display:flex!important;
+      align-items:center!important;
+      gap:8px!important;
+      margin:0!important;
+      padding:0!important;
+      color:#f5f3ff!important;
+      font-family:'Inter',-apple-system,sans-serif!important;
+      font-size:15.5px!important;
+      font-weight:800!important;
+      line-height:1!important;
+      letter-spacing:-.3px!important;
+      text-decoration:none!important;
+      white-space:nowrap!important;
+      flex-shrink:0!important;
+    }
+    .cosmo-brand:hover{
+      color:#f5f3ff!important;
+      text-decoration:none!important;
+    }
+    .cosmo-brand svg{
+      width:22px!important;
+      height:22px!important;
+      display:block!important;
+      flex:0 0 22px!important;
+      filter:drop-shadow(0 0 6px rgba(168,85,247,.55))!important;
+    }
+    .cosmo-topbar-spacer{
+      flex:1!important;
+    }
+    .cosmo-topbar-actions{
+      display:flex!important;
+      flex-direction:row!important;
+      align-items:center!important;
+      justify-content:flex-end!important;
+      gap:4px!important;
+      margin:0!important;
+      padding:0!important;
+      flex-shrink:0!important;
+    }
+    .cosmo-icon-btn{
+      position:relative!important;
+      width:36px!important;
+      height:36px!important;
+      min-width:36px!important;
+      min-height:36px!important;
+      display:flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      margin:0!important;
+      padding:0!important;
+      border:0!important;
+      border-radius:9px!important;
+      background:transparent!important;
+      color:#8b7aa8!important;
+      cursor:pointer!important;
+      box-sizing:border-box!important;
+      transition:background .22s cubic-bezier(.4,0,.2,1),color .22s cubic-bezier(.4,0,.2,1)!important;
+    }
+    .cosmo-icon-btn:hover{
+      background:rgba(124,58,237,.08)!important;
+      color:#f5f3ff!important;
+    }
+    .cosmo-icon-btn svg{
+      width:17px!important;
+      height:17px!important;
+      display:block!important;
+      flex:0 0 17px!important;
+    }
+    .cosmo-icon-dot{
+      position:absolute!important;
+      top:7px!important;
+      right:7px!important;
+      width:7px!important;
+      height:7px!important;
+      border-radius:50%!important;
+      background:#a855f7!important;
+      border:1.5px solid #07061a!important;
+      box-sizing:border-box!important;
+    }
+    @media(max-width:700px){
+      .cosmo-topbar{
+        padding:0 12px!important;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="topbar">
-    <a href="dashboard.html" class="brand">
-      <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+  <header class="cosmo-topbar">
+    <a href="dashboard.html" class="cosmo-brand" aria-label="CosmoKlub home">
+      <svg width="22" height="22" viewBox="0 0 26 26" fill="none" aria-hidden="true">
         <circle cx="13" cy="5" r="2.2" fill="#a855f7"/>
         <circle cx="5" cy="18" r="1.7" fill="#c084fc"/>
         <circle cx="21" cy="18" r="1.7" fill="#c084fc"/>
@@ -18,25 +123,25 @@
         <line x1="13" y1="5" x2="21" y2="18" stroke="#a855f7" stroke-width="1" stroke-opacity="0.55"/>
         <line x1="5" y1="18" x2="21" y2="18" stroke="#c084fc" stroke-width="1" stroke-opacity="0.45"/>
       </svg>
-      CosmoKlub
+      <span>CosmoKlub</span>
     </a>
-    <div class="topbar-spacer"></div>
-    <div class="topbar-actions">
-      <div class="icon-btn">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="cosmo-topbar-spacer"></div>
+    <div class="cosmo-topbar-actions">
+      <button class="cosmo-icon-btn" type="button" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
-        <span class="icon-dot"></span>
-      </div>
-      <div class="icon-btn">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <span class="cosmo-icon-dot"></span>
+      </button>
+      <button class="cosmo-icon-btn" type="button" aria-label="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
-      </div>
+      </button>
     </div>
-  </div>
+  </header>
 
   <main class="roadmap-page">
     <div class="roadmap-shell">
