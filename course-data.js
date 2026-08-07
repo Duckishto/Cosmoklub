@@ -18,11 +18,77 @@ const COURSE_DATA = {
             id: 'stars-1',
             type: 'lesson',
             title: 'What is a Star?',
-            description: 'Learn what stars are made of and what makes them shine.',
+            description: 'Learn what stars are, what they are made of, and why they shine.',
             duration: '5 min',
             xp: 25,
             unlocked: true,
-            completed: false
+            completed: false,
+            nasaSearch: 'Sun star',
+            content: {
+              intro: 'Stars are enormous self-gravitating spheres of hot gas. Most of their material is hydrogen, with helium and smaller amounts of other elements.',
+              sections: [
+                {
+                  title: 'A giant sphere held together by gravity',
+                  text: 'Gravity constantly pulls a star inward. At the same time, hot gas and energy generated inside the star create outward pressure. During most of a star’s life, these forces remain in balance.'
+                },
+                {
+                  title: 'What are stars made of?',
+                  text: 'Stars are composed mainly of hydrogen and helium. Their temperatures are so high that much of their matter exists as plasma, an electrically charged state of matter.'
+                },
+                {
+                  title: 'Why do stars shine?',
+                  text: 'In main-sequence stars, nuclear fusion in the core converts hydrogen into helium. Fusion releases energy that heats the star and produces the light and radiation that eventually escape into space.'
+                }
+              ],
+              keyFacts: [
+                'The Sun is a star.',
+                'Stars are held together by their own gravity.',
+                'Hydrogen is the main fuel of most stars.',
+                'Nuclear fusion produces the energy that makes stars shine.'
+              ],
+              questions: [
+                {
+                  id: 'stars-1-q1',
+                  type: 'multiple-choice',
+                  question: 'What is the main element found in most stars?',
+                  answers: [
+                    'Oxygen',
+                    'Hydrogen',
+                    'Carbon',
+                    'Iron'
+                  ],
+                  correctAnswer: 1,
+                  explanation: 'Hydrogen is the main component and primary fuel of most stars.'
+                },
+                {
+                  id: 'stars-1-q2',
+                  type: 'true-false',
+                  question: 'The Sun is a star.',
+                  answers: [
+                    'True',
+                    'False'
+                  ],
+                  correctAnswer: 0,
+                  explanation: 'The Sun is the star at the center of our solar system.'
+                },
+                {
+                  id: 'stars-1-q3',
+                  type: 'multiple-choice',
+                  question: 'What process supplies energy to a main-sequence star?',
+                  answers: [
+                    'Chemical burning',
+                    'Nuclear fusion',
+                    'Friction with planets',
+                    'Radio waves'
+                  ],
+                  correctAnswer: 1,
+                  explanation: 'Hydrogen nuclei fuse into helium in the core, releasing energy.'
+                }
+              ]
+            }
+          }
+      }
+      },
           },
 
           {
