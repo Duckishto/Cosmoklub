@@ -1,221 +1,119 @@
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
+const params=new URLSearchParams(window.location.search);
+const categoryId=params.get('category')||'stars';
+const category=COURSE_DATA[categoryId];
 
-const categoryId =
-  params.get('category') || 'stars';
-
-const category =
-  COURSE_DATA[categoryId];
-
-
-if (!category) {
-  window.location.href =
-    'dashboard.html';
+if(!category){
+  window.location.replace('dashboard.html');
+  throw new Error('Unknown course category.');
 }
 
+document.title=`${category.title} Roadmap | CosmoKlub`;
+document.getElementById('categoryIcon').textContent=category.icon;
+document.getElementById('categoryMeta').textContent=`${category.rank} • LEVEL ${category.level}`;
+document.getElementById('categoryTitle').textContent=category.title;
+document.getElementById('categoryDescription').textContent=category.description;
 
-document.title =
-  `${category.title} Roadmap | CosmoKlub`;
+const roadmapContainer=document.getElementById('roadmapContainer');
 
+function isSectionComplete(section){
+  return section.lessons.length>0&&section.lessons.every(lesson=>lesson.completed===true);
+}
 
-document.getElementById(
-  'categoryIcon'
-).textContent =
-  category.icon;
+function isSectionUnlocked(sectionIndex){
+  if(sectionIndex===0)return true;
+  const previousSection=category.sections[sectionIndex-1];
+  return isSectionComplete(previousSection);
+}
 
+function renderRoadmap(){
+  roadmapContainer.innerHTML='';
 
-document.getElementById(
-  'categoryMeta'
-).textContent =
-  `${category.rank} • LEVEL ${category.level}`;
+  category.sections.forEach((section,sectionIndex)=>{
+    if(!isSectionUnlocked(sectionIndex))return;
 
+    const sectionElement=document.createElement('section');
+    sectionElement.className='course-section';
 
-document.getElementById(
-  'categoryTitle'
-).textContent =
-  category.title;
-
-
-document.getElementById(
-  'categoryDescription'
-).textContent =
-  category.description;
-
-
-const roadmapContainer =
-  document.getElementById(
-    'roadmapContainer'
-  );
-
-
-category.sections.forEach(
-  (section, sectionIndex) => {
-
-    const sectionElement =
-      document.createElement(
-        'section'
-      );
-
-    sectionElement.className =
-      'course-section';
-
-
-    sectionElement.innerHTML = `
-      <div class="section-banner">
-
-        <div class="section-number">
-          SECTION ${sectionIndex + 1}
-        </div>
-
-        <h2>
-          ${section.title}
-        </h2>
-
-        <p>
-          ${section.subtitle}
-        </p>
-
-      </div>
-
-      <div class="path"></div>
+    const banner=document.createElement('div');
+    banner.className='section-banner';
+    banner.innerHTML=`
+      <div class="section-number">SECTION ${sectionIndex+1}</div>
+      <h2>${escapeHtml(section.title)}</h2>
+      <p>${escapeHtml(section.subtitle)}</p>
     `;
 
+    const path=document.createElement('div');
+    path.className='path';
 
-    const path =
-      sectionElement.querySelector(
-        '.path'
-      );
+    section.lessons.forEach((lesson,index)=>{
+      const item=document.createElement('div');
+      item.className=`path-item path-position-${index%6}`;
 
+      if(lesson.type==='quiz')item.classList.add('quiz');
+      if(lesson.completed)item.classList.add('completed');
+      if(!lesson.unlocked&&!lesson.completed)item.classList.add('locked');
 
-    section.lessons.forEach(
-      (lesson, index) => {
+      const button=document.createElement('button');
+      button.className='path-node';
 
-        const item =
-          document.createElement(
-            'div'
-          );
-
-
-        item.className =
-          `path-item path-position-${index % 6}`;
-
-
-        if (!lesson.unlocked) {
-          item.classList.add(
-            'locked'
-          );
-        }
-
-
-        if (lesson.completed) {
-          item.classList.add(
-            'completed'
-          );
-        }
-
-
-        if (
-          lesson.type === 'quiz'
-        ) {
-          item.classList.add(
-            'quiz'
-          );
-        }
-
-
-        let symbol = '★';
-
-
-        if (lesson.completed) {
-          symbol = '✓';
-        }
-
-        else if (!lesson.unlocked) {
-          symbol = '🔒';
-        }
-
-        else if (
-          lesson.type === 'quiz'
-        ) {
-          symbol = '🏆';
-        }
-
-
-        item.innerHTML = `
-          <button
-            class="path-node"
-            ${lesson.unlocked ? '' : 'disabled'}
-          >
-            ${symbol}
-          </button>
-
-          <div class="path-info">
-
-            <div class="path-title">
-              ${lesson.title}
-            </div>
-
-            <div class="path-meta">
-              ${lesson.duration}
-              •
-              ${lesson.xp} XP
-            </div>
-
-          </div>
-        `;
-
-
-        const button =
-          item.querySelector(
-            '.path-node'
-          );
-
-
-        if (lesson.unlocked) {
-
-          button.addEventListener(
-            'click',
-            () => {
-
-              const url =
-                new URL(
-                  'lesson.html',
-                  window.location.href
-                );
-
-
-              url.searchParams.set(
-                'category',
-                category.id
-              );
-
-
-              url.searchParams.set(
-                'lesson',
-                lesson.id
-              );
-
-
-              window.location.href =
-                url.toString();
-
-            }
-          );
-
-        }
-
-
-        path.appendChild(item);
-
+      if(lesson.completed){
+        button.innerHTML='✓';
+      }else if(!lesson.unlocked){
+        button.innerHTML='🔒';
+      }else if(lesson.type==='quiz'){
+        button.innerHTML='🏆';
+      }else{
+        button.innerHTML='★';
       }
-    );
 
+      button.disabled=!lesson.unlocked&&!lesson.completed;
 
-    roadmapContainer.appendChild(
-      sectionElement
-    );
+      if(lesson.unlocked||lesson.completed){
+        button.addEventListener('click',()=>{
+          const url=new URL('lesson.html',window.location.href);
+          url.searchParams.set('category',category.id);
+          url.searchParams.set('lesson',lesson.id);
+          window.location.href=url.toString();
+        });
+      }
 
-  }
-);
+      const info=document.createElement('div');
+      info.className='path-info';
+
+      const title=document.createElement('div');
+      title.className='path-title';
+      title.textContent=lesson.title;
+
+      const meta=document.createElement('div');
+      meta.className='path-meta';
+
+      if(lesson.completed){
+        meta.textContent=`Completed • ${lesson.xp} XP`;
+      }else if(!lesson.unlocked){
+        meta.textContent='Locked';
+      }else if(lesson.type==='quiz'){
+        meta.textContent=`Quiz • ${lesson.duration} • ${lesson.xp} XP`;
+      }else{
+        meta.textContent=`${lesson.duration} • ${lesson.xp} XP`;
+      }
+
+      info.appendChild(title);
+      info.appendChild(meta);
+      item.appendChild(button);
+      item.appendChild(info);
+      path.appendChild(item);
+    });
+
+    sectionElement.appendChild(banner);
+    sectionElement.appendChild(path);
+    roadmapContainer.appendChild(sectionElement);
+  });
+}
+
+function escapeHtml(value){
+  const div=document.createElement('div');
+  div.textContent=String(value??'');
+  return div.innerHTML;
+}
+
+renderRoadmap();
