@@ -18,19 +18,18 @@
       background:linear-gradient(
         180deg,
         rgba(12,9,34,.96),
-        rgba(7,6,26,.92)
+        rgba(7,6,26,.94)
       )!important;
       backdrop-filter:blur(20px)!important;
       -webkit-backdrop-filter:blur(20px)!important;
       border-bottom:1px solid rgba(124,58,237,.25)!important;
-      position:sticky!important;
+      position:fixed!important;
       top:0!important;
       left:0!important;
       right:0!important;
-      z-index:1000!important;
-      flex-shrink:0!important;
+      z-index:99999!important;
       box-sizing:border-box!important;
-      box-shadow:0 6px 22px rgba(3,2,15,.18)!important;
+      box-shadow:0 5px 20px rgba(3,2,15,.2)!important;
     }
     .cosmo-brand{
       display:flex!important;
@@ -48,7 +47,10 @@
       white-space:nowrap!important;
       flex-shrink:0!important;
     }
-    .cosmo-brand:hover{
+    .cosmo-brand:link,
+    .cosmo-brand:visited,
+    .cosmo-brand:hover,
+    .cosmo-brand:active{
       color:#f5f3ff!important;
       text-decoration:none!important;
     }
@@ -114,12 +116,18 @@
       border:1.5px solid #07061a!important;
       box-sizing:border-box!important;
     }
+    .roadmap-page{
+      padding-top:90px!important;
+    }
     @media(max-width:700px){
       .cosmo-topbar{
         padding:0 12px!important;
       }
       .cosmo-brand{
         font-size:14px!important;
+      }
+      .roadmap-page{
+        padding-top:78px!important;
       }
     }
   </style>
@@ -230,10 +238,30 @@
           </div>
 
           <div class="category-rank-panel">
-            <div class="category-rank-label">Category Progress</div>
-            <div class="category-rank" id="categoryRank">BRONZE</div>
-            <div class="category-level" id="categoryLevel">Level 1</div>
-            <div class="category-xp" id="categoryXp">0 XP</div>
+            <div class="category-rank-label">
+              Category Progress
+            </div>
+
+            <div
+              class="category-rank"
+              id="categoryRank"
+            >
+              BRONZE
+            </div>
+
+            <div
+              class="category-level"
+              id="categoryLevel"
+            >
+              Level 1
+            </div>
+
+            <div
+              class="category-xp"
+              id="categoryXp"
+            >
+              0 XP
+            </div>
 
             <div class="category-progress-track">
               <div
@@ -243,8 +271,13 @@
             </div>
 
             <div class="category-progress-meta">
-              <span id="categoryProgressText">0 / 20 complete</span>
-              <span id="categoryNextLevel">Next level: 20 XP</span>
+              <span id="categoryProgressText">
+                0 / 20 complete
+              </span>
+
+              <span id="categoryNextLevel">
+                Next level: 20 XP
+              </span>
             </div>
           </div>
         </section>
