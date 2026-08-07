@@ -13,9 +13,6 @@
         <span class="site-brand-icon">△</span>
         <span>CosmoKlub</span>
       </a>
-      <button class="roadmap-back" id="roadmapBack" type="button">
-        ← Roadmap
-      </button>
     </div>
   </header>
   <main class="lesson-page">
@@ -65,15 +62,5 @@
   <script src="course-data.js"></script>
   <script src="progress.js"></script>
   <script src="lesson.js"></script>
-  <script>
-    const roadmapBack=document.getElementById('roadmapBack');
-    if(roadmapBack){
-      roadmapBack.addEventListener('click',()=>{
-        const params=new URLSearchParams(window.location.search);
-        const category=params.get('category')||'stars';
-        window.location.href=`roadmap.html?category=${category}`;
-      });
-    }
-  </script>
 </body>
 </html>
