@@ -281,3 +281,29 @@ body {
     gap: 34px;
   }
 }
+html,body{
+  min-height:100%;
+  height:auto;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+body{
+  min-height:100vh;
+}
+.roadmap-page{
+  height:auto;
+  min-height:100vh;
+  overflow:visible;
+}
+#roadmapContainer{
+  height:auto;
+  overflow:visible;
+}
+.course-section{
+  height:auto;
+  overflow:visible;
+}
+.path{
+  height:auto;
+  overflow:visible;
+}
