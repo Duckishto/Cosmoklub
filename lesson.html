@@ -8,59 +8,91 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="site-header-inner">
-      <a href="dashboard.html" class="site-brand">
-        <span class="site-brand-icon">△</span>
-        <span>CosmoKlub</span>
-      </a>
-    </div>
+    <a href="dashboard.html" class="site-logo" aria-label="CosmoKlub home">
+      <svg class="site-logo-mark" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <linearGradient id="cosmoLogoGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#c04cff"/>
+            <stop offset="48%" stop-color="#8b3df0"/>
+            <stop offset="100%" stop-color="#5b2ca3"/>
+          </linearGradient>
+        </defs>
+        <path
+          d="M50 15 L17 72 L83 72 Z"
+          fill="none"
+          stroke="url(#cosmoLogoGradient)"
+          stroke-width="7"
+          stroke-linejoin="round"
+        />
+        <circle cx="50" cy="15" r="10" fill="#b847f5"/>
+        <circle cx="17" cy="72" r="7.5" fill="#c65cf3"/>
+        <circle cx="83" cy="72" r="7.5" fill="#b85bea"/>
+        <circle cx="50" cy="53" r="6" fill="#a999b8"/>
+      </svg>
+      <span class="site-logo-text">CosmoKlub</span>
+    </a>
   </header>
   <main class="lesson-page">
-    <div class="lesson-shell">
-      <article class="lesson-card" id="lessonCover">
-        <div class="lesson-cover-art">
-          <div class="lesson-brand">COSMOKLUB</div>
-          <div class="lesson-category" id="lessonCategory"></div>
-          <h1 id="lessonTitle">Lesson</h1>
-          <p id="lessonDescription"></p>
-          <div class="lesson-cover-decoration">
-            <div class="lesson-star">✦</div>
-            <div class="orbit orbit-one"></div>
-            <div class="orbit orbit-two"></div>
+    <div class="lesson-layout">
+      <button id="roadmapBack" class="roadmap-back" type="button" aria-label="Back to roadmap">
+        <span class="roadmap-back-arrow"></span>
+      </button>
+      <div class="lesson-shell">
+        <article class="lesson-card" id="lessonCover">
+          <div class="lesson-cover-art">
+            <div class="lesson-brand">COSMOKLUB</div>
+            <div class="lesson-category" id="lessonCategory"></div>
+            <h1 id="lessonTitle">Lesson</h1>
+            <p id="lessonDescription"></p>
+            <div class="lesson-cover-decoration">
+              <div class="lesson-star">✦</div>
+              <div class="orbit orbit-one"></div>
+              <div class="orbit orbit-two"></div>
+            </div>
           </div>
-        </div>
-        <div class="lesson-cover-content">
-          <div class="lesson-meta">
-            <span class="lesson-meta-item">
-              <span class="lesson-meta-icon">◷</span>
-              <span id="lessonDuration"></span>
-            </span>
-            <span class="lesson-meta-item">
-              <span class="lesson-meta-icon">✦</span>
-              <span id="lessonXp"></span>
-            </span>
+          <div class="lesson-cover-content">
+            <div class="lesson-meta">
+              <span class="lesson-meta-item">
+                <span class="lesson-meta-icon">◷</span>
+                <span id="lessonDuration"></span>
+              </span>
+              <span class="lesson-meta-item">
+                <span class="lesson-meta-icon">✦</span>
+                <span id="lessonXp"></span>
+              </span>
+            </div>
+            <button id="startLearning" class="start-learning-button" type="button">
+              Start Learning
+            </button>
           </div>
-          <button id="startLearning" class="start-learning-button" type="button">
-            Start Learning
-          </button>
-        </div>
-      </article>
-      <section id="learningExperience" class="learning-experience hidden">
-        <div class="learning-topbar">
-          <button id="exitLesson" class="learning-exit" type="button" aria-label="Exit lesson">
-            ✕
-          </button>
-          <div class="learning-progress">
-            <div id="learningProgressFill" class="learning-progress-fill"></div>
+        </article>
+        <section id="learningExperience" class="learning-experience hidden">
+          <div class="learning-topbar">
+            <button id="exitLesson" class="learning-exit" type="button" aria-label="Exit lesson">
+              ✕
+            </button>
+            <div class="learning-progress">
+              <div id="learningProgressFill" class="learning-progress-fill"></div>
+            </div>
+            <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
           </div>
-          <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
-        </div>
-        <div id="learningStage" class="learning-stage"></div>
-      </section>
+          <div id="learningStage" class="learning-stage"></div>
+        </section>
+      </div>
     </div>
   </main>
   <script src="course-data.js"></script>
   <script src="progress.js"></script>
   <script src="lesson.js"></script>
+  <script>
+    const roadmapBack=document.getElementById('roadmapBack');
+    if(roadmapBack){
+      roadmapBack.addEventListener('click',()=>{
+        const params=new URLSearchParams(window.location.search);
+        const category=params.get('category')||'stars';
+        window.location.href=`roadmap.html?category=${category}`;
+      });
+    }
+  </script>
 </body>
 </html>
