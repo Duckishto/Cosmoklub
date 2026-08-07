@@ -72,13 +72,19 @@
   </div>
 </div>
 
-<!-- Shared helpers (starfield backdrop) — must load before app.js -->
+<!-- Shared helpers (starfield backdrop) -->
 <script src="common.js"></script>
+
+<!-- Library progression data must load before library.js -->
+<script src="course-data.js"></script>
+<script src="progress.js"></script>
+
 <!-- Components must load before app.js, which registers and mounts them -->
 <script src="components/forum.js"></script>
 <script src="components/library.js"></script>
 <script src="components/chat.js"></script>
 <script src="components/planetarium.js"></script>
+
 <script src="app.js"></script>
 </body>
 </html>
