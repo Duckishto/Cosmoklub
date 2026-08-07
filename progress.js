@@ -1,154 +1,596 @@
-const LEVEL_THRESHOLDS=[
-  0,20,48,80,114,
-  151,189,230,271,314,
-  359,404,450,498,546,
-  595,645,696,748,800
+const COSMOKLUB_PROGRESS_KEY='cosmoklub-progress-v2';
+
+const COSMOKLUB_RANKS=[
+  {
+    name:'BRONZE',
+    className:'rank-bronze',
+    tierClass:'tier-bronze',
+    minLevel:1,
+    maxLevel:4
+  },
+  {
+    name:'SILVER',
+    className:'rank-silver',
+    tierClass:'tier-silver',
+    minLevel:5,
+    maxLevel:8
+  },
+  {
+    name:'GOLD',
+    className:'rank-gold',
+    tierClass:'tier-gold',
+    minLevel:9,
+    maxLevel:12
+  },
+  {
+    name:'PLATINUM',
+    className:'rank-platinum',
+    tierClass:'tier-platinum',
+    minLevel:13,
+    maxLevel:16
+  },
+  {
+    name:'DIAMOND',
+    className:'rank-diamond',
+    tierClass:'tier-diamond',
+    minLevel:17,
+    maxLevel:20
+  }
 ];
-const RANKS=[
-  {name:'BRONZE',minLevel:1},
-  {name:'SILVER',minLevel:5},
-  {name:'GOLD',minLevel:9},
-  {name:'PLATINUM',minLevel:13},
-  {name:'DIAMOND',minLevel:17}
+
+const COSMOKLUB_LEVEL_THRESHOLDS=[
+  0,
+  20,
+  50,
+  80,
+  120,
+  160,
+  200,
+  240,
+  285,
+  330,
+  375,
+  420,
+  470,
+  520,
+  570,
+  620,
+  675,
+  730,
+  785,
+  840
 ];
-const CATEGORY_IDS=['stars','galaxies','cosmology','planets','nebulae','observing'];
-function getDefaultProgress(){
-  const categories={};
-  CATEGORY_IDS.forEach(id=>{
-    categories[id]={
+
+function createEmptyProgress(){
+  return{
+    version:2,
+    categories:{}
+  };
+}
+
+function normalizeCompletedLessons(value){
+  if(Array.isArray(value)){
+    return [...new Set(value.filter(item=>typeof item==='string'))];
+  }
+
+  if(value&&typeof value==='object'){
+    return Object.keys(value).filter(key=>value[key]);
+  }
+
+  return[];
+}
+
+function normalizeCategoryProgress(value){
+  if(!value||typeof value!=='object'){
+    return{
       xp:0,
       completedLessons:[]
     };
-  });
-  return{categories};
-}
-function loadProgress(){
-  try{
-    const saved=localStorage.getItem('cosmoklub-progress');
-    if(!saved)return getDefaultProgress();
-    const progress=JSON.parse(saved);
-    CATEGORY_IDS.forEach(id=>{
-      if(!progress.categories?.[id]){
-        if(!progress.categories)progress.categories={};
-        progress.categories[id]={xp:0,completedLessons:[]};
-      }
-      if(!Array.isArray(progress.categories[id].completedLessons)){
-        progress.categories[id].completedLessons=[];
-      }
-      if(typeof progress.categories[id].xp!=='number'){
-        progress.categories[id].xp=0;
-      }
-    });
-    return progress;
-  }catch(error){
-    console.error('Could not load CosmoKlub progress:',error);
-    return getDefaultProgress();
   }
+
+  const xp=Number(value.xp);
+
+  return{
+    xp:Number.isFinite(xp)&&xp>=0?xp:0,
+    completedLessons:normalizeCompletedLessons(
+      value.completedLessons||
+      value.completed||
+      value.lessons||
+      value.completedLessonIds
+    )
+  };
 }
-function saveProgress(progress){
-  localStorage.setItem('cosmoklub-progress',JSON.stringify(progress));
+
+function normalizeProgress(value){
+  const result=createEmptyProgress();
+
+  if(!value||typeof value!=='object'){
+    return result;
+  }
+
+  const possibleCategories=
+    value.categories&&typeof value.categories==='object'
+      ?value.categories
+      :value;
+
+  const knownCategories=[
+    'stars',
+    'galaxies',
+    'cosmology',
+    'planets',
+    'nebulae',
+    'observing'
+  ];
+
+  knownCategories.forEach(categoryId=>{
+    if(possibleCategories[categoryId]){
+      result.categories[categoryId]=normalizeCategoryProgress(
+        possibleCategories[categoryId]
+      );
+    }
+  });
+
+  return result;
 }
-function getCategoryProgress(categoryId){
-  const progress=loadProgress();
-  return progress.categories[categoryId]||{xp:0,completedLessons:[]};
-}
-function levelFromXp(xp){
-  let level=1;
-  for(let i=0;i<LEVEL_THRESHOLDS.length;i++){
-    if(xp>=LEVEL_THRESHOLDS[i]){
-      level=i+1;
+
+function findLegacyProgress(){
+  const legacyKeys=[
+    'cosmoklub-progress-v1',
+    'cosmoklub-progress',
+    'cosmoklubProgress',
+    'cosmoklub_progress',
+    'cosmoklub-library-progress',
+    'cosmoklubLibraryProgress'
+  ];
+
+  for(const key of legacyKeys){
+    try{
+      const raw=localStorage.getItem(key);
+
+      if(!raw){
+        continue;
+      }
+
+      const parsed=JSON.parse(raw);
+      const normalized=normalizeProgress(parsed);
+
+      if(Object.keys(normalized.categories).length>0){
+        return normalized;
+      }
+    }catch(error){
+      console.warn(`Could not read legacy CosmoKlub progress from ${key}.`,error);
     }
   }
-  return Math.min(level,20);
+
+  return null;
 }
-function rankForLevel(level){
-  if(level>=17)return'DIAMOND';
-  if(level>=13)return'PLATINUM';
-  if(level>=9)return'GOLD';
-  if(level>=5)return'SILVER';
-  return'BRONZE';
-}
-function getLevelProgress(xp){
-  const level=levelFromXp(xp);
-  if(level>=20){
-    return{
-      level:20,
-      rank:'DIAMOND',
-      currentXp:xp,
-      currentThreshold:800,
-      nextThreshold:800,
-      xpIntoLevel:0,
-      xpNeeded:0,
-      progress:100
-    };
+
+function loadProgress(){
+  try{
+    const raw=localStorage.getItem(COSMOKLUB_PROGRESS_KEY);
+
+    if(raw){
+      return normalizeProgress(JSON.parse(raw));
+    }
+
+    const legacy=findLegacyProgress();
+
+    if(legacy){
+      saveProgress(legacy);
+      return legacy;
+    }
+  }catch(error){
+    console.warn('Could not load CosmoKlub progress.',error);
   }
-  const currentThreshold=LEVEL_THRESHOLDS[level-1];
-  const nextThreshold=LEVEL_THRESHOLDS[level];
-  const xpIntoLevel=xp-currentThreshold;
-  const xpNeeded=nextThreshold-currentThreshold;
-  const percentage=Math.round((xpIntoLevel/xpNeeded)*100);
-  return{
-    level,
-    rank:rankForLevel(level),
-    currentXp:xp,
-    currentThreshold,
-    nextThreshold,
-    xpIntoLevel,
-    xpNeeded,
-    progress:Math.max(0,Math.min(100,percentage))
-  };
+
+  return createEmptyProgress();
 }
-function isLessonCompleted(categoryId,lessonId){
-  const categoryProgress=getCategoryProgress(categoryId);
-  return categoryProgress.completedLessons.includes(lessonId);
+
+function saveProgress(progress){
+  try{
+    localStorage.setItem(
+      COSMOKLUB_PROGRESS_KEY,
+      JSON.stringify(normalizeProgress(progress))
+    );
+  }catch(error){
+    console.warn('Could not save CosmoKlub progress.',error);
+  }
 }
-function completeLesson(categoryId,lessonId,xpReward){
+
+function getCategoryProgress(categoryId){
   const progress=loadProgress();
-  const category=progress.categories[categoryId];
-  if(!category)return null;
-  const alreadyCompleted=category.completedLessons.includes(lessonId);
-  if(!alreadyCompleted){
-    category.completedLessons.push(lessonId);
-    category.xp+=xpReward;
-    category.xp=Math.min(category.xp,800);
+
+  if(!progress.categories[categoryId]){
+    progress.categories[categoryId]={
+      xp:0,
+      completedLessons:[]
+    };
+
     saveProgress(progress);
   }
+
+  return normalizeCategoryProgress(progress.categories[categoryId]);
+}
+
+function saveCategoryProgress(categoryId,categoryProgress){
+  const progress=loadProgress();
+
+  progress.categories[categoryId]=normalizeCategoryProgress(categoryProgress);
+
+  saveProgress(progress);
+
+  return progress.categories[categoryId];
+}
+
+function getRankForLevel(level){
+  const safeLevel=Math.max(
+    1,
+    Math.min(20,Number(level)||1)
+  );
+
+  return(
+    [...COSMOKLUB_RANKS]
+      .reverse()
+      .find(rank=>safeLevel>=rank.minLevel)||
+    COSMOKLUB_RANKS[0]
+  );
+}
+
+function getLevelFromXP(xp){
+  const safeXP=Math.max(0,Number(xp)||0);
+  let level=1;
+
+  for(let i=0;i<COSMOKLUB_LEVEL_THRESHOLDS.length;i++){
+    if(safeXP>=COSMOKLUB_LEVEL_THRESHOLDS[i]){
+      level=i+1;
+    }else{
+      break;
+    }
+  }
+
+  return Math.min(level,20);
+}
+
+function getLevelProgress(xp){
+  const safeXP=Math.max(0,Number(xp)||0);
+  const level=getLevelFromXP(safeXP);
+  const rank=getRankForLevel(level);
+
+  const currentThreshold=
+    COSMOKLUB_LEVEL_THRESHOLDS[level-1]??0;
+
+  const isMaxLevel=level>=COSMOKLUB_LEVEL_THRESHOLDS.length;
+
+  const nextThreshold=isMaxLevel
+    ?currentThreshold
+    :COSMOKLUB_LEVEL_THRESHOLDS[level];
+
+  let progressPercent=100;
+
+  if(!isMaxLevel){
+    const range=nextThreshold-currentThreshold;
+    const earned=safeXP-currentThreshold;
+
+    progressPercent=range>0
+      ?Math.round((earned/range)*100)
+      :100;
+  }
+
+  progressPercent=Math.max(
+    0,
+    Math.min(100,progressPercent)
+  );
+
   return{
-    alreadyCompleted,
-    xpAwarded:alreadyCompleted?0:xpReward,
-    categoryProgress:getLevelProgress(category.xp)
+    xp:safeXP,
+    level,
+    rank:rank.name,
+    rankData:rank,
+    rankClass:rank.className,
+    tierClass:rank.tierClass,
+    currentThreshold,
+    nextThreshold,
+    xpIntoLevel:safeXP-currentThreshold,
+    xpForNextLevel:isMaxLevel
+      ?0
+      :Math.max(0,nextThreshold-safeXP),
+    progress:progressPercent,
+    isMaxLevel
   };
 }
-function getAllCategoryStats(){
-  return CATEGORY_IDS.map(categoryId=>{
-    const progress=getCategoryProgress(categoryId);
-    const stats=getLevelProgress(progress.xp);
-    return{
-      categoryId,
-      xp:progress.xp,
-      completedLessons:progress.completedLessons.length,
-      level:stats.level,
-      rank:stats.rank,
-      progress:stats.progress,
-      nextThreshold:stats.nextThreshold,
-      currentThreshold:stats.currentThreshold
-    };
-  });
+
+function isLessonCompleted(categoryId,lessonId){
+  return getCategoryProgress(categoryId)
+    .completedLessons
+    .includes(lessonId);
 }
-function getOverallStats(){
-  const categories=getAllCategoryStats();
-  const averageLevel=categories.reduce((sum,item)=>sum+item.level,0)/categories.length;
-  const overallLevel=Math.max(1,Math.min(20,Math.floor(averageLevel)));
-  const totalXp=categories.reduce((sum,item)=>sum+item.xp,0);
-  const totalCompleted=categories.reduce((sum,item)=>sum+item.completedLessons,0);
+
+function completeLesson(categoryId,lessonId,xpAmount=0){
+  const progress=loadProgress();
+
+  if(!progress.categories[categoryId]){
+    progress.categories[categoryId]={
+      xp:0,
+      completedLessons:[]
+    };
+  }
+
+  const categoryProgress=normalizeCategoryProgress(
+    progress.categories[categoryId]
+  );
+
+  const alreadyCompleted=
+    categoryProgress.completedLessons.includes(lessonId);
+
+  const safeXP=Math.max(0,Number(xpAmount)||0);
+
+  if(!alreadyCompleted){
+    categoryProgress.completedLessons.push(lessonId);
+    categoryProgress.xp+=safeXP;
+
+    progress.categories[categoryId]=categoryProgress;
+    saveProgress(progress);
+  }
+
+  const stats=getLevelProgress(categoryProgress.xp);
+
+  const result={
+    categoryId,
+    lessonId,
+    newlyCompleted:!alreadyCompleted,
+    alreadyCompleted,
+    xpAwarded:alreadyCompleted?0:safeXP,
+    totalXP:categoryProgress.xp,
+    completedLessons:[...categoryProgress.completedLessons],
+    level:stats.level,
+    rank:stats.rank,
+    rankData:stats.rankData,
+    nextThreshold:stats.nextThreshold,
+    xpForNextLevel:stats.xpForNextLevel,
+    progress:stats.progress,
+    isMaxLevel:stats.isMaxLevel
+  };
+
+  window.dispatchEvent(
+    new CustomEvent('cosmoklub-progress-changed',{
+      detail:result
+    })
+  );
+
+  return result;
+}
+
+function markLessonComplete(categoryId,lessonId,xpAmount=0){
+  return completeLesson(
+    categoryId,
+    lessonId,
+    xpAmount
+  );
+}
+
+function saveLessonCompletion(categoryId,lessonId,xpAmount=0){
+  return completeLesson(
+    categoryId,
+    lessonId,
+    xpAmount
+  );
+}
+
+function awardXP(categoryId,amount){
+  const progress=loadProgress();
+
+  if(!progress.categories[categoryId]){
+    progress.categories[categoryId]={
+      xp:0,
+      completedLessons:[]
+    };
+  }
+
+  const categoryProgress=normalizeCategoryProgress(
+    progress.categories[categoryId]
+  );
+
+  const safeAmount=Math.max(0,Number(amount)||0);
+
+  categoryProgress.xp+=safeAmount;
+  progress.categories[categoryId]=categoryProgress;
+
+  saveProgress(progress);
+
+  const stats=getLevelProgress(categoryProgress.xp);
+
+  window.dispatchEvent(
+    new CustomEvent('cosmoklub-progress-changed',{
+      detail:{
+        categoryId,
+        xpAwarded:safeAmount,
+        totalXP:categoryProgress.xp,
+        level:stats.level,
+        rank:stats.rank
+      }
+    })
+  );
+
   return{
-    level:overallLevel,
-    rank:rankForLevel(overallLevel),
-    totalXp,
+    categoryId,
+    xpAwarded:safeAmount,
+    totalXP:categoryProgress.xp,
+    ...stats
+  };
+}
+
+function getCategoryStats(categoryId){
+  const categoryProgress=getCategoryProgress(categoryId);
+  const levelProgress=getLevelProgress(categoryProgress.xp);
+
+  let totalLessons=0;
+
+  if(
+    typeof COURSE_DATA!=='undefined'&&
+    COURSE_DATA[categoryId]&&
+    Array.isArray(COURSE_DATA[categoryId].sections)
+  ){
+    totalLessons=COURSE_DATA[categoryId].sections.reduce(
+      (sum,section)=>{
+        return sum+(
+          Array.isArray(section.lessons)
+            ?section.lessons.length
+            :0
+        );
+      },
+      0
+    );
+  }
+
+  const completedLessons=categoryProgress.completedLessons.length;
+
+  return{
+    id:categoryId,
+    xp:categoryProgress.xp,
+    completedLessons,
+    completedLessonIds:[
+      ...categoryProgress.completedLessons
+    ],
+    totalLessons,
+    completionPercent:totalLessons>0
+      ?Math.round((completedLessons/totalLessons)*100)
+      :0,
+    ...levelProgress
+  };
+}
+
+function getAllCategoryStats(){
+  const categoryIds=[
+    'stars',
+    'galaxies',
+    'cosmology',
+    'planets',
+    'nebulae',
+    'observing'
+  ];
+
+  return categoryIds.map(
+    categoryId=>getCategoryStats(categoryId)
+  );
+}
+
+function getOverallProgress(){
+  const categories=getAllCategoryStats();
+
+  const totalCompleted=categories.reduce(
+    (sum,category)=>sum+category.completedLessons,
+    0
+  );
+
+  const totalLessons=categories.reduce(
+    (sum,category)=>sum+category.totalLessons,
+    0
+  );
+
+  const totalXP=categories.reduce(
+    (sum,category)=>sum+category.xp,
+    0
+  );
+
+  const averageLevel=categories.length
+    ?Math.round(
+      categories.reduce(
+        (sum,category)=>sum+category.level,
+        0
+      )/categories.length
+    )
+    :1;
+
+  const rank=getRankForLevel(averageLevel);
+
+  return{
     totalCompleted,
+    totalLessons,
+    totalXP,
+    averageLevel,
+    rank:rank.name,
+    rankData:rank,
+    rankClass:rank.className,
+    tierClass:rank.tierClass,
+    completionPercent:totalLessons>0
+      ?Math.round((totalCompleted/totalLessons)*100)
+      :0,
     categories
   };
 }
-function resetPrototypeProgress(){
-  localStorage.removeItem('cosmoklub-progress');
+
+function getOverallRank(){
+  return getOverallProgress().rank;
 }
+
+function getNextRank(level){
+  const currentRank=getRankForLevel(level);
+  const index=COSMOKLUB_RANKS.findIndex(
+    rank=>rank.name===currentRank.name
+  );
+
+  if(index<0||index>=COSMOKLUB_RANKS.length-1){
+    return null;
+  }
+
+  return COSMOKLUB_RANKS[index+1];
+}
+
+function resetCategoryProgress(categoryId){
+  const progress=loadProgress();
+
+  progress.categories[categoryId]={
+    xp:0,
+    completedLessons:[]
+  };
+
+  saveProgress(progress);
+
+  window.dispatchEvent(
+    new CustomEvent('cosmoklub-progress-changed',{
+      detail:{
+        categoryId,
+        reset:true
+      }
+    })
+  );
+}
+
+function resetAllProgress(){
+  localStorage.removeItem(COSMOKLUB_PROGRESS_KEY);
+
+  window.dispatchEvent(
+    new CustomEvent('cosmoklub-progress-changed',{
+      detail:{
+        resetAll:true
+      }
+    })
+  );
+}
+
+function exportProgress(){
+  return JSON.parse(
+    JSON.stringify(loadProgress())
+  );
+}
+
+window.COSMOKLUB_RANKS=COSMOKLUB_RANKS;
+window.COSMOKLUB_LEVEL_THRESHOLDS=COSMOKLUB_LEVEL_THRESHOLDS;
+window.getCategoryProgress=getCategoryProgress;
+window.saveCategoryProgress=saveCategoryProgress;
+window.getCategoryStats=getCategoryStats;
+window.getAllCategoryStats=getAllCategoryStats;
+window.getOverallProgress=getOverallProgress;
+window.getOverallRank=getOverallRank;
+window.getRankForLevel=getRankForLevel;
+window.getLevelFromXP=getLevelFromXP;
+window.getLevelProgress=getLevelProgress;
+window.getNextRank=getNextRank;
+window.isLessonCompleted=isLessonCompleted;
+window.completeLesson=completeLesson;
+window.markLessonComplete=markLessonComplete;
+window.saveLessonCompletion=saveLessonCompletion;
+window.awardXP=awardXP;
+window.resetCategoryProgress=resetCategoryProgress;
+window.resetAllProgress=resetAllProgress;
+window.exportProgress=exportProgress;
