@@ -1,85 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>CosmoKlub Learning Roadmap</title>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  >
-
-  <link rel="stylesheet" href="dashboard.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Roadmap | CosmoKlub</title>
   <link rel="stylesheet" href="roadmap.css">
 </head>
-
 <body>
-
-  <div class="roadmap-background"></div>
-
-  <header class="roadmap-nav">
-
-    <a
-      class="roadmap-logo"
-      href="dashboard.html"
-    >
-      <span class="logo-symbol">△</span>
-      CosmoKlub
+  <header class="site-header">
+    <a href="dashboard.html" class="site-logo" aria-label="CosmoKlub home">
+      <svg class="site-logo-mark" viewBox="0 0 24 24" aria-hidden="true">
+        <defs>
+          <linearGradient id="roadmapLogoGradient" x1="3" y1="3" x2="21" y2="21">
+            <stop offset="0%" stop-color="#c084fc"/>
+            <stop offset="55%" stop-color="#a855f7"/>
+            <stop offset="100%" stop-color="#7c3aed"/>
+          </linearGradient>
+        </defs>
+        <path d="M12 3.5 4.4 18h15.2L12 3.5Z" fill="none" stroke="url(#roadmapLogoGradient)" stroke-width="1.7" stroke-linejoin="round"/>
+        <circle cx="12" cy="3.5" r="1.8" fill="#a855f7"/>
+        <circle cx="4.4" cy="18" r="1.5" fill="#c084fc"/>
+        <circle cx="19.6" cy="18" r="1.5" fill="#a855f7"/>
+        <circle cx="12" cy="12.8" r="1.2" fill="#a78bfa"/>
+      </svg>
+      <span>CosmoKlub</span>
     </a>
-
-    <a
-      href="dashboard.html"
-      class="back-library"
-    >
-      ← Library
-    </a>
-
   </header>
 
-
   <main class="roadmap-page">
+    <div class="roadmap-shell">
+      <div class="roadmap-header-row">
+        <button id="libraryBack" class="library-back" type="button" aria-label="Back to Library">
+          <span class="library-back-arrow"></span>
+        </button>
 
-    <section class="roadmap-header">
+        <section class="category-hero">
+          <div class="category-hero-main">
+            <div class="category-kicker">Study Roadmap</div>
+            <div class="category-heading">
+              <div class="category-icon" id="categoryIcon">⭐</div>
+              <div>
+                <h1 id="categoryTitle">Stars</h1>
+                <p id="categoryDescription"></p>
+              </div>
+            </div>
+          </div>
 
-      <div
-        id="categoryIcon"
-        class="category-icon"
-      >
+          <div class="category-rank-panel">
+            <div class="category-rank-label">Category Progress</div>
+            <div class="category-rank" id="categoryRank">BRONZE</div>
+            <div class="category-level" id="categoryLevel">Level 1</div>
+            <div class="category-xp" id="categoryXp">0 XP</div>
+            <div class="category-progress-track">
+              <div id="categoryProgressFill" class="category-progress-fill"></div>
+            </div>
+            <div class="category-progress-meta">
+              <span id="categoryProgressText">0 / 20 complete</span>
+              <span id="categoryNextLevel">Next level: 20 XP</span>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <div>
-
-        <div
-          id="categoryMeta"
-          class="category-meta"
-        >
-        </div>
-
-        <h1 id="categoryTitle"></h1>
-
-        <p id="categoryDescription"></p>
-
-      </div>
-
-    </section>
-
-
-    <section id="roadmapContainer"></section>
-
+      <div id="roadmapContainer" class="roadmap-container"></div>
+    </div>
   </main>
-
 
   <script src="course-data.js"></script>
   <script src="progress.js"></script>
   <script src="roadmap.js"></script>
-
 </body>
-
 </html>
