@@ -196,13 +196,7 @@ const Library = {
     },
 
     startLesson(lesson) {
-      alert(
-        lesson.title +
-        '\n\nRank: ' + lesson.rank +
-        '\nLevel: ' + lesson.level +
-        '\nProgress: ' + lesson.completedLessons + '/' + lesson.totalLessons + ' lessons' +
-        '\n' + lesson.nextLabel
-      );
+      window.location.href = `roadmap.html?category=${lesson.id}`;
     },
 
     injectLibraryStyles() {
