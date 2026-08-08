@@ -1,17 +1,14 @@
 // Forum tab: tonight's-sky strip, category chips, thread feed.
-// Adds cursor-reactive movement + subtle mouse highlight
-// without changing the existing Forum colors.
+// Includes stronger cursor-reactive movement WITHOUT mouse highlight.
 
-const Forum={
-  name:'Forum',
+const Forum = {
+  name: 'Forum',
 
-  template:`
+  template: `
     <div class="forum-page">
 
       <div class="tonight-strip">
-        <div class="moon-icon">
-          ◐
-        </div>
+        <div class="moon-icon">◐</div>
 
         <div class="tonight-info">
           <div class="tonight-title">
@@ -33,10 +30,8 @@ const Forum={
 
         <div
           class="chip"
-          :class="{
-            active:activeChip==='All'
-          }"
-          @click="activeChip='All'"
+          :class="{ active: activeChip === 'All' }"
+          @click="activeChip = 'All'"
         >
           All
         </div>
@@ -45,10 +40,8 @@ const Forum={
           class="chip"
           v-for="tag in tags"
           :key="tag"
-          :class="{
-            active:activeChip===tag
-          }"
-          @click="activeChip=tag"
+          :class="{ active: activeChip === tag }"
+          @click="activeChip = tag"
         >
           {{ tag }}
         </div>
@@ -59,7 +52,6 @@ const Forum={
       <div class="section">
 
         <div class="section-eyebrow-row">
-
           <span class="section-label">
             Following
           </span>
@@ -69,7 +61,6 @@ const Forum={
           <span class="section-link">
             See all
           </span>
-
         </div>
 
 
@@ -81,21 +72,11 @@ const Forum={
             :key="t.id"
           >
 
-            <!--
-              Cursor-following highlight.
-              This is transparent and does
-              not replace the card's color.
-            -->
-            <div class="forum-mouse-light"></div>
-
-
             <div class="thread-head">
 
               <div
                 class="avatar"
-                :style="{
-                  background:t.color
-                }"
+                :style="{ background: t.color }"
               >
                 {{ t.initial }}
               </div>
@@ -104,20 +85,15 @@ const Forum={
               <div class="thread-meta">
 
                 <div class="thread-author">
-
                   {{ t.author }}
 
                   <span class="lvl">
                     {{ t.level }}
                   </span>
-
                 </div>
 
                 <div class="thread-sub">
-
-                  {{ t.time }},
-                  {{ t.replies }} replies
-
+                  {{ t.time }}, {{ t.replies }} replies
                 </div>
 
               </div>
@@ -144,9 +120,7 @@ const Forum={
 
               <div
                 class="stat"
-                :class="{
-                  solved:t.solved
-                }"
+                :class="{ solved: t.solved }"
               >
 
                 <svg
@@ -235,13 +209,11 @@ const Forum={
     </div>
   `,
 
+  data() {
+    return {
+      activeChip: 'All',
 
-  data(){
-    return{
-
-      activeChip:'All',
-
-      tags:[
+      tags: [
         'Beginner Q&A',
         'Equipment',
         'Astrophotography',
@@ -250,763 +222,557 @@ const Forum={
         'News'
       ],
 
-
-      threads:[
-
+      threads: [
         {
-          id:1,
-          author:'galileo_jr',
-          initial:'G',
-          color:'#7c3aed',
-          level:'Lv. 4',
-          time:'2h ago',
-          replies:14,
-          upvotes:38,
-          tag:'Equipment',
-          title:
-            'Is a 6" Dobsonian enough to actually see Saturn\\'s rings, or am I being too hopeful?',
-          body:
-            'Picking up a used Apertura AD6 this weekend. Mainly want planetary views from a Bortle 5 backyard, realistic expectations for Saturn and Jupiter at 150x?',
-          solved:false
+          id: 1,
+          author: 'galileo_jr',
+          initial: 'G',
+          color: '#7c3aed',
+          level: 'Lv. 4',
+          time: '2h ago',
+          replies: 14,
+          upvotes: 38,
+          tag: 'Equipment',
+          title: "Is a 6\" Dobsonian enough to actually see Saturn's rings, or am I being too hopeful?",
+          body: 'Picking up a used Apertura AD6 this weekend. Mainly want planetary views from a Bortle 5 backyard, realistic expectations for Saturn and Jupiter at 150x?',
+          solved: false
         },
 
-
         {
-          id:2,
-          author:'nebula_noor',
-          initial:'N',
-          color:'#a855f7',
-          level:'Lv. 9',
-          time:'5h ago',
-          replies:27,
-          upvotes:102,
-          tag:'Astrophotography',
-          title:
-            'First decent capture of the Orion Nebula, 2hr integration, stacked in Siril',
-          body:
-            "Finally got the cooling box working on my old DSLR. Still a lot of gradient in the corners I couldn't fully remove, tips welcome on the flat frames.",
-          solved:false
+          id: 2,
+          author: 'nebula_noor',
+          initial: 'N',
+          color: '#a855f7',
+          level: 'Lv. 9',
+          time: '5h ago',
+          replies: 27,
+          upvotes: 102,
+          tag: 'Astrophotography',
+          title: 'First decent capture of the Orion Nebula, 2hr integration, stacked in Siril',
+          body: "Finally got the cooling box working on my old DSLR. Still a lot of gradient in the corners I couldn't fully remove, tips welcome on the flat frames.",
+          solved: false
         },
 
-
         {
-          id:3,
-          author:'stardust_mei',
-          initial:'M',
-          color:'#5b21b6',
-          level:'Lv. 2',
-          time:'7h ago',
-          replies:6,
-          upvotes:19,
-          tag:'Beginner Q&A',
-          title:
-            'What does "magnitude" actually mean? Keep seeing it but the scale confuses me',
-          body:
-            'I get that lower numbers are brighter, but why are some negative? And how do I use it to figure out if something is naked-eye visible from a suburban sky?',
-          solved:true
+          id: 3,
+          author: 'stardust_mei',
+          initial: 'M',
+          color: '#5b21b6',
+          level: 'Lv. 2',
+          time: '7h ago',
+          replies: 6,
+          upvotes: 19,
+          tag: 'Beginner Q&A',
+          title: 'What does "magnitude" actually mean? Keep seeing it but the scale confuses me',
+          body: 'I get that lower numbers are brighter, but why are some negative? And how do I use it to figure out if something is naked-eye visible from a suburban sky?',
+          solved: true
         },
 
-
         {
-          id:4,
-          author:'redgiant_theo',
-          initial:'T',
-          color:'#9333ea',
-          level:'Lv. 6',
-          time:'11h ago',
-          replies:9,
-          upvotes:54,
-          tag:'Solar System',
-          title:
-            'Mars opposition prep: best filters for surface detail on a 8" SCT?',
-          body:
-            'Planning a session for the upcoming opposition. Currently have a basic moon filter only. Would a Wratten #21 orange make a noticeable difference for polar caps and Syrtis Major?',
-          solved:false
+          id: 4,
+          author: 'redgiant_theo',
+          initial: 'T',
+          color: '#9333ea',
+          level: 'Lv. 6',
+          time: '11h ago',
+          replies: 9,
+          upvotes: 54,
+          tag: 'Solar System',
+          title: 'Mars opposition prep: best filters for surface detail on a 8" SCT?',
+          body: 'Planning a session for the upcoming opposition. Currently have a basic moon filter only. Would a Wratten #21 orange make a noticeable difference for polar caps and Syrtis Major?',
+          solved: false
         },
 
-
         {
-          id:5,
-          author:'pleiades_anya',
-          initial:'A',
-          color:'#c084fc',
-          level:'Lv. 5',
-          time:'1d ago',
-          replies:21,
-          upvotes:67,
-          tag:'Deep Sky',
-          title:
-            'Pleiades nebulosity: am I actually seeing the reflection nebula visually?',
-          body:
-            'Through my 8" dob last night under fairly dark skies I thought I caught faint wisps around Merope. Could this realistically be visual, or is it more likely scatter/eye strain?',
-          solved:true
+          id: 5,
+          author: 'pleiades_anya',
+          initial: 'A',
+          color: '#c084fc',
+          level: 'Lv. 5',
+          time: '1d ago',
+          replies: 21,
+          upvotes: 67,
+          tag: 'Deep Sky',
+          title: 'Pleiades nebulosity: am I actually seeing the reflection nebula visually?',
+          body: 'Through my 8" dob last night under fairly dark skies I thought I caught faint wisps around Merope. Could this realistically be visual, or is it more likely scatter/eye strain?',
+          solved: true
         },
 
-
         {
-          id:6,
-          author:'cosmic_leo',
-          initial:'L',
-          color:'#f97316',
-          level:'Lv. 7',
-          time:'2d ago',
-          replies:34,
-          upvotes:89,
-          tag:'Equipment',
-          title:
-            'Best budget astrophotography camera under $500?',
-          body:
-            'Looking to start deep-sky with a used DSLR vs dedicated astro camera. Anyone have experience with the ZWO ASI120MC?',
-          solved:false
+          id: 6,
+          author: 'cosmic_leo',
+          initial: 'L',
+          color: '#f97316',
+          level: 'Lv. 7',
+          time: '2d ago',
+          replies: 34,
+          upvotes: 89,
+          tag: 'Equipment',
+          title: 'Best budget astrophotography camera under $500?',
+          body: 'Looking to start deep-sky with a used DSLR vs dedicated astro camera. Anyone have experience with the ZWO ASI120MC?',
+          solved: false
         },
 
-
         {
-          id:7,
-          author:'lunar_emily',
-          initial:'E',
-          color:'#14b8a6',
-          level:'Lv. 3',
-          time:'2d ago',
-          replies:12,
-          upvotes:28,
-          tag:'Beginner Q&A',
-          title:
-            'Why do some stars twinkle more than others?',
-          body:
-            "I know it's atmospheric turbulence, but Arcturus twinkles wildly while Vega is steady. Is it just altitude?",
-          solved:true
+          id: 7,
+          author: 'lunar_emily',
+          initial: 'E',
+          color: '#14b8a6',
+          level: 'Lv. 3',
+          time: '2d ago',
+          replies: 12,
+          upvotes: 28,
+          tag: 'Beginner Q&A',
+          title: 'Why do some stars twinkle more than others?',
+          body: "I know it's atmospheric turbulence, but Arcturus twinkles wildly while Vega is steady. Is it just altitude?",
+          solved: true
         },
 
-
         {
-          id:8,
-          author:'deepsky_dave',
-          initial:'D',
-          color:'#3b82f6',
-          level:'Lv. 12',
-          time:'3d ago',
-          replies:56,
-          upvotes:203,
-          tag:'Deep Sky',
-          title:
-            'First light with 16" truss dob – Veil Nebula blew my mind',
-          body:
-            'Observed from a Bortle 4 site. The Eastern Veil with OIII filter was like a glowing cosmic snake. Anyone else prefer unfiltered views?',
-          solved:false
+          id: 8,
+          author: 'deepsky_dave',
+          initial: 'D',
+          color: '#3b82f6',
+          level: 'Lv. 12',
+          time: '3d ago',
+          replies: 56,
+          upvotes: 203,
+          tag: 'Deep Sky',
+          title: 'First light with 16" truss dob – Veil Nebula blew my mind',
+          body: 'Observed from a Bortle 4 site. The Eastern Veil with OIII filter was like a glowing cosmic snake. Anyone else prefer unfiltered views?',
+          solved: false
         },
 
-
         {
-          id:9,
-          author:'astro_jessi',
-          initial:'J',
-          color:'#ec489a',
-          level:'Lv. 8',
-          time:'3d ago',
-          replies:19,
-          upvotes:76,
-          tag:'Astrophotography',
-          title:
-            'My first mosaic of the Cygnus region – 12 panels',
-          body:
-            'Captured with a 50mm lens and modded DSLR. Processing the seams was tough but worth it. Feedback appreciated!',
-          solved:false
+          id: 9,
+          author: 'astro_jessi',
+          initial: 'J',
+          color: '#ec489a',
+          level: 'Lv. 8',
+          time: '3d ago',
+          replies: 19,
+          upvotes: 76,
+          tag: 'Astrophotography',
+          title: 'My first mosaic of the Cygnus region – 12 panels',
+          body: 'Captured with a 50mm lens and modded DSLR. Processing the seams was tough but worth it. Feedback appreciated!',
+          solved: false
         },
 
-
         {
-          id:10,
-          author:'planet_hunter',
-          initial:'P',
-          color:'#8b5cf6',
-          level:'Lv. 10',
-          time:'4d ago',
-          replies:41,
-          upvotes:115,
-          tag:'Solar System',
-          title:
-            'Jupiter Io transit tonight – grabbed some lucky imaging',
-          body:
-            "Seeing was average but caught the shadow transit. Stacked 2000 frames. Io's shadow looked like a sharp black dot.",
-          solved:false
+          id: 10,
+          author: 'planet_hunter',
+          initial: 'P',
+          color: '#8b5cf6',
+          level: 'Lv. 10',
+          time: '4d ago',
+          replies: 41,
+          upvotes: 115,
+          tag: 'Solar System',
+          title: 'Jupiter Io transit tonight – grabbed some lucky imaging',
+          body: "Seeing was average but caught the shadow transit. Stacked 2000 frames. Io's shadow looked like a sharp black dot.",
+          solved: false
         },
 
-
         {
-          id:11,
-          author:'nova_chaser',
-          initial:'N',
-          color:'#ef4444',
-          level:'Lv. 5',
-          time:'4d ago',
-          replies:8,
-          upvotes:22,
-          tag:'News',
-          title:
-            'New supernova in M101? Anyone confirm?',
-          body:
-            'Saw reports of a possible brightening. Checked with my 10" dob – could be a new transient near the core. Not yet in official catalogs.',
-          solved:false
+          id: 11,
+          author: 'nova_chaser',
+          initial: 'N',
+          color: '#ef4444',
+          level: 'Lv. 5',
+          time: '4d ago',
+          replies: 8,
+          upvotes: 22,
+          tag: 'News',
+          title: 'New supernova in M101? Anyone confirm?',
+          body: 'Saw reports of a possible brightening. Checked with my 10" dob – could be a new transient near the core. Not yet in official catalogs.',
+          solved: false
         },
 
-
         {
-          id:12,
-          author:'astrophotons',
-          initial:'A',
-          color:'#10b981',
-          level:'Lv. 11',
-          time:'5d ago',
-          replies:33,
-          upvotes:144,
-          tag:'Astrophotography',
-          title:
-            'Andromeda core with 135mm lens – dramatic dust lanes',
-          body:
-            '2 hours integration, Bortle 8. Surprised how much dust detail I could pull out with gradients removal.',
-          solved:false
+          id: 12,
+          author: 'astrophotons',
+          initial: 'A',
+          color: '#10b981',
+          level: 'Lv. 11',
+          time: '5d ago',
+          replies: 33,
+          upvotes: 144,
+          tag: 'Astrophotography',
+          title: 'Andromeda core with 135mm lens – dramatic dust lanes',
+          body: '2 hours integration, Bortle 8. Surprised how much dust detail I could pull out with gradients removal.',
+          solved: false
         },
 
-
         {
-          id:13,
-          author:'moonwatcher',
-          initial:'M',
-          color:'#f59e0b',
-          level:'Lv. 4',
-          time:'5d ago',
-          replies:7,
-          upvotes:18,
-          tag:'Equipment',
-          title:
-            'Which lunar atlas is best for sketching?',
-          body:
-            'Printed vs app? I like sketching at the eyepiece but need a detailed reference for rilles and domes.',
-          solved:true
+          id: 13,
+          author: 'moonwatcher',
+          initial: 'M',
+          color: '#f59e0b',
+          level: 'Lv. 4',
+          time: '5d ago',
+          replies: 7,
+          upvotes: 18,
+          tag: 'Equipment',
+          title: 'Which lunar atlas is best for sketching?',
+          body: 'Printed vs app? I like sketching at the eyepiece but need a detailed reference for rilles and domes.',
+          solved: true
         },
 
-
         {
-          id:14,
-          author:'exoplanet_ella',
-          initial:'E',
-          color:'#06b6d4',
-          level:'Lv. 9',
-          time:'6d ago',
-          replies:23,
-          upvotes:92,
-          tag:'Deep Sky',
-          title:
-            'Transit of HD 189733b with a small telescope? Possible?',
-          body:
-            'Has anyone managed to detect an exoplanet transit visually or with a DSLR on a 6" scope? I\\'ve seen tutorials but curious about real-world results.',
-          solved:false
+          id: 14,
+          author: 'exoplanet_ella',
+          initial: 'E',
+          color: '#06b6d4',
+          level: 'Lv. 9',
+          time: '6d ago',
+          replies: 23,
+          upvotes: 92,
+          tag: 'Deep Sky',
+          title: 'Transit of HD 189733b with a small telescope? Possible?',
+          body: "Has anyone managed to detect an exoplanet transit visually or with a DSLR on a 6\" scope? I've seen tutorials but curious about real-world results.",
+          solved: false
         },
 
-
         {
-          id:15,
-          author:'spacetime_steve',
-          initial:'S',
-          color:'#6b7280',
-          level:'Lv. 13',
-          time:'6d ago',
-          replies:45,
-          upvotes:188,
-          tag:'Astrophotography',
-          title:
-            'My best image yet – 20 hours on the Horsehead Nebula',
-          body:
-            'Used a cooled astro camera and narrowband filters. The hydrogen alpha detail around Alnitak is finally controlled without halos.',
-          solved:false
+          id: 15,
+          author: 'spacetime_steve',
+          initial: 'S',
+          color: '#6b7280',
+          level: 'Lv. 13',
+          time: '6d ago',
+          replies: 45,
+          upvotes: 188,
+          tag: 'Astrophotography',
+          title: 'My best image yet – 20 hours on the Horsehead Nebula',
+          body: 'Used a cooled astro camera and narrowband filters. The hydrogen alpha detail around Alnitak is finally controlled without halos.',
+          solved: false
         }
-
       ]
-
     };
   },
 
-
-  computed:{
-
-    filteredThreads(){
-
-      if(
-        this.activeChip==='All'
-      ){
+  computed: {
+    filteredThreads() {
+      if (this.activeChip === 'All') {
         return this.threads;
       }
 
       return this.threads.filter(
-        thread=>
-          thread.tag===
-          this.activeChip
+        t => t.tag === this.activeChip
       );
-
     }
-
   },
 
-
-  watch:{
-
-    /*
-      Vue destroys/recreates the visible
-      cards when a filter changes.
-
-      Reattach the liquid interaction
-      to the newly rendered cards.
-    */
-
-    filteredThreads(){
-
-      this.$nextTick(()=>{
-
+  watch: {
+    activeChip() {
+      this.$nextTick(() => {
         this.attachForumCardInteractions();
-
       });
-
     }
-
   },
 
-
-  methods:{
-
-    /* =====================================================
-       FORUM CARD INTERACTION
-       ===================================================== */
-
-    attachForumCardInteractions(){
-
-      const cards=[
+  methods: {
+    attachForumCardInteractions() {
+      const cards = [
         ...this.$el.querySelectorAll(
           '.thread-card'
         )
       ];
 
-
-      cards.forEach(card=>{
-
-        /*
-          Don't attach the same listeners twice.
-        */
-
-        if(
-          card.dataset.liquidAttached===
+      cards.forEach(card => {
+        if (
+          card.dataset.liquidAttached ===
           'true'
-        ){
+        ) {
           return;
         }
 
+        card.dataset.liquidAttached = 'true';
 
-        card.dataset.liquidAttached=
-          'true';
+        let previousX = null;
+        let previousY = null;
+        let previousTime = performance.now();
 
+        let currentX = 0;
+        let currentY = 0;
 
-        const light=
-          card.querySelector(
-            '.forum-mouse-light'
-          );
+        let currentRotateX = 0;
+        let currentRotateY = 0;
 
+        let currentScaleX = 1;
+        let currentScaleY = 1;
 
-        let previousX=null;
-        let previousY=null;
+        let targetX = 0;
+        let targetY = 0;
 
-        let previousTime=
-          performance.now();
+        let targetRotateX = 0;
+        let targetRotateY = 0;
 
+        let targetScaleX = 1;
+        let targetScaleY = 1;
 
-        let currentX=0;
-        let currentY=0;
-
-        let currentRotateX=0;
-        let currentRotateY=0;
-
-        let currentScaleX=1;
-        let currentScaleY=1;
-
-
-        let targetX=0;
-        let targetY=0;
-
-        let targetRotateX=0;
-        let targetRotateY=0;
-
-        let targetScaleX=1;
-        let targetScaleY=1;
+        let frame = null;
 
 
-        let frame=null;
+        const animate = () => {
+          const spring = 0.15;
 
-
-        const animate=()=>{
-
-          const spring=.15;
-
-
-          currentX+=
-            (
-              targetX-
-              currentX
-            )*
+          currentX +=
+            (targetX - currentX) *
             spring;
 
-
-          currentY+=
-            (
-              targetY-
-              currentY
-            )*
+          currentY +=
+            (targetY - currentY) *
             spring;
 
-
-          currentRotateX+=
+          currentRotateX +=
             (
-              targetRotateX-
+              targetRotateX -
               currentRotateX
-            )*
+            ) *
             spring;
 
-
-          currentRotateY+=
+          currentRotateY +=
             (
-              targetRotateY-
+              targetRotateY -
               currentRotateY
-            )*
+            ) *
             spring;
 
-
-          currentScaleX+=
+          currentScaleX +=
             (
-              targetScaleX-
+              targetScaleX -
               currentScaleX
-            )*
+            ) *
             spring;
 
-
-          currentScaleY+=
+          currentScaleY +=
             (
-              targetScaleY-
+              targetScaleY -
               currentScaleY
-            )*
+            ) *
             spring;
 
 
-          card.style.transform=`
+          card.style.transform = `
             perspective(850px)
-
             translate3d(
               ${currentX}px,
               ${currentY}px,
               0
             )
-
             rotateX(
               ${currentRotateX}deg
             )
-
             rotateY(
               ${currentRotateY}deg
             )
-
             scaleX(
               ${currentScaleX}
             )
-
             scaleY(
               ${currentScaleY}
             )
           `;
 
 
-          const moving=
+          const moving =
+            Math.abs(
+              currentX - targetX
+            ) > 0.01 ||
 
             Math.abs(
-              currentX-
-              targetX
-            )>.01||
+              currentY - targetY
+            ) > 0.01 ||
 
             Math.abs(
-              currentY-
-              targetY
-            )>.01||
-
-            Math.abs(
-              currentRotateX-
+              currentRotateX -
               targetRotateX
-            )>.01||
+            ) > 0.01 ||
 
             Math.abs(
-              currentRotateY-
+              currentRotateY -
               targetRotateY
-            )>.01||
+            ) > 0.01 ||
 
             Math.abs(
-              currentScaleX-
+              currentScaleX -
               targetScaleX
-            )>.001||
+            ) > 0.001 ||
 
             Math.abs(
-              currentScaleY-
+              currentScaleY -
               targetScaleY
-            )>.001;
+            ) > 0.001;
 
 
-          if(moving){
-
-            frame=
+          if (moving) {
+            frame =
               requestAnimationFrame(
                 animate
               );
-
-          }else{
-
-            frame=null;
-
+          } else {
+            frame = null;
           }
-
         };
 
 
-        const start=()=>{
-
-          if(!frame){
-
-            frame=
+        const startAnimation = () => {
+          if (!frame) {
+            frame =
               requestAnimationFrame(
                 animate
               );
-
           }
-
         };
 
 
-        const move=event=>{
-
-          /*
-            Use offsetWidth instead of the
-            transformed bounding rectangle
-            for more stable cursor tracking.
-          */
-
-          const rect=
+        const handleMove = event => {
+          const rect =
             card.getBoundingClientRect();
 
-
-          const width=
-            card.offsetWidth;
-
-
-          const height=
-            card.offsetHeight;
-
-
-          const localX=
-            event.clientX-
+          const localX =
+            event.clientX -
             rect.left;
 
-
-          const localY=
-            event.clientY-
+          const localY =
+            event.clientY -
             rect.top;
 
-
-          const normalizedX=
+          const nx =
             (
-              localX/
-              width
-            )-
-            .5;
+              localX /
+              rect.width -
+              0.5
+            ) * 2;
 
-
-          const normalizedY=
+          const ny =
             (
-              localY/
-              height
-            )-
-            .5;
-
-
-          const nx=
-            normalizedX*
-            2;
-
-
-          const ny=
-            normalizedY*
-            2;
+              localY /
+              rect.height -
+              0.5
+            ) * 2;
 
 
           /*
-            Same intensity as the
-            stronger Library cards.
+            Stronger positional follow.
           */
 
-          targetX=
-            nx*
-            5.5;
+          targetX =
+            nx * 5.5;
 
-
-          targetY=
-            ny*
-            4;
+          targetY =
+            ny * 4;
 
 
           /*
-            3D tilt.
+            Stronger 3D tilt.
           */
 
-          targetRotateY=
-            nx*
-            2.6;
+          targetRotateY =
+            nx * 2.6;
 
-
-          targetRotateX=
-            ny*
-            -2;
+          targetRotateX =
+            ny * -2;
 
 
           /*
-            Gentle hover expansion.
+            Slight hover expansion.
           */
 
-          targetScaleX=
-            1.008;
-
-
-          targetScaleY=
-            1.008;
+          targetScaleX = 1.008;
+          targetScaleY = 1.008;
 
 
           /*
-            Cursor-following light.
+            Velocity-based stretch.
           */
 
-          if(light){
-
-            light.style.setProperty(
-              '--forum-light-x',
-              `${localX}px`
-            );
-
-
-            light.style.setProperty(
-              '--forum-light-y',
-              `${localY}px`
-            );
-
-
-            light.style.opacity='1';
-
-          }
-
-
-          /*
-            Extra deformation based on
-            pointer movement speed.
-          */
-
-          const now=
+          const now =
             performance.now();
 
-
-          const deltaTime=
+          const deltaTime =
             Math.max(
               8,
-              now-
-              previousTime
+              now - previousTime
             );
 
 
-          if(
-            previousX!==null&&
-            previousY!==null
-          ){
-
-            const velocityX=
+          if (
+            previousX !== null &&
+            previousY !== null
+          ) {
+            const velocityX =
               (
-                event.clientX-
+                event.clientX -
                 previousX
-              )/
+              ) /
               deltaTime;
 
-
-            const velocityY=
+            const velocityY =
               (
-                event.clientY-
+                event.clientY -
                 previousY
-              )/
+              ) /
               deltaTime;
 
 
-            const speedX=
+            const speedX =
               Math.min(
-                .022,
+                0.022,
                 Math.abs(
                   velocityX
-                )*
-                .022
+                ) *
+                0.022
               );
 
-
-            const speedY=
+            const speedY =
               Math.min(
-                .022,
+                0.022,
                 Math.abs(
                   velocityY
-                )*
-                .022
+                ) *
+                0.022
               );
 
 
-            targetScaleX=
-              1.008+
+            targetScaleX =
+              1.008 +
               speedX;
 
-
-            targetScaleY=
-              1.008+
+            targetScaleY =
+              1.008 +
               speedY;
 
 
-            if(
+            if (
               Math.abs(
                 velocityX
-              )>
+              ) >
               Math.abs(
                 velocityY
               )
-            ){
-
-              targetScaleY=
-                1.008-
-                speedX*
-                .55;
-
-            }else{
-
-              targetScaleX=
-                1.008-
-                speedY*
-                .55;
-
+            ) {
+              targetScaleY =
+                1.008 -
+                speedX *
+                0.55;
+            } else {
+              targetScaleX =
+                1.008 -
+                speedY *
+                0.55;
             }
-
           }
 
 
-          previousX=
+          previousX =
             event.clientX;
 
-
-          previousY=
+          previousY =
             event.clientY;
 
-
-          previousTime=
+          previousTime =
             now;
 
 
@@ -1014,288 +780,135 @@ const Forum={
             'forum-liquid-hover'
           );
 
-
-          start();
-
+          startAnimation();
         };
 
 
-        const leave=()=>{
+        const handleLeave = () => {
+          previousX = null;
+          previousY = null;
 
-          previousX=null;
-          previousY=null;
+          targetX = 0;
+          targetY = 0;
 
+          targetRotateX = 0;
+          targetRotateY = 0;
 
-          targetX=0;
-          targetY=0;
-
-
-          targetRotateX=0;
-          targetRotateY=0;
-
-
-          targetScaleX=1;
-          targetScaleY=1;
-
-
-          if(light){
-
-            light.style.opacity='0';
-
-          }
-
+          targetScaleX = 1;
+          targetScaleY = 1;
 
           card.classList.remove(
             'forum-liquid-hover'
           );
 
-
-          start();
-
+          startAnimation();
         };
 
 
-        const press=()=>{
+        const handleDown = () => {
+          targetScaleX = 0.992;
+          targetScaleY = 0.98;
 
-          targetScaleX=.992;
-          targetScaleY=.98;
-
-          start();
-
+          startAnimation();
         };
 
 
-        const release=()=>{
+        const handleUp = () => {
+          targetScaleX = 1.008;
+          targetScaleY = 1.008;
 
-          targetScaleX=1.008;
-          targetScaleY=1.008;
-
-          start();
-
+          startAnimation();
         };
 
 
         card.addEventListener(
           'pointermove',
-          move
+          handleMove
         );
-
 
         card.addEventListener(
           'pointerleave',
-          leave
+          handleLeave
         );
-
 
         card.addEventListener(
           'pointercancel',
-          leave
+          handleLeave
         );
-
 
         card.addEventListener(
           'pointerdown',
-          press
+          handleDown
         );
-
 
         card.addEventListener(
           'pointerup',
-          release
+          handleUp
         );
-
       });
-
     },
 
 
-    /* =====================================================
-       INTERACTION-ONLY CSS
-       DOES NOT CHANGE FORUM BASE COLORS
-       ===================================================== */
-
-    injectForumLiquidStyles(){
-
-      if(
+    injectForumInteractionStyles() {
+      if (
         document.getElementById(
           'forum-liquid-interaction-styles'
         )
-      ){
+      ) {
         return;
       }
 
-
-      const style=
+      const style =
         document.createElement(
           'style'
         );
 
-
-      style.id=
+      style.id =
         'forum-liquid-interaction-styles';
 
 
-      style.textContent=`
+      style.textContent = `
 
         /*
-          Preserve all existing
-          thread-card appearance.
-
-          Only prepare the card
-          for transforms.
+          Interaction only.
+          Existing Forum colors stay untouched.
         */
 
-        .thread-card{
+        .thread-card {
+          position: relative;
 
-          position:relative;
+          transform-origin: center;
+          transform-style: preserve-3d;
 
-          overflow:hidden;
-
-          transform-origin:center;
-
-          transform-style:
-            preserve-3d;
-
-          will-change:
-            transform;
-
+          will-change: transform;
         }
 
 
         /*
-          Cursor light layer.
-
-          Notice there is NO new
-          base background for the card.
+          Very subtle depth shadow
+          while the card is moving.
         */
 
-        .forum-mouse-light{
-
-          --forum-light-x:50%;
-          --forum-light-y:50%;
-
-
-          position:absolute;
-
-          inset:0;
-
-
-          width:100%;
-          height:100%;
-
-
-          pointer-events:none;
-
-
-          z-index:2;
-
-
-          opacity:0;
-
-
-          background:
-
-            radial-gradient(
-              circle
-              175px
-              at
-              var(--forum-light-x)
-              var(--forum-light-y),
-
-              rgba(
-                255,
-                255,
-                255,
-                .08
-              )
-              0%,
-
-              rgba(
-                192,
-                132,
-                252,
-                .050
-              )
-              31%,
-
-              rgba(
-                124,
-                58,
-                237,
-                .022
-              )
-              52%,
-
-              transparent
-              73%
-            );
-
-
-          transition:
-            opacity
-            .18s ease;
-
-        }
-
-
-        /*
-          Keep actual card content
-          above the light.
-        */
-
-        .thread-card >
-        *:not(
-          .forum-mouse-light
-        ){
-
-          position:relative;
-
-          z-index:3;
-
-        }
-
-
-        /*
-          Extremely subtle depth shadow.
-
-          Doesn't recolor the card.
-        */
-
-        .thread-card.forum-liquid-hover{
-
+        .thread-card.forum-liquid-hover {
           box-shadow:
-
             0 12px 30px
-
             rgba(
               0,
               0,
               0,
-              .17
+              0.17
             );
-
         }
 
 
-        @media(
+        @media (
           prefers-reduced-motion:
           reduce
-        ){
-
-          .thread-card{
-
+        ) {
+          .thread-card {
             transform:
-              none!important;
-
+              none !important;
           }
-
-
-          .forum-mouse-light{
-
-            display:none;
-
-          }
-
         }
 
       `;
@@ -1304,23 +917,15 @@ const Forum={
       document.head.appendChild(
         style
       );
-
     }
-
   },
 
 
-  mounted(){
+  mounted() {
+    this.injectForumInteractionStyles();
 
-    this.injectForumLiquidStyles();
-
-
-    this.$nextTick(()=>{
-
+    this.$nextTick(() => {
       this.attachForumCardInteractions();
-
     });
-
   }
-
 };
