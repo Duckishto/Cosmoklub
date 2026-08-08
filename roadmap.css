@@ -111,19 +111,15 @@ button{
   height:var(--topbar-h);
   min-height:var(--topbar-h);
   padding:0 20px;
-
   background:
     linear-gradient(
       180deg,
       rgba(12,9,34,.9),
       rgba(7,6,26,.82)
     );
-
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
-
   border-bottom:1px solid var(--border);
-
   position:relative;
   z-index:100;
   flex-shrink:0;
@@ -133,15 +129,12 @@ button{
   display:flex;
   align-items:center;
   gap:8px;
-
   color:var(--stardust);
-
   font-family:var(--font);
   font-size:15.5px;
   font-weight:800;
   line-height:1;
   letter-spacing:-.3px;
-
   text-decoration:none;
   white-space:nowrap;
   flex-shrink:0;
@@ -160,11 +153,9 @@ button{
   height:22px;
   flex:0 0 22px;
   display:block;
-
-  filter:
-    drop-shadow(
-      0 0 6px rgba(168,85,247,.55)
-    );
+  filter:drop-shadow(
+    0 0 6px rgba(168,85,247,.55)
+  );
 }
 
 .topbar-spacer{
@@ -180,23 +171,17 @@ button{
 
 .icon-btn{
   position:relative;
-
   width:36px;
   height:36px;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   padding:0;
   border:0;
   border-radius:9px;
-
   background:transparent;
   color:var(--muted);
-
   cursor:pointer;
-
   transition:
     background var(--tr),
     color var(--tr);
@@ -217,26 +202,20 @@ button{
   position:absolute;
   top:7px;
   right:7px;
-
   width:7px;
   height:7px;
-
   border-radius:50%;
-
   background:var(--violet);
   border:1.5px solid #07061a;
 }
 
 .roadmap-scroll{
   position:relative;
-
   flex:1;
   min-height:0;
   width:100%;
-
   overflow-y:auto;
   overflow-x:hidden;
-
   scrollbar-width:thin;
   scrollbar-color:var(--border) transparent;
 }
@@ -277,11 +256,9 @@ button{
 
 .roadmap-header-row{
   width:100%;
-
   display:grid;
   grid-template-columns:42px minmax(0,1fr);
   align-items:start;
-
   gap:16px;
   margin-bottom:26px;
 }
@@ -289,16 +266,12 @@ button{
 .library-back{
   width:40px;
   height:40px;
-
   display:grid;
   place-items:center;
-
   margin-top:7px;
   padding:0;
-
   border:2px solid transparent;
   border-radius:50%;
-
   background:
     linear-gradient(
       #0b1027,
@@ -310,13 +283,10 @@ button{
       #6366f1 48%,
       #a855f7 100%
     ) border-box;
-
   cursor:pointer;
-
   box-shadow:
     0 0 14px rgba(99,102,241,.16),
     inset 0 1px 0 rgba(255,255,255,.03);
-
   transition:
     transform .18s ease,
     filter .18s ease,
@@ -326,7 +296,6 @@ button{
 .library-back:hover{
   transform:translateY(-1px);
   filter:brightness(1.12);
-
   box-shadow:
     0 0 18px rgba(99,102,241,.34),
     0 0 24px rgba(168,85,247,.12);
@@ -339,24 +308,16 @@ button{
 .library-back-arrow{
   width:11px;
   height:11px;
-
   display:block;
-
   margin-left:4px;
-
   border-left:3px solid #d8b4fe;
   border-bottom:3px solid #d8b4fe;
-
   transform:rotate(45deg);
 }
 
 .category-hero{
   display:grid;
-
-  grid-template-columns:
-    minmax(0,1fr)
-    230px;
-
+  grid-template-columns:minmax(0,1fr) 230px;
   gap:14px;
   align-items:stretch;
 }
@@ -364,13 +325,10 @@ button{
 .category-hero-main{
   min-height:148px;
   padding:20px;
-
   position:relative;
   overflow:hidden;
-
   border:1px solid var(--border);
   border-radius:var(--radius);
-
   background:
     linear-gradient(
       135deg,
@@ -378,19 +336,15 @@ button{
       rgba(42,15,61,.3)
     ),
     rgba(124,58,237,.07);
-
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.035);
 }
 
 .category-hero-main::after{
   content:"";
-
   position:absolute;
   inset:0;
-
   pointer-events:none;
-
   background-image:
     linear-gradient(
       rgba(124,58,237,.045) 1px,
@@ -401,7 +355,6 @@ button{
       rgba(124,58,237,.045) 1px,
       transparent 1px
     );
-
   background-size:32px 32px;
 }
 
@@ -412,9 +365,7 @@ button{
 
 .category-kicker{
   margin-bottom:14px;
-
   color:var(--violet);
-
   font-size:10px;
   font-weight:800;
   letter-spacing:.12em;
@@ -431,23 +382,17 @@ button{
   width:52px;
   height:52px;
   flex:0 0 52px;
-
   display:grid;
   place-items:center;
-
   border:1px solid rgba(255,255,255,.08);
   border-radius:13px;
-
   background:rgba(255,255,255,.05);
-
   font-size:27px;
 }
 
 .category-heading h1{
   margin:0;
-
   color:var(--stardust);
-
   font-size:clamp(28px,4vw,40px);
   line-height:1;
   letter-spacing:-1px;
@@ -455,11 +400,8 @@ button{
 
 .category-heading p{
   max-width:660px;
-
   margin:10px 0 0;
-
   color:var(--muted);
-
   font-size:13px;
   line-height:1.6;
 }
@@ -467,23 +409,18 @@ button{
 .category-rank-panel{
   min-height:148px;
   padding:16px;
-
   display:flex;
   flex-direction:column;
   justify-content:center;
-
   border:1px solid var(--border);
   border-radius:var(--radius);
-
   background:rgba(124,58,237,.1);
-
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.04);
 }
 
 .category-rank-label{
   color:var(--muted);
-
   font-size:9px;
   font-weight:800;
   letter-spacing:.12em;
@@ -492,9 +429,7 @@ button{
 
 .category-rank{
   margin-top:8px;
-
   color:var(--stardust);
-
   font-size:24px;
   font-weight:900;
   line-height:1;
@@ -502,18 +437,14 @@ button{
 
 .category-level{
   margin-top:6px;
-
   color:#d8b4fe;
-
   font-size:11px;
   font-weight:700;
 }
 
 .category-xp{
   margin-top:3px;
-
   color:var(--glow);
-
   font-size:11px;
   font-weight:700;
 }
@@ -521,42 +452,31 @@ button{
 .category-progress-track{
   width:100%;
   height:6px;
-
   margin-top:12px;
-
   overflow:hidden;
-
   border-radius:999px;
-
   background:rgba(255,255,255,.07);
 }
 
 .category-progress-fill{
   width:0;
   height:100%;
-
   border-radius:inherit;
-
   background:
     linear-gradient(
       90deg,
       var(--purple),
       var(--glow)
     );
-
-  transition:
-    width .35s ease;
+  transition:width .35s ease;
 }
 
 .category-progress-meta{
   display:flex;
   justify-content:space-between;
-
   gap:10px;
   margin-top:7px;
-
   color:var(--muted);
-
   font-size:8px;
 }
 
@@ -569,24 +489,18 @@ button{
 .course-section{
   width:100%;
   height:auto;
-
   overflow:visible;
-
   margin-bottom:34px;
 }
 
 .section-banner{
   width:min(720px,100%);
-
   margin:0 auto 24px;
   padding:16px 18px;
-
   position:relative;
   overflow:hidden;
-
   border:1px solid var(--border);
   border-radius:var(--radius);
-
   background:
     linear-gradient(
       135deg,
@@ -594,19 +508,15 @@ button{
       rgba(42,15,61,.3)
     ),
     rgba(124,58,237,.07);
-
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.03);
 }
 
 .section-banner::after{
   content:"";
-
   position:absolute;
   inset:0;
-
   pointer-events:none;
-
   background-image:
     linear-gradient(
       rgba(124,58,237,.045) 1px,
@@ -617,7 +527,6 @@ button{
       rgba(124,58,237,.045) 1px,
       transparent 1px
     );
-
   background-size:32px 32px;
 }
 
@@ -628,9 +537,7 @@ button{
 
 .section-number{
   margin-bottom:6px;
-
   color:var(--violet);
-
   font-size:9px;
   font-weight:800;
   letter-spacing:.12em;
@@ -639,18 +546,14 @@ button{
 
 .section-banner h2{
   margin:0;
-
   color:var(--stardust);
-
   font-size:21px;
   line-height:1.1;
 }
 
 .section-banner p{
   margin:7px 0 0;
-
   color:var(--muted);
-
   font-size:11px;
   line-height:1.55;
 }
@@ -658,28 +561,20 @@ button{
 .path{
   width:min(500px,100%);
   height:auto;
-
   margin:35px auto 0;
-
   display:flex;
   flex-direction:column-reverse;
-
   gap:42px;
-
   overflow:visible;
 }
 
 .path-item{
   width:100%;
   min-height:76px;
-
   display:flex;
   align-items:center;
-
   gap:17px;
-
-  transition:
-    transform .2s ease;
+  transition:transform .2s ease;
 }
 
 .path-position-0{
@@ -707,7 +602,7 @@ button{
 }
 
 /* =========================================================
-   LIQUID GLASS ROADMAP NODE TEST
+   EXTRA-LIQUID GLASS NODE
    ========================================================= */
 
 .path-node{
@@ -716,8 +611,15 @@ button{
   --glass-x:50%;
   --glass-y:28%;
 
-  --glass-shift-x:0px;
-  --glass-shift-y:0px;
+  --highlight-x:50%;
+  --highlight-y:30%;
+
+  --liquid-x:0;
+  --liquid-y:0;
+
+  --liquid-scale-x:1;
+  --liquid-scale-y:1;
+  --liquid-rotate:0deg;
 
   width:68px;
   height:68px;
@@ -729,46 +631,78 @@ button{
   padding:0;
 
   position:relative;
-
   isolation:isolate;
-
   overflow:hidden;
 
   border:
-    1px solid rgba(
+    1px solid
+    rgba(
       var(--glass-accent),
       .42
     );
 
-  border-radius:50%;
+  border-radius:
+    calc(50% + var(--liquid-y) * 5%)
+    calc(50% - var(--liquid-x) * 5%)
+    calc(50% - var(--liquid-y) * 5%)
+    calc(50% + var(--liquid-x) * 5%);
 
   background:
     radial-gradient(
       circle at
       var(--glass-x)
       var(--glass-y),
-      rgba(255,255,255,.22) 0%,
-      rgba(255,255,255,.08) 16%,
-      transparent 38%
+
+      rgba(255,255,255,.30)
+      0%,
+
+      rgba(255,255,255,.12)
+      11%,
+
+      rgba(255,255,255,.04)
+      28%,
+
+      transparent
+      48%
     ),
+
+    radial-gradient(
+      circle at 75% 76%,
+
+      rgba(
+        var(--glass-accent),
+        .19
+      ),
+
+      transparent 48%
+    ),
+
     linear-gradient(
       145deg,
-      rgba(255,255,255,.10),
-      rgba(255,255,255,.025) 42%,
-      rgba(var(--glass-accent),.10) 100%
+
+      rgba(255,255,255,.11),
+
+      rgba(255,255,255,.026)
+      44%,
+
+      rgba(
+        var(--glass-accent),
+        .095
+      )
+      100%
     );
 
   -webkit-backdrop-filter:
-    blur(18px)
-    saturate(190%)
-    brightness(1.08);
+    blur(19px)
+    saturate(210%)
+    brightness(1.1);
 
   backdrop-filter:
-    blur(18px)
-    saturate(190%)
-    brightness(1.08);
+    blur(19px)
+    saturate(210%)
+    brightness(1.1);
 
-  color:#eee8ff;
+  color:#f1ecff;
 
   font-size:25px;
   font-weight:900;
@@ -777,248 +711,364 @@ button{
 
   text-shadow:
     0 1px 2px rgba(0,0,0,.45),
-    0 0 12px rgba(var(--glass-accent),.34);
+    0 0 12px
+    rgba(var(--glass-accent),.38);
 
   box-shadow:
     0 12px 28px rgba(0,0,0,.28),
 
     0 0 0 1px
-      rgba(255,255,255,.08)
-      inset,
+    rgba(255,255,255,.09)
+    inset,
 
     0 1px 0
-      rgba(255,255,255,.40)
-      inset,
+    rgba(255,255,255,.43)
+    inset,
 
-    0 -1px 0
-      rgba(var(--glass-accent),.18)
-      inset,
+    0 -2px 6px
+    rgba(
+      var(--glass-accent),
+      .11
+    )
+    inset,
 
     0 0 0 6px
-      rgba(var(--glass-accent),.045),
+    rgba(
+      var(--glass-accent),
+      .045
+    ),
 
-    0 0 22px
-      rgba(var(--glass-accent),.10);
-
-  transform:
-    translate3d(
-      var(--glass-shift-x),
-      var(--glass-shift-y),
-      0
+    0 0 23px
+    rgba(
+      var(--glass-accent),
+      .11
     );
 
+  transform:
+    translateY(
+      calc(
+        var(--liquid-y) * -2px
+      )
+    )
+    rotate(
+      var(--liquid-rotate)
+    )
+    scaleX(
+      var(--liquid-scale-x)
+    )
+    scaleY(
+      var(--liquid-scale-y)
+    );
+
+  transform-origin:center;
+
+  will-change:
+    transform,
+    border-radius;
+
   transition:
-    transform
-      .22s cubic-bezier(.2,.8,.2,1),
-
-    border-color
-      .22s ease,
-
-    box-shadow
-      .22s ease,
-
-    background
-      .22s ease,
-
-    color
-      .22s ease,
-
-    opacity
-      .22s ease;
+    border-radius .18s ease,
+    border-color .22s ease,
+    box-shadow .22s ease,
+    background .22s ease,
+    color .22s ease;
 }
 
-/*
-  The moving specular/refraction layer.
-*/
+/* Liquid highlight mass */
 
 .path-node::before{
   content:"";
 
   position:absolute;
-
   z-index:-1;
 
-  inset:-24%;
+  width:95%;
+  height:95%;
 
-  border-radius:50%;
+  left:
+    calc(
+      2.5% +
+      var(--liquid-x) * 7%
+    );
+
+  top:
+    calc(
+      2.5% +
+      var(--liquid-y) * 7%
+    );
+
+  border-radius:
+    54%
+    46%
+    52%
+    48%
+    /
+    48%
+    56%
+    44%
+    52%;
 
   pointer-events:none;
 
   background:
     radial-gradient(
       circle at
-      var(--glass-x)
-      var(--glass-y),
+      var(--highlight-x)
+      var(--highlight-y),
 
-      rgba(255,255,255,.50)
-      0 2%,
+      rgba(255,255,255,.55)
+      0 3%,
 
-      rgba(255,255,255,.22)
-      8%,
+      rgba(255,255,255,.24)
+      9%,
 
-      rgba(var(--glass-accent),.16)
-      22%,
+      rgba(
+        var(--glass-accent),
+        .20
+      )
+      24%,
 
       transparent
-      48%
+      54%
     ),
 
-    conic-gradient(
-      from 210deg,
+    radial-gradient(
+      circle at
+      calc(
+        70% -
+        var(--liquid-x) * 13%
+      )
+      calc(
+        73% -
+        var(--liquid-y) * 13%
+      ),
 
-      transparent 0 18%,
+      rgba(
+        var(--glass-accent),
+        .21
+      ),
 
-      rgba(255,255,255,.14)
-      27%,
-
-      transparent
-      39% 67%,
-
-      rgba(var(--glass-accent),.12)
-      78%,
-
-      transparent
-      90%
+      transparent 43%
     );
 
-  filter:blur(5px);
+  filter:
+    blur(5px);
 
-  opacity:.82;
+  opacity:.95;
 
-  transform:
-    translate3d(
-      calc((var(--glass-x) - 50%) * .08),
-      calc((var(--glass-y) - 50%) * .08),
-      0
-    );
+  animation:
+    liquidFloat
+    5.5s ease-in-out
+    infinite alternate;
 
   transition:
-    opacity .2s ease;
+    left .09s linear,
+    top .09s linear;
 }
 
-/*
-  Inner refractive rim.
-*/
+/* Refraction rim */
 
 .path-node::after{
   content:"";
 
   position:absolute;
-
   z-index:2;
 
   inset:3px;
 
   border:
-    1px solid rgba(
+    1px solid
+    rgba(
       255,
       255,
       255,
-      .15
+      .17
     );
 
-  border-radius:50%;
+  border-radius:inherit;
 
   pointer-events:none;
 
   background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,.12),
-      transparent 35% 68%,
-      rgba(var(--glass-accent),.08)
+    radial-gradient(
+      circle at
+      var(--highlight-x)
+      var(--highlight-y),
+
+      rgba(
+        255,
+        255,
+        255,
+        .24
+      ),
+
+      transparent 28%
     ),
 
-    radial-gradient(
-      circle at 32% 20%,
-      rgba(255,255,255,.16),
-      transparent 28%
+    linear-gradient(
+      145deg,
+
+      rgba(
+        255,
+        255,
+        255,
+        .14
+      ),
+
+      transparent
+      34% 66%,
+
+      rgba(
+        var(--glass-accent),
+        .09
+      )
     );
 
   box-shadow:
     inset
-      0 1px 1px
-      rgba(255,255,255,.25),
+    0 1px 1px
+    rgba(255,255,255,.32),
 
     inset
-      0 -2px 5px
-      rgba(0,0,0,.10);
+    0 -3px 7px
+    rgba(0,0,0,.11);
 
-  opacity:.9;
+  opacity:.95;
 }
 
-/*
-  Hovering lifts the glass and makes the
-  refractive rim brighter.
-*/
+@keyframes liquidFloat{
+  0%{
+    transform:
+      translate3d(
+        -1px,
+        -1px,
+        0
+      )
+      rotate(-2deg)
+      scale(1);
+  }
 
-.path-item:not(.locked) .path-node:hover{
-  --glass-shift-y:-3px;
+  50%{
+    transform:
+      translate3d(
+        2px,
+        1px,
+        0
+      )
+      rotate(2deg)
+      scale(1.04);
+  }
 
+  100%{
+    transform:
+      translate3d(
+        -1px,
+        2px,
+        0
+      )
+      rotate(-1deg)
+      scale(.98);
+  }
+}
+
+.path-item:not(.locked)
+.path-node.is-liquid-hover{
   border-color:
-    rgba(255,255,255,.48);
+    rgba(
+      255,
+      255,
+      255,
+      .52
+    );
 
   box-shadow:
-    0 16px 34px
-      rgba(0,0,0,.34),
+    0 17px 36px
+    rgba(0,0,0,.35),
 
     0 0 0 1px
-      rgba(255,255,255,.14)
-      inset,
+    rgba(255,255,255,.15)
+    inset,
 
     0 1px 0
-      rgba(255,255,255,.58)
-      inset,
+    rgba(255,255,255,.62)
+    inset,
 
-    0 -1px 0
-      rgba(var(--glass-accent),.24)
-      inset,
+    0 -2px 8px
+    rgba(
+      var(--glass-accent),
+      .18
+    )
+    inset,
 
     0 0 0 7px
-      rgba(var(--glass-accent),.06),
+    rgba(
+      var(--glass-accent),
+      .065
+    ),
 
-    0 0 30px
-      rgba(var(--glass-accent),.24);
+    0 0 34px
+    rgba(
+      var(--glass-accent),
+      .27
+    );
 }
 
-/*
-  Apple-like compression when pressed.
-*/
+.path-node.is-liquid-hover::before{
+  animation-duration:2.8s;
+  filter:
+    blur(4px)
+    saturate(1.15);
+}
 
-.path-item:not(.locked) .path-node:active{
-  --glass-shift-y:0px;
+/* Squish */
 
-  transform:
-    translate3d(
-      var(--glass-shift-x),
-      var(--glass-shift-y),
-      0
-    )
-    scale(.93);
+.path-item:not(.locked)
+.path-node.is-liquid-pressed{
+  --liquid-scale-x:1.08!important;
+  --liquid-scale-y:.89!important;
+
+  border-radius:
+    46%
+    54%
+    48%
+    52%
+    /
+    54%
+    48%
+    52%
+    46%;
 
   box-shadow:
-    0 7px 16px
-      rgba(0,0,0,.28),
+    0 6px 15px
+    rgba(0,0,0,.27),
 
     inset
-      0 2px 6px
-      rgba(0,0,0,.18),
+    0 3px 8px
+    rgba(0,0,0,.16),
 
     inset
-      0 1px 0
-      rgba(255,255,255,.32),
+    0 1px 0
+    rgba(255,255,255,.30),
 
-    0 0 18px
-      rgba(var(--glass-accent),.18);
+    0 0 24px
+    rgba(
+      var(--glass-accent),
+      .21
+    );
 }
 
-/* Quiz Liquid Glass */
+/* Quiz */
 
 .path-item.quiz .path-node{
   --glass-accent:250,204,21;
 
+  color:#fff2af;
+
   border-color:
-    rgba(var(--glass-accent),.42);
+    rgba(
+      var(--glass-accent),
+      .43
+    );
 
   background:
     radial-gradient(
@@ -1026,13 +1076,21 @@ button{
       var(--glass-x)
       var(--glass-y),
 
-      rgba(255,255,255,.23),
+      rgba(255,255,255,.29),
 
-      rgba(255,255,255,.07)
-      18%,
+      rgba(255,255,255,.10)
+      13%,
 
       transparent
-      40%
+      43%
+    ),
+
+    radial-gradient(
+      circle at 73% 75%,
+
+      rgba(250,204,21,.16),
+
+      transparent 48%
     ),
 
     linear-gradient(
@@ -1041,28 +1099,24 @@ button{
       rgba(255,255,255,.09),
 
       rgba(250,204,21,.045)
-      45%,
+      46%,
 
-      rgba(250,204,21,.12)
+      rgba(250,204,21,.115)
     );
-
-  color:#fff4bd;
-
-  text-shadow:
-    0 1px 2px
-      rgba(0,0,0,.45),
-
-    0 0 13px
-      rgba(250,204,21,.30);
 }
 
-/* Completed Liquid Glass */
+/* Completed */
 
 .path-item.completed .path-node{
   --glass-accent:34,197,94;
 
+  color:#d9ffe5;
+
   border-color:
-    rgba(var(--glass-accent),.46);
+    rgba(
+      var(--glass-accent),
+      .47
+    );
 
   background:
     radial-gradient(
@@ -1070,13 +1124,21 @@ button{
       var(--glass-x)
       var(--glass-y),
 
-      rgba(255,255,255,.24),
+      rgba(255,255,255,.30),
 
-      rgba(255,255,255,.07)
-      18%,
+      rgba(255,255,255,.10)
+      13%,
 
       transparent
-      40%
+      43%
+    ),
+
+    radial-gradient(
+      circle at 73% 75%,
+
+      rgba(34,197,94,.17),
+
+      transparent 48%
     ),
 
     linear-gradient(
@@ -1084,47 +1146,54 @@ button{
 
       rgba(255,255,255,.10),
 
-      rgba(34,197,94,.05)
-      45%,
+      rgba(34,197,94,.045)
+      46%,
 
-      rgba(34,197,94,.12)
+      rgba(34,197,94,.115)
     );
-
-  color:#d8ffe5;
-
-  text-shadow:
-    0 1px 2px
-      rgba(0,0,0,.45),
-
-    0 0 13px
-      rgba(34,197,94,.30);
 }
 
-/* Locked frosted glass */
+/* Locked glass */
 
 .path-item.locked .path-node{
   --glass-accent:139,122,168;
 
   border-color:
-    rgba(var(--glass-accent),.14);
+    rgba(
+      var(--glass-accent),
+      .13
+    );
+
+  border-radius:50%;
 
   background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,.035),
-      rgba(255,255,255,.012)
+    radial-gradient(
+      circle at 35% 20%,
+      rgba(255,255,255,.05),
+      transparent 35%
+    ),
+    rgba(
+      255,
+      255,
+      255,
+      .018
     );
 
   -webkit-backdrop-filter:
-    blur(12px)
-    saturate(115%);
+    blur(13px)
+    saturate(110%);
 
   backdrop-filter:
-    blur(12px)
-    saturate(115%);
+    blur(13px)
+    saturate(110%);
 
   color:
-    rgba(216,206,232,.38);
+    rgba(
+      216,
+      206,
+      232,
+      .37
+    );
 
   cursor:not-allowed;
 
@@ -1132,52 +1201,43 @@ button{
 
   box-shadow:
     inset
-      0 1px 0
-      rgba(255,255,255,.06),
+    0 1px 0
+    rgba(255,255,255,.055),
 
-    0 4px 12px
-      rgba(0,0,0,.12);
+    0 5px 13px
+    rgba(0,0,0,.12);
 }
 
-.path-item.locked .path-node::before{
-  opacity:.16;
+.path-item.locked
+.path-node::before{
+  animation:none;
+  opacity:.12;
 }
 
-.path-item.locked .path-node::after{
-  opacity:.35;
-}
-
-@media(prefers-reduced-motion:reduce){
-  .path-node,
-  .path-node::before,
-  .path-node::after{
-    transition:none;
-  }
+.path-item.locked
+.path-node::after{
+  opacity:.28;
 }
 
 /* =========================================================
-   ROADMAP INFO CARDS
+   INFO CARDS
    ========================================================= */
 
 .path-info{
   min-width:0;
   flex:1;
-
   padding:12px 14px;
-
   position:relative;
   overflow:hidden;
-
   border:
-    1px solid rgba(
+    1px solid
+    rgba(
       139,
       122,
       168,
       .2
     );
-
   border-radius:11px;
-
   background:
     linear-gradient(
       135deg,
@@ -1189,28 +1249,22 @@ button{
 
 .path-info::after{
   content:"";
-
   position:absolute;
   inset:0;
-
   pointer-events:none;
-
   background-image:
     linear-gradient(
       rgba(124,58,237,.035)
       1px,
       transparent 1px
     ),
-
     linear-gradient(
       90deg,
       rgba(124,58,237,.035)
       1px,
       transparent 1px
     );
-
-  background-size:
-    24px 24px;
+  background-size:24px 24px;
 }
 
 .path-info>*{
@@ -1224,7 +1278,6 @@ button{
 
 .path-title{
   color:var(--stardust);
-
   font-size:13px;
   font-weight:800;
   line-height:1.25;
@@ -1232,9 +1285,7 @@ button{
 
 .path-meta{
   margin-top:6px;
-
   color:var(--muted);
-
   font-size:10px;
   line-height:1.4;
 }
@@ -1258,10 +1309,7 @@ button{
   }
 
   .roadmap-page{
-    padding:
-      22px
-      10px
-      60px;
+    padding:22px 10px 60px;
   }
 
   .roadmap-header-row{
@@ -1271,11 +1319,7 @@ button{
   .library-back{
     width:37px;
     height:37px;
-
-    margin:
-      0
-      0
-      14px;
+    margin:0 0 14px;
   }
 
   .category-hero{
@@ -1330,7 +1374,6 @@ button{
     width:44px;
     height:44px;
     flex-basis:44px;
-
     font-size:23px;
   }
 
@@ -1357,7 +1400,6 @@ button{
     width:58px;
     height:58px;
     flex-basis:58px;
-
     font-size:21px;
   }
 }
@@ -1369,10 +1411,7 @@ button{
   }
 
   .roadmap-page{
-    padding:
-      17px
-      8px
-      45px;
+    padding:17px 8px 45px;
   }
 
   .category-hero-main{
@@ -1399,7 +1438,6 @@ button{
     width:53px;
     height:53px;
     flex-basis:53px;
-
     font-size:19px;
   }
 
@@ -1413,5 +1451,15 @@ button{
 
   .path-meta{
     font-size:9px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  .path-node,
+  .path-node::before,
+  .path-node::after{
+    animation:none!important;
+    transition:none!important;
   }
 }
