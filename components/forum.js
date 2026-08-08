@@ -1,30 +1,45 @@
 // Forum tab: tonight's-sky strip, category chips, thread feed.
-// Includes stronger cursor-reactive movement WITHOUT mouse highlight.
+// Includes subtle 3D cursor interaction on thread cards.
+// No mouse highlight.
 
 const Forum = {
   name: 'Forum',
 
   template: `
-    <div class="forum-page">
+    <div>
 
-      <div class="tonight-strip">
-        <div class="moon-icon">◐</div>
+      <!-- =========================================
+           TONIGHT'S SKY
+           ========================================= -->
 
-        <div class="tonight-info">
-          <div class="tonight-title">
+      <div class="sky-strip">
+
+        <div class="sb-icon">
+          ◐
+        </div>
+
+        <div class="sky-strip-text">
+
+          <div class="sky-strip-title">
             Waxing gibbous, 78% lit
           </div>
 
-          <div class="tonight-sub">
+          <div class="sky-strip-sub">
             Good night for Saturn, rises 21:40, Bangkok sky
           </div>
+
         </div>
 
-        <div class="tonight-label">
+        <div class="sky-strip-cta">
           TONIGHT'S SKY
         </div>
+
       </div>
 
+
+      <!-- =========================================
+           FILTERS
+           ========================================= -->
 
       <div class="chip-row">
 
@@ -49,9 +64,14 @@ const Forum = {
       </div>
 
 
+      <!-- =========================================
+           THREADS
+           ========================================= -->
+
       <div class="section">
 
         <div class="section-eyebrow-row">
+
           <span class="section-label">
             Following
           </span>
@@ -61,6 +81,7 @@ const Forum = {
           <span class="section-link">
             See all
           </span>
+
         </div>
 
 
@@ -85,12 +106,15 @@ const Forum = {
               <div class="thread-meta">
 
                 <div class="thread-author">
+
                   {{ t.author }}
 
                   <span class="lvl">
                     {{ t.level }}
                   </span>
+
                 </div>
+
 
                 <div class="thread-sub">
                   {{ t.time }}, {{ t.replies }} replies
@@ -209,6 +233,7 @@ const Forum = {
     </div>
   `,
 
+
   data() {
     return {
       activeChip: 'All',
@@ -233,8 +258,13 @@ const Forum = {
           replies: 14,
           upvotes: 38,
           tag: 'Equipment',
-          title: "Is a 6\" Dobsonian enough to actually see Saturn's rings, or am I being too hopeful?",
-          body: 'Picking up a used Apertura AD6 this weekend. Mainly want planetary views from a Bortle 5 backyard, realistic expectations for Saturn and Jupiter at 150x?',
+
+          title:
+            "Is a 6\" Dobsonian enough to actually see Saturn's rings, or am I being too hopeful?",
+
+          body:
+            'Picking up a used Apertura AD6 this weekend. Mainly want planetary views from a Bortle 5 backyard, realistic expectations for Saturn and Jupiter at 150x?',
+
           solved: false
         },
 
@@ -248,8 +278,13 @@ const Forum = {
           replies: 27,
           upvotes: 102,
           tag: 'Astrophotography',
-          title: 'First decent capture of the Orion Nebula, 2hr integration, stacked in Siril',
-          body: "Finally got the cooling box working on my old DSLR. Still a lot of gradient in the corners I couldn't fully remove, tips welcome on the flat frames.",
+
+          title:
+            'First decent capture of the Orion Nebula, 2hr integration, stacked in Siril',
+
+          body:
+            "Finally got the cooling box working on my old DSLR. Still a lot of gradient in the corners I couldn't fully remove, tips welcome on the flat frames.",
+
           solved: false
         },
 
@@ -263,8 +298,13 @@ const Forum = {
           replies: 6,
           upvotes: 19,
           tag: 'Beginner Q&A',
-          title: 'What does "magnitude" actually mean? Keep seeing it but the scale confuses me',
-          body: 'I get that lower numbers are brighter, but why are some negative? And how do I use it to figure out if something is naked-eye visible from a suburban sky?',
+
+          title:
+            'What does "magnitude" actually mean? Keep seeing it but the scale confuses me',
+
+          body:
+            'I get that lower numbers are brighter, but why are some negative? And how do I use it to figure out if something is naked-eye visible from a suburban sky?',
+
           solved: true
         },
 
@@ -278,8 +318,13 @@ const Forum = {
           replies: 9,
           upvotes: 54,
           tag: 'Solar System',
-          title: 'Mars opposition prep: best filters for surface detail on a 8" SCT?',
-          body: 'Planning a session for the upcoming opposition. Currently have a basic moon filter only. Would a Wratten #21 orange make a noticeable difference for polar caps and Syrtis Major?',
+
+          title:
+            'Mars opposition prep: best filters for surface detail on a 8" SCT?',
+
+          body:
+            'Planning a session for the upcoming opposition. Currently have a basic moon filter only. Would a Wratten #21 orange make a noticeable difference for polar caps and Syrtis Major?',
+
           solved: false
         },
 
@@ -293,8 +338,13 @@ const Forum = {
           replies: 21,
           upvotes: 67,
           tag: 'Deep Sky',
-          title: 'Pleiades nebulosity: am I actually seeing the reflection nebula visually?',
-          body: 'Through my 8" dob last night under fairly dark skies I thought I caught faint wisps around Merope. Could this realistically be visual, or is it more likely scatter/eye strain?',
+
+          title:
+            'Pleiades nebulosity: am I actually seeing the reflection nebula visually?',
+
+          body:
+            'Through my 8" dob last night under fairly dark skies I thought I caught faint wisps around Merope. Could this realistically be visual, or is it more likely scatter/eye strain?',
+
           solved: true
         },
 
@@ -308,8 +358,13 @@ const Forum = {
           replies: 34,
           upvotes: 89,
           tag: 'Equipment',
-          title: 'Best budget astrophotography camera under $500?',
-          body: 'Looking to start deep-sky with a used DSLR vs dedicated astro camera. Anyone have experience with the ZWO ASI120MC?',
+
+          title:
+            'Best budget astrophotography camera under $500?',
+
+          body:
+            'Looking to start deep-sky with a used DSLR vs dedicated astro camera. Anyone have experience with the ZWO ASI120MC?',
+
           solved: false
         },
 
@@ -323,8 +378,13 @@ const Forum = {
           replies: 12,
           upvotes: 28,
           tag: 'Beginner Q&A',
-          title: 'Why do some stars twinkle more than others?',
-          body: "I know it's atmospheric turbulence, but Arcturus twinkles wildly while Vega is steady. Is it just altitude?",
+
+          title:
+            'Why do some stars twinkle more than others?',
+
+          body:
+            "I know it's atmospheric turbulence, but Arcturus twinkles wildly while Vega is steady. Is it just altitude?",
+
           solved: true
         },
 
@@ -338,8 +398,13 @@ const Forum = {
           replies: 56,
           upvotes: 203,
           tag: 'Deep Sky',
-          title: 'First light with 16" truss dob – Veil Nebula blew my mind',
-          body: 'Observed from a Bortle 4 site. The Eastern Veil with OIII filter was like a glowing cosmic snake. Anyone else prefer unfiltered views?',
+
+          title:
+            'First light with 16" truss dob – Veil Nebula blew my mind',
+
+          body:
+            'Observed from a Bortle 4 site. The Eastern Veil with OIII filter was like a glowing cosmic snake. Anyone else prefer unfiltered views?',
+
           solved: false
         },
 
@@ -353,8 +418,13 @@ const Forum = {
           replies: 19,
           upvotes: 76,
           tag: 'Astrophotography',
-          title: 'My first mosaic of the Cygnus region – 12 panels',
-          body: 'Captured with a 50mm lens and modded DSLR. Processing the seams was tough but worth it. Feedback appreciated!',
+
+          title:
+            'My first mosaic of the Cygnus region – 12 panels',
+
+          body:
+            'Captured with a 50mm lens and modded DSLR. Processing the seams was tough but worth it. Feedback appreciated!',
+
           solved: false
         },
 
@@ -368,8 +438,13 @@ const Forum = {
           replies: 41,
           upvotes: 115,
           tag: 'Solar System',
-          title: 'Jupiter Io transit tonight – grabbed some lucky imaging',
-          body: "Seeing was average but caught the shadow transit. Stacked 2000 frames. Io's shadow looked like a sharp black dot.",
+
+          title:
+            'Jupiter Io transit tonight – grabbed some lucky imaging',
+
+          body:
+            "Seeing was average but caught the shadow transit. Stacked 2000 frames. Io's shadow looked like a sharp black dot.",
+
           solved: false
         },
 
@@ -383,8 +458,13 @@ const Forum = {
           replies: 8,
           upvotes: 22,
           tag: 'News',
-          title: 'New supernova in M101? Anyone confirm?',
-          body: 'Saw reports of a possible brightening. Checked with my 10" dob – could be a new transient near the core. Not yet in official catalogs.',
+
+          title:
+            'New supernova in M101? Anyone confirm?',
+
+          body:
+            'Saw reports of a possible brightening. Checked with my 10" dob – could be a new transient near the core. Not yet in official catalogs.',
+
           solved: false
         },
 
@@ -398,8 +478,13 @@ const Forum = {
           replies: 33,
           upvotes: 144,
           tag: 'Astrophotography',
-          title: 'Andromeda core with 135mm lens – dramatic dust lanes',
-          body: '2 hours integration, Bortle 8. Surprised how much dust detail I could pull out with gradients removal.',
+
+          title:
+            'Andromeda core with 135mm lens – dramatic dust lanes',
+
+          body:
+            '2 hours integration, Bortle 8. Surprised how much dust detail I could pull out with gradients removal.',
+
           solved: false
         },
 
@@ -413,8 +498,13 @@ const Forum = {
           replies: 7,
           upvotes: 18,
           tag: 'Equipment',
-          title: 'Which lunar atlas is best for sketching?',
-          body: 'Printed vs app? I like sketching at the eyepiece but need a detailed reference for rilles and domes.',
+
+          title:
+            'Which lunar atlas is best for sketching?',
+
+          body:
+            'Printed vs app? I like sketching at the eyepiece but need a detailed reference for rilles and domes.',
+
           solved: true
         },
 
@@ -428,8 +518,13 @@ const Forum = {
           replies: 23,
           upvotes: 92,
           tag: 'Deep Sky',
-          title: 'Transit of HD 189733b with a small telescope? Possible?',
-          body: "Has anyone managed to detect an exoplanet transit visually or with a DSLR on a 6\" scope? I've seen tutorials but curious about real-world results.",
+
+          title:
+            'Transit of HD 189733b with a small telescope? Possible?',
+
+          body:
+            "Has anyone managed to detect an exoplanet transit visually or with a DSLR on a 6\" scope? I've seen tutorials but curious about real-world results.",
+
           solved: false
         },
 
@@ -443,13 +538,19 @@ const Forum = {
           replies: 45,
           upvotes: 188,
           tag: 'Astrophotography',
-          title: 'My best image yet – 20 hours on the Horsehead Nebula',
-          body: 'Used a cooled astro camera and narrowband filters. The hydrogen alpha detail around Alnitak is finally controlled without halos.',
+
+          title:
+            'My best image yet – 20 hours on the Horsehead Nebula',
+
+          body:
+            'Used a cooled astro camera and narrowband filters. The hydrogen alpha detail around Alnitak is finally controlled without halos.',
+
           solved: false
         }
       ]
     };
   },
+
 
   computed: {
     filteredThreads() {
@@ -458,10 +559,12 @@ const Forum = {
       }
 
       return this.threads.filter(
-        t => t.tag === this.activeChip
+        thread =>
+          thread.tag === this.activeChip
       );
     }
   },
+
 
   watch: {
     activeChip() {
@@ -471,13 +574,20 @@ const Forum = {
     }
   },
 
+
   methods: {
+
+    /* =========================================
+       THREAD CARD INTERACTION
+       ========================================= */
+
     attachForumCardInteractions() {
       const cards = [
         ...this.$el.querySelectorAll(
           '.thread-card'
         )
       ];
+
 
       cards.forEach(card => {
         if (
@@ -487,11 +597,17 @@ const Forum = {
           return;
         }
 
-        card.dataset.liquidAttached = 'true';
+
+        card.dataset.liquidAttached =
+          'true';
+
 
         let previousX = null;
         let previousY = null;
-        let previousTime = performance.now();
+
+        let previousTime =
+          performance.now();
+
 
         let currentX = 0;
         let currentY = 0;
@@ -502,6 +618,7 @@ const Forum = {
         let currentScaleX = 1;
         let currentScaleY = 1;
 
+
         let targetX = 0;
         let targetY = 0;
 
@@ -511,19 +628,34 @@ const Forum = {
         let targetScaleX = 1;
         let targetScaleY = 1;
 
+
         let frame = null;
 
 
         const animate = () => {
-          const spring = 0.15;
+          /*
+            Softer / calmer than
+            the previous version.
+          */
+
+          const spring = 0.13;
+
 
           currentX +=
-            (targetX - currentX) *
+            (
+              targetX -
+              currentX
+            ) *
             spring;
 
+
           currentY +=
-            (targetY - currentY) *
+            (
+              targetY -
+              currentY
+            ) *
             spring;
+
 
           currentRotateX +=
             (
@@ -532,6 +664,7 @@ const Forum = {
             ) *
             spring;
 
+
           currentRotateY +=
             (
               targetRotateY -
@@ -539,12 +672,14 @@ const Forum = {
             ) *
             spring;
 
+
           currentScaleX +=
             (
               targetScaleX -
               currentScaleX
             ) *
             spring;
+
 
           currentScaleY +=
             (
@@ -555,21 +690,26 @@ const Forum = {
 
 
           card.style.transform = `
-            perspective(850px)
+            perspective(1000px)
+
             translate3d(
               ${currentX}px,
               ${currentY}px,
               0
             )
+
             rotateX(
               ${currentRotateX}deg
             )
+
             rotateY(
               ${currentRotateY}deg
             )
+
             scaleX(
               ${currentScaleX}
             )
+
             scaleY(
               ${currentScaleY}
             )
@@ -578,11 +718,13 @@ const Forum = {
 
           const moving =
             Math.abs(
-              currentX - targetX
+              currentX -
+              targetX
             ) > 0.01 ||
 
             Math.abs(
-              currentY - targetY
+              currentY -
+              targetY
             ) > 0.01 ||
 
             Math.abs(
@@ -631,70 +773,98 @@ const Forum = {
           const rect =
             card.getBoundingClientRect();
 
+
           const localX =
             event.clientX -
             rect.left;
 
+
           const localY =
             event.clientY -
             rect.top;
+
 
           const nx =
             (
               localX /
               rect.width -
               0.5
-            ) * 2;
+            ) *
+            2;
+
 
           const ny =
             (
               localY /
               rect.height -
               0.5
-            ) * 2;
+            ) *
+            2;
 
 
           /*
-            Stronger positional follow.
+            Reduced movement.
+
+            Previous:
+            X = 5.5px
+            Y = 4px
+
+            New:
+            X = 3px
+            Y = 2px
           */
 
           targetX =
-            nx * 5.5;
+            nx * 3;
+
 
           targetY =
-            ny * 4;
+            ny * 2;
 
 
           /*
-            Stronger 3D tilt.
+            Reduced 3D tilt.
+
+            Previous:
+            2.6° / 2°
+
+            New:
+            1.35° / 1°
           */
 
           targetRotateY =
-            nx * 2.6;
+            nx * 1.35;
+
 
           targetRotateX =
-            ny * -2;
+            ny * -1;
 
 
           /*
-            Slight hover expansion.
+            Very small hover scale.
           */
 
-          targetScaleX = 1.008;
-          targetScaleY = 1.008;
+          targetScaleX =
+            1.003;
+
+
+          targetScaleY =
+            1.003;
 
 
           /*
-            Velocity-based stretch.
+            Small velocity stretch.
           */
 
           const now =
             performance.now();
 
+
           const deltaTime =
             Math.max(
               8,
-              now - previousTime
+              now -
+              previousTime
             );
 
 
@@ -702,12 +872,14 @@ const Forum = {
             previousX !== null &&
             previousY !== null
           ) {
+
             const velocityX =
               (
                 event.clientX -
                 previousX
               ) /
               deltaTime;
+
 
             const velocityY =
               (
@@ -719,29 +891,31 @@ const Forum = {
 
             const speedX =
               Math.min(
-                0.022,
+                0.009,
                 Math.abs(
                   velocityX
                 ) *
-                0.022
+                0.012
               );
+
 
             const speedY =
               Math.min(
-                0.022,
+                0.009,
                 Math.abs(
                   velocityY
                 ) *
-                0.022
+                0.012
               );
 
 
             targetScaleX =
-              1.008 +
+              1.003 +
               speedX;
 
+
             targetScaleY =
-              1.008 +
+              1.003 +
               speedY;
 
 
@@ -753,32 +927,35 @@ const Forum = {
                 velocityY
               )
             ) {
+
               targetScaleY =
-                1.008 -
+                1.003 -
                 speedX *
-                0.55;
+                0.35;
+
             } else {
+
               targetScaleX =
-                1.008 -
+                1.003 -
                 speedY *
-                0.55;
+                0.35;
+
             }
+
           }
 
 
           previousX =
             event.clientX;
 
+
           previousY =
             event.clientY;
+
 
           previousTime =
             now;
 
-
-          card.classList.add(
-            'forum-liquid-hover'
-          );
 
           startAnimation();
         };
@@ -788,34 +965,34 @@ const Forum = {
           previousX = null;
           previousY = null;
 
+
           targetX = 0;
           targetY = 0;
+
 
           targetRotateX = 0;
           targetRotateY = 0;
 
+
           targetScaleX = 1;
           targetScaleY = 1;
 
-          card.classList.remove(
-            'forum-liquid-hover'
-          );
 
           startAnimation();
         };
 
 
         const handleDown = () => {
-          targetScaleX = 0.992;
-          targetScaleY = 0.98;
+          targetScaleX = 0.995;
+          targetScaleY = 0.99;
 
           startAnimation();
         };
 
 
         const handleUp = () => {
-          targetScaleX = 1.008;
-          targetScaleY = 1.008;
+          targetScaleX = 1.003;
+          targetScaleY = 1.003;
 
           startAnimation();
         };
@@ -826,20 +1003,24 @@ const Forum = {
           handleMove
         );
 
+
         card.addEventListener(
           'pointerleave',
           handleLeave
         );
+
 
         card.addEventListener(
           'pointercancel',
           handleLeave
         );
 
+
         card.addEventListener(
           'pointerdown',
           handleDown
         );
+
 
         card.addEventListener(
           'pointerup',
@@ -858,10 +1039,12 @@ const Forum = {
         return;
       }
 
+
       const style =
         document.createElement(
           'style'
         );
+
 
       style.id =
         'forum-liquid-interaction-styles';
@@ -871,33 +1054,19 @@ const Forum = {
 
         /*
           Interaction only.
-          Existing Forum colors stay untouched.
+          No Forum colors are changed.
         */
 
         .thread-card {
           position: relative;
 
           transform-origin: center;
-          transform-style: preserve-3d;
 
-          will-change: transform;
-        }
+          transform-style:
+            preserve-3d;
 
-
-        /*
-          Very subtle depth shadow
-          while the card is moving.
-        */
-
-        .thread-card.forum-liquid-hover {
-          box-shadow:
-            0 12px 30px
-            rgba(
-              0,
-              0,
-              0,
-              0.17
-            );
+          will-change:
+            transform;
         }
 
 
@@ -905,10 +1074,12 @@ const Forum = {
           prefers-reduced-motion:
           reduce
         ) {
+
           .thread-card {
             transform:
               none !important;
           }
+
         }
 
       `;
