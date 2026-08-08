@@ -18,23 +18,35 @@ function getTabFromUrl(){
     :'forum';
 }
 
-function updateTabUrl(tab,replace=false){
+function setUrlTab(tab,replace=false){
   const url=new URL(window.location.href);
+
+  if(url.searchParams.get('tab')===tab){
+    return;
+  }
+
   url.searchParams.set('tab',tab);
 
-  const method=replace?'replaceState':'pushState';
-
-  window.history[method](
-    {tab},
-    '',
-    url
-  );
+  if(replace){
+    window.history.replaceState(
+      {tab},
+      '',
+      url
+    );
+  }else{
+    window.history.pushState(
+      {tab},
+      '',
+      url
+    );
+  }
 }
 
 createApp({
   data(){
     return{
       activeTab:getTabFromUrl(),
+
       tabComponents:{
         forum:Forum,
         library:Library,
@@ -44,30 +56,69 @@ createApp({
     };
   },
 
+  watch:{
+    activeTab(newTab){
+      if(!VALID_TABS.includes(newTab)){
+        this.activeTab='forum';
+        return;
+      }
+
+      setUrlTab(newTab);
+    }
+  },
+
   methods:{
     setTab(tab){
-      if(!VALID_TABS.includes(tab))return;
-      if(this.activeTab===tab)return;
+      if(!VALID_TABS.includes(tab)){
+        return;
+      }
 
       this.activeTab=tab;
-      updateTabUrl(tab);
     },
 
     handlePopState(){
-      this.activeTab=getTabFromUrl();
+      const tab=getTabFromUrl();
+
+      if(this.activeTab!==tab){
+        this.activeTab=tab;
+      }
     }
   },
 
   mounted(){
-    if(!new URLSearchParams(window.location.search).has('tab')){
-      updateTabUrl(this.activeTab,true);
+    /*
+      If the dashboard was opened as:
+
+      /dashboard
+
+      change it to:
+
+      /dashboard?tab=forum
+
+      without reloading the page.
+    */
+    const params=new URLSearchParams(
+      window.location.search
+    );
+
+    if(!VALID_TABS.includes(params.get('tab'))){
+      setUrlTab(
+        this.activeTab,
+        true
+      );
     }
 
+    /*
+      Browser Back / Forward support.
+    */
     window.addEventListener(
       'popstate',
       this.handlePopState
     );
 
+    /*
+      Existing CosmoKlub animated starfield.
+    */
     window.CosmoKlub.initStarfield();
   },
 
