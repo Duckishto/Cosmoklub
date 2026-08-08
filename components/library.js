@@ -4,11 +4,16 @@ const Library={
 
   template:`
     <div class="library-roadmap">
+
       <div class="section library-hero">
+
         <div class="rank-summary">
 
           <div>
-            <div class="rank-kicker">Study Roadmap</div>
+            <div class="rank-kicker">
+              Study Roadmap
+            </div>
+
             <h2 class="rank-title">
               Level up each category to unlock deeper space knowledge.
             </h2>
@@ -18,7 +23,9 @@ const Library={
             class="rank-panel liquid-rank-panel"
             ref="rankPanel"
           >
-            <div class="rank-panel-label">Overall Rank</div>
+            <div class="rank-panel-label">
+              Overall Rank
+            </div>
 
             <div class="rank-panel-rank">
               {{ overallRank }}
@@ -30,9 +37,12 @@ const Library={
           </div>
 
         </div>
+
       </div>
 
+
       <div class="section">
+
         <div class="lessons-grid roadmap-grid">
 
           <div
@@ -43,6 +53,7 @@ const Library={
           >
 
             <div class="roadmap-card-top">
+
               <div
                 class="lesson-icon roadmap-icon"
                 v-html="lesson.svg"
@@ -54,17 +65,22 @@ const Library={
               >
                 {{ lesson.rank }}
               </div>
+
             </div>
+
 
             <div class="lesson-title">
               {{ lesson.title }}
             </div>
 
+
             <div class="lesson-desc">
               {{ lesson.desc }}
             </div>
 
+
             <div class="lesson-progress-row">
+
               <span>
                 Level {{ lesson.level }}
               </span>
@@ -73,18 +89,24 @@ const Library={
                 {{ lesson.completedLessons }} /
                 {{ lesson.totalLessons }}
               </span>
+
             </div>
 
+
             <div class="lesson-progress-track">
+
               <div
                 class="lesson-progress-fill"
                 :style="{
                   width:progressPercent(lesson)+'%'
                 }"
               ></div>
+
             </div>
 
+
             <div class="unlock-row">
+
               <div class="unlock-pill is-open">
                 Active learning
               </div>
@@ -106,9 +128,12 @@ const Library={
               >
                 Next lesson
               </div>
+
             </div>
 
+
             <div class="lesson-next">
+
               <span>
                 {{ lesson.nextLabel }}
               </span>
@@ -116,17 +141,22 @@ const Library={
               <strong>
                 {{ lesson.xp }} XP
               </strong>
+
             </div>
 
           </div>
 
         </div>
+
       </div>
+
     </div>
   `,
 
+
   data(){
     return{
+
       ranks:[
         {
           name:'BRONZE',
@@ -155,55 +185,84 @@ const Library={
         }
       ],
 
+
       lessons:[
+
         {
           id:'stars',
+
           title:'Stars',
-          desc:'Birth, life, and death of stars from protostars to supernovae.',
+
+          desc:
+            'Birth, life, and death of stars from protostars to supernovae.',
+
           completedLessons:0,
           totalLessons:20,
+
           level:1,
           xp:0,
+
           rank:'BRONZE',
-          tierClass:'tier-bronze',
+
+          tierClass:
+            'tier-bronze',
+
           quizUnlocked:true,
           nextUnlocked:false,
-          nextLabel:'Start your journey',
+
+          nextLabel:
+            'Continue learning',
+
           svg:`
             <svg
               viewBox="0 0 24 24"
-              fill="none"
-              stroke="#fde68a"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              fill="#facc15"
             >
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M12 2v4"/>
-              <path d="M12 18v4"/>
-              <path d="m4.93 4.93 2.83 2.83"/>
-              <path d="m16.24 16.24 2.83 2.83"/>
-              <path d="M2 12h4"/>
-              <path d="M18 12h4"/>
-              <path d="m4.93 19.07 2.83-2.83"/>
-              <path d="m16.24 7.76 2.83-2.83"/>
+              <path
+                d="
+                  m12 2
+                  2.9 6.15
+                  6.6.8
+                  -4.85 4.5
+                  1.25 6.55
+                  L12 16.75
+                  6.1 20
+                  l1.25-6.55
+                  -4.85-4.5
+                  6.6-.8
+                  L12 2z
+                "
+              />
             </svg>
           `
         },
 
+
         {
           id:'galaxies',
+
           title:'Galaxies',
-          desc:'Explore galaxy structure, evolution, dark matter, and cosmic environments.',
+
+          desc:
+            'Explore galaxy structure, evolution, dark matter, and cosmic environments.',
+
           completedLessons:0,
           totalLessons:20,
+
           level:1,
           xp:0,
+
           rank:'BRONZE',
-          tierClass:'tier-bronze',
+
+          tierClass:
+            'tier-bronze',
+
           quizUnlocked:true,
           nextUnlocked:false,
-          nextLabel:'Start your journey',
+
+          nextLabel:
+            'Continue learning',
+
           svg:`
             <svg
               viewBox="0 0 24 24"
@@ -211,125 +270,251 @@ const Library={
               stroke="#c084fc"
               stroke-width="1.7"
               stroke-linecap="round"
-              stroke-linejoin="round"
             >
-              <ellipse cx="12" cy="12" rx="9" ry="4"/>
-              <ellipse
-                cx="12"
-                cy="12"
-                rx="4"
-                ry="9"
-                transform="rotate(45 12 12)"
+              <path
+                d="
+                  M4 14
+                  c4.8-7.4
+                  12.3-8
+                  16-2.8
+                "
               />
-              <circle cx="12" cy="12" r="1.5"/>
+
+              <path
+                d="
+                  M3 18
+                  c5-3.8
+                  12-3.5
+                  18 1
+                "
+              />
+
+              <path
+                d="
+                  M7 9
+                  c3.2 3.4
+                  6.8 4
+                  10.8 1.5
+                "
+              />
             </svg>
           `
         },
 
+
         {
           id:'cosmology',
+
           title:'Cosmology',
-          desc:'Study the origin, expansion, structure, and fate of the universe.',
+
+          desc:
+            'Study the origin, expansion, structure, and fate of the universe.',
+
           completedLessons:0,
           totalLessons:20,
+
           level:1,
           xp:0,
+
           rank:'BRONZE',
-          tierClass:'tier-bronze',
+
+          tierClass:
+            'tier-bronze',
+
           quizUnlocked:true,
           nextUnlocked:false,
-          nextLabel:'Start your journey',
+
+          nextLabel:
+            'Continue learning',
+
           svg:`
             <svg
               viewBox="0 0 24 24"
               fill="none"
               stroke="#93c5fd"
-              stroke-width="1.7"
+              stroke-width="1.6"
               stroke-linecap="round"
-              stroke-linejoin="round"
             >
-              <circle cx="12" cy="12" r="2"/>
-              <circle cx="12" cy="12" r="6"/>
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2v20"/>
-              <path d="M2 12h20"/>
+              <path d="M12 3v18"/>
+              <path d="M4 12h16"/>
+              <path d="m5 5 14 14"/>
+              <path d="m19 5-14 14"/>
+
+              <circle
+                cx="12"
+                cy="12"
+                r="2.2"
+              />
             </svg>
           `
         },
 
+
         {
           id:'planets',
+
           title:'Planets',
-          desc:'Learn how planets form, evolve, and compare across planetary systems.',
+
+          desc:
+            'Learn how planets form, evolve, and compare across planetary systems.',
+
           completedLessons:0,
           totalLessons:20,
+
           level:1,
           xp:0,
+
           rank:'BRONZE',
-          tierClass:'tier-bronze',
+
+          tierClass:
+            'tier-bronze',
+
           quizUnlocked:true,
           nextUnlocked:false,
-          nextLabel:'Start your journey',
+
+          nextLabel:
+            'Continue learning',
+
           svg:`
             <svg
               viewBox="0 0 24 24"
               fill="none"
               stroke="#67e8f9"
-              stroke-width="1.7"
+              stroke-width="1.6"
               stroke-linecap="round"
-              stroke-linejoin="round"
             >
-              <circle cx="12" cy="12" r="5"/>
-              <path d="M3 15c3-4 15-8 18-5"/>
-              <path d="M3 15c1 3 10 4 18-5"/>
+              <circle
+                cx="12"
+                cy="12"
+                r="5.2"
+              />
+
+              <path
+                d="
+                  M3.2 14.2
+                  c2.8 2.2
+                  9.4 1.7
+                  14.6-1.1
+                  2.1-1.1
+                  3.2-2.3
+                  3-3.2
+                  -.3-1.1
+                  -2.6-1.2
+                  -5.5-.4
+                "
+              />
             </svg>
           `
         },
 
+
         {
           id:'nebulae',
+
           title:'Nebulae',
-          desc:'Explore interstellar clouds, stellar nurseries, and glowing remnants.',
+
+          desc:
+            'Explore interstellar clouds, stellar nurseries, and glowing remnants.',
+
           completedLessons:0,
           totalLessons:20,
+
           level:1,
           xp:0,
+
           rank:'BRONZE',
-          tierClass:'tier-bronze',
+
+          tierClass:
+            'tier-bronze',
+
           quizUnlocked:true,
           nextUnlocked:false,
-          nextLabel:'Start your journey',
+
+          nextLabel:
+            'Continue learning',
+
           svg:`
             <svg
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#f0abfc"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
             >
-              <path d="M4 15c-2-5 4-9 8-6"/>
-              <path d="M8 9c1-5 9-5 10 0"/>
-              <path d="M18 9c4 2 2 8-2 8"/>
-              <path d="M16 17c-2 5-10 4-10-1"/>
-              <circle cx="12" cy="13" r="2"/>
+              <path
+                d="
+                  M7 15.5
+                  c-2.2 0
+                  -4-1.3
+                  -4-3.2
+                  0-1.7
+                  1.4-3
+                  3.2-3.2
+
+                  C7 6.8
+                  9.2 5.5
+                  11.7 6
+
+                  c1.7.3
+                  3.1 1.4
+                  3.8 2.9
+
+                  .4-.1
+                  .8-.2
+                  1.3-.2
+
+                  2.3 0
+                  4.2 1.5
+                  4.2 3.5
+
+                  s-1.9 3.4
+                  -4.2 3.4
+
+                  H7z
+                "
+                fill="#d8b4fe"
+              />
+
+              <circle
+                cx="9"
+                cy="11"
+                r="1"
+                fill="#fff"
+              />
+
+              <circle
+                cx="15"
+                cy="13"
+                r="1.2"
+                fill="#fff"
+              />
             </svg>
           `
         },
 
+
         {
           id:'observing',
+
           title:'Observing',
-          desc:'Build practical skills with the night sky, telescopes, and astrophotography.',
+
+          desc:
+            'Build practical skills with the night sky, telescopes, and astrophotography.',
+
           completedLessons:0,
           totalLessons:20,
+
           level:1,
           xp:0,
+
           rank:'BRONZE',
-          tierClass:'tier-bronze',
+
+          tierClass:
+            'tier-bronze',
+
           quizUnlocked:true,
           nextUnlocked:false,
-          nextLabel:'Start your journey',
+
+          nextLabel:
+            'Continue learning',
+
           svg:`
             <svg
               viewBox="0 0 24 24"
@@ -348,56 +533,74 @@ const Library={
             </svg>
           `
         }
+
       ]
+
     };
   },
 
+
   computed:{
+
     totalCompleted(){
       return this.lessons.reduce(
         (sum,lesson)=>
-          sum+lesson.completedLessons,
+          sum+
+          lesson.completedLessons,
         0
       );
     },
+
 
     totalLessons(){
       return this.lessons.reduce(
         (sum,lesson)=>
-          sum+lesson.totalLessons,
+          sum+
+          lesson.totalLessons,
         0
       );
     },
+
 
     averageLevel(){
       return Math.round(
         this.lessons.reduce(
           (sum,lesson)=>
-            sum+lesson.level,
+            sum+
+            lesson.level,
           0
         )/
         this.lessons.length
       );
     },
 
+
     overallRank(){
       return this.rankForLevel(
         this.averageLevel
       ).name;
     }
+
   },
 
+
   methods:{
+
     progressPercent(lesson){
+
       return Math.round(
         (
           lesson.completedLessons/
           lesson.totalLessons
-        )*100
+        )*
+        100
       );
+
     },
 
+
     rankForLevel(level){
+
       return[
         ...this.ranks
       ]
@@ -407,74 +610,184 @@ const Library={
           level>=rank.minLevel
       )||
       this.ranks[0];
+
     },
+
 
     startLesson(lesson){
+
       window.location.href=
         `roadmap.html?category=${lesson.id}`;
+
     },
 
+
     updateProgress(){
+
+      /*
+        Current CosmoKlub progress.js
+      */
+
       if(
-        typeof window.getCategoryStats!=='function'
+        typeof window.getCategoryStats===
+        'function'
       ){
+
+        this.lessons.forEach(
+          lesson=>{
+
+            const stats=
+              window.getCategoryStats(
+                lesson.id
+              );
+
+            if(!stats){
+              return;
+            }
+
+
+            lesson.completedLessons=
+              stats.completedLessons??0;
+
+
+            lesson.totalLessons=
+              stats.totalLessons??20;
+
+
+            lesson.level=
+              stats.level??1;
+
+
+            lesson.xp=
+              stats.xp??0;
+
+
+            lesson.rank=
+              stats.rank||
+              'BRONZE';
+
+
+            lesson.tierClass=
+              `tier-${
+                String(
+                  lesson.rank
+                )
+                .toLowerCase()
+              }`;
+
+
+            lesson.quizUnlocked=
+              stats.quizUnlocked??
+              true;
+
+
+            lesson.nextUnlocked=
+              stats.nextUnlocked??
+              false;
+
+
+            lesson.nextLabel=
+              stats.nextLabel||
+              'Continue learning';
+
+          }
+        );
+
         return;
       }
 
-      this.lessons.forEach(lesson=>{
-        const stats=
-          window.getCategoryStats(
-            lesson.id
-          );
 
-        if(!stats){
-          return;
-        }
+      /*
+        Fallback using the other
+        progress helpers.
+      */
 
-        lesson.completedLessons=
-          stats.completedLessons||0;
+      if(
+        typeof window.getCategoryProgress===
+        'function'&&
+        typeof window.getLevelProgress===
+        'function'
+      ){
 
-        lesson.totalLessons=
-          stats.totalLessons||20;
+        this.lessons.forEach(
+          lesson=>{
 
-        lesson.level=
-          stats.level||1;
+            const progress=
+              window.getCategoryProgress(
+                lesson.id
+              );
 
-        lesson.xp=
-          stats.xp||0;
+            const levelStats=
+              window.getLevelProgress(
+                progress.xp
+              );
 
-        lesson.rank=
-          stats.rank||'BRONZE';
 
-        lesson.tierClass=
-          `tier-${String(
-            lesson.rank
-          ).toLowerCase()}`;
+            lesson.completedLessons=
+              progress.completedLessons
+                ?.length||
+              0;
 
-        lesson.quizUnlocked=
-          stats.quizUnlocked??true;
 
-        lesson.nextUnlocked=
-          stats.nextUnlocked??false;
+            lesson.totalLessons=20;
 
-        lesson.nextLabel=
-          stats.nextLabel||
-          'Continue learning';
-      });
+            lesson.level=
+              levelStats.level||
+              1;
+
+            lesson.xp=
+              progress.xp||
+              0;
+
+            lesson.rank=
+              levelStats.rank||
+              'BRONZE';
+
+            lesson.tierClass=
+              `tier-${
+                String(
+                  lesson.rank
+                )
+                .toLowerCase()
+              }`;
+
+
+            lesson.nextLabel=
+              lesson.completedLessons>0
+                ?
+                'Continue learning'
+                :
+                'Start learning';
+
+          }
+        );
+
+      }
+
     },
 
+
+    /* =====================================================
+       OVERALL RANK LIQUID GLASS
+       ===================================================== */
+
     attachLiquidRankPanel(){
+
       const node=
         this.$refs.rankPanel;
+
 
       if(!node){
         return;
       }
 
+
       let previousX=null;
       let previousY=null;
+
       let previousTime=
         performance.now();
+
 
       let currentStretchX=1;
       let currentStretchY=1;
@@ -482,81 +795,110 @@ const Library={
       let targetStretchX=1;
       let targetStretchY=1;
 
+
       let currentRotate=0;
       let targetRotate=0;
 
-      let animationFrame=null;
 
-      const animateLiquid=()=>{
+      let frame=null;
+
+
+      const animate=()=>{
+
         currentStretchX+=
           (
             targetStretchX-
             currentStretchX
-          )*.12;
+          )*
+          .12;
+
 
         currentStretchY+=
           (
             targetStretchY-
             currentStretchY
-          )*.12;
+          )*
+          .12;
+
 
         currentRotate+=
           (
             targetRotate-
             currentRotate
-          )*.12;
+          )*
+          .12;
+
 
         node.style.setProperty(
           '--rank-scale-x',
           currentStretchX.toFixed(4)
         );
 
+
         node.style.setProperty(
           '--rank-scale-y',
           currentStretchY.toFixed(4)
         );
+
 
         node.style.setProperty(
           '--rank-rotate',
           `${currentRotate.toFixed(2)}deg`
         );
 
+
         const moving=
           Math.abs(
             currentStretchX-
             targetStretchX
           )>.001||
+
           Math.abs(
             currentStretchY-
             targetStretchY
           )>.001||
+
           Math.abs(
             currentRotate-
             targetRotate
           )>.03;
 
+
         if(moving){
-          animationFrame=
+
+          frame=
             requestAnimationFrame(
-              animateLiquid
+              animate
             );
+
         }else{
-          animationFrame=null;
+
+          frame=null;
+
         }
+
       };
 
-      const startAnimation=()=>{
-        if(!animationFrame){
-          animationFrame=
+
+      const start=()=>{
+
+        if(!frame){
+
+          frame=
             requestAnimationFrame(
-              animateLiquid
+              animate
             );
+
         }
+
       };
 
-      const pointerMove=event=>{
+
+      const move=event=>{
+
         const rect=
           node.getBoundingClientRect();
+
 
         const x=Math.max(
           0,
@@ -568,9 +910,11 @@ const Library={
                 rect.left
               )/
               rect.width
-            )*100
+            )*
+            100
           )
         );
+
 
         const y=Math.max(
           0,
@@ -582,134 +926,152 @@ const Library={
                 rect.top
               )/
               rect.height
-            )*100
+            )*
+            100
           )
         );
 
-        const normalizedX=
+
+        const nx=
           (x-50)/50;
 
-        const normalizedY=
+        const ny=
           (y-50)/50;
+
 
         node.style.setProperty(
           '--rank-glass-x',
           `${x}%`
         );
 
+
         node.style.setProperty(
           '--rank-glass-y',
           `${y}%`
         );
 
+
         node.style.setProperty(
           '--rank-liquid-x',
-          normalizedX.toFixed(3)
+          nx.toFixed(3)
         );
+
 
         node.style.setProperty(
           '--rank-liquid-y',
-          normalizedY.toFixed(3)
+          ny.toFixed(3)
         );
+
 
         node.style.setProperty(
           '--rank-highlight-x',
-          `${
-            50+
-            normalizedX*22
-          }%`
+          `${50+nx*22}%`
         );
+
 
         node.style.setProperty(
           '--rank-highlight-y',
-          `${
-            30+
-            normalizedY*20
-          }%`
+          `${30+ny*20}%`
         );
+
 
         const now=
           performance.now();
 
+
         const deltaTime=
           Math.max(
             8,
-            now-previousTime
+            now-
+            previousTime
           );
+
 
         if(
           previousX!==null&&
           previousY!==null
         ){
-          const velocityX=
+
+          const vx=
             (
               event.clientX-
               previousX
             )/
             deltaTime;
 
-          const velocityY=
+
+          const vy=
             (
               event.clientY-
               previousY
             )/
             deltaTime;
 
+
           const speed=
             Math.min(
               1,
               Math.hypot(
-                velocityX,
-                velocityY
-              )*.8
+                vx,
+                vy
+              )*
+              .8
             );
+
 
           targetStretchX=
             1+
             Math.min(
               .025,
-              Math.abs(
-                velocityX
-              )*.025
+              Math.abs(vx)*
+              .025
             );
+
 
           targetStretchY=
             1+
             Math.min(
               .025,
-              Math.abs(
-                velocityY
-              )*.025
+              Math.abs(vy)*
+              .025
             );
 
+
           if(
-            Math.abs(velocityX)>
-            Math.abs(velocityY)
+            Math.abs(vx)>
+            Math.abs(vy)
           ){
+
             targetStretchY=
               1-
               Math.min(
                 .012,
                 speed*.01
               );
+
           }else{
+
             targetStretchX=
               1-
               Math.min(
                 .012,
                 speed*.01
               );
+
           }
+
 
           targetRotate=
             Math.max(
               -1.2,
               Math.min(
                 1.2,
-                velocityX*1.2
+                vx*1.2
               )
             );
+
         }
+
 
         previousX=
           event.clientX;
@@ -717,77 +1079,533 @@ const Library={
         previousY=
           event.clientY;
 
-        previousTime=now;
+        previousTime=
+          now;
+
 
         node.classList.add(
           'rank-liquid-hover'
         );
 
-        startAnimation();
+
+        start();
+
       };
 
+
       const reset=()=>{
+
         previousX=null;
         previousY=null;
+
 
         targetStretchX=1;
         targetStretchY=1;
         targetRotate=0;
+
 
         node.style.setProperty(
           '--rank-glass-x',
           '50%'
         );
 
+
         node.style.setProperty(
           '--rank-glass-y',
           '20%'
         );
+
 
         node.style.setProperty(
           '--rank-liquid-x',
           '0'
         );
 
+
         node.style.setProperty(
           '--rank-liquid-y',
           '0'
         );
+
 
         node.style.setProperty(
           '--rank-highlight-x',
           '50%'
         );
 
+
         node.style.setProperty(
           '--rank-highlight-y',
           '25%'
         );
 
+
         node.classList.remove(
           'rank-liquid-hover'
         );
 
-        startAnimation();
+
+        start();
+
       };
+
 
       node.addEventListener(
         'pointermove',
-        pointerMove
+        move
       );
+
 
       node.addEventListener(
         'pointerleave',
         reset
       );
 
+
       node.addEventListener(
         'pointercancel',
         reset
       );
+
     },
 
+
+    /* =====================================================
+       CATEGORY CARD CURSOR INTERACTION
+       DOES NOT CHANGE CARD COLORS
+       ===================================================== */
+
+    attachLiquidCardInteractions(){
+
+      const cards=[
+        ...this.$el.querySelectorAll(
+          '.roadmap-card'
+        )
+      ];
+
+
+      cards.forEach(card=>{
+
+        let previousX=null;
+        let previousY=null;
+
+        let previousTime=
+          performance.now();
+
+
+        let currentX=0;
+        let currentY=0;
+
+        let currentRotateX=0;
+        let currentRotateY=0;
+
+        let currentScaleX=1;
+        let currentScaleY=1;
+
+
+        let targetX=0;
+        let targetY=0;
+
+        let targetRotateX=0;
+        let targetRotateY=0;
+
+        let targetScaleX=1;
+        let targetScaleY=1;
+
+
+        let frame=null;
+
+
+        const animate=()=>{
+
+          currentX+=
+            (
+              targetX-
+              currentX
+            )*
+            .12;
+
+
+          currentY+=
+            (
+              targetY-
+              currentY
+            )*
+            .12;
+
+
+          currentRotateX+=
+            (
+              targetRotateX-
+              currentRotateX
+            )*
+            .12;
+
+
+          currentRotateY+=
+            (
+              targetRotateY-
+              currentRotateY
+            )*
+            .12;
+
+
+          currentScaleX+=
+            (
+              targetScaleX-
+              currentScaleX
+            )*
+            .12;
+
+
+          currentScaleY+=
+            (
+              targetScaleY-
+              currentScaleY
+            )*
+            .12;
+
+
+          card.style.transform=`
+            perspective(900px)
+
+            translate3d(
+              ${currentX}px,
+              ${currentY}px,
+              0
+            )
+
+            rotateX(
+              ${currentRotateX}deg
+            )
+
+            rotateY(
+              ${currentRotateY}deg
+            )
+
+            scaleX(
+              ${currentScaleX}
+            )
+
+            scaleY(
+              ${currentScaleY}
+            )
+          `;
+
+
+          const moving=
+
+            Math.abs(
+              currentX-targetX
+            )>.01||
+
+            Math.abs(
+              currentY-targetY
+            )>.01||
+
+            Math.abs(
+              currentRotateX-
+              targetRotateX
+            )>.01||
+
+            Math.abs(
+              currentRotateY-
+              targetRotateY
+            )>.01||
+
+            Math.abs(
+              currentScaleX-
+              targetScaleX
+            )>.001||
+
+            Math.abs(
+              currentScaleY-
+              targetScaleY
+            )>.001;
+
+
+          if(moving){
+
+            frame=
+              requestAnimationFrame(
+                animate
+              );
+
+          }else{
+
+            frame=null;
+
+          }
+
+        };
+
+
+        const start=()=>{
+
+          if(!frame){
+
+            frame=
+              requestAnimationFrame(
+                animate
+              );
+
+          }
+
+        };
+
+
+        const move=event=>{
+
+          const rect=
+            card.getBoundingClientRect();
+
+
+          const x=
+            (
+              event.clientX-
+              rect.left
+            )/
+            rect.width;
+
+
+          const y=
+            (
+              event.clientY-
+              rect.top
+            )/
+            rect.height;
+
+
+          const nx=
+            (x-.5)*
+            2;
+
+
+          const ny=
+            (y-.5)*
+            2;
+
+
+          /*
+            Very subtle positional
+            follow movement.
+          */
+
+          targetX=
+            nx*
+            3;
+
+
+          targetY=
+            ny*
+            2;
+
+
+          /*
+            Soft 3D tilt.
+          */
+
+          targetRotateY=
+            nx*
+            1.25;
+
+
+          targetRotateX=
+            ny*
+            -1;
+
+
+          /*
+            Pointer velocity creates
+            a tiny liquid stretch.
+          */
+
+          const now=
+            performance.now();
+
+
+          const deltaTime=
+            Math.max(
+              8,
+              now-
+              previousTime
+            );
+
+
+          if(
+            previousX!==null&&
+            previousY!==null
+          ){
+
+            const vx=
+              (
+                event.clientX-
+                previousX
+              )/
+              deltaTime;
+
+
+            const vy=
+              (
+                event.clientY-
+                previousY
+              )/
+              deltaTime;
+
+
+            const speedX=
+              Math.min(
+                .012,
+                Math.abs(vx)*
+                .015
+              );
+
+
+            const speedY=
+              Math.min(
+                .012,
+                Math.abs(vy)*
+                .015
+              );
+
+
+            targetScaleX=
+              1+
+              speedX;
+
+
+            targetScaleY=
+              1+
+              speedY;
+
+
+            if(
+              Math.abs(vx)>
+              Math.abs(vy)
+            ){
+
+              targetScaleY=
+                1-
+                speedX*
+                .45;
+
+            }else{
+
+              targetScaleX=
+                1-
+                speedY*
+                .45;
+
+            }
+
+          }
+
+
+          previousX=
+            event.clientX;
+
+
+          previousY=
+            event.clientY;
+
+
+          previousTime=
+            now;
+
+
+          start();
+
+        };
+
+
+        const leave=()=>{
+
+          previousX=null;
+          previousY=null;
+
+
+          targetX=0;
+          targetY=0;
+
+
+          targetRotateX=0;
+          targetRotateY=0;
+
+
+          targetScaleX=1;
+          targetScaleY=1;
+
+
+          start();
+
+        };
+
+
+        const press=()=>{
+
+          targetScaleX=
+            .992;
+
+          targetScaleY=
+            .985;
+
+
+          start();
+
+        };
+
+
+        const release=()=>{
+
+          targetScaleX=1;
+          targetScaleY=1;
+
+
+          start();
+
+        };
+
+
+        card.addEventListener(
+          'pointermove',
+          move
+        );
+
+
+        card.addEventListener(
+          'pointerleave',
+          leave
+        );
+
+
+        card.addEventListener(
+          'pointercancel',
+          leave
+        );
+
+
+        card.addEventListener(
+          'pointerdown',
+          press
+        );
+
+
+        card.addEventListener(
+          'pointerup',
+          release
+        );
+
+      });
+
+    },
+
+
+    /* =====================================================
+       LIBRARY CSS
+       ===================================================== */
+
     injectLibraryStyles(){
+
       if(
         document.getElementById(
           'library-roadmap-styles'
@@ -796,13 +1614,16 @@ const Library={
         return;
       }
 
+
       const style=
         document.createElement(
           'style'
         );
 
+
       style.id=
         'library-roadmap-styles';
+
 
       style.textContent=`
 
@@ -810,47 +1631,65 @@ const Library={
           margin-bottom:20px;
         }
 
+
         .library-hero{
           padding:2px 0 4px;
         }
 
+
         .rank-summary{
           display:grid;
+
           grid-template-columns:
             minmax(0,1fr)
             220px;
+
           gap:14px;
+
           align-items:stretch;
+
           margin-bottom:14px;
         }
 
+
         .rank-kicker{
           color:var(--violet);
+
           font-size:11px;
           font-weight:800;
+
           letter-spacing:.12em;
+
           text-transform:uppercase;
+
           margin-bottom:5px;
         }
 
+
         .rank-title{
           color:var(--stardust);
+
           font-size:
             clamp(
               22px,
               4vw,
               34px
             );
+
           line-height:1.05;
+
           letter-spacing:0;
+
           max-width:720px;
         }
 
-        /* =================================================
+
+        /* ================================================
            LIQUID GLASS OVERALL RANK
-           ================================================= */
+           ================================================ */
 
         .liquid-rank-panel{
+
           --rank-glass-x:50%;
           --rank-glass-y:20%;
 
@@ -865,17 +1704,25 @@ const Library={
 
           --rank-rotate:0deg;
 
+
           min-height:118px;
 
           padding:14px;
 
+
           display:flex;
+
           flex-direction:column;
+
           justify-content:center;
 
+
           position:relative;
+
           isolation:isolate;
+
           overflow:hidden;
+
 
           border:
             1px solid
@@ -886,29 +1733,35 @@ const Library={
               .17
             );
 
+
           border-radius:
             calc(
               18px +
               var(--rank-liquid-y) *
               2px
             )
+
             calc(
               18px -
               var(--rank-liquid-x) *
               2px
             )
+
             calc(
               18px -
               var(--rank-liquid-y) *
               2px
             )
+
             calc(
               18px +
               var(--rank-liquid-x) *
               2px
             );
 
+
           background:
+
             radial-gradient(
               circle at
               var(--rank-glass-x)
@@ -936,7 +1789,8 @@ const Library={
 
             radial-gradient(
               circle at
-              75% 80%,
+              75%
+              80%,
 
               rgba(
                 168,
@@ -975,17 +1829,21 @@ const Library={
               )
             );
 
+
           -webkit-backdrop-filter:
             blur(22px)
             saturate(210%)
             brightness(1.08);
+
 
           backdrop-filter:
             blur(22px)
             saturate(210%)
             brightness(1.08);
 
+
           box-shadow:
+
             0 14px 34px
             rgba(
               0,
@@ -1028,24 +1886,32 @@ const Library={
               .10
             );
 
+
           transform:
+
             rotate(
               var(--rank-rotate)
             )
+
             scaleX(
               var(--rank-scale-x)
             )
+
             scaleY(
               var(--rank-scale-y)
             );
 
+
           transform-origin:center;
+
 
           will-change:
             transform,
             border-radius;
 
+
           transition:
+
             border-radius
             .18s ease,
 
@@ -1056,15 +1922,20 @@ const Library={
             .2s ease;
         }
 
+
         .liquid-rank-panel::before{
+
           content:'';
+
 
           position:absolute;
 
           z-index:-1;
 
+
           width:105%;
           height:115%;
+
 
           left:
             calc(
@@ -1073,6 +1944,7 @@ const Library={
               4%
             );
 
+
           top:
             calc(
               -7.5% +
@@ -1080,20 +1952,27 @@ const Library={
               4%
             );
 
+
           pointer-events:none;
 
+
           border-radius:
+
             32%
             68%
             47%
             53%
+
             /
+
             46%
             43%
             57%
             54%;
 
+
           background:
+
             radial-gradient(
               circle at
               var(--rank-highlight-x)
@@ -1129,11 +2008,13 @@ const Library={
 
             radial-gradient(
               circle at
+
               calc(
                 72% -
                 var(--rank-liquid-x) *
                 10%
               )
+
               calc(
                 72% -
                 var(--rank-liquid-y) *
@@ -1151,31 +2032,44 @@ const Library={
               48%
             );
 
-          filter:blur(8px);
+
+          filter:
+            blur(8px);
+
 
           opacity:.9;
 
+
           animation:
+
             rankLiquidFloat
             6s
             ease-in-out
             infinite alternate;
 
+
           transition:
+
             left .1s linear,
             top .1s linear;
         }
 
+
         .liquid-rank-panel::after{
+
           content:'';
+
 
           position:absolute;
 
           z-index:1;
 
+
           inset:3px;
 
+
           pointer-events:none;
+
 
           border:
             1px solid
@@ -1186,9 +2080,12 @@ const Library={
               .09
             );
 
+
           border-radius:inherit;
 
+
           background:
+
             radial-gradient(
               circle at
               var(--rank-highlight-x)
@@ -1216,7 +2113,8 @@ const Library={
               ),
 
               transparent
-              34% 67%,
+              34%
+              67%,
 
               rgba(
                 168,
@@ -1226,7 +2124,9 @@ const Library={
               )
             );
 
+
           box-shadow:
+
             inset
             0 1px 1px
             rgba(
@@ -1244,49 +2144,76 @@ const Library={
               0,
               .10
             );
+
         }
 
-        .liquid-rank-panel > *{
+
+        .liquid-rank-panel>*{
+
           position:relative;
+
           z-index:3;
+
         }
+
 
         @keyframes rankLiquidFloat{
+
           0%{
+
             transform:
+
               translate3d(
                 -3px,
                 -2px,
                 0
               )
+
               rotate(-1deg)
+
               scale(1);
+
           }
 
+
           50%{
+
             transform:
+
               translate3d(
                 3px,
                 2px,
                 0
               )
+
               rotate(1deg)
+
               scale(1.035);
+
           }
 
+
           100%{
+
             transform:
+
               translate3d(
                 -1px,
                 3px,
                 0
               )
+
               rotate(-.5deg)
+
               scale(.99);
+
           }
+
         }
 
+
         .liquid-rank-panel.rank-liquid-hover{
+
           border-color:
             rgba(
               255,
@@ -1295,7 +2222,9 @@ const Library={
               .30
             );
 
+
           box-shadow:
+
             0 18px 42px
             rgba(
               0,
@@ -1337,17 +2266,27 @@ const Library={
               247,
               .17
             );
+
         }
+
 
         .liquid-rank-panel.rank-liquid-hover::before{
-          animation-duration:3.5s;
+
+          animation-duration:
+            3.5s;
+
 
           filter:
+
             blur(7px)
+
             saturate(1.15);
+
         }
 
+
         .rank-panel-label{
+
           color:
             rgba(
               216,
@@ -1357,22 +2296,34 @@ const Library={
             );
 
           font-size:10px;
+
           font-weight:800;
+
           letter-spacing:.12em;
+
           text-transform:uppercase;
+
         }
 
+
         .rank-panel-rank{
+
           margin-top:9px;
+
 
           color:
             var(--stardust);
 
+
           font-size:26px;
+
           font-weight:900;
+
           line-height:1;
 
+
           text-shadow:
+
             0 1px 3px
             rgba(
               0,
@@ -1388,10 +2339,14 @@ const Library={
               252,
               .24
             );
+
         }
 
+
         .rank-panel-meta{
+
           margin-top:8px;
+
 
           color:
             rgba(
@@ -1401,40 +2356,62 @@ const Library={
               .66
             );
 
+
           font-size:11px;
+
         }
 
-        /* =================================================
-           LESSON CARDS
-           ================================================= */
+
+
+        /* ================================================
+           CATEGORY CARDS
+           KEEP EXISTING COLORS
+           ================================================ */
 
         .roadmap-grid{
+
           grid-template-columns:
+
             repeat(
               2,
               minmax(0,1fr)
             );
 
+
           gap:12px;
+
         }
 
+
         .roadmap-card{
+
           min-height:216px;
 
+
           display:flex;
+
           flex-direction:column;
+
 
           gap:9px;
 
+
+          /*
+            Keep current card colors.
+          */
+
           background:
+
             linear-gradient(
               135deg,
+
               rgba(
                 14,
                 42,
                 74,
                 .34
               ),
+
               rgba(
                 42,
                 15,
@@ -1450,17 +2427,50 @@ const Library={
               .07
             );
 
+
           position:relative;
+
           overflow:hidden;
+
+
+          transform-origin:center;
+
+          transform-style:
+            preserve-3d;
+
+
+          will-change:
+            transform;
+
+
+          /*
+            Do NOT animate transform here.
+            JS handles the spring movement.
+          */
+
+          transition:
+
+            border-color
+            var(--tr),
+
+            background
+            var(--tr);
+
         }
 
+
         .roadmap-card::after{
+
           content:'';
 
+
           position:absolute;
+
           inset:0;
 
+
           background-image:
+
             linear-gradient(
               rgba(
                 124,
@@ -1469,12 +2479,14 @@ const Library={
                 .045
               )
               1px,
+
               transparent
               1px
             ),
 
             linear-gradient(
               90deg,
+
               rgba(
                 124,
                 58,
@@ -1482,32 +2494,53 @@ const Library={
                 .045
               )
               1px,
+
               transparent
               1px
             );
 
+
           background-size:
             32px 32px;
 
+
           pointer-events:none;
+
         }
 
-        .roadmap-card > *{
+
+        .roadmap-card>*{
+
           position:relative;
+
           z-index:1;
+
         }
+
 
         .roadmap-card-top{
+
           display:flex;
-          align-items:flex-start;
-          justify-content:space-between;
+
+          align-items:
+            flex-start;
+
+          justify-content:
+            space-between;
+
           gap:10px;
+
         }
 
+
         .roadmap-icon{
+
           width:34px;
+
           height:34px;
+
           margin-bottom:0;
+
 
           background:
             rgba(
@@ -1517,37 +2550,61 @@ const Library={
               .05
             );
 
+
           border:
+
             1px solid
+
             rgba(
               255,
               255,
               255,
               .08
             );
+
         }
 
+
         .roadmap-icon svg{
+
           width:21px;
+
           height:21px;
+
         }
+
 
         .lesson-progress-row,
         .lesson-next{
+
           display:flex;
+
           align-items:center;
-          justify-content:space-between;
+
+          justify-content:
+            space-between;
+
 
           gap:10px;
 
-          color:var(--muted);
+
+          color:
+            var(--muted);
+
+
           font-size:11px;
+
         }
 
+
         .lesson-progress-track{
+
           height:6px;
 
-          border-radius:999px;
+
+          border-radius:
+            999px;
+
 
           background:
             rgba(
@@ -1557,34 +2614,55 @@ const Library={
               .07
             );
 
+
           overflow:hidden;
+
         }
+
 
         .lesson-progress-fill{
+
           height:100%;
 
-          border-radius:inherit;
+
+          border-radius:
+            inherit;
+
 
           background:
+
             linear-gradient(
               90deg,
+
               var(--purple),
+
               var(--glow)
             );
+
         }
 
+
         .unlock-row{
+
           display:flex;
+
           flex-wrap:wrap;
+
 
           gap:6px;
 
+
           margin-top:auto;
+
         }
 
+
         .unlock-pill{
+
           border:
+
             1px solid
+
             rgba(
               139,
               122,
@@ -1592,9 +2670,13 @@ const Library={
               .25
             );
 
-          border-radius:999px;
+
+          border-radius:
+            999px;
+
 
           color:
+
             rgba(
               139,
               122,
@@ -1602,16 +2684,25 @@ const Library={
               .7
             );
 
+
           font-size:10px;
+
           font-weight:700;
 
-          padding:3px 8px;
+
+          padding:
+            3px 8px;
+
         }
 
+
         .unlock-pill.is-open{
+
           color:#d8b4fe;
 
+
           border-color:
+
             rgba(
               168,
               85,
@@ -1619,24 +2710,38 @@ const Library={
               .4
             );
 
+
           background:
+
             rgba(
               168,
               85,
               247,
               .12
             );
+
         }
+
 
         .lesson-next strong{
-          color:var(--glow);
-          white-space:nowrap;
+
+          color:
+            var(--glow);
+
+
+          white-space:
+            nowrap;
+
         }
 
+
         .tier-bronze{
+
           color:#f59e0b;
 
+
           background:
+
             rgba(
               245,
               158,
@@ -1644,20 +2749,28 @@ const Library={
               .12
             );
 
+
           border:
+
             1px solid
+
             rgba(
               245,
               158,
               11,
               .22
             );
+
         }
 
+
         .tier-silver{
+
           color:#cbd5e1;
 
+
           background:
+
             rgba(
               203,
               213,
@@ -1665,20 +2778,28 @@ const Library={
               .1
             );
 
+
           border:
+
             1px solid
+
             rgba(
               203,
               213,
               225,
               .2
             );
+
         }
 
+
         .tier-gold{
+
           color:#facc15;
 
+
           background:
+
             rgba(
               250,
               204,
@@ -1686,20 +2807,28 @@ const Library={
               .12
             );
 
+
           border:
+
             1px solid
+
             rgba(
               250,
               204,
               21,
               .24
             );
+
         }
 
+
         .tier-platinum{
+
           color:#67e8f9;
 
+
           background:
+
             rgba(
               103,
               232,
@@ -1707,20 +2836,28 @@ const Library={
               .1
             );
 
+
           border:
+
             1px solid
+
             rgba(
               103,
               232,
               249,
               .22
             );
+
         }
 
+
         .tier-diamond{
+
           color:#93c5fd;
 
+
           background:
+
             rgba(
               147,
               197,
@@ -1728,28 +2865,46 @@ const Library={
               .12
             );
 
+
           border:
+
             1px solid
+
             rgba(
               147,
               197,
               253,
               .25
             );
+
         }
+
+
+
+        /* ================================================
+           RESPONSIVE
+           ================================================ */
 
         @media(max-width:760px){
 
           .rank-summary,
-          .roadmap-grid,
-          .library-grid{
-            grid-template-columns:1fr;
+          .roadmap-grid{
+
+            grid-template-columns:
+              1fr;
+
           }
 
+
           .liquid-rank-panel{
-            min-height:110px;
+
+            min-height:
+              110px;
+
           }
+
         }
+
 
         @media(
           prefers-reduced-motion:
@@ -1759,50 +2914,98 @@ const Library={
           .liquid-rank-panel,
           .liquid-rank-panel::before,
           .liquid-rank-panel::after{
-            animation:none!important;
-            transition:none!important;
+
+            animation:
+              none!important;
+
+            transition:
+              none!important;
+
           }
+
+
+          .roadmap-card{
+
+            transform:
+              none!important;
+
+          }
+
         }
+
       `;
+
 
       document.head.appendChild(
         style
       );
+
     }
+
   },
+
 
   mounted(){
+
     this.injectLibraryStyles();
+
+
     this.updateProgress();
 
+
     this.$nextTick(()=>{
+
+      /*
+        Overall Rank panel liquid effect.
+      */
+
       this.attachLiquidRankPanel();
+
+
+      /*
+        Six category card
+        interaction.
+      */
+
+      this.attachLiquidCardInteractions();
+
     });
 
+
     this._progressHandler=()=>{
+
       this.updateProgress();
+
     };
 
+
     window.addEventListener(
       'cosmoklub-progress',
       this._progressHandler
     );
 
+
     window.addEventListener(
       'storage',
       this._progressHandler
     );
+
   },
 
+
   beforeUnmount(){
+
     window.removeEventListener(
       'cosmoklub-progress',
       this._progressHandler
     );
 
+
     window.removeEventListener(
       'storage',
       this._progressHandler
     );
+
   }
+
 };
