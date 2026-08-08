@@ -27,7 +27,7 @@ categoryDescription.textContent=category.description;
 
 if(libraryBack){
   libraryBack.addEventListener('click',()=>{
-    window.location.href='dashboard.html';
+    window.location.href='dashboard.html?tab=library';
   });
 }
 
@@ -86,6 +86,64 @@ function updateCategoryHeader(){
   }
 }
 
+function attachLiquidGlass(node){
+  if(!node||node.disabled){
+    return;
+  }
+
+  const updateLight=event=>{
+    const rect=node.getBoundingClientRect();
+
+    const x=((event.clientX-rect.left)/rect.width)*100;
+    const y=((event.clientY-rect.top)/rect.height)*100;
+
+    const offsetX=((x-50)/50)*1.4;
+    const offsetY=((y-50)/50)*1.4;
+
+    node.style.setProperty(
+      '--glass-x',
+      `${Math.max(0,Math.min(100,x))}%`
+    );
+
+    node.style.setProperty(
+      '--glass-y',
+      `${Math.max(0,Math.min(100,y))}%`
+    );
+
+    node.style.setProperty(
+      '--glass-shift-x',
+      `${offsetX}px`
+    );
+
+    node.style.setProperty(
+      '--glass-shift-y',
+      `${offsetY-3}px`
+    );
+  };
+
+  const resetLight=()=>{
+    node.style.setProperty('--glass-x','50%');
+    node.style.setProperty('--glass-y','28%');
+    node.style.setProperty('--glass-shift-x','0px');
+    node.style.setProperty('--glass-shift-y','0px');
+  };
+
+  node.addEventListener(
+    'pointermove',
+    updateLight
+  );
+
+  node.addEventListener(
+    'pointerleave',
+    resetLight
+  );
+
+  node.addEventListener(
+    'pointercancel',
+    resetLight
+  );
+}
+
 function renderRoadmap(){
   roadmapContainer.innerHTML='';
   updateCategoryHeader();
@@ -138,6 +196,7 @@ function renderRoadmap(){
       }
 
       const button=document.createElement('button');
+
       button.className='path-node';
       button.type='button';
 
@@ -155,9 +214,12 @@ function renderRoadmap(){
 
       if(unlocked||completed){
         button.addEventListener('click',()=>{
-          window.location.href=`lesson.html?category=${encodeURIComponent(category.id)}&lesson=${encodeURIComponent(lesson.id)}`;
+          window.location.href=
+            `lesson.html?category=${encodeURIComponent(category.id)}&lesson=${encodeURIComponent(lesson.id)}`;
         });
       }
+
+      attachLiquidGlass(button);
 
       const info=document.createElement('div');
       info.className='path-info';
@@ -170,13 +232,17 @@ function renderRoadmap(){
       meta.className='path-meta';
 
       if(completed){
-        meta.textContent=`Completed • ${lesson.xp} XP`;
+        meta.textContent=
+          `Completed • ${lesson.xp} XP`;
       }else if(!unlocked){
-        meta.textContent='Locked • Complete the previous lesson';
+        meta.textContent=
+          'Locked • Complete the previous lesson';
       }else if(lesson.type==='quiz'){
-        meta.textContent=`Quiz • ${lesson.duration} • ${lesson.xp} XP`;
+        meta.textContent=
+          `Quiz • ${lesson.duration} • ${lesson.xp} XP`;
       }else{
-        meta.textContent=`${lesson.duration} • ${lesson.xp} XP`;
+        meta.textContent=
+          `${lesson.duration} • ${lesson.xp} XP`;
       }
 
       info.appendChild(title);
