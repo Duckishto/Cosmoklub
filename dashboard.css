@@ -882,3 +882,470 @@ body.graphing-active .bottom-nav {
   padding: 2px 7px;
   border-radius: 8px;
 }
+/* =========================================================
+   LIQUID GLASS + BUTTON
+   ========================================================= */
+
+.nav-fab{
+  --fab-glass-x:50%;
+  --fab-glass-y:25%;
+
+  --fab-highlight-x:50%;
+  --fab-highlight-y:28%;
+
+  --fab-liquid-x:0;
+  --fab-liquid-y:0;
+
+  --fab-scale-x:1;
+  --fab-scale-y:1;
+  --fab-rotate:0deg;
+
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+
+  width:48px;
+  height:48px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0;
+
+  border:
+    1px solid
+    rgba(255,255,255,.28);
+
+  border-radius:
+    calc(
+      50% +
+      var(--fab-liquid-y) * 6%
+    )
+    calc(
+      50% -
+      var(--fab-liquid-x) * 6%
+    )
+    calc(
+      50% -
+      var(--fab-liquid-y) * 6%
+    )
+    calc(
+      50% +
+      var(--fab-liquid-x) * 6%
+    );
+
+  background:
+    radial-gradient(
+      circle at
+      var(--fab-glass-x)
+      var(--fab-glass-y),
+
+      rgba(255,255,255,.42)
+      0%,
+
+      rgba(255,255,255,.18)
+      11%,
+
+      rgba(255,255,255,.05)
+      27%,
+
+      transparent
+      47%
+    ),
+
+    radial-gradient(
+      circle at 72% 76%,
+
+      rgba(168,85,247,.26),
+
+      transparent 48%
+    ),
+
+    linear-gradient(
+      145deg,
+
+      rgba(255,255,255,.14),
+
+      rgba(124,58,237,.055)
+      46%,
+
+      rgba(168,85,247,.16)
+    );
+
+  -webkit-backdrop-filter:
+    blur(18px)
+    saturate(220%)
+    brightness(1.12);
+
+  backdrop-filter:
+    blur(18px)
+    saturate(220%)
+    brightness(1.12);
+
+  cursor:pointer;
+
+  box-shadow:
+    0 11px 25px
+    rgba(0,0,0,.30),
+
+    0 0 0 1px
+    rgba(255,255,255,.10)
+    inset,
+
+    0 1px 0
+    rgba(255,255,255,.55)
+    inset,
+
+    0 -2px 7px
+    rgba(124,58,237,.20)
+    inset,
+
+    0 0 0 5px
+    rgba(124,58,237,.055),
+
+    0 0 24px
+    rgba(168,85,247,.24);
+
+  transform:
+    translateY(
+      calc(
+        var(--fab-liquid-y) *
+        -1.5px
+      )
+    )
+
+    rotate(
+      var(--fab-rotate)
+    )
+
+    scaleX(
+      var(--fab-scale-x)
+    )
+
+    scaleY(
+      var(--fab-scale-y)
+    );
+
+  transform-origin:center;
+
+  will-change:
+    transform,
+    border-radius;
+
+  transition:
+    border-radius .16s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+
+/* Liquid material */
+
+.nav-fab::before{
+  content:"";
+
+  position:absolute;
+
+  z-index:-1;
+
+  width:98%;
+  height:98%;
+
+  left:
+    calc(
+      1% +
+      var(--fab-liquid-x) * 7%
+    );
+
+  top:
+    calc(
+      1% +
+      var(--fab-liquid-y) * 7%
+    );
+
+  border-radius:
+    53%
+    47%
+    55%
+    45%
+    /
+    48%
+    55%
+    45%
+    52%;
+
+  pointer-events:none;
+
+  background:
+    radial-gradient(
+      circle at
+      var(--fab-highlight-x)
+      var(--fab-highlight-y),
+
+      rgba(255,255,255,.65)
+      0 3%,
+
+      rgba(255,255,255,.30)
+      10%,
+
+      rgba(192,132,252,.23)
+      26%,
+
+      transparent
+      55%
+    ),
+
+    radial-gradient(
+      circle at
+      calc(
+        70% -
+        var(--fab-liquid-x) * 14%
+      )
+      calc(
+        73% -
+        var(--fab-liquid-y) * 14%
+      ),
+
+      rgba(124,58,237,.35),
+
+      transparent 45%
+    );
+
+  filter:
+    blur(4px);
+
+  opacity:.95;
+
+  animation:
+    fabLiquidFloat
+    4.5s
+    ease-in-out
+    infinite alternate;
+
+  transition:
+    left .08s linear,
+    top .08s linear;
+}
+
+/* Refractive inner rim */
+
+.nav-fab::after{
+  content:"";
+
+  position:absolute;
+
+  z-index:2;
+
+  inset:3px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.21);
+
+  border-radius:inherit;
+
+  pointer-events:none;
+
+  background:
+    radial-gradient(
+      circle at
+      var(--fab-highlight-x)
+      var(--fab-highlight-y),
+
+      rgba(255,255,255,.31),
+
+      transparent 30%
+    ),
+
+    linear-gradient(
+      145deg,
+
+      rgba(255,255,255,.17),
+
+      transparent
+      34% 66%,
+
+      rgba(168,85,247,.13)
+    );
+
+  box-shadow:
+    inset
+    0 1px 1px
+    rgba(255,255,255,.35),
+
+    inset
+    0 -3px 6px
+    rgba(0,0,0,.13);
+}
+
+/*
+  Keep the actual +
+  icon above the glass.
+*/
+
+.nav-fab svg{
+  position:relative;
+  z-index:5;
+
+  width:22px;
+  height:22px;
+
+  stroke:#fff;
+
+  filter:
+    drop-shadow(
+      0 1px 2px
+      rgba(0,0,0,.38)
+    )
+    drop-shadow(
+      0 0 5px
+      rgba(255,255,255,.20)
+    );
+
+  pointer-events:none;
+}
+
+/* Internal liquid movement */
+
+@keyframes fabLiquidFloat{
+
+  0%{
+    transform:
+      translate3d(
+        -1px,
+        -1px,
+        0
+      )
+      rotate(-3deg)
+      scale(1);
+  }
+
+  50%{
+    transform:
+      translate3d(
+        2px,
+        1px,
+        0
+      )
+      rotate(3deg)
+      scale(1.05);
+  }
+
+  100%{
+    transform:
+      translate3d(
+        -1px,
+        2px,
+        0
+      )
+      rotate(-1deg)
+      scale(.98);
+  }
+}
+
+/* Hover */
+
+.nav-fab.liquid-fab-hover{
+  border-color:
+    rgba(255,255,255,.58);
+
+  box-shadow:
+    0 15px 32px
+    rgba(0,0,0,.34),
+
+    0 0 0 1px
+    rgba(255,255,255,.16)
+    inset,
+
+    0 1px 0
+    rgba(255,255,255,.72)
+    inset,
+
+    0 -2px 8px
+    rgba(168,85,247,.26)
+    inset,
+
+    0 0 0 6px
+    rgba(124,58,237,.075),
+
+    0 0 36px
+    rgba(168,85,247,.38);
+}
+
+.nav-fab.liquid-fab-hover::before{
+  animation-duration:2.3s;
+
+  filter:
+    blur(3.5px)
+    saturate(1.2);
+}
+
+/* Press / squish */
+
+.nav-fab.liquid-fab-pressed{
+  --fab-scale-x:1.11!important;
+  --fab-scale-y:.86!important;
+
+  border-radius:
+    45%
+    55%
+    47%
+    53%
+    /
+    56%
+    47%
+    53%
+    44%;
+
+  box-shadow:
+    0 5px 13px
+    rgba(0,0,0,.28),
+
+    inset
+    0 3px 8px
+    rgba(0,0,0,.18),
+
+    inset
+    0 1px 0
+    rgba(255,255,255,.40),
+
+    0 0 26px
+    rgba(168,85,247,.35);
+}
+
+/*
+  Disable old fixed hover scaling.
+  Liquid JS now controls deformation.
+*/
+
+.nav-fab:hover{
+  transform:
+    translateY(
+      calc(
+        var(--fab-liquid-y) *
+        -1.5px
+      )
+    )
+
+    rotate(
+      var(--fab-rotate)
+    )
+
+    scaleX(
+      var(--fab-scale-x)
+    )
+
+    scaleY(
+      var(--fab-scale-y)
+    );
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  .nav-fab,
+  .nav-fab::before,
+  .nav-fab::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
