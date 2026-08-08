@@ -1,4 +1,3 @@
-// Library tab: roadmap-style astronomy lessons.
 const Library={
   name:'Library',
 
@@ -51,6 +50,8 @@ const Library={
             :key="lesson.id"
             @click="startLesson(lesson)"
           >
+
+            <div class="card-mouse-light"></div>
 
             <div class="roadmap-card-top">
 
@@ -190,48 +191,25 @@ const Library={
 
         {
           id:'stars',
-
           title:'Stars',
-
           desc:
             'Birth, life, and death of stars from protostars to supernovae.',
-
           completedLessons:0,
           totalLessons:20,
-
           level:1,
           xp:0,
-
           rank:'BRONZE',
-
-          tierClass:
-            'tier-bronze',
-
+          tierClass:'tier-bronze',
           quizUnlocked:true,
           nextUnlocked:false,
-
-          nextLabel:
-            'Continue learning',
-
+          nextLabel:'Continue learning',
           svg:`
             <svg
               viewBox="0 0 24 24"
               fill="#facc15"
             >
               <path
-                d="
-                  m12 2
-                  2.9 6.15
-                  6.6.8
-                  -4.85 4.5
-                  1.25 6.55
-                  L12 16.75
-                  6.1 20
-                  l1.25-6.55
-                  -4.85-4.5
-                  6.6-.8
-                  L12 2z
-                "
+                d="m12 2 2.9 6.15 6.6.8-4.85 4.5 1.25 6.55L12 16.75 6.1 20l1.25-6.55-4.85-4.5 6.6-.8L12 2z"
               />
             </svg>
           `
@@ -240,29 +218,18 @@ const Library={
 
         {
           id:'galaxies',
-
           title:'Galaxies',
-
           desc:
             'Explore galaxy structure, evolution, dark matter, and cosmic environments.',
-
           completedLessons:0,
           totalLessons:20,
-
           level:1,
           xp:0,
-
           rank:'BRONZE',
-
-          tierClass:
-            'tier-bronze',
-
+          tierClass:'tier-bronze',
           quizUnlocked:true,
           nextUnlocked:false,
-
-          nextLabel:
-            'Continue learning',
-
+          nextLabel:'Continue learning',
           svg:`
             <svg
               viewBox="0 0 24 24"
@@ -271,32 +238,9 @@ const Library={
               stroke-width="1.7"
               stroke-linecap="round"
             >
-              <path
-                d="
-                  M4 14
-                  c4.8-7.4
-                  12.3-8
-                  16-2.8
-                "
-              />
-
-              <path
-                d="
-                  M3 18
-                  c5-3.8
-                  12-3.5
-                  18 1
-                "
-              />
-
-              <path
-                d="
-                  M7 9
-                  c3.2 3.4
-                  6.8 4
-                  10.8 1.5
-                "
-              />
+              <path d="M4 14c4.8-7.4 12.3-8 16-2.8"/>
+              <path d="M3 18c5-3.8 12-3.5 18 1"/>
+              <path d="M7 9c3.2 3.4 6.8 4 10.8 1.5"/>
             </svg>
           `
         },
@@ -304,29 +248,18 @@ const Library={
 
         {
           id:'cosmology',
-
           title:'Cosmology',
-
           desc:
             'Study the origin, expansion, structure, and fate of the universe.',
-
           completedLessons:0,
           totalLessons:20,
-
           level:1,
           xp:0,
-
           rank:'BRONZE',
-
-          tierClass:
-            'tier-bronze',
-
+          tierClass:'tier-bronze',
           quizUnlocked:true,
           nextUnlocked:false,
-
-          nextLabel:
-            'Continue learning',
-
+          nextLabel:'Continue learning',
           svg:`
             <svg
               viewBox="0 0 24 24"
@@ -339,12 +272,7 @@ const Library={
               <path d="M4 12h16"/>
               <path d="m5 5 14 14"/>
               <path d="m19 5-14 14"/>
-
-              <circle
-                cx="12"
-                cy="12"
-                r="2.2"
-              />
+              <circle cx="12" cy="12" r="2.2"/>
             </svg>
           `
         },
@@ -352,29 +280,18 @@ const Library={
 
         {
           id:'planets',
-
           title:'Planets',
-
           desc:
             'Learn how planets form, evolve, and compare across planetary systems.',
-
           completedLessons:0,
           totalLessons:20,
-
           level:1,
           xp:0,
-
           rank:'BRONZE',
-
-          tierClass:
-            'tier-bronze',
-
+          tierClass:'tier-bronze',
           quizUnlocked:true,
           nextUnlocked:false,
-
-          nextLabel:
-            'Continue learning',
-
+          nextLabel:'Continue learning',
           svg:`
             <svg
               viewBox="0 0 24 24"
@@ -383,25 +300,9 @@ const Library={
               stroke-width="1.6"
               stroke-linecap="round"
             >
-              <circle
-                cx="12"
-                cy="12"
-                r="5.2"
-              />
-
+              <circle cx="12" cy="12" r="5.2"/>
               <path
-                d="
-                  M3.2 14.2
-                  c2.8 2.2
-                  9.4 1.7
-                  14.6-1.1
-                  2.1-1.1
-                  3.2-2.3
-                  3-3.2
-                  -.3-1.1
-                  -2.6-1.2
-                  -5.5-.4
-                "
+                d="M3.2 14.2c2.8 2.2 9.4 1.7 14.6-1.1 2.1-1.1 3.2-2.3 3-3.2-.3-1.1-2.6-1.2-5.5-.4"
               />
             </svg>
           `
@@ -410,81 +311,29 @@ const Library={
 
         {
           id:'nebulae',
-
           title:'Nebulae',
-
           desc:
             'Explore interstellar clouds, stellar nurseries, and glowing remnants.',
-
           completedLessons:0,
           totalLessons:20,
-
           level:1,
           xp:0,
-
           rank:'BRONZE',
-
-          tierClass:
-            'tier-bronze',
-
+          tierClass:'tier-bronze',
           quizUnlocked:true,
           nextUnlocked:false,
-
-          nextLabel:
-            'Continue learning',
-
+          nextLabel:'Continue learning',
           svg:`
             <svg
               viewBox="0 0 24 24"
               fill="none"
             >
               <path
-                d="
-                  M7 15.5
-                  c-2.2 0
-                  -4-1.3
-                  -4-3.2
-                  0-1.7
-                  1.4-3
-                  3.2-3.2
-
-                  C7 6.8
-                  9.2 5.5
-                  11.7 6
-
-                  c1.7.3
-                  3.1 1.4
-                  3.8 2.9
-
-                  .4-.1
-                  .8-.2
-                  1.3-.2
-
-                  2.3 0
-                  4.2 1.5
-                  4.2 3.5
-
-                  s-1.9 3.4
-                  -4.2 3.4
-
-                  H7z
-                "
+                d="M7 15.5c-2.2 0-4-1.3-4-3.2 0-1.7 1.4-3 3.2-3.2C7 6.8 9.2 5.5 11.7 6c1.7.3 3.1 1.4 3.8 2.9.4-.1.8-.2 1.3-.2 2.3 0 4.2 1.5 4.2 3.5s-1.9 3.4-4.2 3.4H7z"
                 fill="#d8b4fe"
               />
-
-              <circle
-                cx="9"
-                cy="11"
-                r="1"
-                fill="#fff"
-              />
-
-              <circle
-                cx="15"
-                cy="13"
-                r="1.2"
-                fill="#fff"
-              />
+              <circle cx="9" cy="11" r="1" fill="#fff"/>
+              <circle cx="15" cy="13" r="1.2" fill="#fff"/>
             </svg>
           `
         },
@@ -492,29 +341,18 @@ const Library={
 
         {
           id:'observing',
-
           title:'Observing',
-
           desc:
             'Build practical skills with the night sky, telescopes, and astrophotography.',
-
           completedLessons:0,
           totalLessons:20,
-
           level:1,
           xp:0,
-
           rank:'BRONZE',
-
-          tierClass:
-            'tier-bronze',
-
+          tierClass:'tier-bronze',
           quizUnlocked:true,
           nextUnlocked:false,
-
-          nextLabel:
-            'Continue learning',
-
+          nextLabel:'Continue learning',
           svg:`
             <svg
               viewBox="0 0 24 24"
@@ -545,8 +383,7 @@ const Library={
     totalCompleted(){
       return this.lessons.reduce(
         (sum,lesson)=>
-          sum+
-          lesson.completedLessons,
+          sum+lesson.completedLessons,
         0
       );
     },
@@ -555,8 +392,7 @@ const Library={
     totalLessons(){
       return this.lessons.reduce(
         (sum,lesson)=>
-          sum+
-          lesson.totalLessons,
+          sum+lesson.totalLessons,
         0
       );
     },
@@ -566,8 +402,7 @@ const Library={
       return Math.round(
         this.lessons.reduce(
           (sum,lesson)=>
-            sum+
-            lesson.level,
+            sum+lesson.level,
           0
         )/
         this.lessons.length
@@ -587,7 +422,6 @@ const Library={
   methods:{
 
     progressPercent(lesson){
-
       return Math.round(
         (
           lesson.completedLessons/
@@ -595,12 +429,10 @@ const Library={
         )*
         100
       );
-
     },
 
 
     rankForLevel(level){
-
       return[
         ...this.ranks
       ]
@@ -610,23 +442,16 @@ const Library={
           level>=rank.minLevel
       )||
       this.ranks[0];
-
     },
 
 
     startLesson(lesson){
-
       window.location.href=
         `roadmap.html?category=${lesson.id}`;
-
     },
 
 
     updateProgress(){
-
-      /*
-        Current CosmoKlub progress.js
-      */
 
       if(
         typeof window.getCategoryStats===
@@ -645,46 +470,36 @@ const Library={
               return;
             }
 
-
             lesson.completedLessons=
               stats.completedLessons??0;
-
 
             lesson.totalLessons=
               stats.totalLessons??20;
 
-
             lesson.level=
               stats.level??1;
 
-
             lesson.xp=
               stats.xp??0;
-
 
             lesson.rank=
               stats.rank||
               'BRONZE';
 
-
             lesson.tierClass=
               `tier-${
                 String(
                   lesson.rank
-                )
-                .toLowerCase()
+                ).toLowerCase()
               }`;
-
 
             lesson.quizUnlocked=
               stats.quizUnlocked??
               true;
 
-
             lesson.nextUnlocked=
               stats.nextUnlocked??
               false;
-
 
             lesson.nextLabel=
               stats.nextLabel||
@@ -696,11 +511,6 @@ const Library={
         return;
       }
 
-
-      /*
-        Fallback using the other
-        progress helpers.
-      */
 
       if(
         typeof window.getCategoryProgress===
@@ -722,12 +532,10 @@ const Library={
                 progress.xp
               );
 
-
             lesson.completedLessons=
               progress.completedLessons
                 ?.length||
               0;
-
 
             lesson.totalLessons=20;
 
@@ -747,10 +555,8 @@ const Library={
               `tier-${
                 String(
                   lesson.rank
-                )
-                .toLowerCase()
+                ).toLowerCase()
               }`;
-
 
             lesson.nextLabel=
               lesson.completedLessons>0
@@ -776,18 +582,14 @@ const Library={
       const node=
         this.$refs.rankPanel;
 
-
       if(!node){
         return;
       }
 
-
       let previousX=null;
       let previousY=null;
-
       let previousTime=
         performance.now();
-
 
       let currentStretchX=1;
       let currentStretchY=1;
@@ -795,10 +597,8 @@ const Library={
       let targetStretchX=1;
       let targetStretchY=1;
 
-
       let currentRotate=0;
       let targetRotate=0;
-
 
       let frame=null;
 
@@ -812,14 +612,12 @@ const Library={
           )*
           .12;
 
-
         currentStretchY+=
           (
             targetStretchY-
             currentStretchY
           )*
           .12;
-
 
         currentRotate+=
           (
@@ -828,53 +626,42 @@ const Library={
           )*
           .12;
 
-
         node.style.setProperty(
           '--rank-scale-x',
           currentStretchX.toFixed(4)
         );
-
 
         node.style.setProperty(
           '--rank-scale-y',
           currentStretchY.toFixed(4)
         );
 
-
         node.style.setProperty(
           '--rank-rotate',
           `${currentRotate.toFixed(2)}deg`
         );
-
 
         const moving=
           Math.abs(
             currentStretchX-
             targetStretchX
           )>.001||
-
           Math.abs(
             currentStretchY-
             targetStretchY
           )>.001||
-
           Math.abs(
             currentRotate-
             targetRotate
           )>.03;
 
-
         if(moving){
-
           frame=
             requestAnimationFrame(
               animate
             );
-
         }else{
-
           frame=null;
-
         }
 
       };
@@ -883,12 +670,10 @@ const Library={
       const start=()=>{
 
         if(!frame){
-
           frame=
             requestAnimationFrame(
               animate
             );
-
         }
 
       };
@@ -898,7 +683,6 @@ const Library={
 
         const rect=
           node.getBoundingClientRect();
-
 
         const x=Math.max(
           0,
@@ -915,7 +699,6 @@ const Library={
           )
         );
 
-
         const y=Math.max(
           0,
           Math.min(
@@ -931,53 +714,44 @@ const Library={
           )
         );
 
-
         const nx=
           (x-50)/50;
 
         const ny=
           (y-50)/50;
 
-
         node.style.setProperty(
           '--rank-glass-x',
           `${x}%`
         );
-
 
         node.style.setProperty(
           '--rank-glass-y',
           `${y}%`
         );
 
-
         node.style.setProperty(
           '--rank-liquid-x',
           nx.toFixed(3)
         );
-
 
         node.style.setProperty(
           '--rank-liquid-y',
           ny.toFixed(3)
         );
 
-
         node.style.setProperty(
           '--rank-highlight-x',
           `${50+nx*22}%`
         );
-
 
         node.style.setProperty(
           '--rank-highlight-y',
           `${30+ny*20}%`
         );
 
-
         const now=
           performance.now();
-
 
         const deltaTime=
           Math.max(
@@ -985,7 +759,6 @@ const Library={
             now-
             previousTime
           );
-
 
         if(
           previousX!==null&&
@@ -999,14 +772,12 @@ const Library={
             )/
             deltaTime;
 
-
           const vy=
             (
               event.clientY-
               previousY
             )/
             deltaTime;
-
 
           const speed=
             Math.min(
@@ -1018,7 +789,6 @@ const Library={
               .8
             );
 
-
           targetStretchX=
             1+
             Math.min(
@@ -1027,7 +797,6 @@ const Library={
               .025
             );
 
-
           targetStretchY=
             1+
             Math.min(
@@ -1035,7 +804,6 @@ const Library={
               Math.abs(vy)*
               .025
             );
-
 
           if(
             Math.abs(vx)>
@@ -1060,7 +828,6 @@ const Library={
 
           }
 
-
           targetRotate=
             Math.max(
               -1.2,
@@ -1072,7 +839,6 @@ const Library={
 
         }
 
-
         previousX=
           event.clientX;
 
@@ -1082,11 +848,9 @@ const Library={
         previousTime=
           now;
 
-
         node.classList.add(
           'rank-liquid-hover'
         );
-
 
         start();
 
@@ -1098,52 +862,43 @@ const Library={
         previousX=null;
         previousY=null;
 
-
         targetStretchX=1;
         targetStretchY=1;
         targetRotate=0;
-
 
         node.style.setProperty(
           '--rank-glass-x',
           '50%'
         );
 
-
         node.style.setProperty(
           '--rank-glass-y',
           '20%'
         );
-
 
         node.style.setProperty(
           '--rank-liquid-x',
           '0'
         );
 
-
         node.style.setProperty(
           '--rank-liquid-y',
           '0'
         );
-
 
         node.style.setProperty(
           '--rank-highlight-x',
           '50%'
         );
 
-
         node.style.setProperty(
           '--rank-highlight-y',
           '25%'
         );
 
-
         node.classList.remove(
           'rank-liquid-hover'
         );
-
 
         start();
 
@@ -1155,12 +910,10 @@ const Library={
         move
       );
 
-
       node.addEventListener(
         'pointerleave',
         reset
       );
-
 
       node.addEventListener(
         'pointercancel',
@@ -1171,8 +924,8 @@ const Library={
 
 
     /* =====================================================
-       CATEGORY CARD CURSOR INTERACTION
-       DOES NOT CHANGE CARD COLORS
+       CATEGORY CARDS
+       STRONGER CURSOR INTERACTION + MOUSE LIGHT
        ===================================================== */
 
     attachLiquidCardInteractions(){
@@ -1185,6 +938,12 @@ const Library={
 
 
       cards.forEach(card=>{
+
+        const light=
+          card.querySelector(
+            '.card-mouse-light'
+          );
+
 
         let previousX=null;
         let previousY=null;
@@ -1218,12 +977,20 @@ const Library={
 
         const animate=()=>{
 
+          /*
+            Slightly faster response,
+            but still soft.
+          */
+
+          const spring=.15;
+
+
           currentX+=
             (
               targetX-
               currentX
             )*
-            .12;
+            spring;
 
 
           currentY+=
@@ -1231,7 +998,7 @@ const Library={
               targetY-
               currentY
             )*
-            .12;
+            spring;
 
 
           currentRotateX+=
@@ -1239,7 +1006,7 @@ const Library={
               targetRotateX-
               currentRotateX
             )*
-            .12;
+            spring;
 
 
           currentRotateY+=
@@ -1247,7 +1014,7 @@ const Library={
               targetRotateY-
               currentRotateY
             )*
-            .12;
+            spring;
 
 
           currentScaleX+=
@@ -1255,7 +1022,7 @@ const Library={
               targetScaleX-
               currentScaleX
             )*
-            .12;
+            spring;
 
 
           currentScaleY+=
@@ -1263,11 +1030,11 @@ const Library={
               targetScaleY-
               currentScaleY
             )*
-            .12;
+            spring;
 
 
           card.style.transform=`
-            perspective(900px)
+            perspective(850px)
 
             translate3d(
               ${currentX}px,
@@ -1294,30 +1061,26 @@ const Library={
 
 
           const moving=
-
             Math.abs(
-              currentX-targetX
+              currentX-
+              targetX
             )>.01||
-
             Math.abs(
-              currentY-targetY
+              currentY-
+              targetY
             )>.01||
-
             Math.abs(
               currentRotateX-
               targetRotateX
             )>.01||
-
             Math.abs(
               currentRotateY-
               targetRotateY
             )>.01||
-
             Math.abs(
               currentScaleX-
               targetScaleX
             )>.001||
-
             Math.abs(
               currentScaleY-
               targetScaleY
@@ -1360,19 +1123,23 @@ const Library={
             card.getBoundingClientRect();
 
 
+          const localX=
+            event.clientX-
+            rect.left;
+
+
+          const localY=
+            event.clientY-
+            rect.top;
+
+
           const x=
-            (
-              event.clientX-
-              rect.left
-            )/
+            localX/
             rect.width;
 
 
           const y=
-            (
-              event.clientY-
-              rect.top
-            )/
+            localY/
             rect.height;
 
 
@@ -1387,37 +1154,69 @@ const Library={
 
 
           /*
-            Very subtle positional
-            follow movement.
+            Stronger movement.
           */
 
           targetX=
             nx*
-            3;
+            5.5;
 
 
           targetY=
             ny*
-            2;
+            4;
 
 
           /*
-            Soft 3D tilt.
+            Stronger tilt.
           */
 
           targetRotateY=
             nx*
-            1.25;
+            2.6;
 
 
           targetRotateX=
             ny*
-            -1;
+            -2;
 
 
           /*
-            Pointer velocity creates
-            a tiny liquid stretch.
+            Slight hover enlargement.
+          */
+
+          targetScaleX=
+            1.008;
+
+          targetScaleY=
+            1.008;
+
+
+          /*
+            Mouse-follow highlight.
+          */
+
+          if(light){
+
+            light.style.setProperty(
+              '--light-x',
+              `${localX}px`
+            );
+
+
+            light.style.setProperty(
+              '--light-y',
+              `${localY}px`
+            );
+
+
+            light.style.opacity='1';
+
+          }
+
+
+          /*
+            Velocity-based liquid stretch.
           */
 
           const now=
@@ -1455,27 +1254,27 @@ const Library={
 
             const speedX=
               Math.min(
-                .012,
+                .022,
                 Math.abs(vx)*
-                .015
+                .022
               );
 
 
             const speedY=
               Math.min(
-                .012,
+                .022,
                 Math.abs(vy)*
-                .015
+                .022
               );
 
 
             targetScaleX=
-              1+
+              1.008+
               speedX;
 
 
             targetScaleY=
-              1+
+              1.008+
               speedY;
 
 
@@ -1485,16 +1284,16 @@ const Library={
             ){
 
               targetScaleY=
-                1-
+                1.008-
                 speedX*
-                .45;
+                .55;
 
             }else{
 
               targetScaleX=
-                1-
+                1.008-
                 speedY*
-                .45;
+                .55;
 
             }
 
@@ -1511,6 +1310,11 @@ const Library={
 
           previousTime=
             now;
+
+
+          card.classList.add(
+            'card-liquid-hover'
+          );
 
 
           start();
@@ -1536,6 +1340,16 @@ const Library={
           targetScaleY=1;
 
 
+          if(light){
+            light.style.opacity='0';
+          }
+
+
+          card.classList.remove(
+            'card-liquid-hover'
+          );
+
+
           start();
 
         };
@@ -1543,12 +1357,8 @@ const Library={
 
         const press=()=>{
 
-          targetScaleX=
-            .992;
-
-          targetScaleY=
-            .985;
-
+          targetScaleX=.992;
+          targetScaleY=.98;
 
           start();
 
@@ -1557,9 +1367,8 @@ const Library={
 
         const release=()=>{
 
-          targetScaleX=1;
-          targetScaleY=1;
-
+          targetScaleX=1.008;
+          targetScaleY=1.008;
 
           start();
 
@@ -1599,10 +1408,6 @@ const Library={
 
     },
 
-
-    /* =====================================================
-       LIBRARY CSS
-       ===================================================== */
 
     injectLibraryStyles(){
 
@@ -1656,6 +1461,7 @@ const Library={
           color:var(--violet);
 
           font-size:11px;
+
           font-weight:800;
 
           letter-spacing:.12em;
@@ -1678,14 +1484,13 @@ const Library={
 
           line-height:1.05;
 
-          letter-spacing:0;
-
           max-width:720px;
         }
 
 
+
         /* ================================================
-           LIQUID GLASS OVERALL RANK
+           OVERALL RANK LIQUID PANEL
            ================================================ */
 
         .liquid-rank-panel{
@@ -1734,30 +1539,7 @@ const Library={
             );
 
 
-          border-radius:
-            calc(
-              18px +
-              var(--rank-liquid-y) *
-              2px
-            )
-
-            calc(
-              18px -
-              var(--rank-liquid-x) *
-              2px
-            )
-
-            calc(
-              18px -
-              var(--rank-liquid-y) *
-              2px
-            )
-
-            calc(
-              18px +
-              var(--rank-liquid-x) *
-              2px
-            );
+          border-radius:18px;
 
 
           background:
@@ -1772,8 +1554,7 @@ const Library={
                 255,
                 255,
                 .22
-              )
-              0%,
+              ),
 
               rgba(
                 255,
@@ -1832,14 +1613,12 @@ const Library={
 
           -webkit-backdrop-filter:
             blur(22px)
-            saturate(210%)
-            brightness(1.08);
+            saturate(210%);
 
 
           backdrop-filter:
             blur(22px)
-            saturate(210%)
-            brightness(1.08);
+            saturate(210%);
 
 
           box-shadow:
@@ -1859,31 +1638,6 @@ const Library={
               255,
               255,
               .38
-            ),
-
-            inset
-            0 -1px 0
-            rgba(
-              168,
-              85,
-              247,
-              .14
-            ),
-
-            0 0 0 1px
-            rgba(
-              124,
-              58,
-              237,
-              .08
-            ),
-
-            0 0 28px
-            rgba(
-              168,
-              85,
-              247,
-              .10
             );
 
 
@@ -1904,396 +1658,20 @@ const Library={
 
           transform-origin:center;
 
-
           will-change:
-            transform,
-            border-radius;
-
-
-          transition:
-
-            border-radius
-            .18s ease,
-
-            border-color
-            .2s ease,
-
-            box-shadow
-            .2s ease;
-        }
-
-
-        .liquid-rank-panel::before{
-
-          content:'';
-
-
-          position:absolute;
-
-          z-index:-1;
-
-
-          width:105%;
-          height:115%;
-
-
-          left:
-            calc(
-              -2.5% +
-              var(--rank-liquid-x) *
-              4%
-            );
-
-
-          top:
-            calc(
-              -7.5% +
-              var(--rank-liquid-y) *
-              4%
-            );
-
-
-          pointer-events:none;
-
-
-          border-radius:
-
-            32%
-            68%
-            47%
-            53%
-
-            /
-
-            46%
-            43%
-            57%
-            54%;
-
-
-          background:
-
-            radial-gradient(
-              circle at
-              var(--rank-highlight-x)
-              var(--rank-highlight-y),
-
-              rgba(
-                255,
-                255,
-                255,
-                .42
-              )
-              0 3%,
-
-              rgba(
-                255,
-                255,
-                255,
-                .16
-              )
-              12%,
-
-              rgba(
-                192,
-                132,
-                252,
-                .18
-              )
-              28%,
-
-              transparent
-              57%
-            ),
-
-            radial-gradient(
-              circle at
-
-              calc(
-                72% -
-                var(--rank-liquid-x) *
-                10%
-              )
-
-              calc(
-                72% -
-                var(--rank-liquid-y) *
-                10%
-              ),
-
-              rgba(
-                124,
-                58,
-                237,
-                .22
-              ),
-
-              transparent
-              48%
-            );
-
-
-          filter:
-            blur(8px);
-
-
-          opacity:.9;
-
-
-          animation:
-
-            rankLiquidFloat
-            6s
-            ease-in-out
-            infinite alternate;
-
-
-          transition:
-
-            left .1s linear,
-            top .1s linear;
-        }
-
-
-        .liquid-rank-panel::after{
-
-          content:'';
-
-
-          position:absolute;
-
-          z-index:1;
-
-
-          inset:3px;
-
-
-          pointer-events:none;
-
-
-          border:
-            1px solid
-            rgba(
-              255,
-              255,
-              255,
-              .09
-            );
-
-
-          border-radius:inherit;
-
-
-          background:
-
-            radial-gradient(
-              circle at
-              var(--rank-highlight-x)
-              var(--rank-highlight-y),
-
-              rgba(
-                255,
-                255,
-                255,
-                .15
-              ),
-
-              transparent
-              34%
-            ),
-
-            linear-gradient(
-              145deg,
-
-              rgba(
-                255,
-                255,
-                255,
-                .08
-              ),
-
-              transparent
-              34%
-              67%,
-
-              rgba(
-                168,
-                85,
-                247,
-                .07
-              )
-            );
-
-
-          box-shadow:
-
-            inset
-            0 1px 1px
-            rgba(
-              255,
-              255,
-              255,
-              .18
-            ),
-
-            inset
-            0 -3px 8px
-            rgba(
-              0,
-              0,
-              0,
-              .10
-            );
+            transform;
 
         }
 
 
         .liquid-rank-panel>*{
-
           position:relative;
-
-          z-index:3;
-
-        }
-
-
-        @keyframes rankLiquidFloat{
-
-          0%{
-
-            transform:
-
-              translate3d(
-                -3px,
-                -2px,
-                0
-              )
-
-              rotate(-1deg)
-
-              scale(1);
-
-          }
-
-
-          50%{
-
-            transform:
-
-              translate3d(
-                3px,
-                2px,
-                0
-              )
-
-              rotate(1deg)
-
-              scale(1.035);
-
-          }
-
-
-          100%{
-
-            transform:
-
-              translate3d(
-                -1px,
-                3px,
-                0
-              )
-
-              rotate(-.5deg)
-
-              scale(.99);
-
-          }
-
-        }
-
-
-        .liquid-rank-panel.rank-liquid-hover{
-
-          border-color:
-            rgba(
-              255,
-              255,
-              255,
-              .30
-            );
-
-
-          box-shadow:
-
-            0 18px 42px
-            rgba(
-              0,
-              0,
-              0,
-              .27
-            ),
-
-            inset
-            0 1px 0
-            rgba(
-              255,
-              255,
-              255,
-              .55
-            ),
-
-            inset
-            0 -2px 8px
-            rgba(
-              168,
-              85,
-              247,
-              .16
-            ),
-
-            0 0 0 1px
-            rgba(
-              168,
-              85,
-              247,
-              .13
-            ),
-
-            0 0 38px
-            rgba(
-              168,
-              85,
-              247,
-              .17
-            );
-
-        }
-
-
-        .liquid-rank-panel.rank-liquid-hover::before{
-
-          animation-duration:
-            3.5s;
-
-
-          filter:
-
-            blur(7px)
-
-            saturate(1.15);
-
+          z-index:2;
         }
 
 
         .rank-panel-label{
-
-          color:
-            rgba(
-              216,
-              206,
-              232,
-              .72
-            );
+          color:var(--muted);
 
           font-size:10px;
 
@@ -2302,70 +1680,33 @@ const Library={
           letter-spacing:.12em;
 
           text-transform:uppercase;
-
         }
 
 
         .rank-panel-rank{
-
-          margin-top:9px;
-
-
-          color:
-            var(--stardust);
-
+          color:var(--stardust);
 
           font-size:26px;
 
           font-weight:900;
 
-          line-height:1;
-
-
-          text-shadow:
-
-            0 1px 3px
-            rgba(
-              0,
-              0,
-              0,
-              .45
-            ),
-
-            0 0 18px
-            rgba(
-              192,
-              132,
-              252,
-              .24
-            );
-
+          margin-top:9px;
         }
 
 
         .rank-panel-meta{
-
-          margin-top:8px;
-
-
-          color:
-            rgba(
-              216,
-              206,
-              232,
-              .66
-            );
-
+          color:var(--muted);
 
           font-size:11px;
 
+          margin-top:8px;
         }
 
 
 
         /* ================================================
            CATEGORY CARDS
-           KEEP EXISTING COLORS
+           COLORS ARE UNCHANGED
            ================================================ */
 
         .roadmap-grid{
@@ -2395,10 +1736,6 @@ const Library={
 
           gap:9px;
 
-
-          /*
-            Keep current card colors.
-          */
 
           background:
 
@@ -2443,21 +1780,23 @@ const Library={
             transform;
 
 
-          /*
-            Do NOT animate transform here.
-            JS handles the spring movement.
-          */
-
           transition:
 
             border-color
             var(--tr),
 
             background
-            var(--tr);
+            var(--tr),
+
+            box-shadow
+            .2s ease;
 
         }
 
+
+        /*
+          Original grid texture.
+        */
 
         .roadmap-card::after{
 
@@ -2506,14 +1845,114 @@ const Library={
 
           pointer-events:none;
 
+
+          z-index:1;
+
         }
 
 
-        .roadmap-card>*{
+        /*
+          Mouse highlight.
+          Does not replace card color.
+          It just sits above it.
+        */
+
+        .card-mouse-light{
+
+          --light-x:50%;
+          --light-y:50%;
+
+
+          position:absolute;
+
+
+          left:0;
+
+          top:0;
+
+
+          width:100%;
+
+          height:100%;
+
+
+          pointer-events:none;
+
+
+          z-index:2;
+
+
+          opacity:0;
+
+
+          background:
+
+            radial-gradient(
+              circle
+              170px
+              at
+              var(--light-x)
+              var(--light-y),
+
+              rgba(
+                255,
+                255,
+                255,
+                .085
+              )
+              0%,
+
+              rgba(
+                192,
+                132,
+                252,
+                .055
+              )
+              32%,
+
+              rgba(
+                124,
+                58,
+                237,
+                .025
+              )
+              53%,
+
+              transparent
+              72%
+            );
+
+
+          transition:
+            opacity
+            .2s ease;
+
+        }
+
+
+        .roadmap-card.card-liquid-hover{
+
+          box-shadow:
+
+            0 12px 30px
+
+            rgba(
+              0,
+              0,
+              0,
+              .18
+            );
+
+        }
+
+
+        .roadmap-card>*:not(
+          .card-mouse-light
+        ){
 
           position:relative;
 
-          z-index:1;
+          z-index:3;
 
         }
 
@@ -2522,8 +1961,7 @@ const Library={
 
           display:flex;
 
-          align-items:
-            flex-start;
+          align-items:flex-start;
 
           justify-content:
             space-between;
@@ -2552,9 +1990,7 @@ const Library={
 
 
           border:
-
             1px solid
-
             rgba(
               255,
               255,
@@ -2584,13 +2020,9 @@ const Library={
           justify-content:
             space-between;
 
-
           gap:10px;
 
-
-          color:
-            var(--muted);
-
+          color:var(--muted);
 
           font-size:11px;
 
@@ -2601,10 +2033,7 @@ const Library={
 
           height:6px;
 
-
-          border-radius:
-            999px;
-
+          border-radius:999px;
 
           background:
             rgba(
@@ -2613,7 +2042,6 @@ const Library={
               255,
               .07
             );
-
 
           overflow:hidden;
 
@@ -2624,10 +2052,7 @@ const Library={
 
           height:100%;
 
-
-          border-radius:
-            inherit;
-
+          border-radius:inherit;
 
           background:
 
@@ -2648,9 +2073,7 @@ const Library={
 
           flex-wrap:wrap;
 
-
           gap:6px;
-
 
           margin-top:auto;
 
@@ -2660,9 +2083,7 @@ const Library={
         .unlock-pill{
 
           border:
-
             1px solid
-
             rgba(
               139,
               122,
@@ -2670,13 +2091,9 @@ const Library={
               .25
             );
 
-
-          border-radius:
-            999px;
-
+          border-radius:999px;
 
           color:
-
             rgba(
               139,
               122,
@@ -2684,14 +2101,11 @@ const Library={
               .7
             );
 
-
           font-size:10px;
 
           font-weight:700;
 
-
-          padding:
-            3px 8px;
+          padding:3px 8px;
 
         }
 
@@ -2700,9 +2114,7 @@ const Library={
 
           color:#d8b4fe;
 
-
           border-color:
-
             rgba(
               168,
               85,
@@ -2710,9 +2122,7 @@ const Library={
               .4
             );
 
-
           background:
-
             rgba(
               168,
               85,
@@ -2725,12 +2135,9 @@ const Library={
 
         .lesson-next strong{
 
-          color:
-            var(--glow);
+          color:var(--glow);
 
-
-          white-space:
-            nowrap;
+          white-space:nowrap;
 
         }
 
@@ -2739,9 +2146,7 @@ const Library={
 
           color:#f59e0b;
 
-
           background:
-
             rgba(
               245,
               158,
@@ -2749,11 +2154,8 @@ const Library={
               .12
             );
 
-
           border:
-
             1px solid
-
             rgba(
               245,
               158,
@@ -2768,9 +2170,7 @@ const Library={
 
           color:#cbd5e1;
 
-
           background:
-
             rgba(
               203,
               213,
@@ -2778,11 +2178,8 @@ const Library={
               .1
             );
 
-
           border:
-
             1px solid
-
             rgba(
               203,
               213,
@@ -2797,9 +2194,7 @@ const Library={
 
           color:#facc15;
 
-
           background:
-
             rgba(
               250,
               204,
@@ -2807,11 +2202,8 @@ const Library={
               .12
             );
 
-
           border:
-
             1px solid
-
             rgba(
               250,
               204,
@@ -2826,9 +2218,7 @@ const Library={
 
           color:#67e8f9;
 
-
           background:
-
             rgba(
               103,
               232,
@@ -2836,11 +2226,8 @@ const Library={
               .1
             );
 
-
           border:
-
             1px solid
-
             rgba(
               103,
               232,
@@ -2855,9 +2242,7 @@ const Library={
 
           color:#93c5fd;
 
-
           background:
-
             rgba(
               147,
               197,
@@ -2865,11 +2250,8 @@ const Library={
               .12
             );
 
-
           border:
-
             1px solid
-
             rgba(
               147,
               197,
@@ -2881,10 +2263,6 @@ const Library={
 
 
 
-        /* ================================================
-           RESPONSIVE
-           ================================================ */
-
         @media(max-width:760px){
 
           .rank-summary,
@@ -2892,14 +2270,6 @@ const Library={
 
             grid-template-columns:
               1fr;
-
-          }
-
-
-          .liquid-rank-panel{
-
-            min-height:
-              110px;
 
           }
 
@@ -2911,23 +2281,17 @@ const Library={
           reduce
         ){
 
-          .liquid-rank-panel,
-          .liquid-rank-panel::before,
-          .liquid-rank-panel::after{
+          .roadmap-card{
 
-            animation:
-              none!important;
-
-            transition:
+            transform:
               none!important;
 
           }
 
 
-          .roadmap-card{
+          .card-mouse-light{
 
-            transform:
-              none!important;
+            display:none;
 
           }
 
@@ -2949,23 +2313,12 @@ const Library={
 
     this.injectLibraryStyles();
 
-
     this.updateProgress();
 
 
     this.$nextTick(()=>{
 
-      /*
-        Overall Rank panel liquid effect.
-      */
-
       this.attachLiquidRankPanel();
-
-
-      /*
-        Six category card
-        interaction.
-      */
 
       this.attachLiquidCardInteractions();
 
