@@ -27,7 +27,13 @@ const Library={
             </div>
 
             <div class="rank-panel-rank">
-              {{ overallRank }}
+              <span class="rank-panel-emoji">
+                {{ overallRankEmoji }}
+              </span>
+
+              <span>
+                {{ overallRank }}
+              </span>
             </div>
 
             <div class="rank-panel-meta">
@@ -69,16 +75,13 @@ const Library={
 
             </div>
 
-
             <div class="lesson-title">
               {{ lesson.title }}
             </div>
 
-
             <div class="lesson-desc">
               {{ lesson.desc }}
             </div>
-
 
             <div class="lesson-progress-row">
 
@@ -93,7 +96,6 @@ const Library={
 
             </div>
 
-
             <div class="lesson-progress-track">
 
               <div
@@ -104,7 +106,6 @@ const Library={
               ></div>
 
             </div>
-
 
             <div class="unlock-row">
 
@@ -132,7 +133,6 @@ const Library={
 
             </div>
 
-
             <div class="lesson-next">
 
               <span>
@@ -153,7 +153,6 @@ const Library={
 
     </div>
   `,
-
 
   data(){
     return{
@@ -186,9 +185,7 @@ const Library={
         }
       ],
 
-
       lessons:[
-
         {
           id:'stars',
           title:'Stars',
@@ -214,7 +211,6 @@ const Library={
             </svg>
           `
         },
-
 
         {
           id:'galaxies',
@@ -244,7 +240,6 @@ const Library={
             </svg>
           `
         },
-
 
         {
           id:'cosmology',
@@ -277,7 +272,6 @@ const Library={
           `
         },
 
-
         {
           id:'planets',
           title:'Planets',
@@ -308,7 +302,6 @@ const Library={
           `
         },
 
-
         {
           id:'nebulae',
           title:'Nebulae',
@@ -337,7 +330,6 @@ const Library={
             </svg>
           `
         },
-
 
         {
           id:'observing',
@@ -371,12 +363,10 @@ const Library={
             </svg>
           `
         }
-
       ]
 
     };
   },
-
 
   computed:{
 
@@ -388,7 +378,6 @@ const Library={
       );
     },
 
-
     totalLessons(){
       return this.lessons.reduce(
         (sum,lesson)=>
@@ -396,7 +385,6 @@ const Library={
         0
       );
     },
-
 
     averageLevel(){
       return Math.round(
@@ -409,15 +397,25 @@ const Library={
       );
     },
 
-
     overallRank(){
       return this.rankForLevel(
         this.averageLevel
       ).name;
+    },
+
+    overallRankEmoji(){
+      const emojis={
+        BRONZE:'🥉',
+        SILVER:'🥈',
+        GOLD:'🥇',
+        PLATINUM:'💠',
+        DIAMOND:'💎'
+      };
+
+      return emojis[this.overallRank]||'🥉';
     }
 
   },
-
 
   methods:{
 
@@ -431,7 +429,6 @@ const Library={
       );
     },
 
-
     rankForLevel(level){
       return[
         ...this.ranks
@@ -444,12 +441,10 @@ const Library={
       this.ranks[0];
     },
 
-
     startLesson(lesson){
       window.location.href=
         `roadmap.html?category=${lesson.id}`;
     },
-
 
     updateProgress(){
 
@@ -511,7 +506,6 @@ const Library={
         return;
       }
 
-
       if(
         typeof window.getCategoryProgress===
         'function'&&
@@ -572,11 +566,6 @@ const Library={
 
     },
 
-
-    /* =====================================================
-       OVERALL RANK LIQUID GLASS
-       ===================================================== */
-
     attachLiquidRankPanel(){
 
       const node=
@@ -601,7 +590,6 @@ const Library={
       let targetRotate=0;
 
       let frame=null;
-
 
       const animate=()=>{
 
@@ -666,7 +654,6 @@ const Library={
 
       };
 
-
       const start=()=>{
 
         if(!frame){
@@ -677,7 +664,6 @@ const Library={
         }
 
       };
-
 
       const move=event=>{
 
@@ -856,7 +842,6 @@ const Library={
 
       };
 
-
       const reset=()=>{
 
         previousX=null;
@@ -904,7 +889,6 @@ const Library={
 
       };
 
-
       node.addEventListener(
         'pointermove',
         move
@@ -922,12 +906,6 @@ const Library={
 
     },
 
-
-    /* =====================================================
-       CATEGORY CARDS
-       STRONGER CURSOR INTERACTION + MOUSE LIGHT
-       ===================================================== */
-
     attachLiquidCardInteractions(){
 
       const cards=[
@@ -936,7 +914,6 @@ const Library={
         )
       ];
 
-
       cards.forEach(card=>{
 
         const light=
@@ -944,13 +921,11 @@ const Library={
             '.card-mouse-light'
           );
 
-
         let previousX=null;
         let previousY=null;
 
         let previousTime=
           performance.now();
-
 
         let currentX=0;
         let currentY=0;
@@ -961,7 +936,6 @@ const Library={
         let currentScaleX=1;
         let currentScaleY=1;
 
-
         let targetX=0;
         let targetY=0;
 
@@ -971,19 +945,11 @@ const Library={
         let targetScaleX=1;
         let targetScaleY=1;
 
-
         let frame=null;
-
 
         const animate=()=>{
 
-          /*
-            Slightly faster response,
-            but still soft.
-          */
-
           const spring=.15;
-
 
           currentX+=
             (
@@ -992,14 +958,12 @@ const Library={
             )*
             spring;
 
-
           currentY+=
             (
               targetY-
               currentY
             )*
             spring;
-
 
           currentRotateX+=
             (
@@ -1008,14 +972,12 @@ const Library={
             )*
             spring;
 
-
           currentRotateY+=
             (
               targetRotateY-
               currentRotateY
             )*
             spring;
-
 
           currentScaleX+=
             (
@@ -1024,14 +986,12 @@ const Library={
             )*
             spring;
 
-
           currentScaleY+=
             (
               targetScaleY-
               currentScaleY
             )*
             spring;
-
 
           card.style.transform=`
             perspective(850px)
@@ -1059,7 +1019,6 @@ const Library={
             )
           `;
 
-
           const moving=
             Math.abs(
               currentX-
@@ -1086,7 +1045,6 @@ const Library={
               targetScaleY
             )>.001;
 
-
           if(moving){
 
             frame=
@@ -1102,7 +1060,6 @@ const Library={
 
         };
 
-
         const start=()=>{
 
           if(!frame){
@@ -1116,85 +1073,56 @@ const Library={
 
         };
 
-
         const move=event=>{
 
           const rect=
             card.getBoundingClientRect();
 
-
           const localX=
             event.clientX-
             rect.left;
-
 
           const localY=
             event.clientY-
             rect.top;
 
-
           const x=
             localX/
             rect.width;
-
 
           const y=
             localY/
             rect.height;
 
-
           const nx=
             (x-.5)*
             2;
-
 
           const ny=
             (y-.5)*
             2;
 
-
-          /*
-            Stronger movement.
-          */
-
           targetX=
             nx*
             5.5;
-
 
           targetY=
             ny*
             4;
 
-
-          /*
-            Stronger tilt.
-          */
-
           targetRotateY=
             nx*
             2.6;
 
-
           targetRotateX=
             ny*
             -2;
-
-
-          /*
-            Slight hover enlargement.
-          */
 
           targetScaleX=
             1.008;
 
           targetScaleY=
             1.008;
-
-
-          /*
-            Mouse-follow highlight.
-          */
 
           if(light){
 
@@ -1203,25 +1131,17 @@ const Library={
               `${localX}px`
             );
 
-
             light.style.setProperty(
               '--light-y',
               `${localY}px`
             );
 
-
             light.style.opacity='1';
 
           }
 
-
-          /*
-            Velocity-based liquid stretch.
-          */
-
           const now=
             performance.now();
-
 
           const deltaTime=
             Math.max(
@@ -1229,7 +1149,6 @@ const Library={
               now-
               previousTime
             );
-
 
           if(
             previousX!==null&&
@@ -1243,14 +1162,12 @@ const Library={
               )/
               deltaTime;
 
-
             const vy=
               (
                 event.clientY-
                 previousY
               )/
               deltaTime;
-
 
             const speedX=
               Math.min(
@@ -1259,7 +1176,6 @@ const Library={
                 .022
               );
 
-
             const speedY=
               Math.min(
                 .022,
@@ -1267,16 +1183,13 @@ const Library={
                 .022
               );
 
-
             targetScaleX=
               1.008+
               speedX;
 
-
             targetScaleY=
               1.008+
               speedY;
-
 
             if(
               Math.abs(vx)>
@@ -1299,61 +1212,48 @@ const Library={
 
           }
 
-
           previousX=
             event.clientX;
-
 
           previousY=
             event.clientY;
 
-
           previousTime=
             now;
-
 
           card.classList.add(
             'card-liquid-hover'
           );
 
-
           start();
 
         };
-
 
         const leave=()=>{
 
           previousX=null;
           previousY=null;
 
-
           targetX=0;
           targetY=0;
-
 
           targetRotateX=0;
           targetRotateY=0;
 
-
           targetScaleX=1;
           targetScaleY=1;
-
 
           if(light){
             light.style.opacity='0';
           }
 
-
           card.classList.remove(
             'card-liquid-hover'
           );
 
-
           start();
 
         };
-
 
         const press=()=>{
 
@@ -1364,7 +1264,6 @@ const Library={
 
         };
 
-
         const release=()=>{
 
           targetScaleX=1.008;
@@ -1374,30 +1273,25 @@ const Library={
 
         };
 
-
         card.addEventListener(
           'pointermove',
           move
         );
-
 
         card.addEventListener(
           'pointerleave',
           leave
         );
 
-
         card.addEventListener(
           'pointercancel',
           leave
         );
 
-
         card.addEventListener(
           'pointerdown',
           press
         );
-
 
         card.addEventListener(
           'pointerup',
@@ -1407,7 +1301,6 @@ const Library={
       });
 
     },
-
 
     injectLibraryStyles(){
 
@@ -1419,16 +1312,13 @@ const Library={
         return;
       }
 
-
       const style=
         document.createElement(
           'style'
         );
 
-
       style.id=
         'library-roadmap-styles';
-
 
       style.textContent=`
 
@@ -1436,62 +1326,40 @@ const Library={
           margin-bottom:20px;
         }
 
-
         .library-hero{
           padding:2px 0 4px;
         }
 
-
         .rank-summary{
           display:grid;
-
           grid-template-columns:
             minmax(0,1fr)
             220px;
-
           gap:14px;
-
           align-items:stretch;
-
           margin-bottom:14px;
         }
 
-
         .rank-kicker{
           color:var(--violet);
-
           font-size:11px;
-
           font-weight:800;
-
           letter-spacing:.12em;
-
           text-transform:uppercase;
-
           margin-bottom:5px;
         }
 
-
         .rank-title{
           color:var(--stardust);
-
           font-size:
             clamp(
               22px,
               4vw,
               34px
             );
-
           line-height:1.05;
-
           max-width:720px;
         }
-
-
-
-        /* ================================================
-           OVERALL RANK LIQUID PANEL
-           ================================================ */
 
         .liquid-rank-panel{
 
@@ -1509,25 +1377,17 @@ const Library={
 
           --rank-rotate:0deg;
 
-
           min-height:118px;
 
           padding:14px;
 
-
           display:flex;
-
           flex-direction:column;
-
           justify-content:center;
 
-
           position:relative;
-
           isolation:isolate;
-
           overflow:hidden;
-
 
           border:
             1px solid
@@ -1538,9 +1398,7 @@ const Library={
               .17
             );
 
-
           border-radius:18px;
-
 
           background:
 
@@ -1610,16 +1468,13 @@ const Library={
               )
             );
 
-
           -webkit-backdrop-filter:
             blur(22px)
             saturate(210%);
 
-
           backdrop-filter:
             blur(22px)
             saturate(210%);
-
 
           box-shadow:
 
@@ -1640,7 +1495,6 @@ const Library={
               .38
             );
 
-
           transform:
 
             rotate(
@@ -1655,87 +1509,75 @@ const Library={
               var(--rank-scale-y)
             );
 
-
           transform-origin:center;
 
           will-change:
             transform;
-
         }
-
 
         .liquid-rank-panel>*{
           position:relative;
           z-index:2;
         }
 
-
         .rank-panel-label{
           color:var(--muted);
-
           font-size:10px;
-
           font-weight:800;
-
           letter-spacing:.12em;
-
           text-transform:uppercase;
         }
 
-
         .rank-panel-rank{
           color:var(--stardust);
-
           font-size:26px;
-
           font-weight:900;
-
           margin-top:9px;
+
+          display:flex;
+          align-items:center;
+          gap:9px;
         }
 
+        .rank-panel-emoji{
+          display:inline-flex;
+          align-items:center;
+          justify-content:center;
+
+          font-size:25px;
+          line-height:1;
+
+          filter:
+            drop-shadow(
+              0 2px 5px
+              rgba(0,0,0,.28)
+            );
+        }
 
         .rank-panel-meta{
           color:var(--muted);
-
           font-size:11px;
-
           margin-top:8px;
         }
 
-
-
-        /* ================================================
-           CATEGORY CARDS
-           COLORS ARE UNCHANGED
-           ================================================ */
-
         .roadmap-grid{
-
           grid-template-columns:
-
             repeat(
               2,
               minmax(0,1fr)
             );
 
-
           gap:12px;
-
         }
-
 
         .roadmap-card{
 
           min-height:216px;
 
-
           display:flex;
-
           flex-direction:column;
 
-
           gap:9px;
-
 
           background:
 
@@ -1764,24 +1606,17 @@ const Library={
               .07
             );
 
-
           position:relative;
-
           overflow:hidden;
 
-
           transform-origin:center;
-
           transform-style:
             preserve-3d;
-
 
           will-change:
             transform;
 
-
           transition:
-
             border-color
             var(--tr),
 
@@ -1790,23 +1625,14 @@ const Library={
 
             box-shadow
             .2s ease;
-
         }
-
-
-        /*
-          Original grid texture.
-        */
 
         .roadmap-card::after{
 
           content:'';
 
-
           position:absolute;
-
           inset:0;
-
 
           background-image:
 
@@ -1838,52 +1664,32 @@ const Library={
               1px
             );
 
-
           background-size:
             32px 32px;
 
-
           pointer-events:none;
 
-
           z-index:1;
-
         }
-
-
-        /*
-          Mouse highlight.
-          Does not replace card color.
-          It just sits above it.
-        */
 
         .card-mouse-light{
 
           --light-x:50%;
           --light-y:50%;
 
-
           position:absolute;
 
-
           left:0;
-
           top:0;
 
-
           width:100%;
-
           height:100%;
-
 
           pointer-events:none;
 
-
           z-index:2;
 
-
           opacity:0;
-
 
           background:
 
@@ -1922,13 +1728,10 @@ const Library={
               72%
             );
 
-
           transition:
             opacity
             .2s ease;
-
         }
-
 
         .roadmap-card.card-liquid-hover{
 
@@ -1942,9 +1745,7 @@ const Library={
               0,
               .18
             );
-
         }
-
 
         .roadmap-card>*:not(
           .card-mouse-light
@@ -1953,32 +1754,20 @@ const Library={
           position:relative;
 
           z-index:3;
-
         }
-
 
         .roadmap-card-top{
-
           display:flex;
-
           align-items:flex-start;
-
           justify-content:
             space-between;
-
           gap:10px;
-
         }
 
-
         .roadmap-icon{
-
           width:34px;
-
           height:34px;
-
           margin-bottom:0;
-
 
           background:
             rgba(
@@ -1988,7 +1777,6 @@ const Library={
               .05
             );
 
-
           border:
             1px solid
             rgba(
@@ -1997,42 +1785,26 @@ const Library={
               255,
               .08
             );
-
         }
-
 
         .roadmap-icon svg{
-
           width:21px;
-
           height:21px;
-
         }
-
 
         .lesson-progress-row,
         .lesson-next{
-
           display:flex;
-
           align-items:center;
-
           justify-content:
             space-between;
-
           gap:10px;
-
           color:var(--muted);
-
           font-size:11px;
-
         }
 
-
         .lesson-progress-track{
-
           height:6px;
-
           border-radius:999px;
 
           background:
@@ -2044,44 +1816,28 @@ const Library={
             );
 
           overflow:hidden;
-
         }
 
-
         .lesson-progress-fill{
-
           height:100%;
-
           border-radius:inherit;
 
           background:
-
             linear-gradient(
               90deg,
-
               var(--purple),
-
               var(--glow)
             );
-
         }
-
 
         .unlock-row{
-
           display:flex;
-
           flex-wrap:wrap;
-
           gap:6px;
-
           margin-top:auto;
-
         }
 
-
         .unlock-pill{
-
           border:
             1px solid
             rgba(
@@ -2102,16 +1858,11 @@ const Library={
             );
 
           font-size:10px;
-
           font-weight:700;
-
           padding:3px 8px;
-
         }
 
-
         .unlock-pill.is-open{
-
           color:#d8b4fe;
 
           border-color:
@@ -2129,23 +1880,15 @@ const Library={
               247,
               .12
             );
-
         }
-
 
         .lesson-next strong{
-
           color:var(--glow);
-
           white-space:nowrap;
-
         }
 
-
         .tier-bronze{
-
           color:#f59e0b;
-
           background:
             rgba(
               245,
@@ -2153,7 +1896,6 @@ const Library={
               11,
               .12
             );
-
           border:
             1px solid
             rgba(
@@ -2162,14 +1904,10 @@ const Library={
               11,
               .22
             );
-
         }
 
-
         .tier-silver{
-
           color:#cbd5e1;
-
           background:
             rgba(
               203,
@@ -2177,7 +1915,6 @@ const Library={
               225,
               .1
             );
-
           border:
             1px solid
             rgba(
@@ -2186,14 +1923,10 @@ const Library={
               225,
               .2
             );
-
         }
 
-
         .tier-gold{
-
           color:#facc15;
-
           background:
             rgba(
               250,
@@ -2201,7 +1934,6 @@ const Library={
               21,
               .12
             );
-
           border:
             1px solid
             rgba(
@@ -2210,14 +1942,10 @@ const Library={
               21,
               .24
             );
-
         }
 
-
         .tier-platinum{
-
           color:#67e8f9;
-
           background:
             rgba(
               103,
@@ -2225,7 +1953,6 @@ const Library={
               249,
               .1
             );
-
           border:
             1px solid
             rgba(
@@ -2234,14 +1961,10 @@ const Library={
               249,
               .22
             );
-
         }
 
-
         .tier-diamond{
-
           color:#93c5fd;
-
           background:
             rgba(
               147,
@@ -2249,7 +1972,6 @@ const Library={
               253,
               .12
             );
-
           border:
             1px solid
             rgba(
@@ -2258,10 +1980,7 @@ const Library={
               253,
               .25
             );
-
         }
-
-
 
         @media(max-width:760px){
 
@@ -2270,11 +1989,8 @@ const Library={
 
             grid-template-columns:
               1fr;
-
           }
-
         }
-
 
         @media(
           prefers-reduced-motion:
@@ -2282,39 +1998,29 @@ const Library={
         ){
 
           .roadmap-card{
-
             transform:
               none!important;
-
           }
-
 
           .card-mouse-light{
-
             display:none;
-
           }
-
         }
 
       `;
 
-
       document.head.appendChild(
         style
       );
-
     }
 
   },
-
 
   mounted(){
 
     this.injectLibraryStyles();
 
     this.updateProgress();
-
 
     this.$nextTick(()=>{
 
@@ -2324,19 +2030,16 @@ const Library={
 
     });
 
-
     this._progressHandler=()=>{
 
       this.updateProgress();
 
     };
 
-
     window.addEventListener(
       'cosmoklub-progress',
       this._progressHandler
     );
-
 
     window.addEventListener(
       'storage',
@@ -2345,14 +2048,12 @@ const Library={
 
   },
 
-
   beforeUnmount(){
 
     window.removeEventListener(
       'cosmoklub-progress',
       this._progressHandler
     );
-
 
     window.removeEventListener(
       'storage',
