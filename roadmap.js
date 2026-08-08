@@ -91,56 +91,271 @@ function attachLiquidGlass(node){
     return;
   }
 
-  const updateLight=event=>{
+  let previousX=null;
+  let previousY=null;
+  let previousTime=performance.now();
+
+  let currentStretchX=1;
+  let currentStretchY=1;
+  let targetStretchX=1;
+  let targetStretchY=1;
+
+  let currentRotate=0;
+  let targetRotate=0;
+
+  let animationFrame=null;
+
+  function animateLiquid(){
+    currentStretchX+=(targetStretchX-currentStretchX)*0.15;
+    currentStretchY+=(targetStretchY-currentStretchY)*0.15;
+    currentRotate+=(targetRotate-currentRotate)*0.15;
+
+    node.style.setProperty(
+      '--liquid-scale-x',
+      currentStretchX.toFixed(4)
+    );
+
+    node.style.setProperty(
+      '--liquid-scale-y',
+      currentStretchY.toFixed(4)
+    );
+
+    node.style.setProperty(
+      '--liquid-rotate',
+      `${currentRotate.toFixed(2)}deg`
+    );
+
+    const moving=
+      Math.abs(currentStretchX-targetStretchX)>0.001||
+      Math.abs(currentStretchY-targetStretchY)>0.001||
+      Math.abs(currentRotate-targetRotate)>0.05;
+
+    if(moving){
+      animationFrame=requestAnimationFrame(animateLiquid);
+    }else{
+      animationFrame=null;
+    }
+  }
+
+  function startAnimation(){
+    if(!animationFrame){
+      animationFrame=requestAnimationFrame(animateLiquid);
+    }
+  }
+
+  function handlePointerMove(event){
     const rect=node.getBoundingClientRect();
 
-    const x=((event.clientX-rect.left)/rect.width)*100;
-    const y=((event.clientY-rect.top)/rect.height)*100;
+    const localX=event.clientX-rect.left;
+    const localY=event.clientY-rect.top;
 
-    const offsetX=((x-50)/50)*1.4;
-    const offsetY=((y-50)/50)*1.4;
+    const percentX=Math.max(
+      0,
+      Math.min(
+        100,
+        (localX/rect.width)*100
+      )
+    );
+
+    const percentY=Math.max(
+      0,
+      Math.min(
+        100,
+        (localY/rect.height)*100
+      )
+    );
 
     node.style.setProperty(
       '--glass-x',
-      `${Math.max(0,Math.min(100,x))}%`
+      `${percentX}%`
     );
 
     node.style.setProperty(
       '--glass-y',
-      `${Math.max(0,Math.min(100,y))}%`
+      `${percentY}%`
+    );
+
+    const normalizedX=(percentX-50)/50;
+    const normalizedY=(percentY-50)/50;
+
+    node.style.setProperty(
+      '--liquid-x',
+      normalizedX.toFixed(3)
     );
 
     node.style.setProperty(
-      '--glass-shift-x',
-      `${offsetX}px`
+      '--liquid-y',
+      normalizedY.toFixed(3)
     );
 
     node.style.setProperty(
-      '--glass-shift-y',
-      `${offsetY-3}px`
+      '--highlight-x',
+      `${50+normalizedX*20}%`
     );
-  };
 
-  const resetLight=()=>{
-    node.style.setProperty('--glass-x','50%');
-    node.style.setProperty('--glass-y','28%');
-    node.style.setProperty('--glass-shift-x','0px');
-    node.style.setProperty('--glass-shift-y','0px');
-  };
+    node.style.setProperty(
+      '--highlight-y',
+      `${35+normalizedY*18}%`
+    );
+
+    const now=performance.now();
+    const deltaTime=Math.max(
+      8,
+      now-previousTime
+    );
+
+    if(previousX!==null&&previousY!==null){
+      const velocityX=
+        (event.clientX-previousX)/deltaTime;
+
+      const velocityY=
+        (event.clientY-previousY)/deltaTime;
+
+      const speed=Math.min(
+        1,
+        Math.hypot(
+          velocityX,
+          velocityY
+        )*0.9
+      );
+
+      targetStretchX=
+        1+
+        Math.min(
+          .09,
+          Math.abs(velocityX)*.07
+        );
+
+      targetStretchY=
+        1+
+        Math.min(
+          .09,
+          Math.abs(velocityY)*.07
+        );
+
+      if(
+        Math.abs(velocityX)>
+        Math.abs(velocityY)
+      ){
+        targetStretchY=
+          1-
+          Math.min(
+            .045,
+            speed*.035
+          );
+      }else{
+        targetStretchX=
+          1-
+          Math.min(
+            .045,
+            speed*.035
+          );
+      }
+
+      targetRotate=
+        Math.max(
+          -5,
+          Math.min(
+            5,
+            velocityX*4
+          )
+        );
+    }
+
+    previousX=event.clientX;
+    previousY=event.clientY;
+    previousTime=now;
+
+    node.classList.add('is-liquid-hover');
+
+    startAnimation();
+  }
+
+  function resetLiquid(){
+    previousX=null;
+    previousY=null;
+
+    targetStretchX=1;
+    targetStretchY=1;
+    targetRotate=0;
+
+    node.style.setProperty(
+      '--glass-x',
+      '50%'
+    );
+
+    node.style.setProperty(
+      '--glass-y',
+      '28%'
+    );
+
+    node.style.setProperty(
+      '--liquid-x',
+      '0'
+    );
+
+    node.style.setProperty(
+      '--liquid-y',
+      '0'
+    );
+
+    node.style.setProperty(
+      '--highlight-x',
+      '50%'
+    );
+
+    node.style.setProperty(
+      '--highlight-y',
+      '30%'
+    );
+
+    node.classList.remove(
+      'is-liquid-hover'
+    );
+
+    startAnimation();
+  }
 
   node.addEventListener(
     'pointermove',
-    updateLight
+    handlePointerMove
   );
 
   node.addEventListener(
     'pointerleave',
-    resetLight
+    resetLiquid
   );
 
   node.addEventListener(
     'pointercancel',
-    resetLight
+    resetLiquid
+  );
+
+  node.addEventListener(
+    'pointerdown',
+    ()=>{
+      node.classList.add(
+        'is-liquid-pressed'
+      );
+    }
+  );
+
+  node.addEventListener(
+    'pointerup',
+    ()=>{
+      node.classList.remove(
+        'is-liquid-pressed'
+      );
+    }
+  );
+
+  node.addEventListener(
+    'pointerleave',
+    ()=>{
+      node.classList.remove(
+        'is-liquid-pressed'
+      );
+    }
   );
 }
 
