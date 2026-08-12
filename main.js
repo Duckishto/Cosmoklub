@@ -9,7 +9,7 @@ const { createApp } = Vue;
 // startExploring() skips straight to the dashboard instead of requiring
 // an account, and the session-restore listener in mounted() is skipped.
 // To bring the system back, set this to true.
-const AUTH_ENABLED = false;
+const AUTH_ENABLED = true;
 
 // ---------- SVG Icon Templates ----------
 const SVGS = {
