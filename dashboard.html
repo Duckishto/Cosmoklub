@@ -75,6 +75,10 @@
 <!-- Shared helpers (starfield backdrop) -->
 <script src="common.js"></script>
 
+<!-- Supabase client must load before progress.js, which uses it to sync
+     XP/lesson-completions server-side for signed-in users -->
+<script src="api/supabase-client.js"></script>
+
 <!-- Library progression data must load before library.js -->
 <script src="course-data.js"></script>
 <script src="progress.js"></script>
