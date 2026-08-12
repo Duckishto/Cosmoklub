@@ -477,3 +477,10 @@ function renderRoadmap(){
 }
 
 renderRoadmap();
+
+// progress.js loads XP/completions asynchronously (Supabase for signed-in
+// users, localStorage for guests), so the very first renderRoadmap() call
+// above can happen before that data has arrived. Re-render whenever
+// progress.js reports a change — the initial load, sign-in/sign-out, and
+// every completed lesson all dispatch this event.
+window.addEventListener('cosmoklub-progress-changed',renderRoadmap);
