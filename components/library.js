@@ -2036,8 +2036,12 @@ const Library={
 
     };
 
+    // progress.js dispatches 'cosmoklub-progress-changed' (on the initial
+    // async load, sign-in/sign-out, and every completed lesson) — this used
+    // to listen for 'cosmoklub-progress', which is never dispatched, so
+    // live updates never actually reached the library tab.
     window.addEventListener(
-      'cosmoklub-progress',
+      'cosmoklub-progress-changed',
       this._progressHandler
     );
 
@@ -2051,7 +2055,7 @@ const Library={
   beforeUnmount(){
 
     window.removeEventListener(
-      'cosmoklub-progress',
+      'cosmoklub-progress-changed',
       this._progressHandler
     );
 
