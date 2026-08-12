@@ -1,845 +1,896 @@
-const params=new URLSearchParams(window.location.search);
-const categoryId=params.get('category');
-const lessonId=params.get('lesson');
-const category=COURSE_DATA[categoryId];
+// ---------------------------------------------------------------------------
+// CosmoKlub — progress tracking (XP, levels, ranks, completed lessons).
+//
+// Progress lives in one of two places, chosen automatically:
+//   - Signed in (a Supabase session is present): the server is
+//     authoritative. Reads come from `user_progress` / `lesson_completions`,
+//     and the ONLY way to earn XP is the `complete_lesson()` RPC (see
+//     supabase/schema-progress.sql) — this file never writes XP directly.
+//   - Signed out, or Supabase isn't configured on this deployment: falls
+//     back to the original localStorage-only behavior, so the site keeps
+//     working as a solo demo for anonymous visitors (dashboard/roadmap/
+//     lesson pages don't require an account).
+//
+// Every public getter below (getCategoryProgress, getCategoryStats,
+// getAllCategoryStats, getOverallProgress, isLessonCompleted, ...) is
+// SYNCHRONOUS — it reads from an in-memory snapshot kept up to date with
+// whichever source is active. That snapshot starts empty and is filled in
+// asynchronously right after this script runs. If a render needs to be sure
+// it has real data (not the brief initial zero-state):
+//   - await window.progressReady, or
+//   - listen for the 'cosmoklub-progress-changed' event — it fires once the
+//     initial load finishes, again on every sign-in/sign-out, and on every
+//     completeLesson() call.
+// ---------------------------------------------------------------------------
 
-if(!category){
-  console.error('Category not found:',categoryId);
-  window.location.href='dashboard.html';
-  throw new Error('Unknown category');
+const COSMOKLUB_PROGRESS_KEY='cosmoklub-progress-v2';
+
+const COSMOKLUB_CATEGORY_IDS=[
+  'stars',
+  'galaxies',
+  'cosmology',
+  'planets',
+  'nebulae',
+  'observing'
+];
+
+const COSMOKLUB_RANKS=[
+  {
+    name:'BRONZE',
+    className:'rank-bronze',
+    tierClass:'tier-bronze',
+    minLevel:1,
+    maxLevel:4
+  },
+  {
+    name:'SILVER',
+    className:'rank-silver',
+    tierClass:'tier-silver',
+    minLevel:5,
+    maxLevel:8
+  },
+  {
+    name:'GOLD',
+    className:'rank-gold',
+    tierClass:'tier-gold',
+    minLevel:9,
+    maxLevel:12
+  },
+  {
+    name:'PLATINUM',
+    className:'rank-platinum',
+    tierClass:'tier-platinum',
+    minLevel:13,
+    maxLevel:16
+  },
+  {
+    name:'DIAMOND',
+    className:'rank-diamond',
+    tierClass:'tier-diamond',
+    minLevel:17,
+    maxLevel:20
+  }
+];
+
+// Mirrors level_for_xp()'s threshold array in supabase/schema-progress.sql
+// exactly, so the client and the server always agree on level for a given
+// XP total. Keep both in sync if either changes.
+const COSMOKLUB_LEVEL_THRESHOLDS=[
+  0,
+  20,
+  50,
+  80,
+  120,
+  160,
+  200,
+  240,
+  285,
+  330,
+  375,
+  420,
+  470,
+  520,
+  570,
+  620,
+  675,
+  730,
+  785,
+  840
+];
+
+// ===========================================================================
+// Pure level/rank helpers — no storage involved. Mirror level_for_xp() /
+// rank_for_level() in supabase/schema-progress.sql exactly.
+// ===========================================================================
+
+function getRankForLevel(level){
+  const safeLevel=Math.max(
+    1,
+    Math.min(20,Number(level)||1)
+  );
+
+  return(
+    [...COSMOKLUB_RANKS]
+      .reverse()
+      .find(rank=>safeLevel>=rank.minLevel)||
+    COSMOKLUB_RANKS[0]
+  );
 }
 
-const allLessons=category.sections.flatMap(section=>section.lessons);
-const currentLesson=allLessons.find(lesson=>lesson.id===lessonId);
+function getLevelFromXP(xp){
+  const safeXP=Math.max(0,Number(xp)||0);
+  let level=1;
 
-if(!currentLesson){
-  console.error('Lesson not found:',lessonId);
-  console.log('Available lessons:',allLessons.map(lesson=>lesson.id));
-  window.location.href=`roadmap.html?category=${category.id}`;
-  throw new Error('Unknown lesson');
+  for(let i=0;i<COSMOKLUB_LEVEL_THRESHOLDS.length;i++){
+    if(safeXP>=COSMOKLUB_LEVEL_THRESHOLDS[i]){
+      level=i+1;
+    }else{
+      break;
+    }
+  }
+
+  return Math.min(level,20);
 }
 
-const lessonCover=document.getElementById('lessonCover');
-const learningExperience=document.getElementById('learningExperience');
-const learningStage=document.getElementById('learningStage');
-const progressFill=document.getElementById('learningProgressFill');
-const progressText=document.getElementById('learningProgressText');
-const startButton=document.getElementById('startLearning');
-const roadmapBack=document.getElementById('roadmapBack');
-const previousButton=document.getElementById('previousStep');
-const forwardButton=document.getElementById('forwardStep');
-const categoryElement=document.getElementById('lessonCategory');
-const titleElement=document.getElementById('lessonTitle');
-const descriptionElement=document.getElementById('lessonDescription');
-const durationElement=document.getElementById('lessonDuration');
-const xpElement=document.getElementById('lessonXp');
+function getLevelProgress(xp){
+  const safeXP=Math.max(0,Number(xp)||0);
+  const level=getLevelFromXP(safeXP);
+  const rank=getRankForLevel(level);
 
-document.title=`${currentLesson.title} | CosmoKlub`;
+  const currentThreshold=
+    COSMOKLUB_LEVEL_THRESHOLDS[level-1]??0;
 
-if(categoryElement)categoryElement.textContent=category.title.toUpperCase();
-if(titleElement)titleElement.textContent=currentLesson.title;
-if(descriptionElement)descriptionElement.textContent=currentLesson.description;
-if(durationElement)durationElement.textContent=currentLesson.duration;
-if(xpElement)xpElement.textContent=`${currentLesson.xp} XP`;
+  const isMaxLevel=level>=COSMOKLUB_LEVEL_THRESHOLDS.length;
 
-let steps=[];
-let currentStep=0;
-let nasaImage=null;
-let nasaLoading=false;
-let questionStates={};
-let activityStates={};
+  const nextThreshold=isMaxLevel
+    ?currentThreshold
+    :COSMOKLUB_LEVEL_THRESHOLDS[level];
 
-function buildSteps(){
-  steps=[];
+  let progressPercent=100;
 
-  if(currentLesson.content?.intro){
-    steps.push({
-      type:'intro',
-      title:currentLesson.title,
-      text:currentLesson.content.intro
-    });
+  if(!isMaxLevel){
+    const range=nextThreshold-currentThreshold;
+    const earned=safeXP-currentThreshold;
+
+    progressPercent=range>0
+      ?Math.round((earned/range)*100)
+      :100;
   }
 
-  if(currentLesson.nasaSearch){
-    steps.push({
-      type:'image',
-      query:currentLesson.nasaSearch
-    });
-  }
+  progressPercent=Math.max(
+    0,
+    Math.min(100,progressPercent)
+  );
 
-  if(Array.isArray(currentLesson.content?.sections)){
-    currentLesson.content.sections.forEach(section=>{
-      steps.push({
-        type:'content',
-        title:section.title,
-        text:section.text
-      });
-    });
-  }
-
-  if(Array.isArray(currentLesson.content?.activities)){
-    currentLesson.content.activities.forEach(activity=>{
-      steps.push({
-        type:'activity',
-        activity
-      });
-    });
-  }
-
-  if(Array.isArray(currentLesson.content?.questions)){
-    currentLesson.content.questions.forEach(question=>{
-      steps.push({
-        type:'question',
-        question
-      });
-    });
-  }
-
-  if(
-    Array.isArray(currentLesson.content?.keyFacts)&&
-    currentLesson.content.keyFacts.length
-  ){
-    steps.push({
-      type:'facts',
-      facts:currentLesson.content.keyFacts
-    });
-  }
-
-  steps.push({
-    type:'complete'
-  });
+  return{
+    xp:safeXP,
+    level,
+    rank:rank.name,
+    rankData:rank,
+    rankClass:rank.className,
+    tierClass:rank.tierClass,
+    currentThreshold,
+    nextThreshold,
+    xpIntoLevel:safeXP-currentThreshold,
+    xpForNextLevel:isMaxLevel
+      ?0
+      :Math.max(0,nextThreshold-safeXP),
+    progress:progressPercent,
+    isMaxLevel
+  };
 }
 
-async function fetchNasaImage(){
-  if(!currentLesson.nasaSearch||nasaLoading)return null;
+function getNextRank(level){
+  const currentRank=getRankForLevel(level);
+  const index=COSMOKLUB_RANKS.findIndex(
+    rank=>rank.name===currentRank.name
+  );
 
-  nasaLoading=true;
-
-  try{
-    const url=`https://images-api.nasa.gov/search?q=${encodeURIComponent(currentLesson.nasaSearch)}&media_type=image`;
-    const response=await fetch(url);
-
-    if(!response.ok){
-      throw new Error(`NASA request failed: ${response.status}`);
-    }
-
-    const data=await response.json();
-    const items=data.collection?.items||[];
-    const usableItem=items.find(item=>item.links?.[0]?.href);
-
-    if(!usableItem){
-      nasaLoading=false;
-      return null;
-    }
-
-    nasaImage={
-      src:usableItem.links[0].href,
-      title:usableItem.data?.[0]?.title||currentLesson.title,
-      description:usableItem.data?.[0]?.description||''
-    };
-
-    nasaLoading=false;
-
-    if(steps[currentStep]?.type==='image'){
-      renderStep();
-    }
-
-    return nasaImage;
-  }catch(error){
-    console.warn('NASA image could not be loaded:',error);
-    nasaLoading=false;
-    nasaImage=null;
+  if(index<0||index>=COSMOKLUB_RANKS.length-1){
     return null;
   }
+
+  return COSMOKLUB_RANKS[index+1];
 }
 
-function updateProgress(){
-  if(!steps.length)return;
+// ===========================================================================
+// Local (guest / signed-out) storage — the original localStorage-only
+// implementation, kept as the fallback path.
+// ===========================================================================
 
-  const displayStep=Math.min(currentStep+1,steps.length);
-  const percentage=(displayStep/steps.length)*100;
-
-  if(progressFill){
-    progressFill.style.width=`${percentage}%`;
-  }
-
-  if(progressText){
-    progressText.textContent=`${displayStep} / ${steps.length}`;
-  }
-}
-
-function canAdvanceFromStep(step){
-  if(!step)return false;
-
-  if(
-    step.type==='intro'||
-    step.type==='image'||
-    step.type==='content'||
-    step.type==='facts'
-  ){
-    return true;
-  }
-
-  if(step.type==='question'){
-    return Boolean(
-      questionStates[step.question.id]&&
-      Number.isInteger(questionStates[step.question.id].selected)
-    );
-  }
-
-  if(step.type==='activity'){
-    return Boolean(
-      activityStates[step.activity.id]?.completed
-    );
-  }
-
-  if(step.type==='complete'){
-    return true;
-  }
-
-  return false;
-}
-
-function updateNavigation(){
-  const step=steps[currentStep];
-
-  if(previousButton){
-    previousButton.disabled=currentStep===0;
-  }
-
-  if(!forwardButton)return;
-
-  if(step?.type==='complete'){
-    forwardButton.disabled=false;
-    forwardButton.innerHTML=`
-      <span>Roadmap</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="m9 18 6-6-6-6"/>
-      </svg>
-    `;
-    return;
-  }
-
-  forwardButton.innerHTML=`
-    <span>Next</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="m9 18 6-6-6-6"/>
-    </svg>
-  `;
-
-  forwardButton.disabled=!canAdvanceFromStep(step);
-}
-
-function scrollLessonToTop(){
-  const scrollContainer=document.querySelector('.lesson-scroll');
-
-  if(scrollContainer){
-    scrollContainer.scrollTo({
-      top:0,
-      behavior:'smooth'
-    });
-  }
-}
-
-function renderStep(){
-  const step=steps[currentStep];
-
-  if(!step)return;
-
-  updateProgress();
-  updateNavigation();
-
-  if(step.type==='intro'){
-    renderIntro(step);
-  }else if(step.type==='image'){
-    renderImage();
-  }else if(step.type==='content'){
-    renderContent(step);
-  }else if(step.type==='activity'){
-    renderActivity(step.activity);
-  }else if(step.type==='question'){
-    renderQuestion(step.question);
-  }else if(step.type==='facts'){
-    renderFacts(step.facts);
-  }else if(step.type==='complete'){
-    renderComplete();
-  }
-
-  updateNavigation();
-  scrollLessonToTop();
-}
-
-function renderIntro(step){
-  learningStage.innerHTML=`
-    <div class="learning-card">
-      <div class="learning-label">${escapeHtml(category.title)}</div>
-      <h1>${escapeHtml(step.title)}</h1>
-      <p>${escapeHtml(step.text)}</p>
-      <div class="step-hint">
-        Use Previous and Next above to move through this lesson.
-      </div>
-    </div>
-  `;
-}
-
-function renderImage(){
-  if(!nasaImage){
-    learningStage.innerHTML=`
-      <div class="learning-card">
-        <div class="nasa-label">NASA IMAGE</div>
-        <div class="nasa-loading">
-          <div class="nasa-loading-icon">✦</div>
-          <h2>${escapeHtml(currentLesson.title)}</h2>
-          <p>${nasaLoading?'Loading a relevant image from NASA...':'The NASA image could not be loaded. You can continue with the lesson.'}</p>
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  learningStage.innerHTML=`
-    <div class="learning-card image-learning-card">
-      <div class="nasa-label">NASA IMAGE</div>
-      <img
-        class="nasa-image"
-        src="${escapeAttribute(nasaImage.src)}"
-        alt="${escapeAttribute(nasaImage.title)}"
-      >
-      <h2>${escapeHtml(nasaImage.title)}</h2>
-      <p>${escapeHtml(trimText(nasaImage.description,500))}</p>
-    </div>
-  `;
-}
-
-function renderContent(step){
-  learningStage.innerHTML=`
-    <div class="learning-card">
-      <div class="learning-label">LEARN</div>
-      <h2>${escapeHtml(step.title)}</h2>
-      <p>${escapeHtml(step.text)}</p>
-    </div>
-  `;
-}
-
-function renderQuestion(question){
-  const answers=question.answers||[];
-  const saved=questionStates[question.id];
-
-  learningStage.innerHTML=`
-    <div class="learning-card">
-      <div class="learning-label">
-        ${currentLesson.type==='quiz'?'QUIZ':'CHECKPOINT'}
-      </div>
-
-      <h2>${escapeHtml(question.question)}</h2>
-
-      <div class="answer-list">
-        ${answers.map((answer,index)=>{
-          let classes='answer-button';
-
-          if(saved){
-            if(index===question.correctAnswer){
-              classes+=' answer-correct';
-            }
-
-            if(
-              index===saved.selected&&
-              index!==question.correctAnswer
-            ){
-              classes+=' answer-wrong';
-            }
-
-            if(index===saved.selected){
-              classes+=' answer-selected';
-            }
-          }
-
-          return`
-            <button
-              class="${classes}"
-              data-answer="${index}"
-              type="button"
-            >
-              ${escapeHtml(answer)}
-            </button>
-          `;
-        }).join('')}
-      </div>
-
-      <div id="questionFeedback">
-        ${saved?buildQuestionFeedback(question,saved):''}
-      </div>
-
-      ${saved?`
-        <div class="answer-edit-note">
-          You can select another answer to change your response.
-        </div>
-      `:''}
-    </div>
-  `;
-
-  const buttons=[
-    ...learningStage.querySelectorAll('.answer-button')
-  ];
-
-  buttons.forEach(button=>{
-    button.addEventListener('click',()=>{
-      const selected=Number(button.dataset.answer);
-      handleAnswer(question,selected);
-    });
-  });
-}
-
-function buildQuestionFeedback(question,state){
-  const correct=state.selected===question.correctAnswer;
-
-  return`
-    <div class="question-feedback ${correct?'feedback-correct':'feedback-wrong'}">
-      <strong>${correct?'Correct!':'Not quite.'}</strong>
-      <p>${escapeHtml(question.explanation||'')}</p>
-    </div>
-  `;
-}
-
-function handleAnswer(question,selected){
-  questionStates[question.id]={
-    selected,
-    correct:selected===question.correctAnswer
+function createEmptyProgress(){
+  return{
+    version:2,
+    categories:{}
   };
-
-  renderQuestion(question);
-  updateNavigation();
 }
 
-function renderActivity(activity){
-  if(activity.type==='ordering'){
-    renderOrdering(activity);
-    return;
+function normalizeCompletedLessons(value){
+  if(Array.isArray(value)){
+    return [...new Set(value.filter(item=>typeof item==='string'))];
   }
 
-  activityStates[activity.id]={
-    completed:true
-  };
-
-  updateNavigation();
-
-  learningStage.innerHTML=`
-    <div class="learning-card">
-      <div class="learning-label">ACTIVITY</div>
-      <h2>${escapeHtml(activity.title||'Activity')}</h2>
-      <p>Activity complete.</p>
-    </div>
-  `;
-}
-
-function shuffleArray(array){
-  const copy=[...array];
-
-  for(let i=copy.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [copy[i],copy[j]]=[copy[j],copy[i]];
+  if(value&&typeof value==='object'){
+    return Object.keys(value).filter(key=>value[key]);
   }
 
-  return copy;
+  return[];
 }
 
-function renderOrdering(activity){
-  if(!activityStates[activity.id]){
-    let shuffled=shuffleArray(activity.items);
-
-    if(
-      shuffled.every(
-        (item,index)=>item===activity.items[index]
-      )
-    ){
-      shuffled=[
-        ...activity.items.slice(1),
-        activity.items[0]
-      ];
-    }
-
-    activityStates[activity.id]={
-      items:shuffled,
-      completed:false
+function normalizeCategoryProgress(value){
+  if(!value||typeof value!=='object'){
+    return{
+      xp:0,
+      completedLessons:[]
     };
   }
 
-  const state=activityStates[activity.id];
+  const xp=Number(value.xp);
 
-  learningStage.innerHTML=`
-    <div class="learning-card">
-      <div class="learning-label">ACTIVITY</div>
-      <h2>${escapeHtml(activity.title)}</h2>
-      <p>${escapeHtml(activity.question)}</p>
+  return{
+    xp:Number.isFinite(xp)&&xp>=0?xp:0,
+    completedLessons:normalizeCompletedLessons(
+      value.completedLessons||
+      value.completed||
+      value.lessons||
+      value.completedLessonIds
+    )
+  };
+}
 
-      <p class="ordering-help">
-        Use the arrows to place the stages in the correct order.
-      </p>
+function normalizeProgress(value){
+  const result=createEmptyProgress();
 
-      <div class="ordering-list" id="orderingList"></div>
-
-      <div id="orderingFeedback">
-        ${state.completed?`
-          <div class="question-feedback feedback-correct">
-            <strong>Correct!</strong>
-            <p>${escapeHtml(activity.explanation||'')}</p>
-          </div>
-        `:''}
-      </div>
-
-      <button
-        class="learning-next activity-check-button"
-        id="checkOrder"
-        type="button"
-        ${state.completed?'disabled':''}
-      >
-        ${state.completed?'Completed':'Check Order'}
-      </button>
-    </div>
-  `;
-
-  const list=document.getElementById('orderingList');
-
-  function drawOrdering(){
-    list.innerHTML='';
-
-    state.items.forEach((item,index)=>{
-      const row=document.createElement('div');
-
-      row.className=
-        `ordering-item${state.completed?' ordering-correct':''}`;
-
-      row.innerHTML=`
-        <div class="ordering-number">${index+1}</div>
-
-        <div>${escapeHtml(item)}</div>
-
-        <div class="ordering-controls">
-          <button
-            class="ordering-button move-up"
-            data-index="${index}"
-            type="button"
-            ${index===0||state.completed?'disabled':''}
-          >
-            ↑
-          </button>
-
-          <button
-            class="ordering-button move-down"
-            data-index="${index}"
-            type="button"
-            ${index===state.items.length-1||state.completed?'disabled':''}
-          >
-            ↓
-          </button>
-        </div>
-      `;
-
-      list.appendChild(row);
-    });
-
-    list.querySelectorAll('.move-up').forEach(button=>{
-      button.addEventListener('click',()=>{
-        const index=Number(button.dataset.index);
-
-        if(index<=0||state.completed)return;
-
-        [
-          state.items[index-1],
-          state.items[index]
-        ]=[
-          state.items[index],
-          state.items[index-1]
-        ];
-
-        drawOrdering();
-      });
-    });
-
-    list.querySelectorAll('.move-down').forEach(button=>{
-      button.addEventListener('click',()=>{
-        const index=Number(button.dataset.index);
-
-        if(
-          index>=state.items.length-1||
-          state.completed
-        ){
-          return;
-        }
-
-        [
-          state.items[index+1],
-          state.items[index]
-        ]=[
-          state.items[index],
-          state.items[index+1]
-        ];
-
-        drawOrdering();
-      });
-    });
+  if(!value||typeof value!=='object'){
+    return result;
   }
 
-  drawOrdering();
+  const possibleCategories=
+    value.categories&&typeof value.categories==='object'
+      ?value.categories
+      :value;
 
-  const checkButton=document.getElementById('checkOrder');
-
-  if(checkButton&&!state.completed){
-    checkButton.addEventListener('click',()=>{
-      const correct=state.items.every(
-        (item,index)=>item===activity.items[index]
+  COSMOKLUB_CATEGORY_IDS.forEach(categoryId=>{
+    if(possibleCategories[categoryId]){
+      result.categories[categoryId]=normalizeCategoryProgress(
+        possibleCategories[categoryId]
       );
+    }
+  });
 
-      const feedback=document.getElementById('orderingFeedback');
+  return result;
+}
 
-      if(correct){
-        state.completed=true;
+function findLegacyProgress(){
+  const legacyKeys=[
+    'cosmoklub-progress-v1',
+    'cosmoklub-progress',
+    'cosmoklubProgress',
+    'cosmoklub_progress',
+    'cosmoklub-library-progress',
+    'cosmoklubLibraryProgress'
+  ];
 
-        feedback.innerHTML=`
-          <div class="question-feedback feedback-correct">
-            <strong>Correct!</strong>
-            <p>${escapeHtml(activity.explanation||'')}</p>
-          </div>
-        `;
+  for(const key of legacyKeys){
+    try{
+      const raw=localStorage.getItem(key);
 
-        checkButton.textContent='Completed';
-        checkButton.disabled=true;
+      if(!raw){
+        continue;
+      }
 
-        drawOrdering();
-        updateNavigation();
-      }else{
-        feedback.innerHTML=`
-          <div class="question-feedback feedback-wrong">
-            <strong>Not quite.</strong>
-            <p>Some stages are still out of order. Adjust them and try again.</p>
-          </div>
-        `;
+      const parsed=JSON.parse(raw);
+      const normalized=normalizeProgress(parsed);
+
+      if(Object.keys(normalized.categories).length>0){
+        return normalized;
+      }
+    }catch(error){
+      console.warn(`Could not read legacy CosmoKlub progress from ${key}.`,error);
+    }
+  }
+
+  return null;
+}
+
+function loadLocalProgress(){
+  try{
+    const raw=localStorage.getItem(COSMOKLUB_PROGRESS_KEY);
+
+    if(raw){
+      return normalizeProgress(JSON.parse(raw));
+    }
+
+    const legacy=findLegacyProgress();
+
+    if(legacy){
+      saveLocalProgress(legacy);
+      return legacy;
+    }
+  }catch(error){
+    console.warn('Could not load CosmoKlub progress.',error);
+  }
+
+  return createEmptyProgress();
+}
+
+function saveLocalProgress(progress){
+  try{
+    localStorage.setItem(
+      COSMOKLUB_PROGRESS_KEY,
+      JSON.stringify(normalizeProgress(progress))
+    );
+  }catch(error){
+    console.warn('Could not save CosmoKlub progress.',error);
+  }
+}
+
+// ===========================================================================
+// In-memory snapshot — the single source every public getter reads from,
+// regardless of whether it's currently backed by Supabase or localStorage.
+// ===========================================================================
+
+let progressSnapshot=createEmptyProgress();
+let progressSource='pending'; // 'pending' | 'local' | 'remote'
+let progressUserId=null;
+
+let resolveProgressReady;
+window.progressReady=new Promise(resolve=>{
+  resolveProgressReady=resolve;
+});
+let progressReadyResolved=false;
+
+function notifyProgressChanged(detail){
+  window.dispatchEvent(
+    new CustomEvent('cosmoklub-progress-changed',{
+      detail:detail||{}
+    })
+  );
+}
+
+function markProgressReady(){
+  if(!progressReadyResolved){
+    progressReadyResolved=true;
+    resolveProgressReady(progressSnapshot);
+  }
+}
+
+// ===========================================================================
+// Remote (Supabase) sync.
+// ===========================================================================
+
+async function fetchRemoteSnapshot(client,uid){
+  const snapshot=createEmptyProgress();
+
+  COSMOKLUB_CATEGORY_IDS.forEach(categoryId=>{
+    snapshot.categories[categoryId]={xp:0,completedLessons:[]};
+  });
+
+  // RLS on user_progress allows any authenticated user to SELECT the whole
+  // table (needed for leaderboards elsewhere) — .eq('user_id', uid) is what
+  // actually scopes this query down to the signed-in user's own rows.
+  // lesson_completions' RLS policy already scopes to auth.uid() = user_id,
+  // but the explicit filter is kept for clarity and defense in depth.
+  const [progressResult,completionResult]=await Promise.all([
+    client.from('user_progress').select('category_id, xp').eq('user_id',uid),
+    client.from('lesson_completions').select('category_id, lesson_id').eq('user_id',uid)
+  ]);
+
+  if(progressResult.error){
+    console.warn('Could not load CosmoKlub XP from Supabase.',progressResult.error);
+  }
+
+  if(completionResult.error){
+    console.warn('Could not load CosmoKlub lesson completions from Supabase.',completionResult.error);
+  }
+
+  (progressResult.data||[]).forEach(row=>{
+    if(snapshot.categories[row.category_id]){
+      snapshot.categories[row.category_id].xp=Number(row.xp)||0;
+    }
+  });
+
+  (completionResult.data||[]).forEach(row=>{
+    const category=snapshot.categories[row.category_id];
+
+    if(category&&!category.completedLessons.includes(row.lesson_id)){
+      category.completedLessons.push(row.lesson_id);
+    }
+  });
+
+  return snapshot;
+}
+
+async function refreshRemoteSnapshot(){
+  if(progressSource!=='remote'||!progressUserId){
+    return;
+  }
+
+  try{
+    const client=window.supabaseClient||await window.supabaseReady;
+
+    if(!client)return;
+
+    progressSnapshot=await fetchRemoteSnapshot(client,progressUserId);
+    notifyProgressChanged({refreshed:true});
+  }catch(error){
+    console.warn('Could not refresh CosmoKlub progress from Supabase.',error);
+  }
+}
+
+async function switchToRemote(client,uid){
+  progressSource='remote';
+  progressUserId=uid;
+
+  try{
+    progressSnapshot=await fetchRemoteSnapshot(client,uid);
+  }catch(error){
+    console.warn('Could not load CosmoKlub progress from Supabase; showing zeros.',error);
+    progressSnapshot=createEmptyProgress();
+  }
+
+  markProgressReady();
+  notifyProgressChanged({source:'remote'});
+}
+
+function switchToLocal(){
+  progressSource='local';
+  progressUserId=null;
+  progressSnapshot=loadLocalProgress();
+
+  markProgressReady();
+  notifyProgressChanged({source:'local'});
+}
+
+async function initProgress(){
+  try{
+    const client=window.supabaseClient||(window.supabaseReady?await window.supabaseReady:null);
+
+    if(!client){
+      switchToLocal();
+      return;
+    }
+
+    const{data}=await client.auth.getSession();
+    const user=data?.session?.user||null;
+
+    if(user){
+      await switchToRemote(client,user.id);
+    }else{
+      switchToLocal();
+    }
+
+    // Keep in sync with sign-in/sign-out that happens on THIS page — e.g.
+    // an OAuth redirect finishing on dashboard.html, or a logout click —
+    // not just the state at the moment this script first ran.
+    client.auth.onAuthStateChange((_event,session)=>{
+      const nextUser=session?.user||null;
+
+      if(nextUser&&(progressSource!=='remote'||progressUserId!==nextUser.id)){
+        switchToRemote(client,nextUser.id);
+      }else if(!nextUser&&progressSource!=='local'){
+        switchToLocal();
       }
     });
+  }catch(error){
+    console.warn('Could not determine CosmoKlub auth state; using local progress.',error);
+    switchToLocal();
   }
 }
 
-function renderFacts(facts){
-  learningStage.innerHTML=`
-    <div class="learning-card">
-      <div class="learning-label">KEY FACTS</div>
-      <h2>Remember These</h2>
+initProgress();
 
-      <div class="key-facts">
-        ${facts.map(fact=>`
-          <div class="key-fact">
-            <span>✦</span>
-            <p>${escapeHtml(fact)}</p>
-          </div>
-        `).join('')}
-      </div>
+// ===========================================================================
+// Public getters — synchronous, read from progressSnapshot.
+// ===========================================================================
 
-      <div class="step-hint">
-        Review anything you want with Previous, then choose Next when you're ready to finish.
-      </div>
-    </div>
-  `;
+function loadProgress(){
+  return progressSnapshot;
 }
 
-function calculateScore(){
-  const questions=
-    currentLesson.content?.questions||[];
+function getCategoryProgress(categoryId){
+  return normalizeCategoryProgress(progressSnapshot.categories[categoryId]);
+}
 
-  let answered=0;
-  let correct=0;
+function saveCategoryProgress(categoryId,categoryProgress){
+  if(progressSource==='remote'){
+    console.warn(
+      'saveCategoryProgress() is not available for signed-in accounts — '+
+      'XP and lesson completions can only be written by the server-side '+
+      'complete_lesson() function (see supabase/schema-progress.sql). '+
+      'Ignoring.'
+    );
+    return getCategoryProgress(categoryId);
+  }
 
-  questions.forEach(question=>{
-    const state=questionStates[question.id];
+  const progress=loadLocalProgress();
 
-    if(!state)return;
+  progress.categories[categoryId]=normalizeCategoryProgress(categoryProgress);
 
-    answered++;
+  saveLocalProgress(progress);
+  progressSnapshot=progress;
+  notifyProgressChanged({categoryId});
 
-    if(state.selected===question.correctAnswer){
-      correct++;
-    }
+  return progress.categories[categoryId];
+}
+
+function isLessonCompleted(categoryId,lessonId){
+  return getCategoryProgress(categoryId)
+    .completedLessons
+    .includes(lessonId);
+}
+
+// ---------------------------------------------------------------------------
+// completeLesson — the only way XP is earned. Always returns a Promise now
+// (it used to be synchronous): callers should `await` it, especially before
+// navigating away, since the signed-in path is a network round trip to the
+// complete_lesson() RPC.
+// ---------------------------------------------------------------------------
+async function completeLesson(categoryId,lessonId,xpAmount=0){
+  await window.progressReady; // make sure local vs. remote mode is known
+
+  if(progressSource==='remote'){
+    return completeLessonRemote(categoryId,lessonId);
+  }
+
+  return completeLessonLocal(categoryId,lessonId,xpAmount);
+}
+
+function completeLessonLocal(categoryId,lessonId,xpAmount){
+  const progress=loadLocalProgress();
+
+  const categoryProgress=normalizeCategoryProgress(
+    progress.categories[categoryId]
+  );
+
+  const alreadyCompleted=
+    categoryProgress.completedLessons.includes(lessonId);
+
+  const safeXP=Math.max(0,Number(xpAmount)||0);
+
+  if(!alreadyCompleted){
+    categoryProgress.completedLessons.push(lessonId);
+    categoryProgress.xp+=safeXP;
+
+    progress.categories[categoryId]=categoryProgress;
+    saveLocalProgress(progress);
+    progressSnapshot=progress;
+  }
+
+  const stats=getLevelProgress(categoryProgress.xp);
+
+  const result={
+    categoryId,
+    lessonId,
+    newlyCompleted:!alreadyCompleted,
+    alreadyCompleted,
+    xpAwarded:alreadyCompleted?0:safeXP,
+    totalXP:categoryProgress.xp,
+    completedLessons:[...categoryProgress.completedLessons],
+    level:stats.level,
+    rank:stats.rank,
+    rankData:stats.rankData,
+    nextThreshold:stats.nextThreshold,
+    xpForNextLevel:stats.xpForNextLevel,
+    progress:stats.progress,
+    isMaxLevel:stats.isMaxLevel,
+    newBadges:[],
+    newCosmetics:[]
+  };
+
+  notifyProgressChanged(result);
+
+  return result;
+}
+
+async function completeLessonRemote(categoryId,lessonId){
+  const client=window.supabaseClient||await window.supabaseReady;
+
+  if(!client){
+    console.warn('Supabase client unavailable; lesson completion was not saved.');
+
+    const fallbackStats=getLevelProgress(getCategoryProgress(categoryId).xp);
+
+    return{
+      categoryId,
+      lessonId,
+      newlyCompleted:false,
+      alreadyCompleted:isLessonCompleted(categoryId,lessonId),
+      xpAwarded:0,
+      totalXP:fallbackStats.xp,
+      completedLessons:getCategoryProgress(categoryId).completedLessons,
+      level:fallbackStats.level,
+      rank:fallbackStats.rank,
+      rankData:fallbackStats.rankData,
+      nextThreshold:fallbackStats.nextThreshold,
+      xpForNextLevel:fallbackStats.xpForNextLevel,
+      progress:fallbackStats.progress,
+      isMaxLevel:fallbackStats.isMaxLevel,
+      newBadges:[],
+      newCosmetics:[],
+      error:'no-client'
+    };
+  }
+
+  // complete_lesson() independently recomputes XP for (category, lesson)
+  // server-side — it never trusts a client-supplied amount, so there's no
+  // xpAmount argument here (see supabase/schema-progress.sql section 9).
+  const{data,error}=await client.rpc('complete_lesson',{
+    p_category_id:categoryId,
+    p_lesson_id:lessonId
+  });
+
+  if(error){
+    console.error('CosmoKlub complete_lesson() RPC failed:',error);
+    throw error;
+  }
+
+  const category=normalizeCategoryProgress(
+    progressSnapshot.categories[categoryId]
+  );
+
+  category.xp=Number(data.total_xp)||0;
+
+  if(data.newly_completed&&!category.completedLessons.includes(lessonId)){
+    category.completedLessons=[...category.completedLessons,lessonId];
+  }
+
+  progressSnapshot.categories[categoryId]=category;
+
+  const levelStats=getLevelProgress(category.xp);
+
+  const result={
+    categoryId,
+    lessonId,
+    newlyCompleted:Boolean(data.newly_completed),
+    alreadyCompleted:!data.newly_completed,
+    xpAwarded:Number(data.xp_awarded)||0,
+    totalXP:category.xp,
+    completedLessons:[...category.completedLessons],
+    level:data.level??levelStats.level,
+    rank:data.rank||levelStats.rank,
+    rankData:levelStats.rankData,
+    nextThreshold:levelStats.nextThreshold,
+    xpForNextLevel:levelStats.xpForNextLevel,
+    progress:levelStats.progress,
+    isMaxLevel:levelStats.isMaxLevel,
+    newBadges:data.new_badges||[],
+    newCosmetics:data.new_cosmetics||[]
+  };
+
+  notifyProgressChanged(result);
+
+  return result;
+}
+
+function markLessonComplete(categoryId,lessonId,xpAmount=0){
+  return completeLesson(
+    categoryId,
+    lessonId,
+    xpAmount
+  );
+}
+
+function saveLessonCompletion(categoryId,lessonId,xpAmount=0){
+  return completeLesson(
+    categoryId,
+    lessonId,
+    xpAmount
+  );
+}
+
+function awardXP(categoryId,amount){
+  if(progressSource==='remote'){
+    console.warn(
+      'awardXP() only works for signed-out/local progress. Signed-in XP '+
+      'can only be earned by completing a real lesson via completeLesson() '+
+      '(which calls the server-side complete_lesson() function). Ignoring.'
+    );
+    return getCategoryStats(categoryId);
+  }
+
+  const progress=loadLocalProgress();
+
+  if(!progress.categories[categoryId]){
+    progress.categories[categoryId]={
+      xp:0,
+      completedLessons:[]
+    };
+  }
+
+  const categoryProgress=normalizeCategoryProgress(
+    progress.categories[categoryId]
+  );
+
+  const safeAmount=Math.max(0,Number(amount)||0);
+
+  categoryProgress.xp+=safeAmount;
+  progress.categories[categoryId]=categoryProgress;
+
+  saveLocalProgress(progress);
+  progressSnapshot=progress;
+
+  const stats=getLevelProgress(categoryProgress.xp);
+
+  notifyProgressChanged({
+    categoryId,
+    xpAwarded:safeAmount,
+    totalXP:categoryProgress.xp,
+    level:stats.level,
+    rank:stats.rank
   });
 
   return{
-    total:questions.length,
-    answered,
-    correct,
-    percentage:questions.length
-      ?Math.round((correct/questions.length)*100)
-      :100
+    categoryId,
+    xpAwarded:safeAmount,
+    totalXP:categoryProgress.xp,
+    ...stats
   };
 }
 
-function renderComplete(){
-  const score=calculateScore();
+function getCategoryStats(categoryId){
+  const categoryProgress=getCategoryProgress(categoryId);
+  const levelProgress=getLevelProgress(categoryProgress.xp);
 
-  const alreadyCompleted=
-    typeof isLessonCompleted==='function'
-      ?isLessonCompleted(
-        category.id,
-        currentLesson.id
-      )
-      :false;
+  let totalLessons=0;
 
-  learningStage.innerHTML=`
-    <div class="learning-card completion-card">
-      <div class="completion-icon">✓</div>
-
-      <div class="learning-label">
-        ${currentLesson.type==='quiz'?'QUIZ COMPLETE':'LESSON COMPLETE'}
-      </div>
-
-      <h1>${escapeHtml(currentLesson.title)}</h1>
-
-      ${score.total?`
-        <p>
-          You answered
-          <strong>${score.correct}</strong>
-          of
-          <strong>${score.total}</strong>
-          questions correctly
-          (${score.percentage}%).
-        </p>
-      `:''}
-
-      <div class="completion-xp">
-        <span>✦</span>
-        <strong>
-          ${alreadyCompleted
-            ?'Already completed'
-            :`+${currentLesson.xp} XP`}
-        </strong>
-      </div>
-
-      <p class="completion-help">
-        You can still use Previous to review or change your answers before returning to the Roadmap.
-      </p>
-    </div>
-  `;
-}
-
-function previousStep(){
-  if(currentStep<=0)return;
-
-  currentStep--;
-  renderStep();
-}
-
-function nextStep(){
-  const step=steps[currentStep];
-
-  if(!step)return;
-
-  if(step.type==='complete'){
-    finishLesson();
-    return;
-  }
-
-  if(!canAdvanceFromStep(step)){
-    return;
-  }
-
-  if(currentStep<steps.length-1){
-    currentStep++;
-    renderStep();
-  }
-}
-
-function finishLesson(){
-  if(typeof completeLesson==='function'){
-    const result=completeLesson(
-      category.id,
-      currentLesson.id,
-      currentLesson.xp
+  if(
+    typeof COURSE_DATA!=='undefined'&&
+    COURSE_DATA[categoryId]&&
+    Array.isArray(COURSE_DATA[categoryId].sections)
+  ){
+    totalLessons=COURSE_DATA[categoryId].sections.reduce(
+      (sum,section)=>{
+        return sum+(
+          Array.isArray(section.lessons)
+            ?section.lessons.length
+            :0
+        );
+      },
+      0
     );
+  }
 
-    console.log(
-      'CosmoKlub lesson completed:',
-      result
-    );
-  }else{
+  const completedLessons=categoryProgress.completedLessons.length;
+
+  return{
+    id:categoryId,
+    xp:categoryProgress.xp,
+    completedLessons,
+    completedLessonIds:[
+      ...categoryProgress.completedLessons
+    ],
+    totalLessons,
+    completionPercent:totalLessons>0
+      ?Math.round((completedLessons/totalLessons)*100)
+      :0,
+    ...levelProgress
+  };
+}
+
+function getAllCategoryStats(){
+  return COSMOKLUB_CATEGORY_IDS.map(
+    categoryId=>getCategoryStats(categoryId)
+  );
+}
+
+function getOverallProgress(){
+  const categories=getAllCategoryStats();
+
+  const totalCompleted=categories.reduce(
+    (sum,category)=>sum+category.completedLessons,
+    0
+  );
+
+  const totalLessons=categories.reduce(
+    (sum,category)=>sum+category.totalLessons,
+    0
+  );
+
+  const totalXP=categories.reduce(
+    (sum,category)=>sum+category.xp,
+    0
+  );
+
+  const averageLevel=categories.length
+    ?Math.round(
+      categories.reduce(
+        (sum,category)=>sum+category.level,
+        0
+      )/categories.length
+    )
+    :1;
+
+  const rank=getRankForLevel(averageLevel);
+
+  return{
+    totalCompleted,
+    totalLessons,
+    totalXP,
+    averageLevel,
+    rank:rank.name,
+    rankData:rank,
+    rankClass:rank.className,
+    tierClass:rank.tierClass,
+    completionPercent:totalLessons>0
+      ?Math.round((totalCompleted/totalLessons)*100)
+      :0,
+    categories
+  };
+}
+
+function getOverallRank(){
+  return getOverallProgress().rank;
+}
+
+function resetCategoryProgress(categoryId){
+  if(progressSource==='remote'){
     console.warn(
-      'progress.js is not loaded. Completion was not saved.'
+      'resetCategoryProgress() is not available for signed-in accounts — '+
+      'there is no server-side reset function, by design (see '+
+      'supabase/schema-progress.sql). Ignoring.'
     );
+    return;
   }
 
-  window.location.href=
-    `roadmap.html?category=${category.id}`;
-}
+  const progress=loadLocalProgress();
 
-function startLearning(){
-  if(!startButton)return;
+  progress.categories[categoryId]={
+    xp:0,
+    completedLessons:[]
+  };
 
-  buildSteps();
+  saveLocalProgress(progress);
+  progressSnapshot=progress;
 
-  currentStep=0;
-  questionStates={};
-  activityStates={};
-  nasaImage=null;
-  nasaLoading=false;
-
-  lessonCover.classList.add('hidden');
-  learningExperience.classList.remove('hidden');
-
-  renderStep();
-
-  fetchNasaImage();
-}
-
-function escapeHtml(value){
-  const div=document.createElement('div');
-  div.textContent=String(value??'');
-  return div.innerHTML;
-}
-
-function escapeAttribute(value){
-  return String(value??'')
-    .replaceAll('&','&amp;')
-    .replaceAll('"','&quot;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;');
-}
-
-function trimText(value,maxLength){
-  const text=String(value??'')
-    .replace(/\s+/g,' ')
-    .trim();
-
-  if(text.length<=maxLength){
-    return text;
-  }
-
-  return`${text.slice(0,maxLength).trim()}...`;
-}
-
-if(startButton){
-  startButton.addEventListener(
-    'click',
-    startLearning
-  );
-}else{
-  console.error(
-    'Start Learning button #startLearning was not found.'
-  );
-}
-
-if(roadmapBack){
-  roadmapBack.addEventListener('click',()=>{
-    window.location.href=
-      `roadmap.html?category=${category.id}`;
+  notifyProgressChanged({
+    categoryId,
+    reset:true
   });
 }
 
-if(previousButton){
-  previousButton.addEventListener(
-    'click',
-    previousStep
+function resetAllProgress(){
+  if(progressSource==='remote'){
+    console.warn(
+      'resetAllProgress() is not available for signed-in accounts — '+
+      'there is no server-side reset function, by design (see '+
+      'supabase/schema-progress.sql). Ignoring.'
+    );
+    return;
+  }
+
+  localStorage.removeItem(COSMOKLUB_PROGRESS_KEY);
+  progressSnapshot=createEmptyProgress();
+
+  notifyProgressChanged({
+    resetAll:true
+  });
+}
+
+function exportProgress(){
+  return JSON.parse(
+    JSON.stringify(progressSnapshot)
   );
 }
 
-if(forwardButton){
-  forwardButton.addEventListener(
-    'click',
-    nextStep
-  );
-}
+window.COSMOKLUB_RANKS=COSMOKLUB_RANKS;
+window.COSMOKLUB_LEVEL_THRESHOLDS=COSMOKLUB_LEVEL_THRESHOLDS;
+window.getCategoryProgress=getCategoryProgress;
+window.saveCategoryProgress=saveCategoryProgress;
+window.getCategoryStats=getCategoryStats;
+window.getAllCategoryStats=getAllCategoryStats;
+window.getOverallProgress=getOverallProgress;
+window.getOverallRank=getOverallRank;
+window.getRankForLevel=getRankForLevel;
+window.getLevelFromXP=getLevelFromXP;
+window.getLevelProgress=getLevelProgress;
+window.getNextRank=getNextRank;
+window.isLessonCompleted=isLessonCompleted;
+window.completeLesson=completeLesson;
+window.markLessonComplete=markLessonComplete;
+window.saveLessonCompletion=saveLessonCompletion;
+window.awardXP=awardXP;
+window.resetCategoryProgress=resetCategoryProgress;
+window.resetAllProgress=resetAllProgress;
+window.exportProgress=exportProgress;
+window.refreshRemoteSnapshot=refreshRemoteSnapshot;
