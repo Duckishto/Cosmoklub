@@ -2,11 +2,16 @@ const { createApp } = Vue;
 
 window.CosmoKlub = window.CosmoKlub || {};
 
+// 'chat' and 'settings' have no button in the bottom nav — they open from the
+// icons in the top bar. They live here anyway so every view shares the same
+// ?tab= routing and Back button behaviour.
 const VALID_TABS=[
   'forum',
   'library',
-  'planetarium',
-  'chat'
+  'tools',
+  'profile',
+  'chat',
+  'settings'
 ];
 
 function getTabFromUrl(){
@@ -363,7 +368,9 @@ createApp({
         forum:Forum,
         library:Library,
         chat:Chat,
-        planetarium:Planetarium
+        tools:Tools,
+        profile:Profile,
+        settings:Settings
       }
     };
   },

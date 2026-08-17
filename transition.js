@@ -20,7 +20,7 @@
   var FALLBACK_MS = 4000; // hard ceiling — never leave the screen stuck blank
 
   var ROOT_IDS = ['app', 'object-app', 'team-app', 'staff-app'];
-  var PAGES = ['index.html', 'object.html', 'team.html', 'staff-application.html'];
+  var PAGES = ['index.html', 'tools.html', 'team.html', 'staff-application.html'];
 
   function currentFile() {
     return location.pathname.split('/').pop() || 'index.html';

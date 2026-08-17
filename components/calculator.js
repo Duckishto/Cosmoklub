@@ -623,8 +623,8 @@ const GRAPH_KEY_SETS = {
 };
 
 // ── Vue component ───────────────────────────────────────────────────────────
-const Planetarium = {
-  name: 'Planetarium',
+const Calculator = {
+  name: 'Calculator',
   template: `
     <div class="section calc-wrap" :class="{ 'calc-graphing': mode === 'graphing' }">
       <div class="section-eyebrow-row">

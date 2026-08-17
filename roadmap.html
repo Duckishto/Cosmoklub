@@ -8,6 +8,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="roadmap.css">
+
+  <!-- Auth. Loaded here in <head> so the session check resolves before the page
+       paints; progress.js (below) then finds the client already initialised. -->
+  <script src="api/supabase-client.js"></script>
+  <script src="auth-guard.js"></script>
 </head>
 <body>
   <div class="page-shell">
@@ -84,7 +89,6 @@
     </div>
   </div>
 
-  <script src="api/supabase-client.js"></script>
   <script src="course-data.js"></script>
   <script src="progress.js"></script>
   <script src="roadmap.js"></script>
