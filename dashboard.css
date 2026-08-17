@@ -196,6 +196,18 @@ body {
   color: var(--stardust);
 }
 
+/* Chat and Settings are tab buttons that happen to live in the top bar, so
+   they need the same selected state the bottom-nav items get. */
+.icon-btn-tab {
+  cursor: pointer;
+}
+
+.icon-btn-tab.active {
+  background: var(--glass);
+  color: var(--purple);
+  box-shadow: 0 0 0 1px var(--border), 0 0 14px rgba(168, 85, 247, 0.25);
+}
+
 .icon-dot {
   position: absolute;
   top: 7px;

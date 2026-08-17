@@ -129,7 +129,11 @@ nav.compact .lang-btn svg:first-child { width: 11px; height: 11px; }
 }
 
 /* ---------- Shell ---------- */
-#object-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
+/* The app root. Was #object-app when this file was object.css; tools.html uses
+   id="app". Without this rule the page has no stacking context, so
+   #star-canvas (z-index 1) paints straight over the content, and .content's
+   `flex: 1` has no flex parent to fill. */
+#app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
 
 .content {
   max-width: 1240px; width: 100%;
@@ -765,4 +769,41 @@ nav.compact .lang-btn svg:first-child { width: 11px; height: 11px; }
   .lib-filter-row .filter-checkbox {
     flex-shrink: 0;
   }
+}
+
+/* ---------- Sign-up card (tools.html only) ----------
+   Not part of the original object.css — the public tools page needs a way to
+   point visitors at an account, since the rest of the app is behind sign-in. */
+
+.public-cta {
+  margin-top: 44px;
+  padding: 30px 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.public-cta h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.public-cta p {
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.public-cta-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--purple), var(--violet));
+  border-radius: 12px;
 }

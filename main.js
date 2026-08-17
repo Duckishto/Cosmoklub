@@ -596,12 +596,12 @@ createApp({
     // lightbox on click; `href` cards also deep-link into the app tool.
     heroShots() {
       return [
-        { key: 'shotObject',  descKey: 'shotObjectDesc',  svg: HERO_SVGS.objectBrowser, href: 'object.html' },
-        { key: 'shotApod',    descKey: 'shotApodDesc',    pos: 'tr', svg: HERO_SVGS.apod,        href: 'object.html' },
-        { key: 'shotGraph',   descKey: 'shotGraphDesc',   pos: 'tl', svg: HERO_SVGS.grapher,     href: 'object.html' },
-        { key: 'shotGallery', descKey: 'shotGalleryDesc', pos: 'bl', svg: HERO_SVGS.gallery,      href: 'object.html' },
-        { key: 'shotPlanet',  descKey: 'shotPlanetDesc',  pos: 'br', svg: HERO_SVGS.planetarium,  href: 'object.html' },
-        { key: 'shotForum',   descKey: 'shotForumDesc',   pos: 'rb', svg: HERO_SVGS.community,    href: 'object.html' }
+        { key: 'shotObject',  descKey: 'shotObjectDesc',  svg: HERO_SVGS.objectBrowser, href: 'tools.html' },
+        { key: 'shotApod',    descKey: 'shotApodDesc',    pos: 'tr', svg: HERO_SVGS.apod,        href: 'tools.html' },
+        { key: 'shotGraph',   descKey: 'shotGraphDesc',   pos: 'tl', svg: HERO_SVGS.grapher,     href: 'tools.html' },
+        { key: 'shotGallery', descKey: 'shotGalleryDesc', pos: 'bl', svg: HERO_SVGS.gallery,      href: 'tools.html' },
+        { key: 'shotPlanet',  descKey: 'shotPlanetDesc',  pos: 'br', svg: HERO_SVGS.planetarium,  href: 'tools.html' },
+        { key: 'shotForum',   descKey: 'shotForumDesc',   pos: 'rb', svg: HERO_SVGS.community,    href: 'tools.html' }
       ];
     },
     // Everything except the big central image (index 0). `idx` keeps the
@@ -1058,6 +1058,27 @@ createApp({
     };
     legalFromHash();
 
+    // Arriving from auth-guard.js, which bounces signed-out visitors off the
+    // app pages to index.html?login=1 — open the login form straight away so
+    // they aren't dumped on the landing page with no idea why they moved.
+    // The query is cleared afterwards so a refresh doesn't reopen the modal.
+    const loginFromQuery = () => {
+      if (!AUTH_ENABLED) return;
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('login') !== '1') return;
+
+      this.openModal('login');
+
+      params.delete('login');
+      const query = params.toString();
+      history.replaceState(
+        null,
+        '',
+        window.location.pathname + (query ? '?' + query : '')
+      );
+    };
+    loginFromQuery();
+
     // Restore any existing Supabase session (e.g. user refreshed the page
     // after logging in) so currentUser is populated without a re-login.
     // window.supabaseReady resolves once /api/supabase-config has loaded
@@ -1066,7 +1087,17 @@ createApp({
       window.supabaseReady.then(client => {
         if (!client) return;
         client.auth.getSession().then(({ data }) => {
-          if (data && data.session) this.currentUser = data.session.user;
+          if (!data || !data.session) return;
+
+          this.currentUser = data.session.user;
+
+          // Someone already signed in has no use for the marketing page —
+          // send them to the forum, which is the app's home screen.
+          //
+          // replace() rather than href so Back doesn't bounce them between
+          // here and the dashboard. Signing out lands on index.html with the
+          // session already cleared, so this can't fire on the way out.
+          window.location.replace('dashboard.html?tab=forum');
         });
         client.auth.onAuthStateChange((_event, session) => {
           this.currentUser = session ? session.user : null;
