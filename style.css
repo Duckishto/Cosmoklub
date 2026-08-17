@@ -2237,9 +2237,12 @@ nav:not(.nav-hidden) {
   box-shadow: 0 0 18px rgba(124,58,237,0.28);
 }
 
-/* Product stage — one dominant central screenshot, satellites at its edges */
+/* ==========================================================================
+   Floating UI product stage — glassmorphism cards overlapping a central
+   screenshot. Parent is the positioning context for every absolute card.
+   ========================================================================== */
 .hero-stage {
-  position: relative;
+  position: relative;                 /* positioning root for all floating cards */
   width: 100%;
   max-width: 1080px;
   margin: 3.4rem auto 0;
@@ -2260,37 +2263,52 @@ nav:not(.nav-hidden) {
   z-index: 0;
 }
 
-/* Shared frame chrome (used by main + satellites) */
+/* Shared glass chrome (used by the center card + all satellites) */
 .hero-main,
 .stage-card {
-  border: 1px solid rgba(168,85,247,0.22);
-  border-radius: 16px;
+  border: 1px solid rgba(168,85,247,0.24);
+  border-radius: 20px;                                 /* 16–24px rounded corners */
   overflow: hidden;
-  background: rgba(8,5,20,0.86);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  background: rgba(20,12,40,0.55);                      /* semi-transparent glass base */
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
   cursor: pointer;
   text-align: left;
   font-family: var(--font);
   padding: 0;
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1), border-color 0.3s, box-shadow 0.3s;
+  will-change: transform;
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease,
+              background 0.3s ease;
 }
 
-/* Central hero screenshot */
+/* ---- Center card (main screenshot) — highest in the stack ---- */
 .hero-main {
-  position: absolute;
+  position: absolute;                 /* floats freely inside .hero-stage */
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
   width: 62%;
   z-index: 3;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(124,58,237,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.35),     /* soft realistic depth */
+    0 30px 80px rgba(0,0,0,0.45),
+    0 0 60px rgba(124,58,237,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+  animation: cardFloatMain 8s ease-in-out infinite;
 }
 .hero-main:hover,
 .hero-main.focused {
-  transform: translate(-50%, -50%) translateY(-6px);
-  border-color: rgba(168,85,247,0.55);
-  box-shadow: 0 40px 96px rgba(0,0,0,0.65), 0 0 70px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.09);
+  transform: translate(-50%, -50%) translateY(-8px);   /* smooth hover lift */
+  border-color: rgba(168,85,247,0.6);
+  background: rgba(24,14,46,0.65);
+  box-shadow:
+    0 24px 48px rgba(0,0,0,0.4),
+    0 40px 96px rgba(0,0,0,0.55),
+    0 0 70px rgba(124,58,237,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  animation-play-state: paused;
 }
 .hero-main-body {
   position: relative;
@@ -2306,35 +2324,49 @@ nav:not(.nav-hidden) {
   display: block;
 }
 
-/* Satellite cards — smaller, pinned to the main image's edges */
+/* ---- Satellite cards — smaller, overlapping the main card's edges ---- */
 .stage-card {
-  position: absolute;
+  position: absolute;                 /* positioned relative to .hero-stage */
   z-index: 4;
   width: 30%;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.08),     /* requested soft depth shadow */
+    0 18px 50px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.06);
   animation: cardFloat 7s ease-in-out infinite;
   animation-delay: var(--d, 0s);
 }
 .stage-card:hover,
 .stage-card.focused {
-  transform: translateY(-8px) scale(1.04);
-  border-color: rgba(168,85,247,0.6);
-  box-shadow: 0 26px 64px rgba(0,0,0,0.6), 0 0 24px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
-  z-index: 7;
+  transform: translateY(-8px) scale(1.04);              /* smooth hover lift */
+  border-color: rgba(168,85,247,0.65);
+  background: rgba(28,16,52,0.68);
+  box-shadow:
+    0 24px 44px rgba(0,0,0,0.4),
+    0 26px 64px rgba(0,0,0,0.5),
+    0 0 24px rgba(124,58,237,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  z-index: 7;                                            /* rises above neighbors on interaction */
+  animation-play-state: paused;
 }
+
+/* Gentle up-and-down floating motion */
 @keyframes cardFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  50%      { transform: translateY(-12px); }
 }
-.stage-card:hover, .stage-card.focused { animation-play-state: paused; }
+@keyframes cardFloatMain {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50%      { transform: translate(-50%, -50%) translateY(-10px); }
+}
 
 .stage-card-bar {
   display: flex;
   align-items: center;
   gap: 5px;
   padding: 8px 12px;
-  background: rgba(124,58,237,0.10);
-  border-bottom: 1px solid rgba(168,85,247,0.14);
+  background: rgba(124,58,237,0.14);
+  border-bottom: 1px solid rgba(168,85,247,0.16);
 }
 .scb-dot {
   width: 7px; height: 7px;
@@ -2349,7 +2381,7 @@ nav:not(.nav-hidden) {
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: rgba(230,215,255,0.8);
+  color: rgba(230,215,255,0.85);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2376,16 +2408,17 @@ nav:not(.nav-hidden) {
 .stage-card-glow {
   position: absolute;
   inset: 0;
-  border-radius: 16px;
+  border-radius: 20px;
   pointer-events: none;
-  box-shadow: inset 0 0 40px rgba(124,58,237,0.12);
+  box-shadow: inset 0 0 40px rgba(124,58,237,0.14);
 }
 
-/* Satellite placements — overlap the main image's corners/edges */
-.sc-tl { top: 2%;    left: 1%;   }
-.sc-tr { top: 0;     right: 1%;  }
-.sc-bl { bottom: 4%;  left: 4%;  }
-.sc-br { bottom: 0;   right: 4%; }
+/* Satellite placements — overlap the main card's corners/edges.
+   z-index staggered so cards nearer the "front" read on top at rest. */
+.sc-tl { top: 2%;    left: 1%;   z-index: 4; }
+.sc-tr { top: 0;     right: 1%;  z-index: 5; }
+.sc-bl { bottom: 4%; left: 4%;   z-index: 4; }
+.sc-br { bottom: 0;  right: 4%;  z-index: 6; }
 .sc-rb { bottom: 22%; right: -2%; z-index: 5; }
 
 /* Lightbox popup */
@@ -2481,29 +2514,46 @@ nav:not(.nav-hidden) {
 @media (max-width: 1024px) {
   .hero-stage { max-width: 900px; }
 }
-@media (max-width: 760px) {
+
+/* Mobile fallback: abandon absolute floating positions entirely and stack
+   the center card + satellites as a single-column Flexbox list so nothing
+   overlaps and text/content stays fully readable. */
+@media (max-width: 768px) {
   .hero-centered { padding: 108px 0 24px; }
   .hero-centered .hero-h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
-  /* Stack the main image + cards into a single column on mobile */
+
   .hero-stage {
+    position: relative;               /* still a valid positioning context, just unused by children */
     aspect-ratio: auto;
+    height: auto;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: 1rem;
     margin-top: 2.2rem;
+    padding: 0 1rem;
   }
   .stage-glow { display: none; }
+
   .hero-main,
   .stage-card {
-    position: relative;
+    position: static;                 /* fully overrides absolute positioning */
+    inset: auto;
     left: auto; top: auto; right: auto; bottom: auto;
-    transform: none;
     width: 100%;
-    animation: none;
+    max-width: 100%;
+    transform: none;
+    animation: none;                  /* no floating motion on mobile */
+    z-index: auto;
   }
+  .hero-main { order: -1; }           /* main screenshot leads the stack */
+
   .hero-main:hover, .hero-main.focused,
-  .stage-card:hover, .stage-card.focused { transform: translateY(-4px); }
-  .sc-tl, .sc-tr, .sc-bl, .sc-br, .sc-rb { top: auto; bottom: auto; left: auto; right: auto; }
+  .stage-card:hover, .stage-card.focused {
+    transform: translateY(-4px);      /* lighter lift, no scale, to avoid layout jitter */
+    z-index: auto;
+  }
+
   .shot-frame-foot { flex-direction: column; align-items: flex-start; }
   .shot-frame-open { width: 100%; justify-content: center; }
 }
