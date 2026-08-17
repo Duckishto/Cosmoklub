@@ -639,9 +639,10 @@ createApp({
       if (!d) return;
       const dx = e.clientX - d.startX;
       const dy = e.clientY - d.startY;
-      if (!d.moved && Math.hypot(dx, dy) > 4) {
+      if (!d.moved && Math.hypot(dx, dy) > 16) {// should change back to 4
         d.moved = true;
         this.pensiaDragging = true;
+        
         // dragging takes priority over the chat bubble — close it now
         // even if its auto-dismiss timer hasn't run out yet
         clearTimeout(this.pensiaCloseTimer);
