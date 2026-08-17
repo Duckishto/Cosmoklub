@@ -639,7 +639,7 @@ createApp({
       if (!d) return;
       const dx = e.clientX - d.startX;
       const dy = e.clientY - d.startY;
-      if (!d.moved && Math.hypot(dx, dy) > 16) {// should change back to 4
+      if (!d.moved && Math.hypot(dx, dy) > 4) {
         d.moved = true;
         this.pensiaDragging = true;
         
