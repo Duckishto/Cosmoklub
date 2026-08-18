@@ -35,7 +35,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem 3rem;
+  padding: 2rem 1.5rem 7rem;
   flex: 1 0 auto;
 }
 
@@ -362,23 +362,64 @@
   border-color: rgba(52,211,153,0.35);
 }
 
-/* ---------- Register mode: compact so the form fits the viewport ---------- */
-.auth-card.is-register .auth-mark { margin-bottom: 0.7rem; }
-.auth-card.is-register .auth-mark img { height: 38px; }
-.auth-card.is-register .auth-title { font-size: 1.4rem; }
-.auth-card.is-register .auth-sub { margin-bottom: 1rem; font-size: 0.86rem; }
-.auth-card.is-register .auth-tabs { margin-bottom: 1rem; }
-.auth-card.is-register .auth-fields { gap: 0.7rem; }
-.auth-card.is-register .auth-form-side { padding: 1.8rem 2.2rem; }
-.auth-card.is-register .auth-divider { margin: 1rem 0 0.85rem; }
-.auth-card.is-register .auth-switch { margin-top: 1rem; }
-
-/* If the form is taller than the screen, scroll inside the card rather than
-   letting the page run away. */
-.auth-form-side {
-  max-height: none;
-  overflow-y: visible;
+/* ---------- Register step indicator ---------- */
+.auth-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.2rem;
 }
+.auth-step-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: rgba(168,85,247,0.25);
+  transition: background var(--tr), box-shadow var(--tr);
+}
+.auth-step-dot.on {
+  background: var(--violet);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
+}
+.auth-step-line {
+  width: 26px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(168,85,247,0.25);
+  transition: background var(--tr);
+}
+.auth-step-line.on { background: var(--violet); }
+.auth-step-text {
+  margin-left: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.auth-step-actions {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: center;
+}
+.auth-step-actions .auth-submit { margin-top: 0; }
+.auth-ghost {
+  padding: 0.8rem 1.2rem;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--stardust);
+  font-family: var(--font);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--tr), color var(--tr), background var(--tr);
+}
+.auth-ghost:hover:not(:disabled) {
+  border-color: var(--violet);
+  color: var(--white);
+  background: rgba(124,58,237,0.1);
+}
+.auth-ghost:disabled { opacity: 0.6; cursor: not-allowed; }
+
 /* ---------- Footer on the auth page ---------- */
 #login-app .site-footer {
   flex-shrink: 0;
@@ -404,14 +445,13 @@
   .auth-card { grid-template-columns: 1fr; max-width: 560px; }
   .auth-visual { display: none; }
   .auth-form-side { padding: 2rem 1.8rem; }
-  .auth-card.is-register .auth-form-side { padding: 1.6rem 1.4rem; }
 }
 
 /* Large phones */
 @media (max-width: 600px) {
   .auth-topbar { padding: 0.9rem 1.25rem; }
   .auth-logo img { height: 34px; }
-  .auth-page { padding: 1rem 1rem 3rem; min-height: 0; }
+  .auth-page { padding: 1rem 1rem 4.5rem; min-height: 0; }
   .auth-card { border-radius: 18px; }
   .auth-form-side { padding: 1.6rem 1.2rem; }
   .auth-row { grid-template-columns: 1fr; }
