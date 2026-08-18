@@ -155,6 +155,10 @@ createApp({
       authTab: 'register',
       billing: 'monthly',
       openFaq: null,
+      gameRoundIndex: 0,
+      gamePicked: null,
+      gameStreak: 0,
+      gameUnlocked: [],
       sectionImages: {
         featurePanel: '',
         ctaBanner: ''
@@ -349,6 +353,86 @@ createApp({
         }
       ];
     },
+    gameRounds() {
+      return [
+        {
+          prompt: 'The Moon is waxing. What comes next?',
+          sequence: ['🌑', '🌒', '🌓', '🌔'],
+          options: ['🌕', '🌗', '🌘'],
+          answer: '🌕',
+          badge: '🌕', badgeName: 'Full Circle',
+          why: 'A waxing Moon grows toward full, so waxing gibbous is followed by the full Moon.'
+        },
+        {
+          prompt: 'The Moon is waning. What comes next?',
+          sequence: ['🌕', '🌖', '🌗', '🌘'],
+          options: ['🌑', '🌓', '🌔'],
+          answer: '🌑',
+          badge: '🌑', badgeName: 'Night Watcher',
+          why: 'A waning Moon shrinks toward new, so the crescent is followed by the new Moon.'
+        },
+        {
+          prompt: 'A Sun-like star runs out of core hydrogen. What comes next?',
+          sequence: ['🌟', '🔴', '💫'],
+          options: ['⚪', '🌑', '🌈'],
+          answer: '⚪',
+          badge: '⚪', badgeName: 'Stellar Undertaker',
+          why: 'A Sun-like star swells into a red giant, sheds its layers, and leaves a white dwarf behind.'
+        },
+        {
+          prompt: 'A massive star collapses. What comes next?',
+          sequence: ['🌟', '🔴', '💥'],
+          options: ['🕳️', '⚪', '☄️'],
+          answer: '🕳️',
+          badge: '🕳️', badgeName: 'Event Horizon',
+          why: 'The most massive cores keep collapsing past neutron-star density and become black holes.'
+        },
+        {
+          prompt: 'A comet falls toward the Sun. What comes next?',
+          sequence: ['🧊', '☄️', '🔥'],
+          options: ['💨', '🪐', '⭐'],
+          answer: '💨',
+          badge: '☄️', badgeName: 'Tail Chaser',
+          why: 'Solar heating sublimates the icy nucleus, blowing dust and gas into a long tail.'
+        },
+        {
+          prompt: 'The Moon slides between Earth and Sun. What comes next?',
+          sequence: ['☀️', '🌘', '🌑'],
+          options: ['🌚', '🌝', '⭐'],
+          answer: '🌚',
+          badge: '🌚', badgeName: 'Eclipse Hunter',
+          why: 'When the new Moon crosses directly in front of the Sun you get a solar eclipse.'
+        },
+        {
+          prompt: 'Gas and dust in a nebula collapse. What comes next?',
+          sequence: ['🌫️', '🌀', '✨'],
+          options: ['🌟', '🕳️', '🪐'],
+          answer: '🌟',
+          badge: '🌟', badgeName: 'Star Midwife',
+          why: 'Collapsing clouds heat up until fusion ignites and a new star switches on.'
+        },
+        {
+          prompt: 'Two galaxies drift together. What comes next?',
+          sequence: ['🌌', '↔️', '🌀'],
+          options: ['💫', '🌑', '☄️'],
+          answer: '💫',
+          badge: '🌌', badgeName: 'Galaxy Wrangler',
+          why: 'Gravity pulls them into a merger, triggering bursts of new star formation.'
+        }
+      ];
+    },
+    gameRound() {
+      return this.gameRounds[this.gameRoundIndex];
+    },
+    gameAnswered() {
+      return this.gamePicked !== null;
+    },
+    gameCorrect() {
+      return this.gameAnswered && this.gamePicked === this.gameRound.answer;
+    },
+    gameProgressLabel() {
+      return (this.gameRoundIndex + 1) + ' / ' + this.gameRounds.length;
+    },
     footerCols() {
       return [
         {
@@ -437,6 +521,23 @@ createApp({
     }
   },
   methods: {
+    pickGameOption(opt) {
+      if (this.gameAnswered) return;
+      this.gamePicked = opt;
+      if (opt === this.gameRound.answer) {
+        this.gameStreak += 1;
+        const b = this.gameRound;
+        if (!this.gameUnlocked.some(u => u.name === b.badgeName)) {
+          this.gameUnlocked.push({ icon: b.badge, name: b.badgeName });
+        }
+      } else {
+        this.gameStreak = 0;
+      }
+    },
+    nextGameRound() {
+      this.gamePicked = null;
+      this.gameRoundIndex = (this.gameRoundIndex + 1) % this.gameRounds.length;
+    },
     // --- Pensia drag-to-move ---
     onPensiaPointerDown(e) {
       e.currentTarget.setPointerCapture(e.pointerId);
