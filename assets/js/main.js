@@ -53,6 +53,35 @@ const HERO_SVGS = {
 };
 
 // ---------- Complete Translations ----------
+const GAME_SVGS = {
+  moonNew: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/></svg>`,
+  moonWaxCres: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gwc"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gwc)"><ellipse cx="27" cy="20" rx="12" ry="15" fill="#e9dcff"/></g></svg>`,
+  moonFirstQ: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gfq"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gfq)"><rect x="20" y="5" width="15" height="30" fill="#e9dcff"/></g></svg>`,
+  moonWaxGib: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gwg"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#e9dcff" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gwg)"><ellipse cx="13" cy="20" rx="8" ry="15" fill="#141033"/></g></svg>`,
+  moonFull: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="15" fill="#e9dcff" stroke="#a855f7" stroke-width="1.4"/><circle cx="15" cy="16" r="3" fill="#cbb8ef" opacity=".55"/><circle cx="24" cy="24" r="2.2" fill="#cbb8ef" opacity=".45"/></svg>`,
+  moonWanGib: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gng"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#e9dcff" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gng)"><ellipse cx="27" cy="20" rx="8" ry="15" fill="#141033"/></g></svg>`,
+  moonLastQ: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="glq"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#glq)"><rect x="5" y="5" width="15" height="30" fill="#e9dcff"/></g></svg>`,
+  moonWanCres: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gnc"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gnc)"><ellipse cx="13" cy="20" rx="12" ry="15" fill="#e9dcff"/></g></svg>`,
+  starMain: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="9" fill="#fde68a"/><circle cx="20" cy="20" r="13" fill="#fde68a" opacity=".22"/></svg>`,
+  starRedGiant: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="15" fill="#f87171" opacity=".9"/><circle cx="20" cy="20" r="15" fill="#f87171" opacity=".25"/></svg>`,
+  nebulaPuff: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="15" ry="11" fill="#a855f7" opacity=".35"/><ellipse cx="16" cy="18" rx="8" ry="6" fill="#c084fc" opacity=".5"/></svg>`,
+  whiteDwarf: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="6" fill="#ffffff"/><circle cx="20" cy="20" r="11" fill="#ffffff" opacity=".18"/></svg>`,
+  supernova: `<svg viewBox="0 0 40 40" fill="none"><g stroke="#fbbf24" stroke-width="2" stroke-linecap="round"><line x1="20" y1="4" x2="20" y2="12"/><line x1="20" y1="28" x2="20" y2="36"/><line x1="4" y1="20" x2="12" y2="20"/><line x1="28" y1="20" x2="36" y2="20"/><line x1="9" y1="9" x2="14" y2="14"/><line x1="26" y1="26" x2="31" y2="31"/><line x1="31" y1="9" x2="26" y2="14"/><line x1="14" y1="26" x2="9" y2="31"/></g><circle cx="20" cy="20" r="6" fill="#fde68a"/></svg>`,
+  blackHole: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="16" ry="5" stroke="#c084fc" stroke-width="1.6" opacity=".8"/><circle cx="20" cy="20" r="7.5" fill="#07061a" stroke="#a855f7" stroke-width="1.4"/></svg>`,
+  cometIce: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="8" fill="#bae6fd" opacity=".85"/><circle cx="17" cy="17" r="2.4" fill="#e0f2fe"/></svg>`,
+  comet: `<svg viewBox="0 0 40 40" fill="none"><path d="M30 10 L14 26" stroke="#93c5fd" stroke-width="3" stroke-linecap="round" opacity=".6"/><circle cx="29" cy="11" r="5" fill="#e0f2fe"/></svg>`,
+  cometTail: `<svg viewBox="0 0 40 40" fill="none"><g stroke="#93c5fd" stroke-width="2" stroke-linecap="round" opacity=".75"><path d="M28 12 L8 28"/><path d="M31 16 L13 30"/><path d="M24 8 L6 22"/></g><circle cx="30" cy="11" r="4.5" fill="#e0f2fe"/></svg>`,
+  sun: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="10" fill="#fbbf24"/><g stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity=".8"><line x1="20" y1="3" x2="20" y2="8"/><line x1="20" y1="32" x2="20" y2="37"/><line x1="3" y1="20" x2="8" y2="20"/><line x1="32" y1="20" x2="37" y2="20"/></g></svg>`,
+  eclipse: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" fill="#fbbf24" opacity=".35"/><circle cx="20" cy="20" r="11" fill="#07061a" stroke="#fde68a" stroke-width="1.6"/></svg>`,
+  cloud: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="22" rx="15" ry="9" fill="#6b7280" opacity=".5"/><ellipse cx="14" cy="18" rx="8" ry="6" fill="#9ca3af" opacity=".45"/></svg>`,
+  collapse: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 20 m-13 0 a13 13 0 1 1 26 0" stroke="#c084fc" stroke-width="1.8" fill="none" opacity=".7"/><path d="M20 20 m-7 0 a7 7 0 1 0 14 0" stroke="#a855f7" stroke-width="1.8" fill="none"/><circle cx="20" cy="20" r="3" fill="#e9dcff"/></svg>`,
+  sparkle: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 8 L22.5 17.5 L32 20 L22.5 22.5 L20 32 L17.5 22.5 L8 20 L17.5 17.5 Z" fill="#e9dcff"/></svg>`,
+  galaxy: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="15" ry="7" transform="rotate(-20 20 20)" fill="#a855f7" opacity=".3"/><ellipse cx="20" cy="20" rx="9" ry="4" transform="rotate(-20 20 20)" fill="#c084fc" opacity=".55"/><circle cx="20" cy="20" r="2.6" fill="#ffffff"/></svg>`,
+  merge: `<svg viewBox="0 0 40 40" fill="none"><g stroke="#c084fc" stroke-width="2" stroke-linecap="round"><path d="M6 20 h9"/><path d="M34 20 h-9"/><path d="M12 15 l-5 5 5 5"/><path d="M28 15 l5 5 -5 5"/></g></svg>`,
+  rainbow: `<svg viewBox="0 0 40 40" fill="none"><path d="M8 28 a12 12 0 0 1 24 0" stroke="#f472b6" stroke-width="2.4" fill="none"/><path d="M12 28 a8 8 0 0 1 16 0" stroke="#fbbf24" stroke-width="2.4" fill="none"/><path d="M16 28 a4 4 0 0 1 8 0" stroke="#34d399" stroke-width="2.4" fill="none"/></svg>`,
+  planet: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="9" fill="#c084fc"/><ellipse cx="20" cy="20" rx="16" ry="5" stroke="#e9dcff" stroke-width="1.4" opacity=".75"/></svg>`
+};
+
 const translations = {
   EN: {
     eyebrow: 'Next-Gen Astronomy Platform',
@@ -159,6 +188,7 @@ createApp({
       gamePicked: null,
       gameStreak: 0,
       gameUnlocked: [],
+      gameSolved: 0,
       sectionImages: {
         featurePanel: '',
         ctaBanner: ''
@@ -197,6 +227,7 @@ createApp({
       legalScrolled: false,
       navScrolled: false,
       navCompact: false,
+      navLeaving: false,
       mobileMenuOpen: false,
       activeShot: 0,
       shotModal: null
@@ -354,70 +385,71 @@ createApp({
       ];
     },
     gameRounds() {
+      const G = GAME_SVGS;
       return [
         {
           prompt: 'The Moon is waxing. What comes next?',
-          sequence: ['🌑', '🌒', '🌓', '🌔'],
-          options: ['🌕', '🌗', '🌘'],
-          answer: '🌕',
-          badge: '🌕', badgeName: 'Full Circle',
+          sequence: [G.moonNew, G.moonWaxCres, G.moonFirstQ, G.moonWaxGib],
+          options: [G.moonFull, G.moonLastQ, G.moonWanCres],
+          answer: 0,
+          badge: G.moonFull, badgeName: 'Full Circle',
           why: 'A waxing Moon grows toward full, so waxing gibbous is followed by the full Moon.'
         },
         {
           prompt: 'The Moon is waning. What comes next?',
-          sequence: ['🌕', '🌖', '🌗', '🌘'],
-          options: ['🌑', '🌓', '🌔'],
-          answer: '🌑',
-          badge: '🌑', badgeName: 'Night Watcher',
+          sequence: [G.moonFull, G.moonWanGib, G.moonLastQ, G.moonWanCres],
+          options: [G.moonFirstQ, G.moonNew, G.moonWaxGib],
+          answer: 1,
+          badge: G.moonNew, badgeName: 'Night Watcher',
           why: 'A waning Moon shrinks toward new, so the crescent is followed by the new Moon.'
         },
         {
           prompt: 'A Sun-like star runs out of core hydrogen. What comes next?',
-          sequence: ['🌟', '🔴', '💫'],
-          options: ['⚪', '🌑', '🌈'],
-          answer: '⚪',
-          badge: '⚪', badgeName: 'Stellar Undertaker',
+          sequence: [G.starMain, G.starRedGiant, G.nebulaPuff],
+          options: [G.blackHole, G.whiteDwarf, G.rainbow],
+          answer: 1,
+          badge: G.whiteDwarf, badgeName: 'Stellar Undertaker',
           why: 'A Sun-like star swells into a red giant, sheds its layers, and leaves a white dwarf behind.'
         },
         {
-          prompt: 'A massive star collapses. What comes next?',
-          sequence: ['🌟', '🔴', '💥'],
-          options: ['🕳️', '⚪', '☄️'],
-          answer: '🕳️',
-          badge: '🕳️', badgeName: 'Event Horizon',
+          prompt: 'A massive star reaches core collapse. What comes next?',
+          sequence: [G.starMain, G.starRedGiant, G.supernova],
+          options: [G.blackHole, G.whiteDwarf, G.comet],
+          answer: 0,
+          badge: G.blackHole, badgeName: 'Event Horizon',
           why: 'The most massive cores keep collapsing past neutron-star density and become black holes.'
         },
         {
-          prompt: 'A comet falls toward the Sun. What comes next?',
-          sequence: ['🧊', '☄️', '🔥'],
-          options: ['💨', '🪐', '⭐'],
-          answer: '💨',
-          badge: '☄️', badgeName: 'Tail Chaser',
-          why: 'Solar heating sublimates the icy nucleus, blowing dust and gas into a long tail.'
+          prompt: 'An icy comet falls toward the Sun. What comes next?',
+          sequence: [G.cometIce, G.comet, G.sun],
+          options: [G.planet, G.cometTail, G.galaxy],
+          answer: 1,
+          badge: G.comet, badgeName: 'Tail Chaser',
+          why: 'Solar heating sublimates the icy nucleus, blowing dust and gas into a long bright tail.'
         },
         {
-          prompt: 'The Moon slides between Earth and Sun. What comes next?',
-          sequence: ['☀️', '🌘', '🌑'],
-          options: ['🌚', '🌝', '⭐'],
-          answer: '🌚',
-          badge: '🌚', badgeName: 'Eclipse Hunter',
+          prompt: 'The new Moon slides between Earth and the Sun. What comes next?',
+          sequence: [G.sun, G.moonWanCres, G.moonNew],
+          options: [G.eclipse, G.moonFull, G.sparkle],
+          answer: 0,
+          badge: G.eclipse, badgeName: 'Eclipse Hunter',
           why: 'When the new Moon crosses directly in front of the Sun you get a solar eclipse.'
         },
         {
-          prompt: 'Gas and dust in a nebula collapse. What comes next?',
-          sequence: ['🌫️', '🌀', '✨'],
-          options: ['🌟', '🕳️', '🪐'],
-          answer: '🌟',
-          badge: '🌟', badgeName: 'Star Midwife',
-          why: 'Collapsing clouds heat up until fusion ignites and a new star switches on.'
+          prompt: 'A dense cloud inside a nebula collapses. What comes next?',
+          sequence: [G.cloud, G.collapse, G.sparkle],
+          options: [G.starMain, G.blackHole, G.planet],
+          answer: 0,
+          badge: G.starMain, badgeName: 'Star Midwife',
+          why: 'Collapsing clouds heat up until hydrogen fusion ignites and a new star switches on.'
         },
         {
-          prompt: 'Two galaxies drift together. What comes next?',
-          sequence: ['🌌', '↔️', '🌀'],
-          options: ['💫', '🌑', '☄️'],
-          answer: '💫',
-          badge: '🌌', badgeName: 'Galaxy Wrangler',
-          why: 'Gravity pulls them into a merger, triggering bursts of new star formation.'
+          prompt: 'Two galaxies drift into each other. What comes next?',
+          sequence: [G.galaxy, G.merge, G.collapse],
+          options: [G.moonFull, G.sparkle, G.cometIce],
+          answer: 1,
+          badge: G.galaxy, badgeName: 'Galaxy Wrangler',
+          why: 'Gravity pulls them into a merger, triggering intense bursts of new star formation.'
         }
       ];
     },
@@ -430,8 +462,14 @@ createApp({
     gameCorrect() {
       return this.gameAnswered && this.gamePicked === this.gameRound.answer;
     },
+    gameAnswerSvg() {
+      return this.gameRound.options[this.gameRound.answer];
+    },
     gameProgressLabel() {
-      return (this.gameRoundIndex + 1) + ' / ' + this.gameRounds.length;
+      return this.gameSolved + ' / ' + this.gameRounds.length + ' solved';
+    },
+    gameProgressPct() {
+      return Math.round((this.gameSolved / this.gameRounds.length) * 100);
     },
     footerCols() {
       return [
@@ -520,6 +558,17 @@ createApp({
       ];
     }
   },
+  watch: {
+    navCompact(now, before) {
+      // switching compact->normal flips position:fixed to absolute, which is
+      // instant. Play a slide-up first so the bar leaves smoothly.
+      if (before && !now) {
+        this.navLeaving = true;
+        clearTimeout(this._navLeaveT);
+        this._navLeaveT = setTimeout(() => { this.navLeaving = false; }, 360);
+      }
+    }
+  },
   methods: {
     pickGameOption(opt) {
       if (this.gameAnswered) return;
@@ -529,10 +578,18 @@ createApp({
         const b = this.gameRound;
         if (!this.gameUnlocked.some(u => u.name === b.badgeName)) {
           this.gameUnlocked.push({ icon: b.badge, name: b.badgeName });
+          this.gameSolved += 1;
         }
       } else {
         this.gameStreak = 0;
       }
+    },
+    resetGame() {
+      this.gamePicked = null;
+      this.gameRoundIndex = 0;
+      this.gameStreak = 0;
+      this.gameUnlocked = [];
+      this.gameSolved = 0;
     },
     nextGameRound() {
       this.gamePicked = null;
@@ -1056,9 +1113,12 @@ createApp({
       this.navScrolled = y > 20;
       // compact: switch to the centered bar slightly before the Features
       // section reaches the top (larger offset = triggers earlier/higher up)
-      if (featuresSection) {
-        const rect = featuresSection.getBoundingClientRect();
-        this.navCompact = rect.top <= nav.offsetHeight + 220;
+      // squeeze in exactly when the Features heading ("Everything the
+      // cosmos demands") reaches the top of the viewport
+      const anchor = (featuresSection && featuresSection.querySelector('h2')) || featuresSection;
+      if (anchor) {
+        const rect = anchor.getBoundingClientRect();
+        this.navCompact = rect.top <= nav.offsetHeight;
       }
     }, { passive: true });
     // Background starfield (shared helper — see common.js). 220 keeps the
