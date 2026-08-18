@@ -64,21 +64,21 @@ const GAME_SVGS = {
   moonWanCres: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gnc"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gnc)"><ellipse cx="13" cy="20" rx="12" ry="15" fill="#e9dcff"/></g></svg>`,
   starMain: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="9" fill="#fde68a"/><circle cx="20" cy="20" r="13" fill="#fde68a" opacity=".22"/></svg>`,
   starRedGiant: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="15" fill="#f87171" opacity=".9"/><circle cx="20" cy="20" r="15" fill="#f87171" opacity=".25"/></svg>`,
-  nebulaPuff: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="15" ry="11" fill="#a855f7" opacity=".35"/><ellipse cx="16" cy="18" rx="8" ry="6" fill="#c084fc" opacity=".5"/></svg>`,
+  nebulaPuff: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" fill="#c084fc" opacity=".16"/><circle cx="20" cy="20" r="16" stroke="#c084fc" stroke-width="1.3" stroke-dasharray="3 3" opacity=".7"/><circle cx="20" cy="20" r="10" fill="#a855f7" opacity=".28"/><circle cx="20" cy="20" r="4" fill="#fde68a"/></svg>`,
   whiteDwarf: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="6" fill="#ffffff"/><circle cx="20" cy="20" r="11" fill="#ffffff" opacity=".18"/></svg>`,
   supernova: `<svg viewBox="0 0 40 40" fill="none"><g stroke="#fbbf24" stroke-width="2" stroke-linecap="round"><line x1="20" y1="4" x2="20" y2="12"/><line x1="20" y1="28" x2="20" y2="36"/><line x1="4" y1="20" x2="12" y2="20"/><line x1="28" y1="20" x2="36" y2="20"/><line x1="9" y1="9" x2="14" y2="14"/><line x1="26" y1="26" x2="31" y2="31"/><line x1="31" y1="9" x2="26" y2="14"/><line x1="14" y1="26" x2="9" y2="31"/></g><circle cx="20" cy="20" r="6" fill="#fde68a"/></svg>`,
   blackHole: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="16" ry="5" stroke="#c084fc" stroke-width="1.6" opacity=".8"/><circle cx="20" cy="20" r="7.5" fill="#07061a" stroke="#a855f7" stroke-width="1.4"/></svg>`,
-  cometIce: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="8" fill="#bae6fd" opacity=".85"/><circle cx="17" cy="17" r="2.4" fill="#e0f2fe"/></svg>`,
+  cometIce: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 9 L28 14 L27 25 L20 31 L13 25 L12 14 Z" fill="#bae6fd" stroke="#e0f2fe" stroke-width="1.3" stroke-linejoin="round"/><path d="M20 9 v22 M12 14 l16 11 M28 14 l-16 11" stroke="#7dd3fc" stroke-width="0.9" opacity=".7"/></svg>`,
   comet: `<svg viewBox="0 0 40 40" fill="none"><path d="M30 10 L14 26" stroke="#93c5fd" stroke-width="3" stroke-linecap="round" opacity=".6"/><circle cx="29" cy="11" r="5" fill="#e0f2fe"/></svg>`,
   cometTail: `<svg viewBox="0 0 40 40" fill="none"><g stroke="#93c5fd" stroke-width="2" stroke-linecap="round" opacity=".75"><path d="M28 12 L8 28"/><path d="M31 16 L13 30"/><path d="M24 8 L6 22"/></g><circle cx="30" cy="11" r="4.5" fill="#e0f2fe"/></svg>`,
   sun: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="10" fill="#fbbf24"/><g stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity=".8"><line x1="20" y1="3" x2="20" y2="8"/><line x1="20" y1="32" x2="20" y2="37"/><line x1="3" y1="20" x2="8" y2="20"/><line x1="32" y1="20" x2="37" y2="20"/></g></svg>`,
   eclipse: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" fill="#fbbf24" opacity=".35"/><circle cx="20" cy="20" r="11" fill="#07061a" stroke="#fde68a" stroke-width="1.6"/></svg>`,
-  cloud: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="22" rx="15" ry="9" fill="#6b7280" opacity=".5"/><ellipse cx="14" cy="18" rx="8" ry="6" fill="#9ca3af" opacity=".45"/></svg>`,
-  collapse: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 20 m-13 0 a13 13 0 1 1 26 0" stroke="#c084fc" stroke-width="1.8" fill="none" opacity=".7"/><path d="M20 20 m-7 0 a7 7 0 1 0 14 0" stroke="#a855f7" stroke-width="1.8" fill="none"/><circle cx="20" cy="20" r="3" fill="#e9dcff"/></svg>`,
-  sparkle: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 8 L22.5 17.5 L32 20 L22.5 22.5 L20 32 L17.5 22.5 L8 20 L17.5 17.5 Z" fill="#e9dcff"/></svg>`,
+  cloud: `<svg viewBox="0 0 40 40" fill="none"><path d="M11 27 a6 6 0 0 1 .6-11.9 8 8 0 0 1 15.3-1.6A6.5 6.5 0 0 1 29 27 Z" fill="#8b93a7" opacity=".55" stroke="#aab2c4" stroke-width="1.2" stroke-linejoin="round"/></svg>`,
+  collapse: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="5" fill="#c084fc"/><g stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 3 v6"/><path d="M17 6 l3 3 3-3"/><path d="M20 37 v-6"/><path d="M17 34 l3-3 3 3"/><path d="M3 20 h6"/><path d="M6 17 l3 3-3 3"/><path d="M37 20 h-6"/><path d="M34 17 l-3 3 3 3"/></g></svg>`,
+  sparkle: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="7" fill="#fde68a"/><circle cx="20" cy="20" r="11" fill="#fde68a" opacity=".2"/><g stroke="#fde68a" stroke-width="1.8" stroke-linecap="round" opacity=".85"><line x1="20" y1="4" x2="20" y2="10"/><line x1="20" y1="30" x2="20" y2="36"/><line x1="4" y1="20" x2="10" y2="20"/><line x1="30" y1="20" x2="36" y2="20"/></g></svg>`,
   galaxy: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="15" ry="7" transform="rotate(-20 20 20)" fill="#a855f7" opacity=".3"/><ellipse cx="20" cy="20" rx="9" ry="4" transform="rotate(-20 20 20)" fill="#c084fc" opacity=".55"/><circle cx="20" cy="20" r="2.6" fill="#ffffff"/></svg>`,
-  merge: `<svg viewBox="0 0 40 40" fill="none"><g stroke="#c084fc" stroke-width="2" stroke-linecap="round"><path d="M6 20 h9"/><path d="M34 20 h-9"/><path d="M12 15 l-5 5 5 5"/><path d="M28 15 l5 5 -5 5"/></g></svg>`,
-  rainbow: `<svg viewBox="0 0 40 40" fill="none"><path d="M8 28 a12 12 0 0 1 24 0" stroke="#f472b6" stroke-width="2.4" fill="none"/><path d="M12 28 a8 8 0 0 1 16 0" stroke="#fbbf24" stroke-width="2.4" fill="none"/><path d="M16 28 a4 4 0 0 1 8 0" stroke="#34d399" stroke-width="2.4" fill="none"/></svg>`,
+  merge: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="12" cy="20" rx="8" ry="4" transform="rotate(-18 12 20)" fill="#c084fc" opacity=".55"/><circle cx="12" cy="20" r="2" fill="#fff"/><ellipse cx="28" cy="20" rx="8" ry="4" transform="rotate(18 28 20)" fill="#a855f7" opacity=".55"/><circle cx="28" cy="20" r="2" fill="#fff"/><path d="M17 20 h6" stroke="#e9dcff" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="2 2"/></svg>`,
+  rainbow: `<svg viewBox="0 0 40 40" fill="none"><path d="M7 29 a13 13 0 0 1 26 0" stroke="#f472b6" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M11.5 29 a8.5 8.5 0 0 1 17 0" stroke="#fbbf24" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M16 29 a4 4 0 0 1 8 0" stroke="#34d399" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
   planet: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="9" fill="#c084fc"/><ellipse cx="20" cy="20" rx="16" ry="5" stroke="#e9dcff" stroke-width="1.4" opacity=".75"/></svg>`
 };
 
@@ -391,6 +391,7 @@ createApp({
           prompt: 'The Moon is waxing. What comes next?',
           sequence: [G.moonNew, G.moonWaxCres, G.moonFirstQ, G.moonWaxGib],
           options: [G.moonFull, G.moonLastQ, G.moonWanCres],
+          labels: ['Full', 'Last quarter', 'Waning crescent'],
           answer: 0,
           badge: G.moonFull, badgeName: 'Full Circle',
           why: 'A waxing Moon grows toward full, so waxing gibbous is followed by the full Moon.'
@@ -399,6 +400,7 @@ createApp({
           prompt: 'The Moon is waning. What comes next?',
           sequence: [G.moonFull, G.moonWanGib, G.moonLastQ, G.moonWanCres],
           options: [G.moonFirstQ, G.moonNew, G.moonWaxGib],
+          labels: ['First quarter', 'New Moon', 'Waxing gibbous'],
           answer: 1,
           badge: G.moonNew, badgeName: 'Night Watcher',
           why: 'A waning Moon shrinks toward new, so the crescent is followed by the new Moon.'
@@ -407,6 +409,7 @@ createApp({
           prompt: 'A Sun-like star runs out of core hydrogen. What comes next?',
           sequence: [G.starMain, G.starRedGiant, G.nebulaPuff],
           options: [G.blackHole, G.whiteDwarf, G.rainbow],
+          labels: ['Black hole', 'White dwarf', 'Rainbow'],
           answer: 1,
           badge: G.whiteDwarf, badgeName: 'Stellar Undertaker',
           why: 'A Sun-like star swells into a red giant, sheds its layers, and leaves a white dwarf behind.'
@@ -415,6 +418,7 @@ createApp({
           prompt: 'A massive star reaches core collapse. What comes next?',
           sequence: [G.starMain, G.starRedGiant, G.supernova],
           options: [G.blackHole, G.whiteDwarf, G.comet],
+          labels: ['Black hole', 'White dwarf', 'Comet'],
           answer: 0,
           badge: G.blackHole, badgeName: 'Event Horizon',
           why: 'The most massive cores keep collapsing past neutron-star density and become black holes.'
@@ -423,6 +427,7 @@ createApp({
           prompt: 'An icy comet falls toward the Sun. What comes next?',
           sequence: [G.cometIce, G.comet, G.sun],
           options: [G.planet, G.cometTail, G.galaxy],
+          labels: ['Planet', 'Comet tail', 'Galaxy'],
           answer: 1,
           badge: G.comet, badgeName: 'Tail Chaser',
           why: 'Solar heating sublimates the icy nucleus, blowing dust and gas into a long bright tail.'
@@ -431,6 +436,7 @@ createApp({
           prompt: 'The new Moon slides between Earth and the Sun. What comes next?',
           sequence: [G.sun, G.moonWanCres, G.moonNew],
           options: [G.eclipse, G.moonFull, G.sparkle],
+          labels: ['Solar eclipse', 'Full Moon', 'Protostar'],
           answer: 0,
           badge: G.eclipse, badgeName: 'Eclipse Hunter',
           why: 'When the new Moon crosses directly in front of the Sun you get a solar eclipse.'
@@ -439,6 +445,7 @@ createApp({
           prompt: 'A dense cloud inside a nebula collapses. What comes next?',
           sequence: [G.cloud, G.collapse, G.sparkle],
           options: [G.starMain, G.blackHole, G.planet],
+          labels: ['New star', 'Black hole', 'Planet'],
           answer: 0,
           badge: G.starMain, badgeName: 'Star Midwife',
           why: 'Collapsing clouds heat up until hydrogen fusion ignites and a new star switches on.'
@@ -447,6 +454,7 @@ createApp({
           prompt: 'Two galaxies drift into each other. What comes next?',
           sequence: [G.galaxy, G.merge, G.collapse],
           options: [G.moonFull, G.sparkle, G.cometIce],
+          labels: ['Full Moon', 'Starburst', 'Icy nucleus'],
           answer: 1,
           badge: G.galaxy, badgeName: 'Galaxy Wrangler',
           why: 'Gravity pulls them into a merger, triggering intense bursts of new star formation.'
