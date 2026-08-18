@@ -122,6 +122,7 @@
                   <div class="auth-err" v-if="errors.password">{{ errors.password }}</div>
                 </div>
 
+                <div class="auth-pw-meta">
                 <div class="auth-strength" v-if="form.password">
                   <div class="auth-strength-bar">
                     <span v-for="n in 4" :key="n" :class="['auth-strength-seg', passwordStrength.level >= n ? 'on ' + passwordStrength.key : '']"></span>
@@ -135,6 +136,7 @@
                   <li :class="{ ok: passwordChecks.digit }">0-9</li>
                   <li :class="{ ok: passwordChecks.symbol }">Symbol</li>
                 </ul>
+                </div>
 
                 <div class="auth-group">
                   <label>{{ t.confirmPass }}</label>
