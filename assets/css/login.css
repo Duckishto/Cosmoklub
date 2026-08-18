@@ -1,4 +1,12 @@
 /* ---------- Auth page shell ---------- */
+#login-app {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
 .auth-topbar {
   position: relative;
   z-index: 5;
@@ -27,9 +35,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem 4rem;
-  min-height: calc(100vh - 90px);
-  min-height: calc(100dvh - 90px);
+  padding: 2rem 1.5rem 3rem;
+  flex: 1 0 auto;
 }
 
 /* ---------- Split card ---------- */
@@ -369,16 +376,13 @@
 /* If the form is taller than the screen, scroll inside the card rather than
    letting the page run away. */
 .auth-form-side {
-  max-height: calc(100vh - 130px);
-  max-height: calc(100dvh - 130px);
-  overflow-y: auto;
-  scrollbar-width: thin;
+  max-height: none;
+  overflow-y: visible;
 }
-.auth-form-side::-webkit-scrollbar { width: 8px; }
-.auth-form-side::-webkit-scrollbar-track { background: transparent; }
-.auth-form-side::-webkit-scrollbar-thumb {
-  background: rgba(168,85,247,0.3);
-  border-radius: 999px;
+/* ---------- Footer on the auth page ---------- */
+#login-app .site-footer {
+  flex-shrink: 0;
+  width: 100%;
 }
 
 /* ---------- Responsive ---------- */
@@ -399,11 +403,7 @@
 @media (max-width: 900px) {
   .auth-card { grid-template-columns: 1fr; max-width: 560px; }
   .auth-visual { display: none; }
-  .auth-form-side {
-    padding: 2rem 1.8rem;
-    max-height: none;
-    overflow-y: visible;
-  }
+  .auth-form-side { padding: 2rem 1.8rem; }
   .auth-card.is-register .auth-form-side { padding: 1.6rem 1.4rem; }
 }
 
