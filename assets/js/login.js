@@ -57,7 +57,8 @@ const T = {
   successTitle: 'You are all set',
   successSub: 'Taking you to your dashboard...',
   backHome: 'Back to home',
-  newHere: 'New here?', haveAcc: 'Already have an account?'
+  newHere: 'New here?', haveAcc: 'Already have an account?',
+  rights: 'All rights reserved.'
 };
 
 createApp({
@@ -80,6 +81,46 @@ createApp({
     };
   },
   computed: {
+    footerCols() {
+      return [
+        {
+          title: 'Platform',
+          links: [
+            { text: 'Object Browser', href: 'object.html' },
+            { text: 'Astronomy Picture', href: 'object.html' },
+            { text: 'Media Gallery', href: 'object.html' },
+            { text: '3D Planetarium', href: 'object.html' }
+          ]
+        },
+        {
+          title: 'Explore',
+          links: [
+            { text: 'Lessons', href: 'lesson.html' },
+            { text: 'Roadmap', href: 'roadmap.html' },
+            { text: 'Dashboard', href: 'dashboard.html' },
+            { text: 'Function Grapher', href: 'object.html' }
+          ]
+        },
+        {
+          title: 'Company',
+          links: [
+            { text: 'Our Team', href: 'team.html' },
+            { text: 'Apply as Staff', href: 'staff-application.html' },
+            { text: 'Community', href: '#' },
+            { text: 'Contact', href: 'mailto:hello@cosmoklub.space' }
+          ]
+        },
+        {
+          title: 'Legal',
+          links: [
+            { text: 'Terms of Service', href: 'index.html#tos' },
+            { text: 'Privacy Policy', href: 'index.html#privacy' },
+            { text: 'Community Guidelines', href: '#' },
+            { text: 'Cookie Policy', href: '#' }
+          ]
+        }
+      ];
+    },
     passwordChecks() {
       const pw = this.form.password || '';
       return {
