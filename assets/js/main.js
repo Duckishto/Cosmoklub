@@ -206,6 +206,7 @@ createApp({
       mainShotIndex: 0,
       mainFlipping: false,
       mainRising: false,
+      mainReturning: false,
       shotModal: null
     };
   },
@@ -386,7 +387,7 @@ createApp({
           date: d,
           day: d.getDate(),
           inMonth,
-          selectable: !past && weekend,
+          selectable: inMonth && !past && weekend,
           isToday: d.getTime() === today.getTime(),
           monthTag: d.getDate() === 1 ? d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase() : ''
         });
@@ -892,18 +893,25 @@ createApp({
       // flip the big box down, swap the picture at the halfway point,
       // then flip it back up
       clearTimeout(this._flipT);
-      // 1. drop the current picture downward out of the frame
+      clearTimeout(this._flipT2);
+      // 1. slide the whole box down out of view
+      this.mainReturning = false;
       this.mainFlipping = true;
       this._flipT = setTimeout(() => {
-        // 2. swap the picture while it sits below, with no transition
+        // 2. swap the picture while it sits below, transitions off
         this.mainShotIndex = i;
         this.mainFlipping = false;
         this.mainRising = true;
-        // 3. next frame, release it so it animates back up
+        // 3. next frame, animate it back up
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => { this.mainRising = false; });
+          requestAnimationFrame(() => {
+            this.mainRising = false;
+            this.mainReturning = true;
+            // 4. hand control back to the idle float once it has landed
+            this._flipT2 = setTimeout(() => { this.mainReturning = false; }, 460);
+          });
         });
-      }, 340);
+      }, 350);
     },
     openShot(shot) {
       this.shotModal = shot;
