@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>html,body{background:#07061a!important}</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>CosmoKlub: Sign in</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/login.css">
+  <link rel="stylesheet" href="assets/css/transition.css">
+</head>
+<body>
+
+<div class="aurora-wrap"><div class="aurora-base"></div><div class="aurora-1"></div><div class="aurora-2"></div><div class="aurora-3"></div></div>
+<canvas id="star-canvas"></canvas>
+
+<div id="login-app" v-cloak>
+
+  <header class="auth-topbar">
+    <a class="auth-logo" href="index.html">
+      <img draggable="false" src="assets/images/logo.png" alt="CosmoKlub" />
+    </a>
+    <a class="auth-back" href="index.html">{{ t.backHome }}</a>
+  </header>
+
+  <main class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-form-side">
+        <div class="auth-form-inner">
+
+          <div v-if="success" class="auth-success">
+            <div class="auth-success-icon">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
+            </div>
+            <h1 v-if="pendingEmailConfirm">{{ t.checkInbox }}</h1>
+            <h1 v-else>{{ t.successTitle }}</h1>
+            <p v-if="pendingEmailConfirm">{{ t.checkInboxSub }}</p>
+            <p v-else>{{ t.successSub }}</p>
+            <a class="auth-submit auth-submit-link" href="index.html">{{ t.backHome }}</a>
+          </div>
+
+          <div v-else>
+            <a class="auth-mark" href="index.html">
+              <img draggable="false" src="assets/images/logo.png" alt="CosmoKlub" />
+            </a>
+
+            <h1 class="auth-title">{{ authTab === 'register' ? t.createAcc : t.welcomeBack }}</h1>
+            <p class="auth-sub">{{ authTab === 'register' ? t.joinUs : t.loginSub }}</p>
+
+            <div class="auth-tabs">
+              <button :class="{ active: authTab === 'login' }" @click="switchTab('login')">{{ t.signIn }}</button>
+              <button :class="{ active: authTab === 'register' }" @click="switchTab('register')">{{ t.register }}</button>
+            </div>
+
+            <div v-if="authTab === 'register'" class="auth-fields">
+              <div class="auth-row">
+                <div class="auth-group">
+                  <label>{{ t.firstName }}</label>
+                  <input v-model="form.firstName" :class="{ err: errors.firstName }" type="text" :placeholder="t.firstPH" autocomplete="given-name" maxlength="40" @blur="touch('firstName')" @input="touched.firstName && validateField('firstName')" />
+                  <div class="auth-err" v-if="errors.firstName">{{ errors.firstName }}</div>
+                </div>
+                <div class="auth-group">
+                  <label>{{ t.lastName }}</label>
+                  <input v-model="form.lastName" :class="{ err: errors.lastName }" type="text" :placeholder="t.lastPH" autocomplete="family-name" maxlength="40" @blur="touch('lastName')" @input="touched.lastName && validateField('lastName')" />
+                  <div class="auth-err" v-if="errors.lastName">{{ errors.lastName }}</div>
+                </div>
+              </div>
+              <div class="auth-row">
+                <div class="auth-group">
+                  <label>{{ t.usernameLabel }}</label>
+                  <input v-model="form.username" :class="{ err: errors.username }" type="text" :placeholder="t.usernamePH" autocomplete="username" maxlength="20" @blur="touch('username')" @input="touched.username && validateField('username')" />
+                  <div class="auth-err" v-if="errors.username">{{ errors.username }}</div>
+                </div>
+                <div class="auth-group">
+                  <label>{{ t.genderLabel }}</label>
+                  <select v-model="form.gender" :class="{ err: errors.gender, 'placeholder-selected': !form.gender }" @change="touch('gender')">
+                    <option value="" disabled>{{ t.genderPH }}</option>
+                    <option value="male">{{ t.genderMale }}</option>
+                    <option value="female">{{ t.genderFemale }}</option>
+                    <option value="other">{{ t.genderOther }}</option>
+                    <option value="prefer_not_to_say">{{ t.genderPNTS }}</option>
+                  </select>
+                  <div class="auth-err" v-if="errors.gender">{{ errors.gender }}</div>
+                </div>
+              </div>
+              <div class="auth-group">
+                <label>{{ t.emailLabel }}</label>
+                <input v-model="form.email" :class="{ err: errors.email }" type="email" :placeholder="t.emailPH" autocomplete="email" maxlength="254" @blur="touch('email')" @input="touched.email && validateField('email')" />
+                <div class="auth-err" v-if="errors.email">{{ errors.email }}</div>
+              </div>
+              <div class="auth-row">
+                <div class="auth-group">
+                  <label>{{ t.passLabel }}</label>
+                  <div class="auth-input-wrap">
+                    <input v-model="form.password"
+                           :class="{ err: errors.password }"
+                           :type="showPassword ? 'text' : 'password'"
+                           :placeholder="t.passPH"
+                           autocomplete="new-password"
+                           maxlength="72"
+                           @blur="touch('password')"
+                           @input="touched.password && validateField('password'); touched.confirm && validateField('confirm')" />
+                    <button type="button" class="auth-eye"
+                            :aria-label="showPassword ? t.hidePass : t.showPass"
+                            @click="showPassword = !showPassword">
+                      <svg v-if="!showPassword" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      <svg v-else width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                  </div>
+                  <div class="auth-err" v-if="errors.password">{{ errors.password }}</div>
+                </div>
+                <div class="auth-group">
+                  <label>{{ t.confirmPass }}</label>
+                  <div class="auth-input-wrap">
+                    <input v-model="form.confirm"
+                           :class="{ err: errors.confirm }"
+                           :type="showConfirm ? 'text' : 'password'"
+                           :placeholder="t.confirmPH"
+                           autocomplete="new-password"
+                           maxlength="72"
+                           @blur="touch('confirm')"
+                           @input="touched.confirm && validateField('confirm')" />
+                    <button type="button" class="auth-eye"
+                            :aria-label="showConfirm ? t.hidePass : t.showPass"
+                            @click="showConfirm = !showConfirm">
+                      <svg v-if="!showConfirm" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      <svg v-else width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                  </div>
+                  <div class="auth-err" v-if="errors.confirm">{{ errors.confirm }}</div>
+                </div>
+              </div>
+
+              <div class="auth-strength" v-if="form.password">
+                <div class="auth-strength-bar">
+                  <span v-for="n in 4" :key="n"
+                        :class="['auth-strength-seg', passwordStrength.level >= n ? 'on ' + passwordStrength.key : '']"></span>
+                </div>
+                <span class="auth-strength-label" :class="passwordStrength.key">{{ passwordStrength.label }}</span>
+              </div>
+              <ul class="auth-reqs" v-if="form.password">
+                <li :class="{ ok: passwordChecks.length }">At least 8 characters</li>
+                <li :class="{ ok: passwordChecks.upper }">One uppercase letter</li>
+                <li :class="{ ok: passwordChecks.lower }">One lowercase letter</li>
+                <li :class="{ ok: passwordChecks.digit }">One number</li>
+                <li :class="{ ok: passwordChecks.symbol }">One symbol (recommended)</li>
+              </ul>
+              <div class="auth-tos">
+                <input id="tos-chk" type="checkbox" v-model="form.tos" @change="touch('tos')" />
+                <label for="tos-chk">
+                  {{ t.tosAgree }}
+                  <a href="index.html#tos">{{ t.tos }}</a>
+                  {{ t.tosAnd }}
+                  <a href="index.html#privacy">{{ t.privacy }}</a>.
+                </label>
+              </div>
+              <div class="auth-err" v-if="errors.tos">{{ errors.tos }}</div>
+              <div class="auth-err" v-if="errors.submit">{{ errors.submit }}</div>
+              <button class="auth-submit" @click="submitRegister" :disabled="loading">
+                {{ loading ? t.loading : t.createAcc }}
+              </button>
+            </div>
+
+            <div v-else class="auth-fields">
+              <div class="auth-group">
+                <label>{{ t.emailLabel }}</label>
+                <input v-model="form.email" :class="{ err: errors.email }" type="email" :placeholder="t.emailPH" autocomplete="email" maxlength="254" @blur="touch('email')" @keyup.enter="submitLogin" />
+                <div class="auth-err" v-if="errors.email">{{ errors.email }}</div>
+              </div>
+              <div class="auth-group">
+                <label>{{ t.passLabel }}</label>
+                <div class="auth-input-wrap">
+                  <input v-model="form.password" :class="{ err: errors.password }" :type="showPassword ? 'text' : 'password'" :placeholder="t.passPH" autocomplete="current-password" @keyup.enter="submitLogin" />
+                  <button type="button" class="auth-eye" :aria-label="showPassword ? t.hidePass : t.showPass" @click="showPassword = !showPassword">
+                    <svg v-if="!showPassword" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg v-else width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  </button>
+                </div>
+                <div class="auth-err" v-if="errors.password">{{ errors.password }}</div>
+              </div>
+              <div class="auth-forgot"><a href="#">{{ t.forgotPass }}</a></div>
+              <div class="auth-err" v-if="errors.submit">{{ errors.submit }}</div>
+              <button class="auth-submit" @click="submitLogin" :disabled="loading">
+                {{ loading ? t.loading : t.signIn }}
+              </button>
+            </div>
+
+            <div class="auth-divider"><span>{{ t.orContinue }}</span></div>
+            <div class="auth-err" v-if="errors.social">{{ errors.social }}</div>
+
+            <button class="auth-social" @click="socialLogin('google')" :disabled="socialLoading">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              Continue with Google
+            </button>
+
+            <p class="auth-switch">
+              <template v-if="authTab === 'login'">
+                {{ t.newHere }} <a href="#" @click.prevent="switchTab('register')">{{ t.register }}</a>
+              </template>
+              <template v-else>
+                {{ t.haveAcc }} <a href="#" @click.prevent="switchTab('login')">{{ t.signIn }}</a>
+              </template>
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="auth-visual media-slot" :class="{ 'has-image': panelImage }">
+        <img draggable="false" v-if="panelImage" :src="panelImage" alt="" />
+        <div class="auth-visual-overlay">
+          <h2>{{ t.panelTitle }}</h2>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <transition name="toast-fade">
+    <div class="toast" v-if="toast">{{ toast }}</div>
+  </transition>
+
+</div>
+
+<script src="assets/js/lib/supabase-client.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/login.js"></script>
+<script src="assets/js/transition.js"></script>
+</body>
+</html>
