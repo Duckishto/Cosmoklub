@@ -411,22 +411,6 @@
   background: linear-gradient(100deg, var(--purple), var(--violet));
   transition: width 0.45s cubic-bezier(.65,0,.35,1);
 }
-.auth-sub-step {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  justify-content: center;
-}
-.auth-step-badge {
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-  padding: 0.16rem 0.5rem;
-  border-radius: 999px;
-  color: #fff;
-  background: linear-gradient(100deg, var(--purple), var(--violet));
-}
-
 .auth-step-actions {
   display: grid;
   grid-template-columns: auto 1fr;
