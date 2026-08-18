@@ -53,35 +53,6 @@ const HERO_SVGS = {
 };
 
 // ---------- Complete Translations ----------
-const GAME_SVGS = {
-  moonNew: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/></svg>`,
-  moonWaxCres: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gwc"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gwc)"><ellipse cx="27" cy="20" rx="12" ry="15" fill="#e9dcff"/></g></svg>`,
-  moonFirstQ: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gfq"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gfq)"><rect x="20" y="5" width="15" height="30" fill="#e9dcff"/></g></svg>`,
-  moonWaxGib: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gwg"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#e9dcff" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gwg)"><ellipse cx="13" cy="20" rx="8" ry="15" fill="#141033"/></g></svg>`,
-  moonFull: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="15" fill="#e9dcff" stroke="#a855f7" stroke-width="1.4"/><circle cx="15" cy="16" r="3" fill="#cbb8ef" opacity=".55"/><circle cx="24" cy="24" r="2.2" fill="#cbb8ef" opacity=".45"/></svg>`,
-  moonWanGib: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gng"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#e9dcff" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gng)"><ellipse cx="27" cy="20" rx="8" ry="15" fill="#141033"/></g></svg>`,
-  moonLastQ: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="glq"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#glq)"><rect x="5" y="5" width="15" height="30" fill="#e9dcff"/></g></svg>`,
-  moonWanCres: `<svg viewBox="0 0 40 40" fill="none"><defs><clipPath id="gnc"><circle cx="20" cy="20" r="15"/></clipPath></defs><circle cx="20" cy="20" r="15" fill="#141033" stroke="#5b4a8a" stroke-width="1.4"/><g clip-path="url(#gnc)"><ellipse cx="13" cy="20" rx="12" ry="15" fill="#e9dcff"/></g></svg>`,
-  starMain: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="9" fill="#fde68a"/><circle cx="20" cy="20" r="13" fill="#fde68a" opacity=".22"/></svg>`,
-  starRedGiant: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="15" fill="#f87171" opacity=".9"/><circle cx="20" cy="20" r="15" fill="#f87171" opacity=".25"/></svg>`,
-  nebulaPuff: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" fill="#c084fc" opacity=".16"/><circle cx="20" cy="20" r="16" stroke="#c084fc" stroke-width="1.3" stroke-dasharray="3 3" opacity=".7"/><circle cx="20" cy="20" r="10" fill="#a855f7" opacity=".28"/><circle cx="20" cy="20" r="4" fill="#fde68a"/></svg>`,
-  whiteDwarf: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="6" fill="#ffffff"/><circle cx="20" cy="20" r="11" fill="#ffffff" opacity=".18"/></svg>`,
-  supernova: `<svg viewBox="0 0 40 40" fill="none"><g stroke="#fbbf24" stroke-width="2" stroke-linecap="round"><line x1="20" y1="4" x2="20" y2="12"/><line x1="20" y1="28" x2="20" y2="36"/><line x1="4" y1="20" x2="12" y2="20"/><line x1="28" y1="20" x2="36" y2="20"/><line x1="9" y1="9" x2="14" y2="14"/><line x1="26" y1="26" x2="31" y2="31"/><line x1="31" y1="9" x2="26" y2="14"/><line x1="14" y1="26" x2="9" y2="31"/></g><circle cx="20" cy="20" r="6" fill="#fde68a"/></svg>`,
-  blackHole: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="16" ry="5" stroke="#c084fc" stroke-width="1.6" opacity=".8"/><circle cx="20" cy="20" r="7.5" fill="#07061a" stroke="#a855f7" stroke-width="1.4"/></svg>`,
-  cometIce: `<svg viewBox="0 0 40 40" fill="none"><path d="M20 9 L28 14 L27 25 L20 31 L13 25 L12 14 Z" fill="#bae6fd" stroke="#e0f2fe" stroke-width="1.3" stroke-linejoin="round"/><path d="M20 9 v22 M12 14 l16 11 M28 14 l-16 11" stroke="#7dd3fc" stroke-width="0.9" opacity=".7"/></svg>`,
-  comet: `<svg viewBox="0 0 40 40" fill="none"><path d="M30 10 L14 26" stroke="#93c5fd" stroke-width="3" stroke-linecap="round" opacity=".6"/><circle cx="29" cy="11" r="5" fill="#e0f2fe"/></svg>`,
-  cometTail: `<svg viewBox="0 0 40 40" fill="none"><g stroke="#93c5fd" stroke-width="2" stroke-linecap="round" opacity=".75"><path d="M28 12 L8 28"/><path d="M31 16 L13 30"/><path d="M24 8 L6 22"/></g><circle cx="30" cy="11" r="4.5" fill="#e0f2fe"/></svg>`,
-  sun: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="10" fill="#fbbf24"/><g stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity=".8"><line x1="20" y1="3" x2="20" y2="8"/><line x1="20" y1="32" x2="20" y2="37"/><line x1="3" y1="20" x2="8" y2="20"/><line x1="32" y1="20" x2="37" y2="20"/></g></svg>`,
-  eclipse: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" fill="#fbbf24" opacity=".35"/><circle cx="20" cy="20" r="11" fill="#07061a" stroke="#fde68a" stroke-width="1.6"/></svg>`,
-  cloud: `<svg viewBox="0 0 40 40" fill="none"><path d="M11 27 a6 6 0 0 1 .6-11.9 8 8 0 0 1 15.3-1.6A6.5 6.5 0 0 1 29 27 Z" fill="#8b93a7" opacity=".55" stroke="#aab2c4" stroke-width="1.2" stroke-linejoin="round"/></svg>`,
-  collapse: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="5" fill="#c084fc"/><g stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 3 v6"/><path d="M17 6 l3 3 3-3"/><path d="M20 37 v-6"/><path d="M17 34 l3-3 3 3"/><path d="M3 20 h6"/><path d="M6 17 l3 3-3 3"/><path d="M37 20 h-6"/><path d="M34 17 l-3 3 3 3"/></g></svg>`,
-  sparkle: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="7" fill="#fde68a"/><circle cx="20" cy="20" r="11" fill="#fde68a" opacity=".2"/><g stroke="#fde68a" stroke-width="1.8" stroke-linecap="round" opacity=".85"><line x1="20" y1="4" x2="20" y2="10"/><line x1="20" y1="30" x2="20" y2="36"/><line x1="4" y1="20" x2="10" y2="20"/><line x1="30" y1="20" x2="36" y2="20"/></g></svg>`,
-  galaxy: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="15" ry="7" transform="rotate(-20 20 20)" fill="#a855f7" opacity=".3"/><ellipse cx="20" cy="20" rx="9" ry="4" transform="rotate(-20 20 20)" fill="#c084fc" opacity=".55"/><circle cx="20" cy="20" r="2.6" fill="#ffffff"/></svg>`,
-  merge: `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="12" cy="20" rx="8" ry="4" transform="rotate(-18 12 20)" fill="#c084fc" opacity=".55"/><circle cx="12" cy="20" r="2" fill="#fff"/><ellipse cx="28" cy="20" rx="8" ry="4" transform="rotate(18 28 20)" fill="#a855f7" opacity=".55"/><circle cx="28" cy="20" r="2" fill="#fff"/><path d="M17 20 h6" stroke="#e9dcff" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="2 2"/></svg>`,
-  rainbow: `<svg viewBox="0 0 40 40" fill="none"><path d="M7 29 a13 13 0 0 1 26 0" stroke="#f472b6" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M11.5 29 a8.5 8.5 0 0 1 17 0" stroke="#fbbf24" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M16 29 a4 4 0 0 1 8 0" stroke="#34d399" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
-  planet: `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="9" fill="#c084fc"/><ellipse cx="20" cy="20" rx="16" ry="5" stroke="#e9dcff" stroke-width="1.4" opacity=".75"/></svg>`
-};
-
 const translations = {
   EN: {
     eyebrow: 'Next-Gen Astronomy Platform',
@@ -184,11 +155,6 @@ createApp({
       authTab: 'register',
       billing: 'monthly',
       openFaq: null,
-      gameRoundIndex: 0,
-      gamePicked: null,
-      gameStreak: 0,
-      gameUnlocked: [],
-      gameSolved: 0,
       sectionImages: {
         featurePanel: '',
         ctaBanner: ''
@@ -384,101 +350,6 @@ createApp({
         }
       ];
     },
-    gameRounds() {
-      const G = GAME_SVGS;
-      return [
-        {
-          prompt: 'The Moon is waxing. What comes next?',
-          sequence: [G.moonNew, G.moonWaxCres, G.moonFirstQ, G.moonWaxGib],
-          options: [G.moonFull, G.moonLastQ, G.moonWanCres],
-          labels: ['Full', 'Last quarter', 'Waning crescent'],
-          answer: 0,
-          badge: G.moonFull, badgeName: 'Full Circle',
-          why: 'A waxing Moon grows toward full, so waxing gibbous is followed by the full Moon.'
-        },
-        {
-          prompt: 'The Moon is waning. What comes next?',
-          sequence: [G.moonFull, G.moonWanGib, G.moonLastQ, G.moonWanCres],
-          options: [G.moonFirstQ, G.moonNew, G.moonWaxGib],
-          labels: ['First quarter', 'New Moon', 'Waxing gibbous'],
-          answer: 1,
-          badge: G.moonNew, badgeName: 'Night Watcher',
-          why: 'A waning Moon shrinks toward new, so the crescent is followed by the new Moon.'
-        },
-        {
-          prompt: 'A Sun-like star runs out of core hydrogen. What comes next?',
-          sequence: [G.starMain, G.starRedGiant, G.nebulaPuff],
-          options: [G.blackHole, G.whiteDwarf, G.rainbow],
-          labels: ['Black hole', 'White dwarf', 'Rainbow'],
-          answer: 1,
-          badge: G.whiteDwarf, badgeName: 'Stellar Undertaker',
-          why: 'A Sun-like star swells into a red giant, sheds its layers, and leaves a white dwarf behind.'
-        },
-        {
-          prompt: 'A massive star reaches core collapse. What comes next?',
-          sequence: [G.starMain, G.starRedGiant, G.supernova],
-          options: [G.blackHole, G.whiteDwarf, G.comet],
-          labels: ['Black hole', 'White dwarf', 'Comet'],
-          answer: 0,
-          badge: G.blackHole, badgeName: 'Event Horizon',
-          why: 'The most massive cores keep collapsing past neutron-star density and become black holes.'
-        },
-        {
-          prompt: 'An icy comet falls toward the Sun. What comes next?',
-          sequence: [G.cometIce, G.comet, G.sun],
-          options: [G.planet, G.cometTail, G.galaxy],
-          labels: ['Planet', 'Comet tail', 'Galaxy'],
-          answer: 1,
-          badge: G.comet, badgeName: 'Tail Chaser',
-          why: 'Solar heating sublimates the icy nucleus, blowing dust and gas into a long bright tail.'
-        },
-        {
-          prompt: 'The new Moon slides between Earth and the Sun. What comes next?',
-          sequence: [G.sun, G.moonWanCres, G.moonNew],
-          options: [G.eclipse, G.moonFull, G.sparkle],
-          labels: ['Solar eclipse', 'Full Moon', 'Protostar'],
-          answer: 0,
-          badge: G.eclipse, badgeName: 'Eclipse Hunter',
-          why: 'When the new Moon crosses directly in front of the Sun you get a solar eclipse.'
-        },
-        {
-          prompt: 'A dense cloud inside a nebula collapses. What comes next?',
-          sequence: [G.cloud, G.collapse, G.sparkle],
-          options: [G.starMain, G.blackHole, G.planet],
-          labels: ['New star', 'Black hole', 'Planet'],
-          answer: 0,
-          badge: G.starMain, badgeName: 'Star Midwife',
-          why: 'Collapsing clouds heat up until hydrogen fusion ignites and a new star switches on.'
-        },
-        {
-          prompt: 'Two galaxies drift into each other. What comes next?',
-          sequence: [G.galaxy, G.merge, G.collapse],
-          options: [G.moonFull, G.sparkle, G.cometIce],
-          labels: ['Full Moon', 'Starburst', 'Icy nucleus'],
-          answer: 1,
-          badge: G.galaxy, badgeName: 'Galaxy Wrangler',
-          why: 'Gravity pulls them into a merger, triggering intense bursts of new star formation.'
-        }
-      ];
-    },
-    gameRound() {
-      return this.gameRounds[this.gameRoundIndex];
-    },
-    gameAnswered() {
-      return this.gamePicked !== null;
-    },
-    gameCorrect() {
-      return this.gameAnswered && this.gamePicked === this.gameRound.answer;
-    },
-    gameAnswerSvg() {
-      return this.gameRound.options[this.gameRound.answer];
-    },
-    gameProgressLabel() {
-      return this.gameSolved + ' / ' + this.gameRounds.length + ' solved';
-    },
-    gameProgressPct() {
-      return Math.round((this.gameSolved / this.gameRounds.length) * 100);
-    },
     footerCols() {
       return [
         {
@@ -578,33 +449,57 @@ createApp({
     }
   },
   methods: {
-    pickGameOption(opt) {
-      if (this.gameAnswered) return;
-      this.gamePicked = opt;
-      if (opt === this.gameRound.answer) {
-        this.gameStreak += 1;
-        const b = this.gameRound;
-        if (!this.gameUnlocked.some(u => u.name === b.badgeName)) {
-          this.gameUnlocked.push({ icon: b.badge, name: b.badgeName });
-          this.gameSolved += 1;
+    // --- Pensia throw physics: bounces off every edge ---
+    throwPensia(vx, vy) {
+      const speed = Math.hypot(vx, vy);
+      if (speed < 1.2) return;               // a gentle release just drops her
+      cancelAnimationFrame(this._pensiaRAF);
+      this._pensiaVel = {
+        x: Math.max(-60, Math.min(60, vx)),
+        y: Math.max(-60, Math.min(60, vy))
+      };
+      const FRICTION = 0.985;                // air drag
+      const BOUNCE = 0.7;                    // energy kept per wall hit
+      const STOP = 0.35;
+
+      const step = () => {
+        const v = this._pensiaVel;
+        const el = this.$refs.pensiaWrap;
+        const w = el ? el.offsetWidth : 160;
+        const h = el ? el.offsetHeight : 160;
+        // bounce inside the visible viewport so the throw stays watchable
+        const minX = 8;
+        const maxX = Math.max(minX, document.documentElement.clientWidth - w - 8);
+        const minY = window.scrollY + 8;
+        const maxY = Math.max(minY, window.scrollY + window.innerHeight - h - 8);
+        let { x, y } = this.pensiaPos;
+
+        x += v.x;
+        y += v.y;
+
+        if (x <= minX) { x = minX; v.x = Math.abs(v.x) * BOUNCE; }
+        else if (x >= maxX) { x = maxX; v.x = -Math.abs(v.x) * BOUNCE; }
+        if (y <= minY) { y = minY; v.y = Math.abs(v.y) * BOUNCE; }
+        else if (y >= maxY) { y = maxY; v.y = -Math.abs(v.y) * BOUNCE; }
+
+        v.x *= FRICTION;
+        v.y *= FRICTION;
+
+        this.pensiaPos = { x, y };
+        // spin a little in the direction she's travelling
+        this.pensiaTilt = Math.max(-22, Math.min(22, v.x * 1.6));
+
+        if (Math.hypot(v.x, v.y) > STOP) {
+          this._pensiaRAF = requestAnimationFrame(step);
+        } else {
+          this.pensiaTilt = 0;
         }
-      } else {
-        this.gameStreak = 0;
-      }
-    },
-    resetGame() {
-      this.gamePicked = null;
-      this.gameRoundIndex = 0;
-      this.gameStreak = 0;
-      this.gameUnlocked = [];
-      this.gameSolved = 0;
-    },
-    nextGameRound() {
-      this.gamePicked = null;
-      this.gameRoundIndex = (this.gameRoundIndex + 1) % this.gameRounds.length;
+      };
+      this._pensiaRAF = requestAnimationFrame(step);
     },
     // --- Pensia drag-to-move ---
     onPensiaPointerDown(e) {
+      cancelAnimationFrame(this._pensiaRAF);
       e.currentTarget.setPointerCapture(e.pointerId);
       this._pensiaDrag = {
         startX: e.clientX,
@@ -619,6 +514,14 @@ createApp({
       if (!d) return;
       const dx = e.clientX - d.startX;
       const dy = e.clientY - d.startY;
+      const now = performance.now();
+      if (d.lastT) {
+        const dt = Math.max(1, now - d.lastT);
+        // exponential smoothing keeps a flick from being one noisy sample
+        d.vx = 0.65 * (d.vx || 0) + 0.35 * ((e.clientX - (d.lastPX ?? e.clientX)) / dt) * 16;
+        d.vy = 0.65 * (d.vy || 0) + 0.35 * ((e.clientY - (d.lastPY ?? e.clientY)) / dt) * 16;
+      }
+      d.lastT = now; d.lastPX = e.clientX; d.lastPY = e.clientY;
       if (!d.moved && Math.hypot(dx, dy) > 4) {
         d.moved = true;
         this.pensiaDragging = true;
@@ -647,6 +550,9 @@ createApp({
       this._pensiaDrag = null;
       this.pensiaDragging = false;
       this.pensiaTilt = 0;
+      if (d.moved) {
+        this.throwPensia(d.vx || 0, d.vy || 0);
+      }
       if (!d.moved) {
         // no real movement happened — treat it as a click/tap
         this.pensiaClick();
