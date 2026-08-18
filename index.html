@@ -331,92 +331,20 @@
 
     <div class="sep"></div>
 
-    <!-- What Happens Next? — mini game -->
-    <section class="game-section">
+    <!-- 3D planet showcase -->
+    <section class="showcase-section">
       <div class="game-head">
-        <h2>What happens next?</h2>
-        <p class="section-sub">Read the sequence, predict the next step, and unlock achievements. A taste of how CosmoKlub teaches.</p>
+        <h2>Explore the planets in 3D</h2>
+        <p class="section-sub">Pick a world and spin it. Drag to rotate — these are the same models used across CosmoKlub.</p>
       </div>
 
-      <div class="game-board">
-
-        <!-- LEFT: the sequence to read -->
-        <div class="game-panel game-panel-left">
-          <p class="game-prompt">{{ gameRound.prompt }}</p>
-          <div class="game-sequence">
-            <template v-for="(g, gi) in gameRound.sequence" :key="'seq-'+gi">
-              <span class="game-glyph" v-html="g"></span>
-              <span class="game-arrow" aria-hidden="true">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </span>
-            </template>
-            <span class="game-glyph game-unknown" :class="{ revealed: gameCorrect }">
-              <span v-if="gameCorrect" v-html="gameAnswerSvg"></span>
-              <span v-else class="game-qmark">?</span>
-            </span>
-          </div>
-          <div class="game-pool">
-            <span class="game-pool-label">Pick the next step</span>
-            <div class="game-options">
-              <button
-                v-for="(opt, oi) in gameRound.options"
-                :key="'opt-'+oi"
-                class="game-option"
-                :class="{
-                  correct: gameAnswered && oi === gameRound.answer,
-                  wrong: gamePicked === oi && oi !== gameRound.answer
-                }"
-                :disabled="gameAnswered"
-                @click="pickGameOption(oi)"
-              >
-                <span class="game-option-art" v-html="opt"></span>
-                <span class="game-option-label">{{ gameRound.labels[oi] }}</span>
-              </button>
-            </div>
-          </div>
+      <div class="showcase-board">
+        <div class="showcase-stage" id="showcase-stage">
+          <canvas id="showcase-canvas"></canvas>
+          <div class="showcase-loading" id="showcase-loading"><span></span></div>
+          <div class="showcase-name" id="showcase-name"></div>
         </div>
-
-        <!-- RIGHT: progress + achievements -->
-        <div class="game-panel game-panel-right">
-          <div class="game-meter">
-            <div class="game-meter-head">
-              <span class="game-meter-title">Achievements</span>
-              <span class="game-meter-count">{{ gameProgressLabel }}</span>
-            </div>
-            <div class="game-meter-bar">
-              <span class="game-meter-fill" :style="{ width: gameProgressPct + '%' }"></span>
-            </div>
-          </div>
-          <button class="game-clear" @click="resetGame" :disabled="!gameSolved">Clear all</button>
-
-          <div class="game-slots">
-            <span
-              class="game-slot"
-              :class="{ filled: gameUnlocked[n-1] }"
-              v-for="n in gameRounds.length"
-              :key="'slot-'+n"
-              :title="gameUnlocked[n-1] ? gameUnlocked[n-1].name : ''"
-            >
-              <span v-if="gameUnlocked[n-1]" v-html="gameUnlocked[n-1].icon"></span>
-            </span>
-          </div>
-
-          <div class="game-result">
-            <template v-if="gameAnswered">
-              <strong :class="gameCorrect ? 'is-correct' : 'is-wrong'">
-                {{ gameCorrect ? gameRound.badgeName + ' unlocked' : 'Not quite — watch the geometry.' }}
-              </strong>
-              <p>{{ gameRound.why }}</p>
-            </template>
-            <template v-else>
-              <strong class="is-idle">Unlock your first badge</strong>
-              <p>Read the sequence on the left, then choose what happens next.</p>
-            </template>
-          </div>
-
-          <button class="game-next" @click="nextGameRound" :disabled="!gameAnswered">Next question</button>
-        </div>
-
+        <div class="showcase-tabs" id="showcase-tabs"></div>
       </div>
     </section>
 
@@ -719,6 +647,6 @@
   <script src="assets/js/transition.js"></script>
 
   <!-- 3D planet -->
-  <script type="module" src="assets/js/planet.js"></script>
+  <script type="module" src="assets/js/showcase.js"></script>
 </body>
 </html>
