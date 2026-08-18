@@ -130,7 +130,7 @@ body {
 
 /* ---------- Navigation ---------- */
 nav {
-  position: fixed;
+  position: absolute;
   top: 0; left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -154,8 +154,14 @@ nav {
               border-color 0.4s ease,
               border-radius 0.4s ease;
 }
+@keyframes navDropIn {
+  from { transform: translateX(-50%) translateY(-120%); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
 nav.compact {
+  position: fixed;
   top: 14px;
+  animation: navDropIn 0.42s cubic-bezier(.4,0,.2,1);
   width: min(1160px, 100% - 3rem);
   padding: 0 1.5rem;
   background: rgba(14, 11, 30, 0.82);
@@ -1297,6 +1303,200 @@ img {
   .price-cta:hover {
     transform: none;
   }
+}
+
+/* ===== What Happens Next? mini game ===== */
+.game-section { position: relative; }
+.game-head { text-align: center; margin-bottom: 1.8rem; }
+.game-head h2 {
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+.game-head .section-sub { margin: 0 auto; max-width: 60ch; }
+.game-card {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem;
+  border-radius: 20px;
+  background: #0e0b1f;
+  border: 1px solid rgba(168,85,247,0.18);
+  text-align: center;
+}
+.game-scoreline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+}
+.game-count {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  color: var(--glow);
+  background: rgba(124,58,237,0.14);
+  border: 1px solid rgba(168,85,247,0.3);
+}
+.game-streak { font-size: 0.78rem; font-weight: 700; color: #fbbf24; }
+.game-prompt {
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--stardust);
+  margin-bottom: 1.4rem;
+}
+.game-sequence {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.8rem;
+}
+.game-glyph { font-size: 2.2rem; line-height: 1; }
+.game-arrow { color: var(--muted); font-size: 1.1rem; }
+.game-unknown {
+  width: 52px; height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--muted);
+  background: rgba(124,58,237,0.1);
+  border: 2px dashed rgba(168,85,247,0.4);
+}
+.game-unknown.revealed {
+  font-size: 2rem;
+  color: var(--white);
+  border-style: solid;
+  border-color: #34d399;
+  background: rgba(52,211,153,0.12);
+}
+.game-options { display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap; }
+.game-option {
+  width: 68px; height: 68px;
+  font-size: 2rem;
+  line-height: 1;
+  border-radius: 14px;
+  background: rgba(124,58,237,0.08);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform var(--tr), border-color var(--tr), background var(--tr);
+}
+.game-option:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: var(--violet);
+  background: rgba(124,58,237,0.18);
+}
+.game-option:disabled { cursor: default; }
+.game-option.correct { border-color: #34d399; background: rgba(52,211,153,0.16); }
+.game-option.wrong { border-color: #f87171; background: rgba(248,113,113,0.16); }
+.game-feedback {
+  margin-top: 1.5rem;
+  padding: 1.1rem 1.2rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(124,58,237,0.06);
+}
+.game-feedback.is-correct { border-color: rgba(52,211,153,0.4); }
+.game-feedback.is-wrong { border-color: rgba(248,113,113,0.4); }
+.game-feedback .game-miss { display: block; font-size: 1rem; margin-bottom: 0.4rem; color: #f87171; }
+
+.game-unlock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 1rem 0.55rem 0.6rem;
+  margin-bottom: 0.7rem;
+  border-radius: 999px;
+  background: linear-gradient(100deg, rgba(52,211,153,0.16), rgba(124,58,237,0.16));
+  border: 1px solid rgba(52,211,153,0.4);
+  animation: unlockPop 0.45s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes unlockPop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.game-unlock-badge {
+  width: 40px; height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  background: rgba(8,4,15,0.5);
+  border: 1px solid rgba(52,211,153,0.45);
+  box-shadow: 0 0 16px rgba(52,211,153,0.3);
+}
+.game-unlock-text { display: flex; flex-direction: column; text-align: left; line-height: 1.25; }
+.game-unlock-text em {
+  font-style: normal;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #34d399;
+}
+.game-unlock-text strong { font-size: 0.98rem; font-weight: 800; color: var(--white); }
+
+.game-trophies {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+.game-trophies-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 0.2rem;
+}
+.game-trophy {
+  width: 32px; height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  border-radius: 50%;
+  background: rgba(124,58,237,0.12);
+  border: 1px solid rgba(168,85,247,0.35);
+  cursor: default;
+  animation: unlockPop 0.35s cubic-bezier(.34,1.56,.64,1);
+}
+.game-feedback p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+.game-next {
+  margin-top: 0.9rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 10px;
+  background: linear-gradient(100deg, var(--purple), var(--violet));
+  border: none;
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--tr);
+}
+.game-next:hover { transform: translateY(-1px); }
+@media (max-width: 600px) {
+  .game-card { padding: 1.4rem; }
+  .game-glyph { font-size: 1.7rem; }
+  .game-option { width: 58px; height: 58px; font-size: 1.6rem; }
+  .game-unknown { width: 44px; height: 44px; }
+}
+@media (hover: none) {
+  .game-option:hover, .game-next:hover { transform: none; }
 }
 
 .objects-track-wrap {
