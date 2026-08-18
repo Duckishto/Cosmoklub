@@ -51,7 +51,10 @@ if (wrap && canvas && tabsEl) {
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   controls.enablePan = false;
-  controls.enableZoom = false;
+  controls.enableZoom = true;
+  controls.zoomSpeed = 0.7;
+  controls.minDistance = 1.8;
+  controls.maxDistance = 7;
   controls.autoRotate = true;
   controls.autoRotateSpeed = 0.9;
 
@@ -151,7 +154,7 @@ if (wrap && canvas && tabsEl) {
 
   new ResizeObserver(resize).observe(wrap);
   resize();
-  load(2); // Earth by default
+  load(0); // Mercury by default
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   controls.autoRotate = !reduced;
