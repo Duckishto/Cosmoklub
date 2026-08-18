@@ -391,6 +391,15 @@ nav.compact {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  border-radius: 999px;
+  transition: background var(--tr), color var(--tr);
+}
+/* the open menu's trigger is filled so it's clear which one is selected.
+   :hover is listed too, otherwise `.nav-links a:hover` outranks this. */
+.nav-links a.nav-menu-trigger.is-open,
+.nav-links a.nav-menu-trigger.is-open:hover {
+  background: linear-gradient(100deg, var(--purple), var(--violet));
+  color: #fff;
 }
 .nav-caret { transition: transform 0.25s ease; }
 .nav-caret.up { transform: rotate(180deg); }
@@ -2985,15 +2994,18 @@ nav:not(.nav-hidden) {
     inset 0 1px 0 rgba(255,255,255,0.1);
   animation-play-state: paused;
 }
-/* flip the picture down and back up when a tool pill is picked */
+/* the box drops away downward, swaps picture, then rises back */
 .hero-main-body {
-  transform-origin: center top;
-  transition: transform 0.26s cubic-bezier(.4,0,.2,1), opacity 0.26s ease;
-  perspective: 800px;
+  transition: transform 0.34s cubic-bezier(.55,0,.65,0.35), opacity 0.3s ease;
 }
 .hero-main-body.flipping {
-  transform: rotateX(-88deg);
+  transform: translateY(115%);
   opacity: 0;
+}
+.hero-main-body.rising {
+  transform: translateY(115%);
+  opacity: 0;
+  transition: none;
 }
 .hero-main-tag {
   position: absolute;
@@ -3250,7 +3262,7 @@ nav:not(.nav-hidden) {
 }
 .demo-close {
   position: absolute;
-  top: 0.8rem; right: 0.8rem;
+  top: 0.7rem; right: 0.7rem;
   width: 30px; height: 30px;
   display: inline-flex;
   align-items: center;
@@ -3298,6 +3310,8 @@ nav:not(.nav-hidden) {
   color: var(--stardust);
 }
 .demo-facts svg { color: var(--glow); flex-shrink: 0; }
+/* keep the official Google Meet brand colours — no tinting */
+.demo-meet-logo { color: initial; flex-shrink: 0; }
 
 .demo-cal { padding: 1.8rem 1.4rem; border-right: 1px solid rgba(168,85,247,0.14); }
 .demo-cal-head {
@@ -3380,7 +3394,14 @@ nav:not(.nav-hidden) {
   color: var(--muted);
 }
 
-.demo-slots { padding: 1.8rem 1.4rem; display: flex; flex-direction: column; gap: 0.9rem; }
+.demo-slots {
+  padding: 1.8rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-height: 520px;
+}
+.demo-slots-head { padding-right: 2.4rem; }
 .demo-slots-head {
   display: flex;
   align-items: center;
@@ -3406,7 +3427,14 @@ nav:not(.nav-hidden) {
   cursor: pointer;
 }
 .demo-fmt button.on { background: rgba(124,58,237,0.3); color: #fff; }
-.demo-slot-list { display: flex; flex-direction: column; gap: 0.45rem; }
+.demo-slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
 .demo-slot {
   padding: 0.62rem 1rem;
   border-radius: 9px;
@@ -3424,8 +3452,23 @@ nav:not(.nav-hidden) {
   background: linear-gradient(100deg, var(--purple), var(--violet));
   border-color: transparent;
 }
-.demo-slot-empty { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-.demo-form { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.4rem; }
+.demo-slot-empty {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+  flex: 1;
+}
+.demo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  opacity: 0.4;
+  transition: opacity 0.25s ease;
+}
+.demo-form.ready { opacity: 1; }
+.demo-form input:disabled { cursor: not-allowed; }
 .demo-form input {
   padding: 0.62rem 0.8rem;
   border-radius: 9px;
