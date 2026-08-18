@@ -130,9 +130,8 @@
           @click="openShot(heroShots[0])"
           @mouseenter="activeShot = 0"
         >
-          <div class="hero-main-body">
+          <div class="hero-main-body media-slot" :class="{ 'has-image': heroShots[0].img }">
             <img draggable="false" v-if="heroShots[0].img" :src="heroShots[0].img" :alt="t[heroShots[0].key]" />
-            <div v-else class="stage-card-svg" v-html="heroShots[0].svg"></div>
           </div>
           <div class="stage-card-glow" aria-hidden="true"></div>
         </button>
@@ -149,9 +148,8 @@
         @click="openShot(shot)"
         @mouseenter="activeShot = shot.idx"
       >
-        <div class="stage-card-body" :class="{ 'svg-body': shot.svg }">
+        <div class="stage-card-body media-slot" :class="{ 'has-image': shot.img }">
           <img draggable="false" v-if="shot.img" :src="shot.img" :alt="t[shot.key]" loading="lazy" />
-          <div v-else class="stage-card-svg" v-html="shot.svg"></div>
         </div>
         <div class="stage-card-glow" aria-hidden="true"></div>
       </button>
