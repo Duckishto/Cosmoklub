@@ -26,7 +26,7 @@
   </header>
 
   <main class="auth-page">
-    <div class="auth-card">
+    <div class="auth-card" :class="{ 'is-register': authTab === 'register' && !success }">
 
       <div class="auth-form-side">
         <div class="auth-form-inner">
@@ -142,11 +142,11 @@
                 <span class="auth-strength-label" :class="passwordStrength.key">{{ passwordStrength.label }}</span>
               </div>
               <ul class="auth-reqs" v-if="form.password">
-                <li :class="{ ok: passwordChecks.length }">At least 8 characters</li>
-                <li :class="{ ok: passwordChecks.upper }">One uppercase letter</li>
-                <li :class="{ ok: passwordChecks.lower }">One lowercase letter</li>
-                <li :class="{ ok: passwordChecks.digit }">One number</li>
-                <li :class="{ ok: passwordChecks.symbol }">One symbol (recommended)</li>
+                <li :class="{ ok: passwordChecks.length }">8+ chars</li>
+                <li :class="{ ok: passwordChecks.upper }">A-Z</li>
+                <li :class="{ ok: passwordChecks.lower }">a-z</li>
+                <li :class="{ ok: passwordChecks.digit }">0-9</li>
+                <li :class="{ ok: passwordChecks.symbol }">Symbol</li>
               </ul>
               <div class="auth-tos">
                 <input id="tos-chk" type="checkbox" v-model="form.tos" @change="touch('tos')" />
