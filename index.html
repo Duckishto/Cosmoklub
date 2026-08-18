@@ -27,7 +27,7 @@
         <img draggable="false" src="assets/images/logo.png" alt="CosmoKlub" class="nav-logo-img" />
       </a>
       <ul class="nav-links" :class="{open: mobileMenuOpen}">
-        <li><a href="index.html" class="active-link" @click="mobileMenuOpen=false">Home</a></li>
+        <li><a href="index.html" :class="{ 'active-link': !openMenu }" @click="mobileMenuOpen=false">Home</a></li>
         <li class="nav-has-menu">
           <a href="object.html" class="nav-menu-trigger" :class="{ 'is-open': openMenu === 'tools' }" @click.prevent="toggleMenu('tools')">
             Tools
@@ -64,7 +64,7 @@
             </div>
           </div>
         </li>
-        <li><a href="staff-application.html" @click="mobileMenuOpen=false">Resources</a></li>
+        <li><a href="resources.html" @click="mobileMenuOpen=false">Resources</a></li>
         <li class="nav-link-auth"><a href="login.html">{{ t.signIn }}</a></li>
         <li class="nav-link-auth nav-link-auth-primary"><a href="login.html?mode=register">{{ t.register }}</a></li>
       </ul>
@@ -235,7 +235,7 @@
             {{ t.startBtn }}
           </button>
           <button class="btn-ghost" @click="openDemo">
-            Book demo
+            Book Demo
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           </button>
         </div>
@@ -261,13 +261,17 @@
         <!-- Main product screenshot (center) -->
         <button
           class="hero-main"
-          :class="{ focused: activeShot === mainShotIndex }"
+          :class="{
+            focused: activeShot === mainShotIndex,
+            sliding: mainFlipping,
+            slid: mainRising,
+            returning: mainReturning
+          }"
           @click="openShot(mainShot)"
         >
           <div class="hero-main-body media-slot"
-               :class="{ 'has-image': mainShot.img, flipping: mainFlipping, rising: mainRising }">
+               :class="{ 'has-image': mainShot.img }">
             <img draggable="false" v-if="mainShot.img" :src="mainShot.img" :alt="t[mainShot.key]" />
-            <span class="hero-main-tag">{{ t[mainShot.key] }}</span>
           </div>
           <div class="stage-card-glow" aria-hidden="true"></div>
         </button>
