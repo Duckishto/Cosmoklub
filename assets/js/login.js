@@ -141,6 +141,28 @@ createApp({
       if ((this.form.password || '').length >= 12 && score >= 4) score = 5;
       return score;
     },
+    passwordPercent() {
+      if (!this.form.password) return 0;
+      return Math.round((this.passwordScore / 5) * 100);
+    },
+    passwordHint() {
+      const pw = this.form.password || '';
+      if (!pw) return 'Use at least 8 characters with an uppercase letter, a lowercase letter and a number.';
+      const missing = [];
+      const c = this.passwordChecks;
+      if (!c.length) missing.push('8 characters');
+      if (!c.upper) missing.push('an uppercase letter');
+      if (!c.lower) missing.push('a lowercase letter');
+      if (!c.digit) missing.push('a number');
+      if (missing.length) {
+        const list = missing.length > 1
+          ? missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1]
+          : missing[0];
+        return 'Still needs ' + list + '.';
+      }
+      if (!c.symbol) return 'Good password — adding a symbol would make it stronger.';
+      return 'Strong password.';
+    },
     passwordStrength() {
       const s = this.passwordScore;
       if (!this.form.password) return { level: 0, label: '', key: '' };
