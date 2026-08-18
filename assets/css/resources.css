@@ -272,6 +272,98 @@
 .res-card.is-skel { pointer-events: none; }
 .res-card.is-skel:hover { transform: none; box-shadow: none; }
 
+/* ---------- Fallbacks: never show a blank box ---------- */
+.res-hero-media img,
+.res-card-media img {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.res-hero-media img.ready,
+.res-card-media img.ready { opacity: 1; }
+
+.res-hero-media .res-skel,
+.res-card-media .res-skel {
+  position: absolute;
+  inset: 0;
+}
+.res-card-media { position: relative; }
+
+.res-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: linear-gradient(160deg, #14102c 0%, #08061a 100%);
+}
+
+/* a small orbiting-dot animation stands in for missing media */
+.res-orbit {
+  position: relative;
+  width: 46px; height: 46px;
+  display: block;
+}
+.res-orbit.large { width: 62px; height: 62px; }
+.res-orbit i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(168,85,247,0.28);
+  animation: resOrbit 2.6s linear infinite;
+}
+.res-orbit i::after {
+  content: "";
+  position: absolute;
+  top: -3px; left: 50%;
+  width: 6px; height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--violet);
+  box-shadow: 0 0 8px rgba(168,85,247,0.8);
+}
+.res-orbit i:nth-child(2) {
+  inset: 8px;
+  animation-duration: 1.9s;
+  animation-direction: reverse;
+  border-color: rgba(168,85,247,0.2);
+}
+.res-orbit i:nth-child(3) {
+  inset: 16px;
+  animation-duration: 3.4s;
+  border-color: rgba(168,85,247,0.14);
+}
+@keyframes resOrbit { to { transform: rotate(360deg); } }
+
+.res-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+.res-empty p { font-size: 0.9rem; color: var(--muted); max-width: 42ch; }
+.res-retry {
+  padding: 0.6rem 1.4rem;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: rgba(124,58,237,0.1);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.res-retry:hover { border-color: var(--violet); background: rgba(124,58,237,0.2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .res-orbit i { animation: none; }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .res-page { padding: 96px 1.5rem 48px; }
