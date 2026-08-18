@@ -28,8 +28,46 @@
       </a>
       <ul class="nav-links" :class="{open: mobileMenuOpen}">
         <li><a href="index.html" class="active-link" @click="mobileMenuOpen=false">Home</a></li>
-        <li><a href="object.html">Tools</a></li>
-        <li><a href="team.html" @click="mobileMenuOpen=false">Use cases</a></li>
+        <li class="nav-has-menu"
+            @mouseenter="openMenuNow('tools')"
+            @mouseleave="closeMenu()">
+          <a href="object.html" class="nav-menu-trigger" @click.prevent="toggleMenu('tools')">
+            Tools
+            <svg class="nav-caret" :class="{ up: openMenu === 'tools' }" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+          <div class="nav-dropdown" v-if="openMenu === 'tools'">
+            <span class="nav-dropdown-label">{{ navMenus.tools.label }}</span>
+            <div class="nav-dropdown-grid">
+              <a class="nav-dropdown-item" v-for="it in navMenus.tools.items" :key="it.title" :href="it.href" @click="closeMenu(); mobileMenuOpen=false">
+                <span class="nav-dropdown-icon" v-html="it.icon"></span>
+                <span class="nav-dropdown-text">
+                  <strong>{{ it.title }}</strong>
+                  <em>{{ it.desc }}</em>
+                </span>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-has-menu"
+            @mouseenter="openMenuNow('usecases')"
+            @mouseleave="closeMenu()">
+          <a href="team.html" class="nav-menu-trigger" @click.prevent="toggleMenu('usecases')">
+            Use cases
+            <svg class="nav-caret" :class="{ up: openMenu === 'usecases' }" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+          <div class="nav-dropdown" v-if="openMenu === 'usecases'">
+            <span class="nav-dropdown-label">{{ navMenus.usecases.label }}</span>
+            <div class="nav-dropdown-grid">
+              <a class="nav-dropdown-item" v-for="it in navMenus.usecases.items" :key="it.title" :href="it.href" @click="closeMenu(); mobileMenuOpen=false">
+                <span class="nav-dropdown-icon" v-html="it.icon"></span>
+                <span class="nav-dropdown-text">
+                  <strong>{{ it.title }}</strong>
+                  <em>{{ it.desc }}</em>
+                </span>
+              </a>
+            </div>
+          </div>
+        </li>
         <li><a href="staff-application.html" @click="mobileMenuOpen=false">Resources</a></li>
         <li class="nav-link-auth"><a href="login.html">{{ t.signIn }}</a></li>
         <li class="nav-link-auth nav-link-auth-primary"><a href="login.html?mode=register">{{ t.register }}</a></li>
