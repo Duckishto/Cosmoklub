@@ -123,19 +123,12 @@
                 </div>
 
                 <div class="auth-pw-meta">
-                <div class="auth-strength">
-                  <div class="auth-strength-bar">
-                    <span v-for="n in 4" :key="n" :class="['auth-strength-seg', passwordStrength.level >= n ? 'on ' + passwordStrength.key : '']"></span>
+                  <div class="auth-pw-bar">
+                    <span class="auth-pw-fill"
+                          :class="passwordStrength.key"
+                          :style="{ width: passwordPercent + '%' }"></span>
                   </div>
-                  <span class="auth-strength-label" :class="passwordStrength.key">{{ passwordStrength.label }}</span>
-                </div>
-                <ul class="auth-reqs">
-                  <li :class="{ ok: passwordChecks.length }">8+ chars</li>
-                  <li :class="{ ok: passwordChecks.upper }">A-Z</li>
-                  <li :class="{ ok: passwordChecks.lower }">a-z</li>
-                  <li :class="{ ok: passwordChecks.digit }">0-9</li>
-                  <li :class="{ ok: passwordChecks.symbol }">Symbol</li>
-                </ul>
+                  <p class="auth-pw-hint" :class="passwordStrength.key">{{ passwordHint }}</p>
                 </div>
 
                 <div class="auth-group">
