@@ -207,6 +207,7 @@ createApp({
       mainFlipping: false,
       mainRising: false,
       mainReturning: false,
+      mainPaused: false,
       shotModal: null
     };
   },
@@ -894,24 +895,36 @@ createApp({
       // then flip it back up
       clearTimeout(this._flipT);
       clearTimeout(this._flipT2);
-      // 1. slide the whole box down out of view
+      // 0. freeze the idle float FIRST and let one frame pass. Killing the
+      //    animation snaps the transform back to its base value; if that
+      //    happens in the same frame as the slide, the browser collapses
+      //    both into one style change and the downward leg never renders.
       this.mainReturning = false;
-      this.mainFlipping = true;
-      this._flipT = setTimeout(() => {
-        // 2. swap the picture while it sits below, transitions off
-        this.mainShotIndex = i;
-        this.mainFlipping = false;
-        this.mainRising = true;
-        // 3. next frame, animate it back up
+      this.mainPaused = true;
+      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            this.mainRising = false;
-            this.mainReturning = true;
-            // 4. hand control back to the idle float once it has landed
-            this._flipT2 = setTimeout(() => { this.mainReturning = false; }, 460);
-          });
+          // 1. now slide the whole box down out of view
+          this.mainFlipping = true;
+          this._flipT = setTimeout(() => {
+            // 2. swap the picture while it sits below, transitions off
+            this.mainShotIndex = i;
+            this.mainFlipping = false;
+            this.mainRising = true;
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                // 3. release it so it animates back up
+                this.mainRising = false;
+                this.mainReturning = true;
+                // 4. hand control back to the idle float once it lands
+                this._flipT2 = setTimeout(() => {
+                  this.mainReturning = false;
+                  this.mainPaused = false;
+                }, 480);
+              });
+            });
+          }, 360);
         });
-      }, 350);
+      });
     },
     openShot(shot) {
       this.shotModal = shot;
