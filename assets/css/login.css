@@ -336,25 +336,50 @@
 
 .auth-reqs {
   list-style: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.3rem 0.9rem;
-  font-size: 0.76rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+}
+.auth-reqs li {
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
   color: var(--muted);
+  background: rgba(124,58,237,0.08);
+  border: 1px solid var(--border);
+  transition: color var(--tr), background var(--tr), border-color var(--tr);
 }
-.auth-reqs li { position: relative; padding-left: 1.05rem; line-height: 1.5; }
-.auth-reqs li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.42em;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: rgba(200,190,225,0.35);
-  transition: background var(--tr);
+.auth-reqs li.ok {
+  color: #34d399;
+  background: rgba(52,211,153,0.1);
+  border-color: rgba(52,211,153,0.35);
 }
-.auth-reqs li.ok { color: #34d399; }
-.auth-reqs li.ok::before { background: #34d399; }
+
+/* ---------- Register mode: compact so the form fits the viewport ---------- */
+.auth-card.is-register .auth-mark { margin-bottom: 0.7rem; }
+.auth-card.is-register .auth-mark img { height: 38px; }
+.auth-card.is-register .auth-title { font-size: 1.4rem; }
+.auth-card.is-register .auth-sub { margin-bottom: 1rem; font-size: 0.86rem; }
+.auth-card.is-register .auth-tabs { margin-bottom: 1rem; }
+.auth-card.is-register .auth-fields { gap: 0.7rem; }
+.auth-card.is-register .auth-form-side { padding: 1.8rem 2.2rem; }
+.auth-card.is-register .auth-divider { margin: 1rem 0 0.85rem; }
+.auth-card.is-register .auth-switch { margin-top: 1rem; }
+
+/* If the form is taller than the screen, scroll inside the card rather than
+   letting the page run away. */
+.auth-form-side {
+  max-height: calc(100vh - 130px);
+  max-height: calc(100dvh - 130px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.auth-form-side::-webkit-scrollbar { width: 8px; }
+.auth-form-side::-webkit-scrollbar-track { background: transparent; }
+.auth-form-side::-webkit-scrollbar-thumb {
+  background: rgba(168,85,247,0.3);
+  border-radius: 999px;
+}
 
 /* ---------- Responsive ---------- */
 
@@ -374,7 +399,12 @@
 @media (max-width: 900px) {
   .auth-card { grid-template-columns: 1fr; max-width: 560px; }
   .auth-visual { display: none; }
-  .auth-form-side { padding: 2rem 1.8rem; }
+  .auth-form-side {
+    padding: 2rem 1.8rem;
+    max-height: none;
+    overflow-y: visible;
+  }
+  .auth-card.is-register .auth-form-side { padding: 1.6rem 1.4rem; }
 }
 
 /* Large phones */
@@ -387,7 +417,6 @@
   .auth-row { grid-template-columns: 1fr; }
   .auth-title { font-size: 1.4rem; }
   .auth-sub { font-size: 0.87rem; }
-  .auth-reqs { grid-template-columns: 1fr; }
 }
 
 /* Small phones */
