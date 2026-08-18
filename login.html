@@ -26,7 +26,7 @@
   </header>
 
   <main class="auth-page">
-    <div class="auth-card" :class="{ 'is-register': authTab === 'register' && !success }">
+    <div class="auth-card">
 
       <div class="auth-form-side">
         <div class="auth-form-inner">
@@ -56,19 +56,29 @@
             </div>
 
             <div v-if="authTab === 'register'" class="auth-fields">
-              <div class="auth-row">
-                <div class="auth-group">
-                  <label>{{ t.firstName }}</label>
-                  <input v-model="form.firstName" :class="{ err: errors.firstName }" type="text" :placeholder="t.firstPH" autocomplete="given-name" maxlength="40" @blur="touch('firstName')" @input="touched.firstName && validateField('firstName')" />
-                  <div class="auth-err" v-if="errors.firstName">{{ errors.firstName }}</div>
-                </div>
-                <div class="auth-group">
-                  <label>{{ t.lastName }}</label>
-                  <input v-model="form.lastName" :class="{ err: errors.lastName }" type="text" :placeholder="t.lastPH" autocomplete="family-name" maxlength="40" @blur="touch('lastName')" @input="touched.lastName && validateField('lastName')" />
-                  <div class="auth-err" v-if="errors.lastName">{{ errors.lastName }}</div>
-                </div>
+
+              <div class="auth-steps">
+                <span class="auth-step-dot" :class="{ on: regStep >= 1 }"></span>
+                <span class="auth-step-line" :class="{ on: regStep >= 2 }"></span>
+                <span class="auth-step-dot" :class="{ on: regStep >= 2 }"></span>
+                <span class="auth-step-text">
+                  {{ t.stepOf }} {{ regStep }} {{ t.stepOfTotal }} — {{ regStep === 1 ? t.stepAbout : t.stepAccount }}
+                </span>
               </div>
-              <div class="auth-row">
+
+              <template v-if="regStep === 1">
+                <div class="auth-row">
+                  <div class="auth-group">
+                    <label>{{ t.firstName }}</label>
+                    <input v-model="form.firstName" :class="{ err: errors.firstName }" type="text" :placeholder="t.firstPH" autocomplete="given-name" maxlength="40" @blur="touch('firstName')" @input="touched.firstName && validateField('firstName')" />
+                    <div class="auth-err" v-if="errors.firstName">{{ errors.firstName }}</div>
+                  </div>
+                  <div class="auth-group">
+                    <label>{{ t.lastName }}</label>
+                    <input v-model="form.lastName" :class="{ err: errors.lastName }" type="text" :placeholder="t.lastPH" autocomplete="family-name" maxlength="40" @blur="touch('lastName')" @input="touched.lastName && validateField('lastName')" />
+                    <div class="auth-err" v-if="errors.lastName">{{ errors.lastName }}</div>
+                  </div>
+                </div>
                 <div class="auth-group">
                   <label>{{ t.usernameLabel }}</label>
                   <input v-model="form.username" :class="{ err: errors.username }" type="text" :placeholder="t.usernamePH" autocomplete="username" maxlength="20" @blur="touch('username')" @input="touched.username && validateField('username')" />
@@ -85,13 +95,15 @@
                   </select>
                   <div class="auth-err" v-if="errors.gender">{{ errors.gender }}</div>
                 </div>
-              </div>
-              <div class="auth-group">
-                <label>{{ t.emailLabel }}</label>
-                <input v-model="form.email" :class="{ err: errors.email }" type="email" :placeholder="t.emailPH" autocomplete="email" maxlength="254" @blur="touch('email')" @input="touched.email && validateField('email')" />
-                <div class="auth-err" v-if="errors.email">{{ errors.email }}</div>
-              </div>
-              <div class="auth-row">
+                <button class="auth-submit" @click="nextStep">{{ t.next }}</button>
+              </template>
+
+              <template v-else>
+                <div class="auth-group">
+                  <label>{{ t.emailLabel }}</label>
+                  <input v-model="form.email" :class="{ err: errors.email }" type="email" :placeholder="t.emailPH" autocomplete="email" maxlength="254" @blur="touch('email')" @input="touched.email && validateField('email')" />
+                  <div class="auth-err" v-if="errors.email">{{ errors.email }}</div>
+                </div>
                 <div class="auth-group">
                   <label>{{ t.passLabel }}</label>
                   <div class="auth-input-wrap">
@@ -103,15 +115,28 @@
                            maxlength="72"
                            @blur="touch('password')"
                            @input="touched.password && validateField('password'); touched.confirm && validateField('confirm')" />
-                    <button type="button" class="auth-eye"
-                            :aria-label="showPassword ? t.hidePass : t.showPass"
-                            @click="showPassword = !showPassword">
+                    <button type="button" class="auth-eye" :aria-label="showPassword ? t.hidePass : t.showPass" @click="showPassword = !showPassword">
                       <svg v-if="!showPassword" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                       <svg v-else width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                     </button>
                   </div>
                   <div class="auth-err" v-if="errors.password">{{ errors.password }}</div>
                 </div>
+
+                <div class="auth-strength" v-if="form.password">
+                  <div class="auth-strength-bar">
+                    <span v-for="n in 4" :key="n" :class="['auth-strength-seg', passwordStrength.level >= n ? 'on ' + passwordStrength.key : '']"></span>
+                  </div>
+                  <span class="auth-strength-label" :class="passwordStrength.key">{{ passwordStrength.label }}</span>
+                </div>
+                <ul class="auth-reqs" v-if="form.password">
+                  <li :class="{ ok: passwordChecks.length }">8+ chars</li>
+                  <li :class="{ ok: passwordChecks.upper }">A-Z</li>
+                  <li :class="{ ok: passwordChecks.lower }">a-z</li>
+                  <li :class="{ ok: passwordChecks.digit }">0-9</li>
+                  <li :class="{ ok: passwordChecks.symbol }">Symbol</li>
+                </ul>
+
                 <div class="auth-group">
                   <label>{{ t.confirmPass }}</label>
                   <div class="auth-input-wrap">
@@ -123,45 +148,34 @@
                            maxlength="72"
                            @blur="touch('confirm')"
                            @input="touched.confirm && validateField('confirm')" />
-                    <button type="button" class="auth-eye"
-                            :aria-label="showConfirm ? t.hidePass : t.showPass"
-                            @click="showConfirm = !showConfirm">
+                    <button type="button" class="auth-eye" :aria-label="showConfirm ? t.hidePass : t.showPass" @click="showConfirm = !showConfirm">
                       <svg v-if="!showConfirm" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                       <svg v-else width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                     </button>
                   </div>
                   <div class="auth-err" v-if="errors.confirm">{{ errors.confirm }}</div>
                 </div>
-              </div>
 
-              <div class="auth-strength" v-if="form.password">
-                <div class="auth-strength-bar">
-                  <span v-for="n in 4" :key="n"
-                        :class="['auth-strength-seg', passwordStrength.level >= n ? 'on ' + passwordStrength.key : '']"></span>
+                <div class="auth-tos">
+                  <input id="tos-chk" type="checkbox" v-model="form.tos" @change="touch('tos')" />
+                  <label for="tos-chk">
+                    {{ t.tosAgree }}
+                    <a href="index.html#tos">{{ t.tos }}</a>
+                    {{ t.tosAnd }}
+                    <a href="index.html#privacy">{{ t.privacy }}</a>.
+                  </label>
                 </div>
-                <span class="auth-strength-label" :class="passwordStrength.key">{{ passwordStrength.label }}</span>
-              </div>
-              <ul class="auth-reqs" v-if="form.password">
-                <li :class="{ ok: passwordChecks.length }">8+ chars</li>
-                <li :class="{ ok: passwordChecks.upper }">A-Z</li>
-                <li :class="{ ok: passwordChecks.lower }">a-z</li>
-                <li :class="{ ok: passwordChecks.digit }">0-9</li>
-                <li :class="{ ok: passwordChecks.symbol }">Symbol</li>
-              </ul>
-              <div class="auth-tos">
-                <input id="tos-chk" type="checkbox" v-model="form.tos" @change="touch('tos')" />
-                <label for="tos-chk">
-                  {{ t.tosAgree }}
-                  <a href="index.html#tos">{{ t.tos }}</a>
-                  {{ t.tosAnd }}
-                  <a href="index.html#privacy">{{ t.privacy }}</a>.
-                </label>
-              </div>
-              <div class="auth-err" v-if="errors.tos">{{ errors.tos }}</div>
-              <div class="auth-err" v-if="errors.submit">{{ errors.submit }}</div>
-              <button class="auth-submit" @click="submitRegister" :disabled="loading">
-                {{ loading ? t.loading : t.createAcc }}
-              </button>
+                <div class="auth-err" v-if="errors.tos">{{ errors.tos }}</div>
+                <div class="auth-err" v-if="errors.submit">{{ errors.submit }}</div>
+
+                <div class="auth-step-actions">
+                  <button class="auth-ghost" @click="prevStep" :disabled="loading">{{ t.back }}</button>
+                  <button class="auth-submit" @click="submitRegister" :disabled="loading">
+                    {{ loading ? t.loading : t.createAcc }}
+                  </button>
+                </div>
+              </template>
+
             </div>
 
             <div v-else class="auth-fields">
