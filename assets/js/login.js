@@ -58,7 +58,10 @@ const T = {
   successSub: 'Taking you to your dashboard...',
   backHome: 'Back to home',
   newHere: 'New here?', haveAcc: 'Already have an account?',
-  rights: 'All rights reserved.'
+  rights: 'All rights reserved.',
+  stepOf: 'Step', stepOfTotal: 'of 2',
+  stepAbout: 'About you', stepAccount: 'Account details',
+  next: 'Continue', back: 'Back'
 };
 
 createApp({
@@ -73,6 +76,7 @@ createApp({
       success: false,
       pendingEmailConfirm: false,
       touched: {},
+      regStep: 1,
       showPassword: false,
       showConfirm: false,
       currentUser: null,
@@ -156,6 +160,7 @@ createApp({
       this.form = { firstName: '', lastName: '', username: '', gender: '', email: '', password: '', confirm: '', tos: false };
       this.errors = {};
       this.touched = {};
+      this.regStep = 1;
       this.showPassword = false;
       this.showConfirm = false;
       this.pendingEmailConfirm = false;
@@ -231,6 +236,24 @@ createApp({
     touch(field) {
       this.touched = { ...this.touched, [field]: true };
       this.validateField(field);
+    },
+    regStepFields(step) {
+      return step === 1
+        ? ['firstName', 'lastName', 'username', 'gender']
+        : ['email', 'password', 'confirm', 'tos'];
+    },
+    validateRegStep(step) {
+      const fields = this.regStepFields(step);
+      const touched = { ...this.touched };
+      fields.forEach(f => { touched[f] = true; });
+      this.touched = touched;
+      return fields.map(f => this.validateField(f)).every(Boolean);
+    },
+    nextStep() {
+      if (this.validateRegStep(1)) this.regStep = 2;
+    },
+    prevStep() {
+      this.regStep = 1;
     },
     validateRegister() {
       const fields = ['firstName', 'lastName', 'username', 'gender', 'email', 'password', 'confirm', 'tos'];
