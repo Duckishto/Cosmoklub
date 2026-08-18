@@ -7,14 +7,22 @@ const MODEL_BASE = 'assets/models/';
 // planet itself needs a larger multiplier). `boost` lifts lighting for models
 // whose materials render dark.
 const MODELS = [
-  { name: 'Mercury', file: 'Mercury.glb' },
-  { name: 'Venus',   file: 'Venus.glb' },
-  { name: 'Earth',   file: 'Earth.glb', boost: 2.1 },
-  { name: 'Mars',    file: 'Mars.glb' },
-  { name: 'Jupiter', file: 'Jupiter.glb' },
-  { name: 'Saturn',  file: 'Saturn.glb', fit: 1.5 },
-  { name: 'Uranus',  file: 'Uranus.glb' },
-  { name: 'Neptune', file: 'Neptune.glb' }
+  { name: 'Mercury', file: 'Mercury.glb',
+    wiki: 'https://en.wikipedia.org/wiki/Mercury_(planet)', nasa: 'https://science.nasa.gov/mercury/' },
+  { name: 'Venus',   file: 'Venus.glb',
+    wiki: 'https://en.wikipedia.org/wiki/Venus',   nasa: 'https://science.nasa.gov/venus/' },
+  { name: 'Earth',   file: 'Earth.glb', boost: 2.1,
+    wiki: 'https://en.wikipedia.org/wiki/Earth',   nasa: 'https://science.nasa.gov/earth/' },
+  { name: 'Mars',    file: 'Mars.glb',
+    wiki: 'https://en.wikipedia.org/wiki/Mars',    nasa: 'https://science.nasa.gov/mars/' },
+  { name: 'Jupiter', file: 'Jupiter.glb',
+    wiki: 'https://en.wikipedia.org/wiki/Jupiter', nasa: 'https://science.nasa.gov/jupiter/' },
+  { name: 'Saturn',  file: 'Saturn.glb', fit: 1.5,
+    wiki: 'https://en.wikipedia.org/wiki/Saturn',  nasa: 'https://science.nasa.gov/saturn/' },
+  { name: 'Uranus',  file: 'Uranus.glb',
+    wiki: 'https://en.wikipedia.org/wiki/Uranus',  nasa: 'https://science.nasa.gov/uranus/' },
+  { name: 'Neptune', file: 'Neptune.glb',
+    wiki: 'https://en.wikipedia.org/wiki/Neptune', nasa: 'https://science.nasa.gov/neptune/' }
 ];
 
 const wrap = document.getElementById('showcase-stage');
@@ -22,6 +30,8 @@ const canvas = document.getElementById('showcase-canvas');
 const tabsEl = document.getElementById('showcase-tabs');
 const nameEl = document.getElementById('showcase-name');
 const loadingEl = document.getElementById('showcase-loading');
+const wikiEl = document.getElementById('showcase-wiki');
+const nasaEl = document.getElementById('showcase-nasa');
 
 if (wrap && canvas && tabsEl) {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -91,6 +101,16 @@ if (wrap && canvas && tabsEl) {
 
     [...tabsEl.children].forEach((b, i) => b.classList.toggle('active', i === index));
     if (nameEl) nameEl.textContent = model.name;
+    if (wikiEl) {
+      wikiEl.href = model.wiki;
+      wikiEl.title = model.name + ' on Wikipedia';
+      wikiEl.setAttribute('aria-label', model.name + ' on Wikipedia');
+    }
+    if (nasaEl) {
+      nasaEl.href = model.nasa;
+      nasaEl.title = model.name + ' on NASA Science';
+      nasaEl.setAttribute('aria-label', model.name + ' on NASA Science');
+    }
 
     setLoading(true);
     loader.load(
