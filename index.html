@@ -28,9 +28,9 @@
       </a>
       <ul class="nav-links" :class="{open: mobileMenuOpen}">
         <li><a href="index.html" class="active-link" @click="mobileMenuOpen=false">Home</a></li>
-        <li><a href="object.html">Object</a></li>
-        <li><a href="team.html" @click="mobileMenuOpen=false">Our Team</a></li>
-        <li><a href="staff-application.html" @click="mobileMenuOpen=false">Staff Application</a></li>
+        <li><a href="object.html">Tools</a></li>
+        <li><a href="team.html" @click="mobileMenuOpen=false">Use cases</a></li>
+        <li><a href="staff-application.html" @click="mobileMenuOpen=false">Resources</a></li>
         <li class="nav-link-auth"><a href="login.html">{{ t.signIn }}</a></li>
         <li class="nav-link-auth nav-link-auth-primary"><a href="login.html?mode=register">{{ t.register }}</a></li>
       </ul>
@@ -186,7 +186,6 @@
     <section id="features" class="features-section">
       <div class="features-header-row">
         <div class="features-header-left">
-          <div class="section-eyebrow-row"><div class="section-label">{{ t.featLabel }}</div><div class="section-rule"></div></div>
           <h2>{{ t.featTitle }}</h2>
           <p class="section-sub" v-html="t.featSub"></p>
         </div>
@@ -332,25 +331,62 @@
 
     <div class="sep"></div>
 
-    <!-- Objects conveyor -->
-    <section>
-      <div class="section-eyebrow-row"><div class="section-label">{{ t.objLabel }}</div><div class="section-rule"></div></div>
-      <h2>{{ t.objTitle }}</h2>
-      <p class="section-sub" v-html="t.objSub"></p>
-      <div class="objects-track-wrap">
-        <div class="objects-track">
-          <div class="object-card" v-for="o in objects" :key="'a-'+o.name">
-            <div class="object-icon" v-html="o.svg"></div>
-            <div class="tag">{{ o.type }}</div>
-            <h4>{{ o.name }}</h4>
-            <p>{{ o.desc }}</p>
+    <!-- What Happens Next? — mini game -->
+    <section class="game-section">
+      <div class="game-head">
+        <h2>What happens next?</h2>
+        <p class="section-sub">Read the sequence, predict the next step, and unlock achievements. A taste of how CosmoKlub teaches.</p>
+      </div>
+
+      <div class="game-card">
+        <div class="game-scoreline">
+          <span class="game-count">{{ gameProgressLabel }}</span>
+          <span class="game-streak" v-if="gameStreak > 1">🔥 {{ gameStreak }} in a row</span>
+        </div>
+
+        <p class="game-prompt">{{ gameRound.prompt }}</p>
+
+        <div class="game-sequence">
+          <template v-for="(g, gi) in gameRound.sequence" :key="'seq-'+gi">
+            <span class="game-glyph">{{ g }}</span>
+            <span class="game-arrow" aria-hidden="true">→</span>
+          </template>
+          <span class="game-glyph game-unknown" :class="{ revealed: gameCorrect }">
+            {{ gameCorrect ? gameRound.answer : '?' }}
+          </span>
+        </div>
+
+        <div class="game-options">
+          <button
+            v-for="opt in gameRound.options"
+            :key="opt"
+            class="game-option"
+            :class="{
+              picked: gamePicked === opt,
+              correct: gameAnswered && opt === gameRound.answer,
+              wrong: gamePicked === opt && opt !== gameRound.answer
+            }"
+            :disabled="gameAnswered"
+            @click="pickGameOption(opt)"
+          >{{ opt }}</button>
+        </div>
+
+        <div class="game-feedback" v-if="gameAnswered" :class="gameCorrect ? 'is-correct' : 'is-wrong'">
+          <div class="game-unlock" v-if="gameCorrect">
+            <span class="game-unlock-badge">{{ gameRound.badge }}</span>
+            <span class="game-unlock-text">
+              <em>Achievement unlocked</em>
+              <strong>{{ gameRound.badgeName }}</strong>
+            </span>
           </div>
-          <div class="object-card" v-for="o in objects" :key="'b-'+o.name" aria-hidden="true">
-            <div class="object-icon" v-html="o.svg"></div>
-            <div class="tag">{{ o.type }}</div>
-            <h4>{{ o.name }}</h4>
-            <p>{{ o.desc }}</p>
-          </div>
+          <strong v-else class="game-miss">Not quite — watch the geometry.</strong>
+          <p>{{ gameRound.why }}</p>
+          <button class="game-next" @click="nextGameRound">Next question →</button>
+        </div>
+
+        <div class="game-trophies" v-if="gameUnlocked.length">
+          <span class="game-trophies-label">Unlocked</span>
+          <span class="game-trophy" v-for="u in gameUnlocked" :key="u.name" :title="u.name">{{ u.icon }}</span>
         </div>
       </div>
     </section>
