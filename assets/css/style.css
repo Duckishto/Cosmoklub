@@ -2994,33 +2994,30 @@ nav:not(.nav-hidden) {
     inset 0 1px 0 rgba(255,255,255,0.1);
   animation-play-state: paused;
 }
-/* the box drops away downward, swaps picture, then rises back */
-.hero-main-body {
+/* The whole box slides down out of view, swaps picture, then rises back.
+   This has to move .hero-main (not .hero-main-body) — the body is clipped
+   by .hero-main's overflow:hidden, so animating it just looks like a fade.
+   The float keyframes are switched off while sliding or they fight the
+   transform. .hero-section's overflow clip stops it reaching Features. */
+.hero-main.sliding,
+.hero-main.slid {
+  animation: none;
+}
+.hero-main.sliding {
   transition: transform 0.34s cubic-bezier(.55,0,.65,0.35), opacity 0.3s ease;
-}
-.hero-main-body.flipping {
-  transform: translateY(115%);
+  transform: translate(-50%, 125%);
   opacity: 0;
 }
-.hero-main-body.rising {
-  transform: translateY(115%);
-  opacity: 0;
+.hero-main.slid {
   transition: none;
+  transform: translate(-50%, 125%);
+  opacity: 0;
 }
-.hero-main-tag {
-  position: absolute;
-  left: 0.85rem; bottom: 0.7rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding: 0.22rem 0.6rem;
-  border-radius: 999px;
-  color: var(--white);
-  background: rgba(8,6,26,0.7);
-  border: 1px solid rgba(168,85,247,0.3);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  pointer-events: none;
+.hero-main.returning {
+  animation: none;
+  transition: transform 0.42s cubic-bezier(.2,.9,.3,1), opacity 0.32s ease;
+  transform: translate(-50%, 0);
+  opacity: 1;
 }
 .hero-main-body {
   position: relative;
@@ -3253,8 +3250,8 @@ nav:not(.nav-hidden) {
   grid-template-columns: 0.9fr 1.25fr 0.85fr;
   width: 100%;
   max-width: 1040px;
-  max-height: 88vh;
-  overflow: auto;
+  height: min(660px, 88vh);
+  overflow: hidden;
   border-radius: 18px;
   background: #0d0b1c;
   border: 1px solid rgba(168,85,247,0.2);
@@ -3279,6 +3276,7 @@ nav:not(.nav-hidden) {
 .demo-info {
   padding: 1.8rem 1.6rem;
   border-right: 1px solid rgba(168,85,247,0.14);
+  overflow-y: auto;
 }
 .demo-avatar {
   width: 30px; height: 30px;
@@ -3313,7 +3311,11 @@ nav:not(.nav-hidden) {
 /* keep the official Google Meet brand colours — no tinting */
 .demo-meet-logo { color: initial; flex-shrink: 0; }
 
-.demo-cal { padding: 1.8rem 1.4rem; border-right: 1px solid rgba(168,85,247,0.14); }
+.demo-cal {
+  padding: 1.8rem 1.4rem;
+  border-right: 1px solid rgba(168,85,247,0.14);
+  overflow-y: auto;
+}
 .demo-cal-head {
   display: flex;
   align-items: center;
@@ -3399,7 +3401,8 @@ nav:not(.nav-hidden) {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
-  min-height: 520px;
+  min-height: 0;
+  overflow-y: auto;
 }
 .demo-slots-head { padding-right: 2.4rem; }
 .demo-slots-head {
@@ -3431,8 +3434,6 @@ nav:not(.nav-hidden) {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-  max-height: 300px;
-  overflow-y: auto;
   padding-right: 0.2rem;
 }
 .demo-slot {
@@ -3493,6 +3494,7 @@ nav:not(.nav-hidden) {
 .demo-confirm:disabled { opacity: 0.45; cursor: not-allowed; }
 
 @media (max-width: 900px) {
-  .demo-frame { grid-template-columns: 1fr; max-height: 92vh; }
+  .demo-frame { grid-template-columns: 1fr; height: auto; max-height: 92vh; overflow: auto; }
+  .demo-info, .demo-cal, .demo-slots { overflow: visible; }
   .demo-info, .demo-cal { border-right: none; border-bottom: 1px solid rgba(168,85,247,0.14); }
 }
