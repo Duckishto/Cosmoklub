@@ -22,13 +22,21 @@
     <a class="auth-logo" href="index.html">
       <img draggable="false" src="assets/images/logo.png" alt="CosmoKlub" />
     </a>
-    <a class="auth-back" href="index.html">{{ t.backHome }}</a>
+    <a class="auth-back" href="index.html">
+      <span class="auth-back-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </span>
+      {{ t.backHome }}
+    </a>
   </header>
 
   <main class="auth-page">
     <div class="auth-card">
 
       <div class="auth-form-side">
+        <div class="auth-progress" v-if="authTab === 'register' && !success" aria-hidden="true">
+          <span class="auth-progress-fill" :style="{ width: regStep === 1 ? '50%' : '100%' }"></span>
+        </div>
         <div class="auth-form-inner">
 
           <div v-if="success" class="auth-success">
@@ -48,7 +56,11 @@
             </a>
 
             <h1 class="auth-title">{{ authTab === 'register' ? t.createAcc : t.welcomeBack }}</h1>
-            <p class="auth-sub">{{ authTab === 'register' ? t.joinUs : t.loginSub }}</p>
+            <p class="auth-sub" v-if="authTab !== 'register'">{{ t.loginSub }}</p>
+            <p class="auth-sub auth-sub-step" v-else>
+              <span class="auth-step-badge">{{ regStep }}/2</span>
+              {{ regStep === 1 ? t.stepAbout : t.stepAccount }}
+            </p>
 
             <div class="auth-tabs">
               <button :class="{ active: authTab === 'login' }" @click="switchTab('login')">{{ t.signIn }}</button>
@@ -56,15 +68,6 @@
             </div>
 
             <div v-if="authTab === 'register'" class="auth-fields">
-
-              <div class="auth-steps">
-                <span class="auth-step-dot" :class="{ on: regStep >= 1 }"></span>
-                <span class="auth-step-line" :class="{ on: regStep >= 2 }"></span>
-                <span class="auth-step-dot" :class="{ on: regStep >= 2 }"></span>
-                <span class="auth-step-text">
-                  {{ t.stepOf }} {{ regStep }} {{ t.stepOfTotal }} — {{ regStep === 1 ? t.stepAbout : t.stepAccount }}
-                </span>
-              </div>
 
               <template v-if="regStep === 1">
                 <div class="auth-row">
