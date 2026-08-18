@@ -205,6 +205,7 @@ createApp({
       activeShot: 0,
       mainShotIndex: 0,
       mainFlipping: false,
+      mainRising: false,
       shotModal: null
     };
   },
@@ -379,12 +380,13 @@ createApp({
         d.setDate(start.getDate() + i);
         const inMonth = d.getMonth() === m;
         const past = d < today;
+        // demos run on weekends only
         const weekend = d.getDay() === 0 || d.getDay() === 6;
         cells.push({
           date: d,
           day: d.getDate(),
           inMonth,
-          selectable: !past && !weekend,
+          selectable: !past && weekend,
           isToday: d.getTime() === today.getTime(),
           monthTag: d.getDate() === 1 ? d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase() : ''
         });
@@ -594,9 +596,6 @@ createApp({
     },
     toggleMenu(key) {
       this.openMenu = this.openMenu === key ? null : key;
-    },
-    openMenuNow(key) {
-      if (window.matchMedia('(hover: hover)').matches) this.openMenu = key;
     },
     closeMenu() {
       this.openMenu = null;
@@ -893,11 +892,18 @@ createApp({
       // flip the big box down, swap the picture at the halfway point,
       // then flip it back up
       clearTimeout(this._flipT);
+      // 1. drop the current picture downward out of the frame
       this.mainFlipping = true;
       this._flipT = setTimeout(() => {
+        // 2. swap the picture while it sits below, with no transition
         this.mainShotIndex = i;
         this.mainFlipping = false;
-      }, 260);
+        this.mainRising = true;
+        // 3. next frame, release it so it animates back up
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { this.mainRising = false; });
+        });
+      }, 340);
     },
     openShot(shot) {
       this.shotModal = shot;
