@@ -82,7 +82,15 @@
 
         <div class="res-hero" :class="{ loading: apodLoading }">
           <div class="res-hero-media">
-            <img v-if="apod && apod.mediaType === 'image'" :src="apod.image" :alt="apod.title" draggable="false" />
+            <img v-if="apod && apod.mediaType === 'image' && !apodImgFailed"
+                 :src="apod.image" :alt="apod.title" draggable="false"
+                 @load="apodImgReady = true" @error="apodImgFailed = true"
+                 :class="{ ready: apodImgReady }" />
+            <div class="res-fallback" v-if="apodImgFailed">
+              <span class="res-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>Image unavailable</span>
+            </div>
+            <div class="res-skel" v-if="apod && apod.mediaType === 'image' && !apodImgReady && !apodImgFailed"></div>
             <iframe v-else-if="apod && apod.mediaType === 'video'" :src="apod.image" title="Astronomy video of the day" allowfullscreen></iframe>
             <div class="res-skel" v-else></div>
           </div>
@@ -149,7 +157,13 @@
           <template v-else>
             <article class="res-card" v-for="item in feed" :key="item.id">
               <div class="res-card-media">
-                <img :src="item.image" :alt="item.title" loading="lazy" draggable="false" />
+                <img :src="item.image" :alt="item.title" loading="lazy" draggable="false"
+                     @load="item.ready = true" @error="item.failed = true"
+                     :class="{ ready: item.ready }" v-if="!item.failed" />
+                <div class="res-fallback small" v-if="item.failed">
+                  <span class="res-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
+                </div>
+                <div class="res-skel" v-if="!item.ready && !item.failed"></div>
               </div>
               <div class="res-card-body">
                 <div class="res-card-head">
@@ -171,9 +185,11 @@
           </template>
         </div>
 
-        <p class="res-empty" v-if="!feedLoading && !feed.length">
-          {{ feedError || 'Nothing found — try a different search.' }}
-        </p>
+        <div class="res-empty" v-if="!feedLoading && !feed.length">
+          <span class="res-orbit large" aria-hidden="true"><i></i><i></i><i></i></span>
+          <p>{{ feedError || 'Nothing found — try a different search.' }}</p>
+          <button class="res-retry" @click="loadFeed(true)">Try again</button>
+        </div>
 
         <button class="res-more" v-if="!feedLoading && feed.length && canLoadMore" @click="loadMore">
           Load more
