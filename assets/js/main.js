@@ -19,6 +19,10 @@ const SVGS = {
   chart: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
   cpu: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>`,
   book: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  forum: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg>`,
+  server: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><line x1="6" y1="6.5" x2="6.01" y2="6.5"/><line x1="6" y1="17.5" x2="6.01" y2="17.5"/></svg>`,
+  users: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>`,
+  cap: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>`,
 };
 
 const OBJ_SVGS = {
@@ -194,6 +198,7 @@ createApp({
       navScrolled: false,
       navCompact: false,
       navLeaving: false,
+      openMenu: null,
       mobileMenuOpen: false,
       activeShot: 0,
       shotModal: null
@@ -350,6 +355,36 @@ createApp({
         }
       ];
     },
+    navMenus() {
+      return {
+        tools: {
+          label: 'Tools for exploring the sky',
+          items: [
+            { title: 'Forum', desc: 'Ask questions and share observations with other members.',
+              href: 'object.html', icon: SVGS.forum },
+            { title: 'Library', desc: 'Browse NASA images, media and mission archives.',
+              href: 'object.html', icon: SVGS.book },
+            { title: 'Calculator & Graphing', desc: 'Plot functions and run astronomical calculations.',
+              href: 'object.html', icon: SVGS.chart },
+            { title: 'Community Server', desc: 'Join the live chat and observation sessions.',
+              href: 'object.html', icon: SVGS.server }
+          ]
+        },
+        usecases: {
+          label: 'User personas',
+          items: [
+            { title: 'Student', desc: 'Follow guided lessons and track your progress.',
+              href: 'lesson.html', icon: SVGS.cap },
+            { title: 'Professor', desc: 'Build courses and monitor your class in one place.',
+              href: 'team.html', icon: SVGS.users },
+            { title: 'Tutor', desc: 'Run sessions and share material with your learners.',
+              href: 'team.html', icon: SVGS.chart },
+            { title: 'Hobbyist', desc: 'Plan observations and log what you find in the sky.',
+              href: 'roadmap.html', icon: SVGS.telescope }
+          ]
+        }
+      };
+    },
     footerCols() {
       return [
         {
@@ -449,6 +484,15 @@ createApp({
     }
   },
   methods: {
+    toggleMenu(key) {
+      this.openMenu = this.openMenu === key ? null : key;
+    },
+    openMenuNow(key) {
+      if (window.matchMedia('(hover: hover)').matches) this.openMenu = key;
+    },
+    closeMenu() {
+      this.openMenu = null;
+    },
     // --- Pensia throw physics: bounces off every edge ---
     throwPensia(vx, vy) {
       const speed = Math.hypot(vx, vy);
@@ -760,7 +804,7 @@ createApp({
       if (this.currentUser) {
         window.location.href = 'dashboard.html';
       } else {
-        this.openModal('register');
+        window.location.href = 'login.html';
       }
     },
     goToDashboard() { window.location.href = 'dashboard.html'; },
@@ -1022,6 +1066,9 @@ createApp({
     document.addEventListener('dragstart', e => {
       if (e.target && e.target.tagName === 'IMG') e.preventDefault();
     });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.nav-has-menu')) this.openMenu = null;
+    });
     this.loadStats();
     // Escape always gets you out — a guaranteed exit for any modal or
     // overlay so nothing can ever trap the page with scroll locked
@@ -1029,6 +1076,7 @@ createApp({
       if (e.key !== 'Escape') return;
       if (this.shotModal) { this.shotModal = null; this.syncScrollLock(); }
       else if (this.pensiaArticleOpen) this.closePensiaArticle();
+      else if (this.openMenu) this.openMenu = null;
       else if (this.modal) this.closeModal();
     });
     const nav = document.querySelector('nav');
