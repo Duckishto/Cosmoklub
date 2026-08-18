@@ -185,6 +185,15 @@ createApp({
         featurePanel: '',
         ctaBanner: ''
       },
+      heroImages: {
+        objectBrowser: '',
+        apod: '',
+        grapher: '',
+        gallery: '',
+        planetarium: '',
+        community: '',
+        observer: ''
+      },
       stats: { objects: null, asteroids: null, apodDays: null },
       pensiaOpen: false,
       pensiaLoading: false,
@@ -423,14 +432,18 @@ createApp({
     // `pos` drives placement (see .sc-* rules in style.css). Cards open a
     // lightbox on click; `href` cards also deep-link into the app tool.
     heroShots() {
+      // `img` takes priority over `svg`. Drop a real screenshot into
+      // assets/images/hero/ and set the path here; the SVG stays as a
+      // fallback until an image is supplied.
+      const H = this.heroImages;
       return [
-        { key: 'shotObject',   descKey: 'shotObjectDesc',   svg: HERO_SVGS.objectBrowser, href: 'object.html' },
-        { key: 'shotApod',     descKey: 'shotApodDesc',     pos: 'tr', svg: HERO_SVGS.apod,        href: 'object.html' },
-        { key: 'shotGraph',    descKey: 'shotGraphDesc',    pos: 'tl', svg: HERO_SVGS.grapher,     href: 'object.html' },
-        { key: 'shotGallery',  descKey: 'shotGalleryDesc',  pos: 'bl', svg: HERO_SVGS.gallery,      href: 'object.html' },
-        { key: 'shotPlanet',   descKey: 'shotPlanetDesc',   pos: 'br', svg: HERO_SVGS.planetarium,  href: 'object.html' },
-        { key: 'shotForum',    descKey: 'shotForumDesc',    pos: 'rb', svg: HERO_SVGS.community,    href: 'object.html' },
-        { key: 'shotObserver', descKey: 'shotObserverDesc', pos: 'll', svg: HERO_SVGS.observer,      href: 'object.html' }
+        { key: 'shotObject',   descKey: 'shotObjectDesc',   img: H.objectBrowser, svg: HERO_SVGS.objectBrowser, href: 'object.html' },
+        { key: 'shotApod',     descKey: 'shotApodDesc',     pos: 'tr', img: H.apod,        svg: HERO_SVGS.apod,        href: 'object.html' },
+        { key: 'shotGraph',    descKey: 'shotGraphDesc',    pos: 'tl', img: H.grapher,     svg: HERO_SVGS.grapher,     href: 'object.html' },
+        { key: 'shotGallery',  descKey: 'shotGalleryDesc',  pos: 'bl', img: H.gallery,     svg: HERO_SVGS.gallery,     href: 'object.html' },
+        { key: 'shotPlanet',   descKey: 'shotPlanetDesc',   pos: 'br', img: H.planetarium, svg: HERO_SVGS.planetarium, href: 'object.html' },
+        { key: 'shotForum',    descKey: 'shotForumDesc',    pos: 'rb', img: H.community,   svg: HERO_SVGS.community,   href: 'object.html' },
+        { key: 'shotObserver', descKey: 'shotObserverDesc', pos: 'll', img: H.observer,    svg: HERO_SVGS.observer,    href: 'object.html' }
       ];
     },
     // Everything except the big central image (index 0). `idx` keeps the
