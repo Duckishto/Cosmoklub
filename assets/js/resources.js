@@ -35,6 +35,8 @@ createApp({
       apod: null,
       apodLoading: true,
       apodError: '',
+      apodImgReady: false,
+      apodImgFailed: false,
 
       query: '',
       activeQuery: '',
@@ -79,6 +81,8 @@ createApp({
     async loadApod() {
       this.apodLoading = true;
       this.apodError = '';
+      this.apodImgReady = false;
+      this.apodImgFailed = false;
       try {
         const r = await fetch(`${PROXY}?endpoint=apod`);
         if (!r.ok) throw new Error('NASA returned ' + r.status);
@@ -129,6 +133,8 @@ createApp({
               image: link.href,
               date: tidyDate(meta.date_created),
               center: meta.center || '',
+              ready: false,
+              failed: false,
               link: 'https://images.nasa.gov/details/' + encodeURIComponent(meta.nasa_id || '')
             };
           })
