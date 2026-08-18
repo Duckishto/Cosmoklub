@@ -267,7 +267,7 @@
     <section class="manage-section">
       <h2 class="manage-title">A smoother way to manage your learners</h2>
       <div class="manage-stack">
-        <div class="manage-panel" v-for="(m, mi) in manage" :key="'manage-'+mi">
+        <div class="manage-panel" :class="{ 'is-mirrored': mi % 2 === 1 }" v-for="(m, mi) in manage" :key="'manage-'+mi">
           <div class="manage-content">
             <h3>{{ m.title }}</h3>
             <p class="manage-lead">{{ m.desc }}</p>
@@ -368,7 +368,10 @@
                 }"
                 :disabled="gameAnswered"
                 @click="pickGameOption(oi)"
-              ><span v-html="opt"></span></button>
+              >
+                <span class="game-option-art" v-html="opt"></span>
+                <span class="game-option-label">{{ gameRound.labels[oi] }}</span>
+              </button>
             </div>
           </div>
         </div>
