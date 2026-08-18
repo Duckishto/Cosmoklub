@@ -87,7 +87,7 @@
 }
 .auth-form-inner {
   width: 100%;
-  min-height: 470px;
+  min-height: 512px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -351,6 +351,13 @@
 }
 .auth-eye:hover { color: var(--white); background: rgba(124,58,237,0.16); }
 
+.auth-pw-meta {
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
+}
 .auth-strength { display: flex; align-items: center; gap: 0.7rem; }
 .auth-strength-bar { display: flex; gap: 4px; flex: 1; }
 .auth-strength-seg {
