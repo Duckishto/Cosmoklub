@@ -452,11 +452,17 @@ createApp({
     // --- Pensia throw physics: bounces off every edge ---
     throwPensia(vx, vy) {
       const speed = Math.hypot(vx, vy);
-      if (speed < 1.2) return;               // a gentle release just drops her
+      // Below this she is being *carried*, so she simply stays put.
+      // Above it the release reads as a deliberate throw.
+      const THROW_MIN = 9;
+      if (speed < THROW_MIN) return;
       cancelAnimationFrame(this._pensiaRAF);
+      // ease in from the threshold so a just-past-the-line flick starts
+      // gently rather than snapping straight to full speed
+      const scale = Math.min(1, (speed - THROW_MIN) / 28) * 0.85 + 0.15;
       this._pensiaVel = {
-        x: Math.max(-60, Math.min(60, vx)),
-        y: Math.max(-60, Math.min(60, vy))
+        x: Math.max(-42, Math.min(42, vx * scale)),
+        y: Math.max(-42, Math.min(42, vy * scale))
       };
       const FRICTION = 0.985;                // air drag
       const BOUNCE = 0.7;                    // energy kept per wall hit
@@ -518,8 +524,12 @@ createApp({
       if (d.lastT) {
         const dt = Math.max(1, now - d.lastT);
         // exponential smoothing keeps a flick from being one noisy sample
-        d.vx = 0.65 * (d.vx || 0) + 0.35 * ((e.clientX - (d.lastPX ?? e.clientX)) / dt) * 16;
-        d.vy = 0.65 * (d.vy || 0) + 0.35 * ((e.clientY - (d.lastPY ?? e.clientY)) / dt) * 16;
+        // px per frame at ~60fps, smoothed. No amplification: a slow drag
+        // stays slow, only a genuine flick builds real speed.
+        const fx = ((e.clientX - (d.lastPX ?? e.clientX)) / dt) * 16;
+        const fy = ((e.clientY - (d.lastPY ?? e.clientY)) / dt) * 16;
+        d.vx = 0.7 * (d.vx || 0) + 0.3 * fx;
+        d.vy = 0.7 * (d.vy || 0) + 0.3 * fy;
       }
       d.lastT = now; d.lastPX = e.clientX; d.lastPY = e.clientY;
       if (!d.moved && Math.hypot(dx, dy) > 4) {
@@ -551,7 +561,9 @@ createApp({
       this.pensiaDragging = false;
       this.pensiaTilt = 0;
       if (d.moved) {
-        this.throwPensia(d.vx || 0, d.vy || 0);
+        // a pause before letting go means "place her here", not "throw"
+        const idle = d.lastT ? performance.now() - d.lastT : 999;
+        if (idle < 90) this.throwPensia(d.vx || 0, d.vy || 0);
       }
       if (!d.moved) {
         // no real movement happened — treat it as a click/tap
