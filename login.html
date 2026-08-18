@@ -123,13 +123,13 @@
                 </div>
 
                 <div class="auth-pw-meta">
-                <div class="auth-strength" v-if="form.password">
+                <div class="auth-strength">
                   <div class="auth-strength-bar">
                     <span v-for="n in 4" :key="n" :class="['auth-strength-seg', passwordStrength.level >= n ? 'on ' + passwordStrength.key : '']"></span>
                   </div>
                   <span class="auth-strength-label" :class="passwordStrength.key">{{ passwordStrength.label }}</span>
                 </div>
-                <ul class="auth-reqs" v-if="form.password">
+                <ul class="auth-reqs">
                   <li :class="{ ok: passwordChecks.length }">8+ chars</li>
                   <li :class="{ ok: passwordChecks.upper }">A-Z</li>
                   <li :class="{ ok: passwordChecks.lower }">a-z</li>
