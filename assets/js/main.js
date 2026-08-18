@@ -53,7 +53,6 @@ const HERO_SVGS = {
   grid: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
   graph: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-4 4"/></svg>`,
   orbit: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(-25 12 12)"/></svg>`,
-  chat: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg>`
 };
 
 // ---------- Complete Translations ----------
@@ -62,20 +61,16 @@ const translations = {
     eyebrow: 'Next-Gen Astronomy Platform',
     heroLine1: 'Explore the', heroAccent: 'Night Sky', heroLine2: 'with Precision',
     heroSub: 'Discover celestial objects, plan observations, analyze astronomical data, and connect with the <span class="kw">global astronomy community</span>.',
-    startBtn: 'Start Exploring', learnBtn: 'Learn more',
+    startBtn: 'Start Exploring',
     openTool: 'Open tool',
-    heroTagCategory: 'Astronomy', heroTagBuilder: 'Object Browser',
     shotObject: 'Object Browser', shotObjectDesc: 'Search 22,000+ NASA images, videos, and mission media in one place.',
     shotApod: 'Astronomy Picture', shotApodDesc: 'A new featured image every day, with the full story behind it.',
     shotGallery: 'Media Gallery', shotGalleryDesc: 'Browse curated collections from the Moon, Mars, and deep space.',
     shotGraph: 'Function Grapher', shotGraphDesc: 'Plot equations and explore orbits with an interactive graphing tool.',
     shotPlanet: '3D Planetarium', shotPlanetDesc: 'Spin real planet models and trace their orbits in your browser.',
     shotForum: 'Community', shotForumDesc: 'Share observations and talk astronomy with the CosmoKlub crew.',
-    shotObserver: 'Observer Profile', shotObserverDesc: 'Track your logged sessions, badges, and standing in the CosmoKlub community.',
-    featLabel: 'Features', featTitle: 'Everything the cosmos demands',
+    shotObserver: 'Observer Profile', shotObserverDesc: 'Track your logged sessions, badges, and standing in the CosmoKlub community.', featTitle: 'Everything the cosmos demands',
     featSub: '<span class="kw">Precision tools</span> for amateur observers and professional researchers alike.',
-    objLabel: 'Objects', objTitle: 'Deep-sky catalogue',
-    objSub: '<span class="kw">Thousands of catalogued objects</span> from our expanding database.',
     signIn: 'Sign in', register: 'Register',
     createAcc: 'Create Account', welcomeBack: 'Welcome back',
     loginSub: 'Sign in to your observatory', joinUs: 'Join thousands of astronomers',
@@ -92,7 +87,7 @@ const translations = {
     gotIt: 'Got it',
     successSub: 'Your observatory is ready. Start exploring the cosmos.',
     exploreNow: 'Explore Now',
-    tos: 'Terms of Service', privacy: 'Privacy Policy', applyStaff: 'Staff Application',
+    tos: 'Terms of Service', privacy: 'Privacy Policy',
     rights: 'All rights reserved.', tosDate: 'Last updated June 2026',
     accept: 'I Accept',
     tos1Title: 'Acceptance of Terms',
@@ -199,8 +194,17 @@ createApp({
       navCompact: false,
       navLeaving: false,
       openMenu: null,
+      demoOpen: false,
+      demoMonth: null,
+      demoDate: null,
+      demoSlot: null,
+      demo24h: false,
+      demoName: '',
+      demoEmail: '',
       mobileMenuOpen: false,
       activeShot: 0,
+      mainShotIndex: 0,
+      mainFlipping: false,
       shotModal: null
     };
   },
@@ -355,6 +359,54 @@ createApp({
         }
       ];
     },
+    demoMonthLabel() {
+      if (!this.demoMonth) return '';
+      return this.demoMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    },
+    demoDays() {
+      if (!this.demoMonth) return [];
+      const y = this.demoMonth.getFullYear();
+      const m = this.demoMonth.getMonth();
+      const first = new Date(y, m, 1);
+      const start = new Date(first);
+      start.setDate(1 - first.getDay());          // back up to the Sunday
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const cells = [];
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+        const inMonth = d.getMonth() === m;
+        const past = d < today;
+        const weekend = d.getDay() === 0 || d.getDay() === 6;
+        cells.push({
+          date: d,
+          day: d.getDate(),
+          inMonth,
+          selectable: !past && !weekend,
+          isToday: d.getTime() === today.getTime(),
+          monthTag: d.getDate() === 1 ? d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase() : ''
+        });
+      }
+      return cells;
+    },
+    demoSlots() {
+      const hours = [9, 10, 11, 12, 13, 14, 15, 16];
+      return hours.map(h => {
+        if (this.demo24h) return String(h).padStart(2, '0') + ':00';
+        const suffix = h < 12 ? 'am' : 'pm';
+        const hh = h > 12 ? h - 12 : h;
+        return hh + ':00' + suffix;
+      });
+    },
+    demoDateLabel() {
+      if (!this.demoDate) return '';
+      return this.demoDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
+    },
+    demoReady() {
+      return !!(this.demoDate && this.demoSlot && this.demoName.trim() && this.demoEmail.includes('@'));
+    },
     navMenus() {
       return {
         tools: {
@@ -462,6 +514,9 @@ createApp({
       return this.heroShots.slice(1).map((s, i) => ({ ...s, idx: i + 1 }));
     },
     // Tool pills under the CTA — each focuses its matching card.
+    mainShot() {
+      return this.heroShots[this.mainShotIndex] || this.heroShots[0];
+    },
     heroTools() {
       return [
         { key: 'shotObject',  svg: HERO_SVGS.pinGrid },
@@ -484,6 +539,59 @@ createApp({
     }
   },
   methods: {
+    openDemo() {
+      const now = new Date();
+      this.demoMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      this.demoDate = null;
+      this.demoSlot = null;
+      this.demoName = '';
+      this.demoEmail = '';
+      this.demoOpen = true;
+      this.syncScrollLock();
+    },
+    closeDemo() {
+      this.demoOpen = false;
+      this.syncScrollLock();
+    },
+    demoShiftMonth(delta) {
+      const d = new Date(this.demoMonth);
+      d.setMonth(d.getMonth() + delta);
+      this.demoMonth = d;
+    },
+    pickDemoDate(cell) {
+      if (!cell.selectable) return;
+      this.demoDate = cell.date;
+      this.demoSlot = null;
+    },
+    pickDemoSlot(sl) {
+      this.demoSlot = sl;
+    },
+    submitDemo() {
+      if (!this.demoReady) return;
+      const when = this.demoDate.toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'local time';
+      const subject = 'Demo booking — CosmoKlub (' + when + ', ' + this.demoSlot + ')';
+      const body = [
+        'Hello CosmoKlub team,',
+        '',
+        'I would like to book a product demo.',
+        '',
+        'Name:  ' + this.demoName.trim(),
+        'Email: ' + this.demoEmail.trim(),
+        'Date:  ' + when,
+        'Time:  ' + this.demoSlot + ' (' + tz + ')',
+        'Length: 1 hour',
+        '',
+        'Thank you.'
+      ].join('\n');
+      window.location.href =
+        'mailto:rondopuffin@gmail.com?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(body);
+      this.showToast('Opening your mail app to confirm the booking.');
+      this.closeDemo();
+    },
     toggleMenu(key) {
       this.openMenu = this.openMenu === key ? null : key;
     },
@@ -781,8 +889,15 @@ createApp({
     },
     focusShot(i) {
       this.activeShot = i;
-      const shot = this.heroShots[i];
-      if (shot) this.openShot(shot);
+      if (i === this.mainShotIndex) return;
+      // flip the big box down, swap the picture at the halfway point,
+      // then flip it back up
+      clearTimeout(this._flipT);
+      this.mainFlipping = true;
+      this._flipT = setTimeout(() => {
+        this.mainShotIndex = i;
+        this.mainFlipping = false;
+      }, 260);
     },
     openShot(shot) {
       this.shotModal = shot;
@@ -819,7 +934,7 @@ createApp({
     // whatever modals/overlays are currently open, so closing one of
     // several open surfaces can never leave a stray lock behind
     syncScrollLock() {
-      const shouldLock = !!this.modal || this.pensiaArticleOpen || !!this.shotModal;
+      const shouldLock = !!this.modal || this.pensiaArticleOpen || !!this.shotModal || this.demoOpen;
       // Compensate for the scrollbar disappearing when we lock scroll, so
       // the (centered) layout doesn't jump sideways. scrollbar-gutter:stable
       // handles this in modern browsers; this padding is the fallback.
@@ -1076,6 +1191,7 @@ createApp({
       if (e.key !== 'Escape') return;
       if (this.shotModal) { this.shotModal = null; this.syncScrollLock(); }
       else if (this.pensiaArticleOpen) this.closePensiaArticle();
+      else if (this.demoOpen) this.closeDemo();
       else if (this.openMenu) this.openMenu = null;
       else if (this.modal) this.closeModal();
     });
