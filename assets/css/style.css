@@ -1424,6 +1424,10 @@ img {
   text-decoration: none;
   transition: color var(--tr), border-color var(--tr), background var(--tr), transform var(--tr);
 }
+/* NASA's mark carries its own brand colours; Wikipedia's globe is a
+   monochrome outline so it follows the link colour */
+.brand-nasa { flex-shrink: 0; }
+.showcase-link:hover .brand-nasa { filter: none; }
 .showcase-link:hover {
   color: #fff;
   border-color: var(--violet);
@@ -2382,6 +2386,8 @@ img {
   .nav-link-auth a {
     justify-content: center;
     text-align: center;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.92rem;
   }
   .nav-link-auth-primary {
     margin-top: 0.5rem;
@@ -2391,9 +2397,11 @@ img {
     color: #fff;
     font-weight: 700;
     background: linear-gradient(100deg, var(--purple), var(--violet));
-    border-radius: 10px;
+    border-radius: 9px;
     border-bottom: none;
-    box-shadow: 0 4px 16px rgba(124,58,237,0.32);
+    box-shadow: 0 3px 12px rgba(124,58,237,0.28);
+    padding: 0.62rem 0.9rem;
+    font-size: 0.92rem;
   }
   /* hide the desktop auth cluster so it can't overlap the sheet */
   .nav-auth { display: none; }
@@ -3298,6 +3306,25 @@ nav:not(.nav-hidden) {
   .hero-section > .stage-card { margin: 0 1rem; width: auto; }
   .hero-main { order: -1; }
 
+  /* the box is position:static here, so drop the translateX(-50%) that the
+     desktop states use for centering — otherwise it slides left, not down */
+  .hero-main.paused { transform: none; }
+  .hero-main.sliding {
+    transition: transform 0.36s cubic-bezier(.4,0,.75,0.2), opacity 0.32s ease-in;
+    transform: translateY(115%);
+    opacity: 0;
+  }
+  .hero-main.slid {
+    transition: none;
+    transform: translateY(115%);
+    opacity: 0;
+  }
+  .hero-main.returning {
+    transition: transform 0.42s cubic-bezier(.2,.9,.3,1), opacity 0.32s ease;
+    transform: translateY(0);
+    opacity: 1;
+  }
+
   .hero-main:hover, .hero-main.focused,
   .stage-card:hover, .stage-card.focused {
     transform: translateY(-4px);
@@ -3590,7 +3617,7 @@ nav:not(.nav-hidden) {
     -webkit-overflow-scrolling: touch;
   }
   .demo-info, .demo-cal, .demo-slots {
-    overflow: visible;
+    overflow: visible !important;
     min-height: 0;
     border-right: none;
   }
@@ -3602,10 +3629,16 @@ nav:not(.nav-hidden) {
   .demo-slots { padding: 1.4rem 1.2rem; }
 }
 @media (max-width: 600px) {
-  .demo-overlay { padding: 0; }
+  .demo-overlay {
+    padding: 0;
+    align-items: flex-start;
+    overflow-y: auto;
+  }
   .demo-frame {
-    max-height: 100dvh;
-    height: 100dvh;
+    height: auto;
+    max-height: none;
+    min-height: 100dvh;
+    overflow: visible;
     border-radius: 0;
     border: none;
   }
