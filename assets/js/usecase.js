@@ -205,10 +205,10 @@ createApp({
         tools: {
           label: 'Tools for exploring the sky',
           items: [
-            { title: 'Forum', desc: 'Ask questions and share observations with other members.', href: '../object.html', icon: I.forum },
-            { title: 'Library', desc: 'Browse NASA images, media and mission archives.', href: '../object.html', icon: I.book },
-            { title: 'Calculator and Graphing', desc: 'Plot functions and run astronomical calculations.', href: '../object.html', icon: I.chart },
-            { title: 'Community Server', desc: 'Join the live chat and observation sessions.', href: '../object.html', icon: I.server }
+            { title: 'Forum', desc: 'Ask questions and share observations with other members.', href: '../tools/forum.html', icon: I.forum },
+            { title: 'Library', desc: 'Browse NASA images, media and mission archives.', href: '../tools/library.html', icon: I.book },
+            { title: 'Calculator and Graphing', desc: 'Plot functions and run astronomical calculations.', href: '../tools/calcgraph.html', icon: I.chart },
+            { title: 'Community Server', desc: 'Join the live chat and observation sessions.', href: '../tools/comserver.html', icon: I.server }
           ]
         },
         usecases: {
