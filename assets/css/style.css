@@ -370,9 +370,11 @@ nav.compact {
   font-weight: 700;
   padding: 0.5rem 1.2rem;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.1);
+  /* no translucent white border: over a gradient it blends into a visible
+     halo ring and frays the rounded edge. Inset highlight instead. */
+  border: 0;
   background: linear-gradient(100deg, var(--purple), var(--violet));
-  box-shadow: 0 0 16px rgba(124,58,237,0.32);
+  box-shadow: 0 4px 14px rgba(124,58,237,0.28);
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
@@ -1752,7 +1754,9 @@ img {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 500;
+  /* above the fixed nav (1000) and its dropdowns (1200) so an open
+     overlay is never drawn underneath the bar */
+  z-index: 1500;
   background: rgba(5,4,13,0.8);
   backdrop-filter: blur(12px);
   display: flex;
@@ -2378,8 +2382,6 @@ img {
   .nav-link-auth a {
     justify-content: center;
     text-align: center;
-    padding: 0.6rem 0.75rem;
-    font-size: 0.92rem;
   }
   .nav-link-auth-primary {
     margin-top: 0.5rem;
@@ -3307,7 +3309,13 @@ nav:not(.nav-hidden) {
 }
 
 /* ---------- Book a demo ---------- */
-.demo-overlay { display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+.demo-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 2000;
+}
 .demo-frame {
   position: relative;
   display: grid;
@@ -3414,10 +3422,8 @@ nav:not(.nav-hidden) {
   position: relative;
   aspect-ratio: 1 / 1;
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1px;
   border-radius: 9px;
   background: transparent;
   border: 1px solid transparent;
@@ -3453,10 +3459,10 @@ nav:not(.nav-hidden) {
 }
 .demo-day.selected.today::after { background: #0d0b1c; }
 .demo-day em {
-  position: static;
-  line-height: 1;
+  position: absolute;
+  top: 3px; left: 5px;
   font-style: normal;
-  font-size: 0.5rem;
+  font-size: 0.54rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   color: var(--muted);
