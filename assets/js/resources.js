@@ -47,7 +47,8 @@ createApp({
       totalHits: 0,
       rights: 'All rights reserved.',
       mediaType: 'image',
-      yearRange: 'any',
+      dateFrom: '',
+      dateTo: '',
       loadingMore: false,
       moreClicks: 0
     };
@@ -60,18 +61,14 @@ createApp({
         { key: 'audio', label: 'Audio' }
       ];
     },
-    yearRanges() {
-      const now = new Date().getFullYear();
-      return [
-        { key: 'any',  label: 'Any time',    start: null,     end: null },
-        { key: '1',    label: 'Past year',   start: now - 1,  end: now },
-        { key: '5',    label: 'Past 5 years',start: now - 5,  end: now },
-        { key: '10',   label: 'Past 10 years',start: now - 10,end: now },
-        { key: 'old',  label: 'Before 2000', start: 1920,     end: 1999 }
-      ];
+    hasDateFilter() {
+      return !!(this.dateFrom || this.dateTo);
     },
-    activeRange() {
-      return this.yearRanges.find(r => r.key === this.yearRange) || this.yearRanges[0];
+    dateSummary() {
+      if (!this.hasDateFilter) return '';
+      const f = this.dateFrom ? tidyDate(this.dateFrom) : 'the earliest records';
+      const t = this.dateTo ? tidyDate(this.dateTo) : 'today';
+      return f + ' to ' + t;
     },
     canLoadMore() {
       // two extra pages per search keeps the list manageable
@@ -189,12 +186,14 @@ createApp({
       this.feedError = '';
 
       const q = this.activeQuery || 'nebula galaxy mission';
-      const r0 = this.activeRange;
       try {
         let url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(q)}` +
                   `&media_type=${encodeURIComponent(this.mediaType)}` +
                   `&page=${this.page}&page_size=${PAGE_SIZE}`;
-        if (r0.start) url += `&year_start=${r0.start}&year_end=${r0.end}`;
+        // NASA only filters by year, so send the year window and narrow to the
+        // exact days client-side below
+        if (this.dateFrom) url += `&year_start=${this.dateFrom.slice(0, 4)}`;
+        if (this.dateTo)   url += `&year_end=${this.dateTo.slice(0, 4)}`;
 
         const r = await fetch(url);
         if (!r.ok) throw new Error('NASA returned ' + r.status);
@@ -219,6 +218,7 @@ createApp({
               image: thumb,
               kind: meta.media_type || this.mediaType,
               date: tidyDate(meta.date_created),
+              raw: meta.date_created || '',
               center: meta.center || '',
               ready: false,
               failed: !thumb,
@@ -226,7 +226,20 @@ createApp({
             };
           });
 
-        this.feed = reset ? mapped : this.feed.concat(mapped);
+        // exact-day narrowing that the API cannot do itself
+        const from = this.dateFrom ? new Date(this.dateFrom + 'T00:00:00') : null;
+        const to   = this.dateTo   ? new Date(this.dateTo   + 'T23:59:59') : null;
+        const inRange = mapped.filter(it => {
+          if (!from && !to) return true;
+          if (!it.raw) return false;
+          const d = new Date(it.raw);
+          if (isNaN(d)) return false;
+          if (from && d < from) return false;
+          if (to && d > to) return false;
+          return true;
+        });
+
+        this.feed = reset ? inRange : this.feed.concat(inRange);
       } catch (err) {
         this.feedError = 'Could not reach the NASA library (' + err.message + ').';
       } finally {
@@ -239,9 +252,19 @@ createApp({
       this.mediaType = key;
       this.loadFeed(true);
     },
-    setYearRange(key) {
-      if (this.yearRange === key) return;
-      this.yearRange = key;
+    applyDates() {
+      // guard against a reversed range
+      if (this.dateFrom && this.dateTo && this.dateFrom > this.dateTo) {
+        const t = this.dateFrom;
+        this.dateFrom = this.dateTo;
+        this.dateTo = t;
+      }
+      this.loadFeed(true);
+    },
+    clearDates() {
+      if (!this.dateFrom && !this.dateTo) return;
+      this.dateFrom = '';
+      this.dateTo = '';
       this.loadFeed(true);
     },
     runSearch() {
@@ -252,7 +275,8 @@ createApp({
       this.query = '';
       this.activeQuery = '';
       this.mediaType = 'image';
-      this.yearRange = 'any';
+      this.dateFrom = '';
+      this.dateTo = '';
       this.loadFeed(true);
     },
     loadMore() {
