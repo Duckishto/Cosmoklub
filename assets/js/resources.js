@@ -45,10 +45,23 @@ createApp({
       feedError: '',
       page: 1,
       totalHits: 0,
-      rights: 'All rights reserved.'
+      rights: 'All rights reserved.',
+      activeFilter: 'all',
+      article: null
     };
   },
   computed: {
+    filters() {
+      return [
+        { key: 'all',       label: 'All' },
+        { key: 'nebula',    label: 'Nebulae' },
+        { key: 'galaxy',    label: 'Galaxies' },
+        { key: 'planet',    label: 'Planets' },
+        { key: 'mars',      label: 'Mars' },
+        { key: 'telescope', label: 'Telescopes' },
+        { key: 'apollo',    label: 'Missions' }
+      ];
+    },
     footerCols() {
       return [
         {
@@ -134,7 +147,11 @@ createApp({
           summary: trim(item.explanation, 420),
           image: item.media_type === 'video' ? item.url : (item.url || item.hdurl),
           full: item.hdurl || item.url,
-          mediaType: item.media_type === 'video' ? 'video' : 'image',
+          // apod.nasa.gov sends X-Frame-Options, so its own pages cannot be
+          // iframed ("refused to connect"). Only embed hosts that allow it.
+          mediaType: item.media_type === 'video'
+            ? (/youtube\.com|youtu\.be|vimeo\.com|player\./i.test(item.url || '') ? 'video' : 'link')
+            : 'image',
           date: tidyDate(item.date),
           credit: item.copyright ? item.copyright.replace(/\n/g, ' ').trim() : 'NASA',
           link: 'https://apod.nasa.gov/apod/astropix.html'
@@ -177,6 +194,7 @@ createApp({
               id: meta.nasa_id || link.href,
               title: trim(meta.title, 90) || 'Untitled',
               summary: trim(meta.description, 180),
+              body: (meta.description || '').replace(/\s+/g, ' ').trim(),
               image: thumb,
               date: tidyDate(meta.date_created),
               center: meta.center || '',
@@ -196,13 +214,31 @@ createApp({
       }
     },
 
+    applyFilter(key) {
+      this.activeFilter = key;
+      this.query = key === 'all' ? '' : key;
+      this.activeQuery = key === 'all' ? '' : key;
+      this.loadFeed(true);
+    },
+    openArticle(item) {
+      this.article = item;
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    },
+    closeArticle() {
+      this.article = null;
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    },
     runSearch() {
       this.activeQuery = this.query.trim();
+      this.activeFilter = this.activeQuery ? '' : 'all';
       this.loadFeed(true);
     },
     clearSearch() {
       this.query = '';
       this.activeQuery = '';
+      this.activeFilter = 'all';
       this.loadFeed(true);
     },
     loadMore() {
@@ -218,7 +254,9 @@ createApp({
       if (!e.target.closest('.nav-has-menu')) this.openMenu = null;
     });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') this.openMenu = null;
+      if (e.key !== 'Escape') return;
+      if (this.article) this.closeArticle();
+      else this.openMenu = null;
     });
     document.addEventListener('contextmenu', e => {
       if (e.target && e.target.tagName === 'IMG') e.preventDefault();
