@@ -417,13 +417,13 @@ createApp({
           label: 'Tools for exploring the sky',
           items: [
             { title: 'Forum', desc: 'Ask questions and share observations with other members.',
-              href: 'object.html', icon: SVGS.forum },
+              href: 'tools/forum.html', icon: SVGS.forum },
             { title: 'Library', desc: 'Browse NASA images, media and mission archives.',
-              href: 'object.html', icon: SVGS.book },
+              href: 'tools/library.html', icon: SVGS.book },
             { title: 'Calculator & Graphing', desc: 'Plot functions and run astronomical calculations.',
-              href: 'object.html', icon: SVGS.chart },
+              href: 'tools/calcgraph.html, icon: SVGS.chart },
             { title: 'Community Server', desc: 'Join the live chat and observation sessions.',
-              href: 'object.html', icon: SVGS.server }
+              href: 'tools/comserver.html', icon: SVGS.server }
           ]
         },
         usecases: {
