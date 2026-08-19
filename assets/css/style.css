@@ -3654,3 +3654,11 @@ nav:not(.nav-hidden) {
   .demo-slot { padding: 0.7rem 0.9rem; }
   .demo-form input, .demo-confirm { min-height: 44px; }
 }
+
+@media (max-width: 600px) {
+  .nav-link-auth,
+  .nav-link-auth-primary,
+  .nav-auth {
+    display: none;
+  }
+}
