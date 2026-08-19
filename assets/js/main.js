@@ -756,8 +756,16 @@ createApp({
       if (!rect.width && !rect.height) return; // section not laid out yet
       const w = el.offsetWidth, h = el.offsetHeight;
       const bounds = this.pensiaBounds();
-      const x = Math.round(rect.right + window.scrollX - w);
-      const y = Math.round(rect.top + window.scrollY + (rect.height - h) / 2);
+      // On wide screens there is empty space to the right of the heading, so
+      // she sits beside it. On narrow screens the heading fills the row and
+      // she would land on top of the text, so drop her just below it instead.
+      const narrow = window.innerWidth < 860;
+      const x = narrow
+        ? Math.round(rect.right + window.scrollX - w - 8)
+        : Math.round(rect.right + window.scrollX - w);
+      const y = narrow
+        ? Math.round(rect.bottom + window.scrollY + 8)
+        : Math.round(rect.top + window.scrollY + (rect.height - h) / 2);
       this.pensiaPos = {
         x: Math.min(Math.max(8, x), bounds.maxX),
         y: Math.max(8, y)
