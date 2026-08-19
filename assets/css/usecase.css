@@ -63,13 +63,22 @@
 #app .nav-dropdown-icon { background: var(--uc-soft); border-color: var(--uc-line); color: var(--uc-2); }
 #app .nav-caret { color: inherit; }
 
+.uc-page > section,
+.uc-hero,
+.uc-band {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
 .uc-page {
   position: relative;
   z-index: 2;
-  padding: 0 0 60px;
+  padding: 0 0 44px;
 }
 .uc-inner {
-  max-width: 1180px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 3rem;
 }
@@ -184,9 +193,9 @@
 }
 .uc-btn-ghost:hover { transform: translateY(-2px); border-color: var(--uc); }
 
-.uc-band { padding: 4rem 0; }
+.uc-band { padding: 44px 0; }
 .uc-band h2 {
-  font-size: clamp(1.5rem, 2.8vw, 2.15rem);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   margin-bottom: 1.8rem;
@@ -329,7 +338,7 @@
 }
 .uc-panel-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.uc-faq .faq-title { font-size: clamp(1.5rem, 2.8vw, 2.15rem); }
+.uc-faq .faq-title { font-size: clamp(1.7rem, 3vw, 2.4rem); }
 .uc-faq .faq-item { border-color: var(--uc-line); }
 .uc-faq .faq-item.open {
   border-color: var(--uc);
@@ -354,6 +363,12 @@
   .uc-tool-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
+  .uc-page > section,
+  .uc-hero,
+  .uc-band {
+    padding-left: 0;
+    padding-right: 0;
+  }
   .uc-inner { padding: 0 1.5rem; }
   .uc-hero { padding: 100px 0 50px; }
   .uc-panel,
@@ -362,7 +377,7 @@
   .uc-panel-visual,
   .uc-panel.is-mirrored .uc-panel-visual { min-height: 200px; order: -1; }
   .uc-panel.is-mirrored .uc-panel-copy { order: 0; }
-  .uc-band { padding: 3rem 0; }
+  .uc-band { padding: 32px 0; }
 
   /* Fix: on the stacked mobile menu, style.css already tones the open
      dropdown trigger down to a subtle inset-highlight (see its own
