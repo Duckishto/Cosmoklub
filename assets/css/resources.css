@@ -156,10 +156,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1.1rem;
-  border: 1px solid transparent;
+  padding: 0.5rem 1.15rem;
+  /* no transparent border: over a gradient it blends into a light rim and
+     frays the corners. The shadow grounds it against the dark page. */
+  border: 0;
   border-radius: 6px;
-  background: linear-gradient(100deg, var(--purple), var(--violet));
+  background: linear-gradient(100deg, #6d28d9 0%, #8b5cf6 100%);
   color: #fff;
   font-family: var(--font);
   font-size: 0.86rem;
@@ -167,15 +169,31 @@
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  transition: background var(--tr), border-color var(--tr);
+  box-shadow: 0 3px 12px rgba(109,40,217,0.32);
+  transition: background var(--tr), box-shadow var(--tr);
 }
-.res-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.res-btn:hover {
+  background: linear-gradient(100deg, #7c3aed 0%, #9d6bfa 100%);
+  box-shadow: 0 5px 16px rgba(109,40,217,0.42);
+}
+.res-btn:disabled {
+  background: rgba(124,58,237,0.28);
+  color: rgba(255,255,255,0.6);
+  box-shadow: none;
+  cursor: not-allowed;
+}
 .res-btn-ghost {
   background: transparent;
-  border-color: var(--border);
+  border: 1px solid var(--border);
   color: var(--stardust);
+  box-shadow: none;
 }
-.res-btn-ghost:hover { border-color: var(--violet); color: #fff; }
+.res-btn-ghost:hover {
+  background: rgba(124,58,237,0.12);
+  border-color: var(--violet);
+  color: #fff;
+  box-shadow: none;
+}
 
 /* filter chips */
 .res-filters {
@@ -388,7 +406,49 @@ a.res-fallback:hover .res-videomark { border-color: var(--violet); background: r
   gap: 0.4rem 1.1rem;
   align-items: center;
 }
-.res-chip-date { font-weight: 500; }
+/* date range pickers */
+.res-dates {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.res-dates label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.res-dates label > span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+/* the input itself is the styled control. A transparent background makes
+   Chrome fall back to its own white field chrome, so this stays solid. */
+.res-dates input[type="date"] {
+  background: #18142c;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.42rem 0.6rem;
+  color: var(--stardust);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  color-scheme: dark;
+  transition: border-color var(--tr);
+}
+.res-dates input[type="date"]:hover { border-color: rgba(168,85,247,0.45); }
+.res-dates input[type="date"]:focus {
+  outline: none;
+  border-color: var(--violet);
+}
+.res-dates input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(1) saturate(5) hue-rotate(228deg);
+  cursor: pointer;
+  opacity: 0.85;
+}
+.res-dates input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+.res-btn-sm { padding: 0.34rem 0.8rem; font-size: 0.8rem; }
 
 /* empty state mascot */
 .res-empty-art {
@@ -419,6 +479,9 @@ a.res-fallback:hover .res-videomark { border-color: var(--violet); background: r
   .res-search input { width: 100%; }
   .res-btn { flex: 1 1 0; min-height: 44px; }
   .res-chip { min-height: 38px; }
+  .res-dates { width: 100%; }
+  .res-dates label { flex: 1 1 46%; }
+  .res-dates input[type="date"] { flex: 1; width: 100%; min-height: 38px; }
   .res-hero-media { min-height: 200px; }
 }
 /* very small phones */
