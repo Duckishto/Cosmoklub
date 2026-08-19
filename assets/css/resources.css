@@ -1,15 +1,20 @@
 .res-page {
   position: relative;
   z-index: 2;
-  max-width: 1180px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 110px 3rem 60px;
+  padding: 110px 3rem 44px;
 }
+.res-hero-section,
+.res-feed-section {
+  padding: 44px 0;
+}
+.res-hero-section { padding-top: 0; }
 .res-title {
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.8rem;
 }
 
 /* ---------- APOD hero ---------- */
@@ -109,7 +114,7 @@
 .res-error { margin-top: 0.8rem; font-size: 0.82rem; color: #f87171; }
 
 /* ---------- Feed ---------- */
-.res-feed-section { margin-top: 3rem; }
+
 .res-feed-head {
   display: flex;
   align-items: center;
@@ -471,7 +476,9 @@ a.res-fallback:hover .res-videomark { border-color: var(--violet); background: r
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
-  .res-page { padding: 96px 1.5rem 48px; }
+  .res-page { padding: 96px 1.5rem 32px; }
+  .res-hero-section, .res-feed-section { padding: 32px 0; }
+  .res-hero-section { padding-top: 0; }
   .res-hero { grid-template-columns: 1fr; }
   .res-hero-media { min-height: 240px; }
   .res-hero-body { padding: 1.4rem; }
