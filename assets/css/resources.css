@@ -214,11 +214,22 @@
   cursor: pointer;
   transition: background var(--tr), border-color var(--tr), color var(--tr);
 }
-.res-chip:hover { border-color: var(--violet); color: #fff; }
-.res-chip.on {
-  background: linear-gradient(100deg, var(--purple), var(--violet));
-  border-color: transparent;
+.res-chip:hover {
+  background: rgba(124,58,237,0.14);
+  border-color: var(--violet);
   color: #fff;
+}
+/* matches the Search button: deeper gradient, and a solid border colour
+   instead of transparent so no light rim shows over the fill */
+.res-chip.on {
+  background: linear-gradient(100deg, #6d28d9 0%, #8b5cf6 100%);
+  border-color: #6d28d9;
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(109,40,217,0.3);
+}
+.res-chip.on:hover {
+  background: linear-gradient(100deg, #7c3aed 0%, #9d6bfa 100%);
+  border-color: #7c3aed;
 }
 
 .res-grid {

@@ -1263,7 +1263,7 @@ img {
 }
 .price-card.popular .price-cta {
   background: linear-gradient(100deg, var(--pr-accent), var(--pr-accent-2));
-  border-color: transparent;
+  border-color: var(--pr-accent);
   color: #04191c;
 }
 .price-cta:hover { transform: translateY(-1px); border-color: var(--pr-accent); }
@@ -1485,7 +1485,7 @@ img {
 }
 .showcase-tab.active {
   color: #fff;
-  border-color: transparent;
+  border-color: var(--purple);
   background: linear-gradient(100deg, var(--purple), var(--violet));
 }
 @media (max-width: 600px) {
@@ -1590,7 +1590,7 @@ img {
 .faq-item.open .faq-chevron {
   transform: rotate(180deg);
   background: linear-gradient(100deg, var(--purple), var(--violet));
-  border-color: transparent;
+  border-color: var(--purple);
   color: #fff;
 }
 .faq-a { padding: 0 1.4rem 1.25rem; }
@@ -3554,7 +3554,7 @@ nav:not(.nav-hidden) {
 .demo-slot:hover { border-color: var(--violet); background: rgba(124,58,237,0.18); }
 .demo-slot.on {
   background: linear-gradient(100deg, var(--purple), var(--violet));
-  border-color: transparent;
+  border-color: var(--purple);
 }
 .demo-slot-empty {
   font-size: 0.85rem;
