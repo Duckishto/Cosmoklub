@@ -93,12 +93,6 @@
             </div>
             <div class="uc-hero-visual">
               <img v-if="persona.heroImage" :src="persona.heroImage" :alt="persona.name" draggable="false" />
-              <div class="uc-await" v-else>
-                <span class="uc-await-mark">
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.8" cy="9.2" r="1.6"/><path d="M21 16l-5-5-6.5 6.5"/></svg>
-                </span>
-                <span>Image coming soon</span>
-              </div>
             </div>
           </div>
         </div>
@@ -110,11 +104,6 @@
           <div class="uc-photo-grid">
             <div class="uc-photo" v-for="p in persona.photos" :key="p.title">
               <img v-if="p.image" :src="p.image" :alt="p.title" draggable="false" loading="lazy" />
-              <div class="uc-await" v-else>
-                <span class="uc-await-mark">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.8" cy="9.2" r="1.6"/><path d="M21 16l-5-5-6.5 6.5"/></svg>
-                </span>
-              </div>
               <h3>{{ p.title }}</h3>
             </div>
           </div>
@@ -132,11 +121,6 @@
               </div>
               <div class="uc-tool-shot">
                 <img v-if="t.image" :src="t.image" :alt="t.title" draggable="false" loading="lazy" />
-                <div class="uc-await" v-else>
-                  <span class="uc-await-mark">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.8" cy="9.2" r="1.6"/><path d="M21 16l-5-5-6.5 6.5"/></svg>
-                  </span>
-                </div>
               </div>
             </div>
           </div>
@@ -159,12 +143,6 @@
               </div>
               <div class="uc-panel-visual">
                 <img v-if="pn.image" :src="pn.image" :alt="pn.title" draggable="false" loading="lazy" />
-                <div class="uc-await" v-else>
-                  <span class="uc-await-mark">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.8" cy="9.2" r="1.6"/><path d="M21 16l-5-5-6.5 6.5"/></svg>
-                  </span>
-                  <span>Image coming soon</span>
-                </div>
               </div>
             </div>
           </div>
