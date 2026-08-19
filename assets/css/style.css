@@ -351,8 +351,8 @@ nav.compact {
   font-family: var(--font);
   font-size: 0.85rem;
   font-weight: 600;
-  padding: 0.42rem 0.85rem;
-  border-radius: 8px;
+  padding: 0.38rem 1rem;
+  border-radius: 6px;
   white-space: nowrap;
   transition: color var(--tr), background var(--tr);
 }
@@ -368,8 +368,8 @@ nav.compact {
   color: #fff;
   font-size: 0.85rem;
   font-weight: 700;
-  padding: 0.5rem 1.2rem;
-  border-radius: 999px;
+  padding: 0.38rem 1rem;
+  border-radius: 6px;
   /* no translucent white border: over a gradient it blends into a visible
      halo ring and frays the rounded edge. Inset highlight instead. */
   border: 0;
