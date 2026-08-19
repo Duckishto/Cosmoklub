@@ -45,7 +45,7 @@
           </div>
         </li>
         <li class="nav-has-menu">
-          <a href="usecases/?persona=student" class="nav-menu-trigger" :class="{ 'is-open': openMenu === 'usecases' }" @click.prevent="toggleMenu('usecases')">
+          <a href="usecases/student.html" class="nav-menu-trigger" :class="{ 'is-open': openMenu === 'usecases' }" @click.prevent="toggleMenu('usecases')">
             Use cases
             <svg class="nav-caret" :class="{ up: openMenu === 'usecases' }" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </a>
@@ -93,6 +93,10 @@
             </div>
             <div class="res-skel" v-if="apod && apod.mediaType === 'image' && !apodImgReady && !apodImgFailed"></div>
             <iframe v-else-if="apod && apod.mediaType === 'video'" :src="apod.image" title="Astronomy video of the day" allowfullscreen></iframe>
+            <a class="res-fallback" v-else-if="apod && apod.mediaType === 'link'" :href="apod.image" target="_blank" rel="noopener noreferrer">
+              <span class="res-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>Today's entry is a video — open it on NASA</span>
+            </a>
             <div class="res-skel" v-else></div>
           </div>
 
@@ -132,16 +136,28 @@
       <section class="res-feed-section">
         <div class="res-feed-head">
           <h2>More from space</h2>
-          <form class="res-search" @submit.prevent="runSearch">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input v-model="query" type="search" placeholder="Search nebula, Mars, Webb…" maxlength="80" />
-            <button type="submit" :disabled="feedLoading">Search</button>
+          <form class="res-searchbar" @submit.prevent="runSearch">
+            <span class="res-search">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input v-model="query" type="search" placeholder="Search nebula, Mars, Webb…" maxlength="80" />
+            </span>
+            <button class="res-btn" type="submit" :disabled="feedLoading">Search</button>
+            <button class="res-btn res-btn-ghost" type="button" v-if="activeQuery" @click="clearSearch">Clear</button>
           </form>
+        </div>
+
+        <div class="res-filters">
+          <button
+            v-for="f in filters"
+            :key="f.key"
+            class="res-chip"
+            :class="{ on: activeFilter === f.key }"
+            @click="applyFilter(f.key)"
+          >{{ f.label }}</button>
         </div>
 
         <p class="res-feed-note" v-if="activeQuery">
           Showing results for “{{ activeQuery }}”
-          <button class="res-clear" @click="clearSearch">Clear</button>
         </p>
 
         <div class="res-grid">
@@ -182,6 +198,10 @@
                   </span>
                   <span v-if="item.center">{{ item.center }}</span>
                 </div>
+                <button class="res-readmore" @click="openArticle(item)">
+                  Read more
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
               </div>
             </article>
           </template>
@@ -198,6 +218,26 @@
         </button>
       </section>
     </main>
+
+    <div class="res-reader" v-if="article" @click.self="closeArticle">
+      <article class="res-reader-panel">
+        <button class="res-reader-close" @click="closeArticle" aria-label="Close">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="res-reader-media">
+          <img :src="article.full || article.image" :alt="article.title" draggable="false" />
+        </div>
+        <div class="res-reader-body">
+          <h2>{{ article.title }}</h2>
+          <div class="res-meta">
+            <span v-if="article.date">{{ article.date }}</span>
+            <span v-if="article.center">{{ article.center }}</span>
+          </div>
+          <p>{{ article.body || article.summary }}</p>
+          <a class="res-btn" :href="article.link" target="_blank" rel="noopener noreferrer">Open on NASA</a>
+        </div>
+      </article>
+    </div>
 
     <footer class="site-footer">
       <div class="footer-top">
