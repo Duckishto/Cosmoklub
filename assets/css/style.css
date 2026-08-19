@@ -211,6 +211,10 @@ nav.compact {
   justify-self: center;
 }
 .nav-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  line-height: 1;
   color: rgba(255,255,255,0.72);
   text-decoration: none;
   font-size: 0.875rem;
@@ -346,6 +350,10 @@ nav.compact {
   gap: 0.5rem;
 }
 .nav-signin {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  line-height: 1;
   color: rgba(255,255,255,0.78);
   text-decoration: none;
   font-family: var(--font);
@@ -364,6 +372,8 @@ nav.compact {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 34px;
+  line-height: 1;
   font-family: var(--font);
   color: #fff;
   font-size: 0.85rem;
@@ -391,8 +401,6 @@ nav.compact {
 /* ---------- Nav dropdowns ---------- */
 .nav-has-menu { position: relative; }
 .nav-menu-trigger {
-  display: inline-flex;
-  align-items: center;
   gap: 0.35rem;
   transition: background var(--tr), color var(--tr);
 }
@@ -403,7 +411,7 @@ nav.compact {
   background: linear-gradient(100deg, var(--purple), var(--violet));
   color: #fff;
 }
-.nav-caret { transition: transform 0.25s ease; }
+.nav-caret { display: block; flex-shrink: 0; transition: transform 0.25s ease; }
 .nav-caret.up { transform: rotate(180deg); }
 
 .nav-dropdown {
@@ -2646,7 +2654,7 @@ img {
 nav.nav-hidden {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-100%);
+  transform: translateX(-50%) translateY(-100%);
   transition: opacity 0.28s ease, transform 0.28s cubic-bezier(.4,0,.2,1);
 }
 nav:not(.nav-hidden) {
