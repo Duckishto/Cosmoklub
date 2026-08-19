@@ -46,21 +46,36 @@ createApp({
       page: 1,
       totalHits: 0,
       rights: 'All rights reserved.',
-      activeFilter: 'all',
-      article: null
+      mediaType: 'image',
+      yearRange: 'any',
+      loadingMore: false,
+      moreClicks: 0
     };
   },
   computed: {
-    filters() {
+    mediaTypes() {
       return [
-        { key: 'all',       label: 'All' },
-        { key: 'nebula',    label: 'Nebulae' },
-        { key: 'galaxy',    label: 'Galaxies' },
-        { key: 'planet',    label: 'Planets' },
-        { key: 'mars',      label: 'Mars' },
-        { key: 'telescope', label: 'Telescopes' },
-        { key: 'apollo',    label: 'Missions' }
+        { key: 'image', label: 'Images' },
+        { key: 'video', label: 'Video' },
+        { key: 'audio', label: 'Audio' }
       ];
+    },
+    yearRanges() {
+      const now = new Date().getFullYear();
+      return [
+        { key: 'any',  label: 'Any time',    start: null,     end: null },
+        { key: '1',    label: 'Past year',   start: now - 1,  end: now },
+        { key: '5',    label: 'Past 5 years',start: now - 5,  end: now },
+        { key: '10',   label: 'Past 10 years',start: now - 10,end: now },
+        { key: 'old',  label: 'Before 2000', start: 1920,     end: 1999 }
+      ];
+    },
+    activeRange() {
+      return this.yearRanges.find(r => r.key === this.yearRange) || this.yearRanges[0];
+    },
+    canLoadMore() {
+      // two extra pages per search keeps the list manageable
+      return this.feed.length < this.totalHits && this.moreClicks < 2;
     },
     footerCols() {
       return [
@@ -101,9 +116,6 @@ createApp({
           ]
         }
       ];
-    },
-    canLoadMore() {
-      return this.feed.length < this.totalHits;
     },
     navMenus() {
       return {
@@ -164,16 +176,26 @@ createApp({
     },
 
     async loadFeed(reset = true) {
-      this.feedLoading = true;
-      this.feedError = '';
+      // keep the existing cards on screen while appending, otherwise the list
+      // collapses to skeletons and the page jumps back to the top
       if (reset) {
+        this.feedLoading = true;
         this.page = 1;
         this.feed = [];
+        this.moreClicks = 0;
+      } else {
+        this.loadingMore = true;
       }
+      this.feedError = '';
+
       const q = this.activeQuery || 'nebula galaxy mission';
+      const r0 = this.activeRange;
       try {
-        const url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(q)}` +
-                    `&media_type=image&page=${this.page}&page_size=${PAGE_SIZE}`;
+        let url = `${PROXY}?endpoint=images_search&q=${encodeURIComponent(q)}` +
+                  `&media_type=${encodeURIComponent(this.mediaType)}` +
+                  `&page=${this.page}&page_size=${PAGE_SIZE}`;
+        if (r0.start) url += `&year_start=${r0.start}&year_end=${r0.end}`;
+
         const r = await fetch(url);
         if (!r.ok) throw new Error('NASA returned ' + r.status);
         const d = await r.json();
@@ -184,65 +206,59 @@ createApp({
           .map(it => {
             const meta = (it.data && it.data[0]) || {};
             const link = (it.links || []).find(l => l.render === 'image') || (it.links || [])[0];
-            if (!link || !link.href) return null;
-            // ~orig can be tens of MB; ~thumb is a few KB and is all a card needs
-            const thumb = link.href
-              .replace(/~orig\.(jpg|png)$/i, '~thumb.$1')
-              .replace(/~large\.(jpg|png)$/i, '~thumb.$1')
-              .replace(/~medium\.(jpg|png)$/i, '~thumb.$1');
+            const thumb = link && link.href
+              ? link.href
+                  .replace(/~orig\.(jpg|png)$/i, '~thumb.$1')
+                  .replace(/~large\.(jpg|png)$/i, '~thumb.$1')
+                  .replace(/~medium\.(jpg|png)$/i, '~thumb.$1')
+              : '';
             return {
-              id: meta.nasa_id || link.href,
+              id: meta.nasa_id || (link && link.href) || Math.random().toString(36),
               title: trim(meta.title, 90) || 'Untitled',
               summary: trim(meta.description, 180),
-              body: (meta.description || '').replace(/\s+/g, ' ').trim(),
               image: thumb,
+              kind: meta.media_type || this.mediaType,
               date: tidyDate(meta.date_created),
               center: meta.center || '',
               ready: false,
-              failed: false,
+              failed: !thumb,
               link: 'https://images.nasa.gov/details/' + encodeURIComponent(meta.nasa_id || '')
             };
-          })
-          .filter(Boolean);
+          });
 
         this.feed = reset ? mapped : this.feed.concat(mapped);
-        if (!this.feed.length) this.feedError = 'Nothing found — try a different search.';
       } catch (err) {
-        this.feedError = 'Could not reach the NASA image library (' + err.message + ').';
+        this.feedError = 'Could not reach the NASA library (' + err.message + ').';
       } finally {
         this.feedLoading = false;
+        this.loadingMore = false;
       }
     },
-
-    applyFilter(key) {
-      this.activeFilter = key;
-      this.query = key === 'all' ? '' : key;
-      this.activeQuery = key === 'all' ? '' : key;
+    setMediaType(key) {
+      if (this.mediaType === key) return;
+      this.mediaType = key;
       this.loadFeed(true);
     },
-    openArticle(item) {
-      this.article = item;
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-    },
-    closeArticle() {
-      this.article = null;
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+    setYearRange(key) {
+      if (this.yearRange === key) return;
+      this.yearRange = key;
+      this.loadFeed(true);
     },
     runSearch() {
       this.activeQuery = this.query.trim();
-      this.activeFilter = this.activeQuery ? '' : 'all';
       this.loadFeed(true);
     },
     clearSearch() {
       this.query = '';
       this.activeQuery = '';
-      this.activeFilter = 'all';
+      this.mediaType = 'image';
+      this.yearRange = 'any';
       this.loadFeed(true);
     },
     loadMore() {
+      if (!this.canLoadMore) return;
       this.page += 1;
+      this.moreClicks += 1;
       this.loadFeed(false);
     }
   },
@@ -255,8 +271,7 @@ createApp({
     });
     document.addEventListener('keydown', e => {
       if (e.key !== 'Escape') return;
-      if (this.article) this.closeArticle();
-      else this.openMenu = null;
+      this.openMenu = null;
     });
     document.addEventListener('contextmenu', e => {
       if (e.target && e.target.tagName === 'IMG') e.preventDefault();
