@@ -22,7 +22,7 @@
 
   <div id="app" v-cloak>
     <!-- Navigation -->
-    <nav :class="{ 'nav-hidden': modal === 'tos' || modal === 'privacy' || modal === 'login' || modal === 'register' || shotModal, 'scrolled': navScrolled, 'compact': navCompact, 'nav-leaving': navLeaving }">
+    <nav :class="{ 'nav-hidden': modal === 'tos' || modal === 'privacy' || modal === 'login' || modal === 'register' || shotModal || demoOpen, 'scrolled': navScrolled, 'compact': navCompact, 'nav-leaving': navLeaving }">
       <a class="nav-logo" href="#">
         <img draggable="false" src="assets/images/logo.png" alt="CosmoKlub" class="nav-logo-img" />
       </a>
