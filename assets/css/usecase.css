@@ -177,10 +177,9 @@
 .uc-hero-visual {
   position: relative;
   min-height: 360px;
-  border-radius: 16px 0 0 16px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--uc-line);
-  border-right: none;
   background:
     radial-gradient(ellipse 70% 60% at 40% 30%, var(--uc-soft), transparent 62%),
     linear-gradient(135deg, #14102c 0%, #0b0818 100%);
