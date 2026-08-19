@@ -87,7 +87,7 @@
   display: grid;
   grid-template-columns: 1.12fr 1fr;
   gap: 2.5rem;
-  align-items: center;
+  align-items: start;
 }
 .uc-page nav,
 .uc-crumb {
@@ -177,7 +177,7 @@
 .uc-hero-visual {
   position: relative;
   min-height: 360px;
-  border-radius: 16px;
+  border-radius: 24px;
   overflow: hidden;
   border: 1px solid var(--uc-line);
   background:
@@ -363,7 +363,7 @@
   .uc-panel.is-mirrored { grid-template-columns: 1fr; }
   .uc-hero-visual {
     min-height: 220px;
-    border-radius: 14px;
+    border-radius: 18px;
     border-right: 1px solid var(--uc-line);
   }
   .uc-panel { padding: 1.4rem; }
