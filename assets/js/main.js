@@ -421,7 +421,7 @@ createApp({
             { title: 'Library', desc: 'Browse NASA images, media and mission archives.',
               href: 'tools/library.html', icon: SVGS.book },
             { title: 'Calculator & Graphing', desc: 'Plot functions and run astronomical calculations.',
-              href: 'tools/calcgraph.html, icon: SVGS.chart },
+              href: 'tools/calcgraph.html', icon: SVGS.chart },
             { title: 'Community Server', desc: 'Join the live chat and observation sessions.',
               href: 'tools/comserver.html', icon: SVGS.server }
           ]
