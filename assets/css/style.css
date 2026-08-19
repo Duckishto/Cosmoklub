@@ -3351,15 +3351,13 @@ nav:not(.nav-hidden) {
   overflow-y: auto;
 }
 .demo-avatar {
-  width: 30px; height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  width: 40px; height: 40px;
+  display: block;
   border-radius: 50%;
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #fff;
-  background: linear-gradient(100deg, var(--purple), var(--violet));
+  object-fit: cover;
+  /* the source has black corners, so the circular clip does the work */
+  background: #0d0b1c;
+  border: 1px solid rgba(168,85,247,0.28);
   margin-bottom: 0.8rem;
 }
 .demo-org { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.35rem; }
@@ -3460,13 +3458,17 @@ nav:not(.nav-hidden) {
 .demo-day.selected.today::after { background: #0d0b1c; }
 .demo-day em {
   position: absolute;
-  top: 3px; left: 5px;
+  top: 4px; left: 0; right: 0;
   font-style: normal;
-  font-size: 0.54rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--muted);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  color: rgba(200,190,225,0.5);
+  pointer-events: none;
 }
+/* the label is absolutely positioned, so the centred number stays put */
 
 .demo-slots {
   padding: 1.8rem 1.4rem;
@@ -3482,6 +3484,8 @@ nav:not(.nav-hidden) {
   align-items: center;
   justify-content: space-between;
   gap: 0.6rem;
+  flex-wrap: wrap;
+  padding-right: 2.6rem;
 }
 .demo-slots-head strong { font-size: 0.98rem; font-weight: 800; }
 .demo-fmt {
