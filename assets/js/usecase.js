@@ -57,7 +57,7 @@ const PERSONAS = {
     eyebrow: 'For professors',
     titleTop: 'Run your course and class',
     titleAccent: 'from a single place',
-    lead: 'Build structured material, publish it to your cohort, and see how everyone is progressing without stitching together five different tools.',
+    lead: 'Build structured material, publish it to your cohort, and see how everyone is progressing without stitching together many tools.',
     cta: 'Set up your course',
     heroImage: '',
     photoTitle: 'Built around how you teach',
