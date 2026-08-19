@@ -363,6 +363,25 @@
   .uc-panel.is-mirrored .uc-panel-visual { min-height: 200px; order: -1; }
   .uc-panel.is-mirrored .uc-panel-copy { order: 0; }
   .uc-band { padding: 3rem 0; }
+
+  /* Fix: on the stacked mobile menu, style.css already tones the open
+     dropdown trigger down to a subtle inset-highlight (see its own
+     max-width:900px block). But the #app-scoped selector below has
+     higher specificity (ID + 3 classes) than that plain-class rule, so
+     it was winning on every usecase page regardless of screen size and
+     painting the open "Tools"/"Use cases" row with a full, saturated
+     persona-color gradient. Re-declare the same subtle treatment here,
+     scoped to mobile, so it matches the rest of the mobile menu instead
+     of looking like a stray full-color glitch. */
+  #app .nav-links a.nav-menu-trigger.is-open,
+  #app .nav-links a.nav-menu-trigger.is-open:hover,
+  #app .nav-links a.active-link,
+  #app .nav-links a.active-link:hover {
+    background: var(--uc-soft);
+    border-color: transparent;
+    color: var(--white);
+    box-shadow: inset 3px 0 0 var(--uc);
+  }
 }
 @media (max-width: 600px) {
   .uc-photo-grid { grid-template-columns: 1fr; }
