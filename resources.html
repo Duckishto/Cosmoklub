@@ -167,19 +167,23 @@
               @click="setMediaType(m.key)"
             >{{ m.label }}</button>
           </span>
-          <span class="res-filter-group">
-            <button
-              v-for="r in yearRanges"
-              :key="r.key"
-              class="res-chip res-chip-date"
-              :class="{ on: yearRange === r.key }"
-              @click="setYearRange(r.key)"
-            >{{ r.label }}</button>
+          <span class="res-dates">
+            <label>
+              <span>From</span>
+              <input type="date" v-model="dateFrom" @change="applyDates" max="2100-12-31" />
+            </label>
+            <label>
+              <span>To</span>
+              <input type="date" v-model="dateTo" @change="applyDates" max="2100-12-31" />
+            </label>
+            <button class="res-btn res-btn-ghost res-btn-sm" type="button" v-if="hasDateFilter" @click="clearDates">Clear dates</button>
           </span>
         </div>
 
-        <p class="res-feed-note" v-if="activeQuery">
-          Showing results for "{{ activeQuery }}"
+        <p class="res-feed-note" v-if="activeQuery || hasDateFilter">
+          <template v-if="activeQuery">Showing results for "{{ activeQuery }}"</template>
+          <template v-if="activeQuery && hasDateFilter"> · </template>
+          <template v-if="hasDateFilter">{{ dateSummary }}</template>
         </p>
 
         <div class="res-grid">
