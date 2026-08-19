@@ -44,10 +44,51 @@ createApp({
       feedLoading: true,
       feedError: '',
       page: 1,
-      totalHits: 0
+      totalHits: 0,
+      rights: 'All rights reserved.'
     };
   },
   computed: {
+    footerCols() {
+      return [
+        {
+          title: 'Platform',
+          links: [
+            { text: 'Object Browser', href: 'object.html' },
+            { text: 'Astronomy Picture', href: 'object.html' },
+            { text: 'Media Gallery', href: 'object.html' },
+            { text: '3D Planetarium', href: 'object.html' }
+          ]
+        },
+        {
+          title: 'Explore',
+          links: [
+            { text: 'Lessons', href: 'lesson.html' },
+            { text: 'Roadmap', href: 'roadmap.html' },
+            { text: 'Dashboard', href: 'dashboard.html' },
+            { text: 'Function Grapher', href: 'object.html' }
+          ]
+        },
+        {
+          title: 'Company',
+          links: [
+            { text: 'Our Team', href: 'team.html' },
+            { text: 'Apply as Staff', href: 'staff-application.html' },
+            { text: 'Community', href: '#' },
+            { text: 'Contact', href: 'mailto:hello@cosmoklub.space' }
+          ]
+        },
+        {
+          title: 'Legal',
+          links: [
+            { text: 'Terms of Service', href: 'index.html#tos' },
+            { text: 'Privacy Policy', href: 'index.html#privacy' },
+            { text: 'Community Guidelines', href: '#' },
+            { text: 'Cookie Policy', href: '#' }
+          ]
+        }
+      ];
+    },
     canLoadMore() {
       return this.feed.length < this.totalHits;
     },
@@ -65,10 +106,10 @@ createApp({
         usecases: {
           label: 'User personas',
           items: [
-            { title: 'Student', desc: 'Follow guided lessons and track your progress.', href: 'lesson.html', icon: ICONS.cap },
-            { title: 'Professor', desc: 'Build courses and monitor your class in one place.', href: 'team.html', icon: ICONS.users },
-            { title: 'Tutor', desc: 'Run sessions and share material with your learners.', href: 'team.html', icon: ICONS.chart },
-            { title: 'Hobbyist', desc: 'Plan observations and log what you find in the sky.', href: 'roadmap.html', icon: ICONS.telescope }
+            { title: 'Student', desc: 'Follow guided lessons and track your progress.', href: 'usecases/student.html', icon: ICONS.cap },
+            { title: 'Professor', desc: 'Build courses and monitor your class in one place.', href: 'usecases/professor.html', icon: ICONS.users },
+            { title: 'Tutor', desc: 'Run sessions and share material with your learners.', href: 'usecases/tutor.html', icon: ICONS.chart },
+            { title: 'Hobbyist', desc: 'Plan observations and log what you find in the sky.', href: 'usecases/hobbyist.html', icon: ICONS.telescope }
           ]
         }
       };
@@ -91,7 +132,8 @@ createApp({
         this.apod = {
           title: item.title || 'Astronomy Picture of the Day',
           summary: trim(item.explanation, 420),
-          image: item.media_type === 'video' ? item.url : (item.hdurl || item.url),
+          image: item.media_type === 'video' ? item.url : (item.url || item.hdurl),
+          full: item.hdurl || item.url,
           mediaType: item.media_type === 'video' ? 'video' : 'image',
           date: tidyDate(item.date),
           credit: item.copyright ? item.copyright.replace(/\n/g, ' ').trim() : 'NASA',
@@ -126,11 +168,16 @@ createApp({
             const meta = (it.data && it.data[0]) || {};
             const link = (it.links || []).find(l => l.render === 'image') || (it.links || [])[0];
             if (!link || !link.href) return null;
+            // ~orig can be tens of MB; ~thumb is a few KB and is all a card needs
+            const thumb = link.href
+              .replace(/~orig\.(jpg|png)$/i, '~thumb.$1')
+              .replace(/~large\.(jpg|png)$/i, '~thumb.$1')
+              .replace(/~medium\.(jpg|png)$/i, '~thumb.$1');
             return {
               id: meta.nasa_id || link.href,
               title: trim(meta.title, 90) || 'Untitled',
               summary: trim(meta.description, 180),
-              image: link.href,
+              image: thumb,
               date: tidyDate(meta.date_created),
               center: meta.center || '',
               ready: false,

@@ -430,13 +430,13 @@ createApp({
           label: 'User personas',
           items: [
             { title: 'Student', desc: 'Follow guided lessons and track your progress.',
-              href: 'lesson.html', icon: SVGS.cap },
+              href: 'usecases/student.html', icon: SVGS.cap },
             { title: 'Professor', desc: 'Build courses and monitor your class in one place.',
-              href: 'team.html', icon: SVGS.users },
+              href: 'usecases/professor.html', icon: SVGS.users },
             { title: 'Tutor', desc: 'Run sessions and share material with your learners.',
-              href: 'team.html', icon: SVGS.chart },
+              href: 'usecases/tutor.html', icon: SVGS.chart },
             { title: 'Hobbyist', desc: 'Plan observations and log what you find in the sky.',
-              href: 'roadmap.html', icon: SVGS.telescope }
+              href: 'usecases/hobbyist.html', icon: SVGS.telescope }
           ]
         }
       };
@@ -556,6 +556,9 @@ createApp({
     closeDemo() {
       this.demoOpen = false;
       this.syncScrollLock();
+      if (window.location.hash === '#book-demo') {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
     },
     demoShiftMonth(delta) {
       const d = new Date(this.demoMonth);
@@ -1211,6 +1214,13 @@ createApp({
     document.addEventListener('click', e => {
       if (!e.target.closest('.nav-has-menu')) this.openMenu = null;
     });
+    // let other pages deep-link straight into the booking modal
+    const openFromHash = () => {
+      if (window.location.hash === '#book-demo') this.openDemo();
+    };
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
+
     this.loadStats();
     // Escape always gets you out — a guaranteed exit for any modal or
     // overlay so nothing can ever trap the page with scroll locked
