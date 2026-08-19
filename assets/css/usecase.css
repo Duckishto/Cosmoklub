@@ -187,32 +187,6 @@
 }
 .uc-hero-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.uc-await {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.7rem;
-  color: var(--uc-2);
-}
-.uc-await span {
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-}
-.uc-await-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 54px; height: 54px;
-  border-radius: 14px;
-  background: var(--uc-soft);
-  border: 1px solid var(--uc-line);
-}
-
 .uc-band { padding: 4rem 0; }
 .uc-band h2 {
   font-size: clamp(1.5rem, 2.8vw, 2.15rem);
@@ -294,7 +268,17 @@
   margin-bottom: 0.5rem;
   color: var(--uc-2);
 }
-.uc-tool-copy p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+.uc-tool-copy p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: calc(0.9rem * 1.7 * 2);
+}
 .uc-tool-shot {
   position: relative;
   margin-top: auto;
