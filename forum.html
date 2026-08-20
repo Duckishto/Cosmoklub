@@ -203,262 +203,101 @@
 
     <main class="uc-page">
 
-      <section
-        class="uc-hero"
-        :style="
-          persona.heroImage
-            ? {
-                backgroundImage:
-                  'url(' + persona.heroImage + ')'
-              }
-            : {}
-        "
-      >
+      <section class="uc-hero" :style="persona.heroImage ? { backgroundImage: 'url(' + persona.heroImage + ')' } : {}">
         <div class="uc-hero-overlay"></div>
-
         <div class="uc-inner">
           <div class="uc-hero-copy">
-
             <nav class="uc-crumb" aria-label="Breadcrumb">
-              <template
-                v-for="(c, ci) in persona.crumb"
-                :key="ci"
-              >
+              <template v-for="(c, ci) in persona.crumb" :key="ci">
                 <span>{{ c }}</span>
-
-                <i v-if="ci < persona.crumb.length - 1">
-                  /
-                </i>
+                <i v-if="ci < persona.crumb.length - 1">/</i>
               </template>
             </nav>
-
-            <span class="uc-eyebrow">
-              {{ persona.eyebrow }}
-            </span>
-
-            <h1>
-              {{ persona.titleTop }}
-
-              <em>
-                {{ persona.titleAccent }}
-              </em>
-            </h1>
-
-            <p>
-              {{ persona.lead }}
-            </p>
-
+            <span class="uc-eyebrow">{{ persona.eyebrow }}</span>
+            <h1>{{ persona.titleTop }} <em>{{ persona.titleAccent }}</em></h1>
+            <p>{{ persona.lead }}</p>
             <div class="uc-actions">
-              <a
-                class="uc-btn-primary"
-                href="../login.html?mode=register"
-              >
-                {{ persona.cta }}
-              </a>
-
-              <a
-                class="uc-btn-ghost"
-                href="../index.html#book-demo"
-              >
-                Book Demo
-              </a>
+              <a class="uc-btn-primary" href="../login.html?mode=register">{{ persona.cta }}</a>
+              <a class="uc-btn-ghost" href="../index.html#book-demo">Book Demo</a>
             </div>
-
           </div>
         </div>
       </section>
 
       <section class="uc-band">
         <div class="uc-inner">
-
-          <h2>
-            {{ persona.photoTitle }}
-          </h2>
-
+          <h2>{{ persona.photoTitle }}</h2>
           <div class="uc-photo-grid">
-            <div
-              class="uc-photo"
-              v-for="p in persona.photos"
-              :key="p.title"
-            >
-              <img
-                v-if="p.image"
-                :src="p.image"
-                :alt="p.title"
-                draggable="false"
-                loading="lazy"
-              />
-
+            <div class="uc-photo" v-for="p in persona.photos" :key="p.title">
+              <img v-if="p.image" :src="p.image" :alt="p.title" draggable="false" loading="lazy" />
               <h3>{{ p.title }}</h3>
             </div>
           </div>
-
+          
           <div class="uc-phototwos-grid">
-            <div
-              class="uc-phototwos"
-              v-for="p in persona.phototwos"
-              :key="p.title"
-            >
-              <img
-                v-if="p.image"
-                :src="p.image"
-                :alt="p.title"
-                draggable="false"
-                loading="lazy"
-              />
-
+            <div class="uc-phototwos" v-for="p in persona.phototwos" :key="p.title">
+              <img v-if="p.image" :src="p.image" :alt="p.title" draggable="false" loading="lazy" />
               <h3>{{ p.title }}</h3>
             </div>
           </div>
-
         </div>
       </section>
 
       <section class="uc-band">
         <div class="uc-inner">
-
-          <h2>
-            {{ persona.toolsTitle }}
-          </h2>
-
+          <h2>{{ persona.toolsTitle }}</h2>
           <div class="uc-tool-grid">
-            <div
-              class="uc-tool"
-              v-for="t in persona.tools"
-              :key="t.title"
-            >
+            <div class="uc-tool" v-for="t in persona.tools" :key="t.title">
               <div class="uc-tool-copy">
                 <h3>{{ t.title }}</h3>
                 <p>{{ t.desc }}</p>
               </div>
-
               <div class="uc-tool-shot">
-                <img
-                  v-if="t.image"
-                  :src="t.image"
-                  :alt="t.title"
-                  draggable="false"
-                  loading="lazy"
-                />
+                <img v-if="t.image" :src="t.image" :alt="t.title" draggable="false" loading="lazy" />
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
       <section class="uc-band">
         <div class="uc-inner">
-
           <div class="uc-panels">
-            <div
-              class="uc-panel"
-              v-for="(pn, pi) in persona.panels"
-              :key="pn.title"
-              :class="{
-                'is-mirrored': pi % 2 === 1
-              }"
-            >
+            <div class="uc-panel" v-for="(pn, pi) in persona.panels" :key="pn.title" :class="{ 'is-mirrored': pi % 2 === 1 }">
               <div class="uc-panel-copy">
                 <h3>{{ pn.title }}</h3>
-
                 <p>{{ pn.desc }}</p>
-
                 <ul>
-                  <li
-                    v-for="pt in pn.points"
-                    :key="pt"
-                  >
-                    <svg
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-
+                  <li v-for="pt in pn.points" :key="pt">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     {{ pt }}
                   </li>
                 </ul>
               </div>
-
               <div class="uc-panel-visual">
-                <img
-                  v-if="pn.image"
-                  :src="pn.image"
-                  :alt="pn.title"
-                  draggable="false"
-                  loading="lazy"
-                />
+                <img v-if="pn.image" :src="pn.image" :alt="pn.title" draggable="false" loading="lazy" />
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
       <section class="uc-band uc-faq">
         <div class="uc-inner">
-
-          <h2 class="faq-title">
-            Frequently asked questions
-          </h2>
-
+          <h2 class="faq-title">Frequently asked questions</h2>
           <div class="faq-list">
-            <div
-              class="faq-item"
-              :class="{ open: openFaq === fi }"
-              v-for="(f, fi) in faqs"
-              :key="'faq-' + fi"
-            >
-              <button
-                class="faq-q"
-                @click="
-                  openFaq =
-                    openFaq === fi
-                      ? null
-                      : fi
-                "
-                :aria-expanded="openFaq === fi"
-              >
+            <div class="faq-item" :class="{ open: openFaq === fi }" v-for="(f, fi) in faqs" :key="'faq-'+fi">
+              <button class="faq-q" @click="openFaq = openFaq === fi ? null : fi" :aria-expanded="openFaq === fi">
                 <span>{{ f.q }}</span>
-
-                <span
-                  class="faq-chevron"
-                  aria-hidden="true"
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9"/>
-                  </svg>
+                <span class="faq-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </span>
               </button>
-
-              <div
-                class="faq-a"
-                v-if="openFaq === fi"
-              >
-                <p>{{ f.a }}</p>
-              </div>
+              <div class="faq-a" v-if="openFaq === fi"><p>{{ f.a }}</p></div>
             </div>
           </div>
-
         </div>
       </section>
-
     </main>
 
     <footer class="site-footer">
