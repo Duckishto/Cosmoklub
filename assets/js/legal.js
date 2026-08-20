@@ -34,11 +34,6 @@ createApp({
       mobileMenuOpen: false,
       openMenu: null,
       rights: 'All rights reserved.',
-      // Which doc's section is currently in view, drives the highlighted
-      // item in the sidebar (see legal-sidebar-item.active in legal.css).
-      // Kept separate from the URL hash so scrolling updates it live,
-      // not just clicks.
-      activeDoc: null,
 
       // The four legal documents this hub collects. Every one of them is
       // a placeholder right now — icon/label/meta only, no drafted policy
@@ -51,12 +46,6 @@ createApp({
         { id: 'cookies', label: 'Cookie Policy', meta: 'Not yet published', icon: DOC_ICONS.cookie }
       ],
     };
-  },
-
-  created() {
-    // Default to the first doc so the sidebar has a highlighted item
-    // even before scroll/hash logic runs in mounted().
-    this.activeDoc = this.docs[0]?.id ?? null;
   },
 
   computed: {
@@ -120,26 +109,8 @@ createApp({
     // so the target element actually exists in the DOM to scroll to.
     const hash = (location.hash || '').replace('#', '');
     if (this.docs.some(d => d.id === hash)) {
-      this.activeDoc = hash;
       this.$nextTick(() => this.scrollToDoc(hash, false));
     }
-
-    // Keep the sidebar highlight in sync with whatever doc is actually
-    // in view while the user scrolls freely (not just on click). The
-    // rootMargin trims the viewport to a thin band near the top of the
-    // nav, so whichever card's heading crosses that band becomes active.
-    this.docObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) this.activeDoc = entry.target.id;
-      });
-    }, { rootMargin: '-110px 0px -70% 0px', threshold: 0 });
-
-    this.$nextTick(() => {
-      this.docs.forEach((d) => {
-        const el = document.getElementById(d.id);
-        if (el) this.docObserver.observe(el);
-      });
-    });
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.nav-has-menu')) this.openMenu = null;
@@ -157,7 +128,6 @@ createApp({
     // on-load deep-link (an instant jump reads better than an animated
     // scroll on first paint) and true for in-page clicks.
     scrollToDoc(id, smooth = true) {
-      this.activeDoc = id;
       document.getElementById(id)?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
       history.replaceState(null, '', `#${id}`);
     },
