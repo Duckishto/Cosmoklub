@@ -1729,7 +1729,7 @@ img {
   margin-bottom: 0.9rem;
   color: var(--white);
 }
-.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
 .footer-col a {
   font-size: 0.85rem;
   color: var(--muted);
