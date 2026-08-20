@@ -1,43 +1,39 @@
 /* ===================================================
    CosmoKlub Library — cinematic 3D enhancement layer
+   This file is intentionally isolated from dashboard.css.
    =================================================== */
 
 .bottom-nav a.nav-item {
   text-decoration: none;
 }
 
-/* Remove the divider underneath the top navigation */
+/* Remove the thin divider below the Dashboard header. */
+
 body.library-3d-active .topbar {
   border-bottom: 0 !important;
   box-shadow: none !important;
 }
 
-/* ===================================================
-   THREE.JS CANVAS
-   =================================================== */
+/* ---------- Library 3D canvas ---------- */
 
 #library-3d-canvas {
   position: fixed;
-
   top: var(--topbar-h);
   right: 0;
   bottom: calc(var(--nav-h) + var(--safe-bot));
   left: 0;
-
   z-index: 0;
 
   width: 100%;
-
   height:
     calc(
-      100%
-      - var(--topbar-h)
-      - var(--nav-h)
-      - var(--safe-bot)
+      100% -
+      var(--topbar-h) -
+      var(--nav-h) -
+      var(--safe-bot)
     );
 
   pointer-events: none;
-
   opacity: 0;
 
   filter:
@@ -53,10 +49,6 @@ body.library-3d-active .topbar {
 body.library-3d-active #library-3d-canvas {
   opacity: .92;
 }
-
-/* ===================================================
-   BACKGROUND
-   =================================================== */
 
 body.library-3d-active .aurora-wrap {
   opacity: .72;
@@ -79,58 +71,40 @@ body.library-3d-active .page-grid {
     );
 }
 
-/* ===================================================
-   LIBRARY LAYOUT
-   =================================================== */
+/* ---------- Library page positioning ---------- */
 
 body.library-3d-active .content {
   position: relative;
-
   z-index: 2;
 
   perspective: 1400px;
   perspective-origin: 50% 25%;
 }
 
-/*
-  Center the Library and add safe space around both sides.
-  This prevents zoomed and rotated cards from leaving the frame.
-*/
-
 body.library-3d-active .library-roadmap {
   position: relative;
-
   z-index: 2;
-
   isolation: isolate;
 
-  width:
-    min(
-      100%,
-      1880px
-    );
+  width: min(100%, 1880px);
+  margin-inline: auto;
 
-  margin-inline:
-    auto;
-
+  /*
+    Extra horizontal space allows selected cards
+    to expand equally in both directions.
+  */
   padding-inline:
-    clamp(
-      20px,
-      2.2vw,
-      42px
-    );
+    clamp(32px, 4vw, 80px);
 }
 
 body.library-3d-active .library-roadmap::before {
-  content: '';
+  content: "";
 
   position: fixed;
-
   top: var(--topbar-h);
   right: 0;
   bottom: calc(var(--nav-h) + var(--safe-bot));
   left: 0;
-
   z-index: -1;
 
   pointer-events: none;
@@ -141,13 +115,11 @@ body.library-3d-active .library-roadmap::before {
       rgba(124, 58, 237, .17),
       transparent 31%
     ),
-
     radial-gradient(
       circle at 19% 19%,
       rgba(20, 184, 166, .1),
       transparent 28%
     ),
-
     linear-gradient(
       180deg,
       rgba(2, 4, 18, .03),
@@ -155,9 +127,7 @@ body.library-3d-active .library-roadmap::before {
     );
 }
 
-/* ===================================================
-   GLASS CARDS
-   =================================================== */
+/* ---------- Glass styling ---------- */
 
 body.library-3d-active .rank-panel,
 body.library-3d-active .roadmap-card {
@@ -173,20 +143,15 @@ body.library-3d-active .roadmap-card {
     saturate(1.2);
 }
 
-/* ===================================================
-   BORDERLESS STUDY ROADMAP HEADER
-   =================================================== */
+/* ---------- Study Roadmap header ---------- */
 
 body.library-3d-active .library-hero {
   position: relative;
-
   overflow: visible;
 
   border: 0 !important;
   border-radius: 0 !important;
-
   background: transparent !important;
-
   box-shadow: none !important;
 
   backdrop-filter: none !important;
@@ -204,35 +169,31 @@ body.library-3d-active .library-hero::after {
   display: none !important;
 }
 
-/* ===================================================
-   FLEXIBLE ROADMAP GRID
-   =================================================== */
+/* ---------- Category grid ---------- */
 
 body.library-3d-active .roadmap-grid {
   display: flex !important;
   flex-wrap: wrap;
   align-items: center;
 
-  gap: 20px !important;
+  gap: 24px !important;
 
   perspective: 1200px;
 }
 
-/* ===================================================
-   CAMERA-FOCUS CATEGORY CARDS
-   =================================================== */
+/* ---------- Category card ---------- */
 
 body.library-3d-active .roadmap-card {
   flex:
     0
     1
-    calc(50% - 10px);
+    calc(50% - 12px);
 
   min-width: 0;
   min-height: 216px;
 
+  translate: 0 0;
   scale: 1;
-
   opacity: 1;
   filter: none;
 
@@ -244,26 +205,29 @@ body.library-3d-active .roadmap-card {
       rgba(8, 33, 63, .48),
       rgba(38, 10, 61, .38)
     ),
-
     rgba(7, 5, 24, .44);
 
   box-shadow:
-    inset 0 1px 0
+    inset
+    0
+    1px
+    0
     rgba(255, 255, 255, .055),
 
-    0 18px 55px
+    0
+    18px
+    55px
     rgba(0, 0, 0, .16);
 
-  transform-style:
-    preserve-3d;
+  transform-style: preserve-3d;
 
   will-change:
     transform,
+    translate,
+    scale,
     flex-basis,
     min-height,
-    scale,
-    filter,
-    opacity;
+    filter;
 
   animation:
     library-card-arrive
@@ -273,15 +237,19 @@ body.library-3d-active .roadmap-card {
 
   transition:
     flex-basis
-    480ms
+    520ms
     cubic-bezier(.16, 1, .3, 1),
 
     min-height
-    480ms
+    520ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    translate
+    520ms
     cubic-bezier(.16, 1, .3, 1),
 
     scale
-    480ms
+    520ms
     cubic-bezier(.16, 1, .3, 1),
 
     filter
@@ -295,7 +263,7 @@ body.library-3d-active .roadmap-card {
     var(--tr),
 
     box-shadow
-    220ms
+    300ms
     ease,
 
     opacity
@@ -303,152 +271,193 @@ body.library-3d-active .roadmap-card {
     ease;
 }
 
-/* ===================================================
-   STAGGERED INTRODUCTION
-   =================================================== */
+/* ---------- Staggered category entrance ---------- */
 
-body.library-3d-active .roadmap-card:nth-child(1) {
+body.library-3d-active
+.roadmap-card:nth-child(1) {
   animation-delay: 100ms;
 }
 
-body.library-3d-active .roadmap-card:nth-child(2) {
+body.library-3d-active
+.roadmap-card:nth-child(2) {
   animation-delay: 180ms;
 }
 
-body.library-3d-active .roadmap-card:nth-child(3) {
+body.library-3d-active
+.roadmap-card:nth-child(3) {
   animation-delay: 260ms;
 }
 
-body.library-3d-active .roadmap-card:nth-child(4) {
+body.library-3d-active
+.roadmap-card:nth-child(4) {
   animation-delay: 340ms;
 }
 
-body.library-3d-active .roadmap-card:nth-child(5) {
+body.library-3d-active
+.roadmap-card:nth-child(5) {
   animation-delay: 420ms;
 }
 
-body.library-3d-active .roadmap-card:nth-child(6) {
+body.library-3d-active
+.roadmap-card:nth-child(6) {
   animation-delay: 500ms;
 }
 
 /* ===================================================
-   HORIZONTAL EXPANSION
+   Centered horizontal expansion
    =================================================== */
 
-/* Expand a hovered card on the left */
+/*
+  Left-side selected category:
+
+  The card receives more layout space and then moves
+  slightly left. This makes its visual center stay in
+  approximately the same location while growing on
+  both its left and right sides.
+*/
 
 body.library-3d-active
 .roadmap-card:nth-child(odd):hover {
   flex-basis:
-    calc(63% - 10px);
+    calc(58% - 12px);
+
+  translate:
+    max(-72px, -4vw)
+    0;
 }
 
-/* Shrink its right-side partner */
+/* Shrink and push away its right-side partner. */
 
 body.library-3d-active
 .roadmap-card:nth-child(odd):hover
-+ .roadmap-card {
++
+.roadmap-card {
   flex-basis:
-    calc(37% - 10px);
+    calc(42% - 12px);
+
+  translate: 0 0;
 }
 
-/* Shrink the left card when its right partner is hovered */
+/*
+  Shrink the left-side card when its right-side
+  partner is selected.
+*/
 
 body.library-3d-active
 .roadmap-card:nth-child(odd):has(
   + .roadmap-card:hover
 ) {
   flex-basis:
-    calc(37% - 10px);
+    calc(42% - 12px);
+
+  translate: 0 0;
 }
 
-/* Expand a hovered card on the right */
+/*
+  Right-side selected category:
+
+  The layout expands the card toward the left.
+  Moving it slightly right gives it equal expansion
+  space on both the left and right sides.
+*/
 
 body.library-3d-active
 .roadmap-card:nth-child(even):hover {
   flex-basis:
-    calc(63% - 10px);
+    calc(58% - 12px);
+
+  translate:
+    min(72px, 4vw)
+    0;
 }
 
-/* ===================================================
-   CAMERA-FOCUS EFFECT
-   =================================================== */
+/* ---------- Surrounding category focus ---------- */
 
-/* Pull every unselected category backward */
+/*
+  Non-selected categories become smaller and blurred.
+
+  Opacity remains 1, so there is no fading.
+*/
 
 body.library-3d-active
 .roadmap-grid:has(.roadmap-card:hover)
 .roadmap-card:not(:hover) {
-  min-height: 204px;
-
+  min-height: 202px;
   scale: .965;
-
-  opacity: .75;
+  opacity: 1;
 
   filter:
-     
-    blur(.8px)
+    blur(.8px);
 
   z-index: 1;
 }
 
-/* Zoom the selected category horizontally and vertically */
+/*
+  The selected category grows vertically from its
+  center because the grid uses align-items:center.
+
+  Combined with the centered horizontal translation,
+  the category grows in every direction.
+*/
 
 body.library-3d-active
 .roadmap-grid:has(.roadmap-card:hover)
 .roadmap-card:hover {
-  min-height: 258px;
-
-  scale: 1.025;
-
+  min-height: 264px;
+  scale: 1.035;
   opacity: 1;
   filter: none;
 
-  z-index: 8;
+  z-index: 20;
 }
 
-/* Selected-card glow */
+/* ---------- Selected card glow ---------- */
 
 body.library-3d-active
 .roadmap-card.card-liquid-hover {
   border-color:
-    rgba(192, 132, 252, .66);
+    rgba(192, 132, 252, .7);
 
   box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, .1),
+    inset
+    0
+    1px
+    0
+    rgba(255, 255, 255, .11),
 
-    0 24px 70px
-    rgba(12, 4, 32, .52),
+    0
+    28px
+    76px
+    rgba(12, 4, 32, .54),
 
-    0 0 35px
-    rgba(124, 58, 237, .13);
+    0
+    0
+    40px
+    rgba(124, 58, 237, .16);
 }
 
-/* Give card contents additional depth */
+/* ---------- 3D content depth ---------- */
 
 body.library-3d-active
 .roadmap-card
-> *:not(.card-mouse-light) {
+>
+*:not(.card-mouse-light) {
   transform:
     translateZ(20px);
 }
-
-/* ===================================================
-   SMALL UI ELEMENTS
-   =================================================== */
 
 body.library-3d-active .roadmap-icon,
 body.library-3d-active .lesson-tier,
 body.library-3d-active .unlock-pill {
   box-shadow:
-    inset 0 1px 0
+    inset
+    0
+    1px
+    0
     rgba(255, 255, 255, .08);
 }
 
-/* ===================================================
-   RANK PANEL
-   =================================================== */
+/* ---------- Overall rank ---------- */
 
 body.library-3d-active .rank-panel {
   background:
@@ -457,7 +466,6 @@ body.library-3d-active .rank-panel {
       rgba(216, 180, 254, .13),
       transparent 45%
     ),
-
     linear-gradient(
       135deg,
       rgba(81, 20, 137, .52),
@@ -465,16 +473,19 @@ body.library-3d-active .rank-panel {
     );
 
   box-shadow:
-    inset 0 1px 0
+    inset
+    0
+    1px
+    0
     rgba(255, 255, 255, .09),
 
-    0 22px 60px
+    0
+    22px
+    60px
     rgba(13, 4, 30, .25);
 }
 
-/* ===================================================
-   HEADER INTRODUCTION
-   =================================================== */
+/* ---------- Entrance animations ---------- */
 
 @keyframes library-hero-arrive {
   from {
@@ -500,20 +511,16 @@ body.library-3d-active .rank-panel {
   }
 }
 
-/* ===================================================
-   SIX-CATEGORY INTRODUCTION
-   =================================================== */
+/*
+  Individual translate and scale properties do not
+  override the JavaScript rotateX/rotateY transform.
+*/
 
 @keyframes library-card-arrive {
   from {
     opacity: 0;
-
-    translate:
-      0
-      34px;
-
-    scale:
-      .965;
+    translate: 0 34px;
+    scale: .965;
 
     filter:
       blur(10px)
@@ -530,13 +537,8 @@ body.library-3d-active .rank-panel {
 
   to {
     opacity: 1;
-
-    translate:
-      0
-      0;
-
-    scale:
-      1;
+    translate: 0 0;
+    scale: 1;
 
     filter:
       blur(0)
@@ -544,17 +546,49 @@ body.library-3d-active .rank-panel {
   }
 }
 
-/* ===================================================
-   MOBILE
-   =================================================== */
+/* ---------- Medium desktop safety ---------- */
+
+@media (
+  min-width: 721px
+)
+and
+(
+  max-width: 1100px
+) {
+  body.library-3d-active
+  .library-roadmap {
+    padding-inline:
+      clamp(34px, 4vw, 50px);
+  }
+
+  body.library-3d-active
+  .roadmap-card:nth-child(odd):hover {
+    translate:
+      max(-44px, -4vw)
+      0;
+  }
+
+  body.library-3d-active
+  .roadmap-card:nth-child(even):hover {
+    translate:
+      min(44px, 4vw)
+      0;
+  }
+}
+
+/* ---------- Mobile ---------- */
 
 @media (max-width: 720px) {
-  body.library-3d-active #library-3d-canvas {
+  body.library-3d-active
+  #library-3d-canvas {
     opacity: .7;
   }
 
-  body.library-3d-active .rank-panel,
-  body.library-3d-active .roadmap-card {
+  body.library-3d-active
+  .rank-panel,
+
+  body.library-3d-active
+  .roadmap-card {
     backdrop-filter:
       blur(10px)
       saturate(1.12);
@@ -564,54 +598,87 @@ body.library-3d-active .rank-panel {
       saturate(1.12);
   }
 
-  body.library-3d-active .roadmap-grid {
+  body.library-3d-active
+  .roadmap-card
+  >
+  *:not(.card-mouse-light) {
+    transform: none;
+  }
+
+  body.library-3d-active
+  .roadmap-grid {
     display: grid !important;
     gap: 12px !important;
   }
 
-  body.library-3d-active .library-roadmap {
+  body.library-3d-active
+  .library-roadmap {
     width: 100%;
-    padding-inline: 2px;
+    padding-inline: 8px;
   }
 
   body.library-3d-active
   .roadmap-card,
+
   body.library-3d-active
   .roadmap-card:nth-child(odd):hover,
+
   body.library-3d-active
   .roadmap-card:nth-child(even):hover,
+
   body.library-3d-active
   .roadmap-card:nth-child(odd):hover
-  + .roadmap-card,
+  +
+  .roadmap-card,
+
   body.library-3d-active
   .roadmap-card:nth-child(odd):has(
     + .roadmap-card:hover
   ) {
     width: auto;
     min-height: 216px;
-
+    translate: 0 0;
     scale: 1;
-
     opacity: 1;
     filter: none;
-  }
 
-  body.library-3d-active
-  .roadmap-card
-  > *:not(.card-mouse-light) {
-    transform: none;
+    flex-basis: auto;
   }
 }
 
-/* ===================================================
-   REDUCED MOTION
-   =================================================== */
+/* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   #library-3d-canvas,
-  body.library-3d-active .library-hero,
-  body.library-3d-active .roadmap-card {
+
+  body.library-3d-active
+  .library-hero,
+
+  body.library-3d-active
+  .roadmap-card {
     animation: none !important;
     transition: none !important;
+  }
+
+  body.library-3d-active
+  .roadmap-card,
+
+  body.library-3d-active
+  .roadmap-card:nth-child(odd):hover,
+
+  body.library-3d-active
+  .roadmap-card:nth-child(even):hover,
+
+  body.library-3d-active
+  .roadmap-card:nth-child(odd):hover
+  +
+  .roadmap-card,
+
+  body.library-3d-active
+  .roadmap-card:nth-child(odd):has(
+    + .roadmap-card:hover
+  ) {
+    translate: 0 0;
+    scale: 1;
   }
 }
