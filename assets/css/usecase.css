@@ -87,7 +87,6 @@
   position: relative;
   padding: 130px 0 70px;
   overflow: hidden;
-  border-bottom: 1px solid var(--uc-line);
   background-color: #07061a;
   background-image: none; /* set inline by Vue from persona.heroImage once an image is provided */
   background-size: cover;
@@ -126,20 +125,10 @@
   animation: none;
 }
 /* The top site nav on use-case pages is hardcoded to .compact so it stays legible without
-   scroll-triggered JS, but the default floating-pill shadow reads as a smudge over a photo
-   hero. Flatten it to a plain full-width bar instead. */
-#app > nav.compact {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  border-radius: 0;
-  box-shadow: none;
-  animation: none;
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: none;
-}
+   scroll-triggered JS. Let it keep the shared floating-pill treatment from style.css
+   (position:fixed, rounded, blurred) so it matches resources.html exactly — the pill
+   stays anchored at the top of the viewport instead of being flattened into a bar that
+   sits on the hero. Only the persona line color is themed (set separately above). */
 .uc-crumb {
   display: flex;
   flex-wrap: wrap;
