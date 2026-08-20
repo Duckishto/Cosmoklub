@@ -7,12 +7,12 @@
   --uc-ink: #fff;
 }
 #app[data-persona="calcgraph"] {
-  --uc: #3b82f6;
-  --uc-2: #38bdf8;
-  --uc-soft: rgba(59,130,246,0.14);
-  --uc-line: rgba(59,130,246,0.32);
-  --uc-glow: rgba(59,130,246,0.24);
-  --uc-ink: #04122b;
+  --uc: #14b8a6;
+  --uc-2: #2dd4bf;
+  --uc-soft: rgba(20,184,166,0.14);
+  --uc-line: rgba(20,184,166,0.32);
+  --uc-glow: rgba(20,184,166,0.24);
+  --uc-ink: #04201d;
 }
 #app[data-persona="library"] {
   --uc: #f59e0b;
@@ -23,12 +23,12 @@
   --uc-ink: #1a1204;
 }
 #app[data-persona="forum"] {
-  --uc: #14b8a6;
-  --uc-2: #2dd4bf;
-  --uc-soft: rgba(20,184,166,0.14);
-  --uc-line: rgba(20,184,166,0.32);
-  --uc-glow: rgba(20,184,166,0.24);
-  --uc-ink: #04201d;
+  --uc: #3b82f6;
+  --uc-2: #38bdf8;
+  --uc-soft: rgba(59,130,246,0.14);
+  --uc-line: rgba(59,130,246,0.32);
+  --uc-glow: rgba(59,130,246,0.24);
+  --uc-ink: #04122b;
 }
 #app[data-persona="comserver"] {
   --uc: #a855f7;
@@ -388,4 +388,3 @@
   .uc-btn-primary:hover, .uc-btn-ghost:hover { transform: none; }
   .uc-btn-primary, .uc-btn-ghost { min-height: 44px; }
 }
-
