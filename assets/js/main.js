@@ -803,7 +803,8 @@ createApp({
         // natural event from EONET), routed through our own /api/nasa
         // proxy (Cloudflare Pages Function) so the real NASA API key
         // stays server-side and is never shipped in client-side JS.
-        const source = this.pensiaSources[Math.floor(Math.random() * this.pensiaSources.length)];
+        const sources = this.pensiaSources();
+        const source = sources[Math.floor(Math.random() * sources.length)];
         const pick = await source.fetch(controller.signal);
         clearTimeout(timeoutId);
         if (!pick) throw new Error(`${source.key} came back empty`);
@@ -838,7 +839,14 @@ createApp({
     // and the article modal don't need to know which API answered —
     // only pensiaVoice()'s per-source phrasing below does.
     // ---------------------------------------------------------------
-    get pensiaSources() {
+    // NOTE: this is a plain method (not a `get` accessor) — a getter
+    // placed inside a Vue Options API `methods` object does not get
+    // installed as a callable instance method the way normal functions
+    // do, so `this.pensiaSources` would silently resolve to nothing
+    // usable and every click fell straight into the catch/fallback
+    // block below, never actually calling any NASA endpoint. Calling
+    // it as this.pensiaSources() avoids that trap.
+    pensiaSources() {
       return [
         {
           key: 'apod',
@@ -947,16 +955,19 @@ createApp({
       ];
     },
     pensiaVoice(sourceKey, pick) {
-      const title = pick.title || '';
       const explanation = pick.explanation || '';
 
-      // Each source gets its own opener/reaction pool so what Pensia
-      // *says* actually matches what she went and fetched, instead of
-      // every source being narrated as if it were always today's APOD.
+      // Each source gets its own opener/teaser/reaction pool so what
+      // Pensia *says* matches what she went and fetched — but she only
+      // teases that she found something, without previewing the title
+      // or any of the actual content. The real title/explanation/image
+      // stay hidden in pensiaArticle until the player taps "Read more".
       const VOICE = {
         apod: {
-          openers: ["Ooh, today's pick:", "Just waddled past this one:", "My favourite today:",
+          openers: ["Ooh, today's pick:", "Just waddled past this one:", "Found my favourite today:",
             "This stopped me mid-slide:", "Look what NASA found:", "Fresh off the telescope:"],
+          teasers: ["Got something good for you.", "You're gonna want to see this one.",
+            "Trust me on this one.", "Saving you the scroll — this is the one."],
           reactions: ["I can't stop thinking about it!", "My flippers are tingling!",
             "I'm adding this to my logbook immediately.", "Ten out of ten, no notes.",
             "This is exactly why I love this job.", "I did a little happy waddle."],
@@ -965,6 +976,8 @@ createApp({
         mars: {
           openers: ["Just got a postcard from Mars:", "Rover cam caught this:", "Fresh from the red planet:",
             "My pen pal on Mars sent this:", "Straight off the rover's camera:"],
+          teasers: ["The rover's outdone itself.", "Wait until you see what it found.",
+            "This one's worth the download.", "Mars delivered today."],
           reactions: ["I'd waddle a lot slower on that terrain.", "Six wheels, zero complaints — respect.",
             "I want a rover of my own now.", "Mars really said 'rocks, but make it art.'",
             "This is why I keep an eye on the rover feeds."],
@@ -973,6 +986,8 @@ createApp({
         epic: {
           openers: ["Checked in on home today:", "Earth, from a million miles out:", "Today's view of us:",
             "The satellite sent this back:", "This is what today looks like from way out there:"],
+          teasers: ["Come see what today looks like.", "Take a look at all of us at once.",
+            "This view never gets old.", "Worth a second to look."],
           reactions: ["Everyone I know is on that one dot.", "Kind of puts the day in perspective.",
             "It never gets old, honestly.", "Makes my problems feel very small.",
             "I could stare at this all day."],
@@ -981,6 +996,8 @@ createApp({
         library: {
           openers: ["Dug this up from the archives:", "Found buried in NASA's library:", "Went digging and found this:",
             "Pulled this out of the vault:", "This turned up in my search:"],
+          teasers: ["You have to see what turned up.", "The archives came through today.",
+            "This one was worth the dig.", "Take a look at what I found."],
           reactions: ["The archives never disappoint.", "I could dig through this library forever.",
             "Filed under: absolutely wild.", "Honestly, my best find all week.",
             "This is exactly the kind of thing I go looking for."],
@@ -989,6 +1006,8 @@ createApp({
         eonet: {
           openers: ["Something's happening down there:", "Live from orbit right now:", "Satellites are watching this one:",
             "Just spotted this being tracked:", "This is unfolding as we speak:"],
+          teasers: ["Come see what's going on.", "This is unfolding right now.",
+            "Worth keeping an eye on this.", "Take a look at what's happening."],
           reactions: ["The satellites really do see everything.", "Wild what you can track from orbit.",
             "Keeping an eye on this one.", "Earth's always got something going on.",
             "This is why I check the event feed."],
@@ -998,19 +1017,19 @@ createApp({
       const voice = VOICE[sourceKey] || VOICE.apod;
 
       const opener   = voice.openers[Math.floor(Math.random() * voice.openers.length)];
+      const teaser   = voice.teasers[Math.floor(Math.random() * voice.teasers.length)];
       const reaction = voice.reactions[Math.floor(Math.random() * voice.reactions.length)];
       const emoji    = voice.emojis[Math.floor(Math.random() * voice.emojis.length)];
 
-      const firstSentence = (explanation.match(/^.*?[.!?](?=\s|$)/) || [explanation])[0] || '';
-      const snippet    = firstSentence.length > 95 ? firstSentence.slice(0, 95).trim() + '…' : firstSentence;
-      const shortTitle = title.length > 30 ? title.slice(0, 30).trim() + '…' : title;
-      // there's more to read if the full explanation runs longer than
-      // the one-sentence snippet we're showing in the chat bubble
-      const hasMore = explanation.trim().length > snippet.replace(/…$/, '').trim().length;
+      // There's something to read further only if we actually have an
+      // image or an explanation to show in the full-story modal — the
+      // bubble itself never reveals the title or explanation text, so
+      // clicking "Read more" is the only way to see what she found.
+      const hasMore = !!(pick.image || explanation.trim().length);
 
       return {
-        headline: `${emoji} ${shortTitle}`,
-        opinion: `${opener} ${snippet} ${reaction}`.trim(),
+        headline: `${emoji} ${opener}`,
+        opinion: `${teaser} ${reaction}`.trim(),
         hasMore,
       };
     },
