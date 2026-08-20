@@ -797,28 +797,28 @@ createApp({
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4500);
-        // Routed through our own /api/nasa proxy (Cloudflare Pages Function)
-        // so the real NASA API key stays server-side as an environment
-        // secret and is never shipped in client-side JS.
-        const apodRes = await fetch(`/api/nasa?endpoint=apod&count=3`, { signal: controller.signal });
+        // Pensia doesn't always reach for the same NASA endpoint — each
+        // click she rolls a random source (APOD, a Mars rover, today's
+        // Earth from EPIC, a dig through the image library, or a live
+        // natural event from EONET), routed through our own /api/nasa
+        // proxy (Cloudflare Pages Function) so the real NASA API key
+        // stays server-side and is never shipped in client-side JS.
+        const source = this.pensiaSources[Math.floor(Math.random() * this.pensiaSources.length)];
+        const pick = await source.fetch(controller.signal);
         clearTimeout(timeoutId);
-        if (!apodRes.ok) throw new Error(`NASA APOD request failed (${apodRes.status})`);
-        const apodData = await apodRes.json();
-        const pick = apodData[Math.floor(Math.random() * apodData.length)];
-        const { headline, opinion, hasMore } = this.pensiaVoice(pick.title, pick.explanation || '');
+        if (!pick) throw new Error(`${source.key} came back empty`);
+        const { headline, opinion, hasMore } = this.pensiaVoice(source.key, pick);
         this.pensiaHeadline = headline;
         this.pensiaMsg = opinion;
         if (hasMore) {
           this.pensiaArticle = {
             title: pick.title,
-            date: pick.date,
-            // prefer the standard-res image — hdurl can be enormous
-            // (multiple MB, sometimes 4000px+ on a side) and the modal
-            // never displays it bigger than half a ~900px-wide card
-            image: pick.media_type === 'image' ? (pick.url || pick.hdurl) : null,
+            date: pick.date || '',
+            image: pick.image || null,
             explanation: pick.explanation || '',
             headline,
-            copyright: pick.copyright || null
+            copyright: pick.copyright || null,
+            credit: source.credit,
           };
         }
       } catch (e) {
@@ -831,23 +831,175 @@ createApp({
         this.pensiaOpen = false;
       }, 8000);
     },
-    pensiaVoice(title, explanation) {
-      const openers = [
-        "Ooh, today's pick:", "Just waddled past this one:", "My favourite today:",
-        "This stopped me mid-slide:", "Look what NASA found:", "Beak-drop moment:",
-        "I've been staring at this all morning:", "Fresh off the telescope:",
+    // ---------------------------------------------------------------
+    // Pensia's news sources. Each `fetch` hits a different /api/nasa
+    // endpoint and normalizes the response into the same shape
+    // ({ title, explanation, image, date, copyright }) so pensiaVoice()
+    // and the article modal don't need to know which API answered —
+    // only pensiaVoice()'s per-source phrasing below does.
+    // ---------------------------------------------------------------
+    get pensiaSources() {
+      return [
+        {
+          key: 'apod',
+          credit: "Image & data via NASA's Astronomy Picture of the Day",
+          fetch: async (signal) => {
+            const res = await fetch(`/api/nasa?endpoint=apod&count=3`, { signal });
+            if (!res.ok) throw new Error(`APOD request failed (${res.status})`);
+            const data = await res.json();
+            const p = data[Math.floor(Math.random() * data.length)];
+            return {
+              title: p.title,
+              explanation: p.explanation || '',
+              // prefer the standard-res image — hdurl can be enormous
+              // (multiple MB, sometimes 4000px+ on a side) and the modal
+              // never displays it bigger than half a ~900px-wide card
+              image: p.media_type === 'image' ? (p.url || p.hdurl) : null,
+              date: p.date,
+              copyright: p.copyright || null,
+            };
+          },
+        },
+        {
+          key: 'mars',
+          credit: "Image via NASA's Mars Rover Photos",
+          fetch: async (signal) => {
+            const rovers = ['curiosity', 'perseverance'];
+            const rover = rovers[Math.floor(Math.random() * rovers.length)];
+            const res = await fetch(`/api/nasa?endpoint=mars_latest&rover=${rover}`, { signal });
+            if (!res.ok) throw new Error(`Mars request failed (${res.status})`);
+            const data = await res.json();
+            const photos = data.latest_photos || [];
+            if (!photos.length) return null;
+            const p = photos[Math.floor(Math.random() * photos.length)];
+            return {
+              title: `${p.rover?.name || 'Rover'} — ${p.camera?.full_name || p.camera?.name || 'onboard camera'}`,
+              explanation: `Taken by ${p.rover?.name || 'the rover'}'s ${p.camera?.full_name || 'camera'} on Sol ${p.sol} (Earth date ${p.earth_date}), while the rover continues its mission exploring the Martian surface.`,
+              image: p.img_src || null,
+              date: p.earth_date,
+              copyright: null,
+            };
+          },
+        },
+        {
+          key: 'epic',
+          credit: "Image via NASA's EPIC Earth imagery",
+          fetch: async (signal) => {
+            const res = await fetch(`/api/nasa?endpoint=epic_natural`, { signal });
+            if (!res.ok) throw new Error(`EPIC request failed (${res.status})`);
+            const data = await res.json();
+            if (!Array.isArray(data) || !data.length) return null;
+            const p = data[Math.floor(Math.random() * data.length)];
+            const [dateOnly] = p.date.split(' ');
+            const [y, m, d] = dateOnly.split('-');
+            return {
+              title: 'Earth, right now',
+              explanation: p.caption || 'A full-disc view of Earth captured by the DSCOVR satellite, a million miles away, looking back at all of us at once.',
+              image: `/api/nasa?endpoint=epic_image&collection=natural&year=${y}&month=${m}&day=${d}&image=${encodeURIComponent(p.image)}`,
+              date: dateOnly,
+              copyright: null,
+            };
+          },
+        },
+        {
+          key: 'library',
+          credit: "Image via NASA's Image and Video Library",
+          fetch: async (signal) => {
+            const topics = ['nebula', 'galaxy', 'saturn', 'jupiter', 'astronaut', 'aurora', 'black hole', 'moon landing'];
+            const q = topics[Math.floor(Math.random() * topics.length)];
+            const res = await fetch(`/api/nasa?endpoint=images_search&q=${encodeURIComponent(q)}&media_type=image&page=1`, { signal });
+            if (!res.ok) throw new Error(`Image library request failed (${res.status})`);
+            const data = await res.json();
+            const items = data.collection?.items || [];
+            if (!items.length) return null;
+            const it = items[Math.floor(Math.random() * Math.min(items.length, 20))];
+            const d = it.data?.[0] || {};
+            return {
+              title: d.title || q,
+              explanation: (d.description || '').replace(/<[^>]+>/g, ''),
+              image: it.links?.find(l => l.rel === 'preview')?.href || null,
+              date: d.date_created ? d.date_created.slice(0, 10) : '',
+              copyright: null,
+            };
+          },
+        },
+        {
+          key: 'eonet',
+          credit: "Data via NASA's EONET natural event tracker",
+          fetch: async (signal) => {
+            const res = await fetch(`/api/nasa?endpoint=eonet_events`, { signal });
+            if (!res.ok) throw new Error(`EONET request failed (${res.status})`);
+            const data = await res.json();
+            const events = data.events || [];
+            if (!events.length) return null;
+            const ev = events[Math.floor(Math.random() * Math.min(events.length, 20))];
+            const category = ev.categories?.[0]?.title || 'Event';
+            const lastDate = ev.geometry?.[ev.geometry.length - 1]?.date;
+            return {
+              title: ev.title,
+              explanation: `A ${category.toLowerCase()} currently being tracked from orbit${lastDate ? `, last observed ${new Date(lastDate).toLocaleDateString()}` : ''}. NASA's Earth Observatory satellites keep watch on natural events like this one as they unfold.`,
+              image: null,
+              date: lastDate ? lastDate.slice(0, 10) : '',
+              copyright: null,
+            };
+          },
+        },
       ];
-      const reactions = [
-        "I can't stop thinking about it!", "My flippers are tingling!",
-        "I'm adding this to my logbook immediately.", "Ten out of ten, no notes.",
-        "This is exactly why I love this job.", "I did a little happy waddle.",
-        "Filed under: absolutely wild.", "Honestly, my best find all week.",
-      ];
-      const emojis = ['🌌', '✨', '🪐', '☄️', '🔭', '🌠', '🛰️', '🌙', '⭐'];
+    },
+    pensiaVoice(sourceKey, pick) {
+      const title = pick.title || '';
+      const explanation = pick.explanation || '';
 
-      const opener   = openers[Math.floor(Math.random() * openers.length)];
-      const reaction = reactions[Math.floor(Math.random() * reactions.length)];
-      const emoji    = emojis[Math.floor(Math.random() * emojis.length)];
+      // Each source gets its own opener/reaction pool so what Pensia
+      // *says* actually matches what she went and fetched, instead of
+      // every source being narrated as if it were always today's APOD.
+      const VOICE = {
+        apod: {
+          openers: ["Ooh, today's pick:", "Just waddled past this one:", "My favourite today:",
+            "This stopped me mid-slide:", "Look what NASA found:", "Fresh off the telescope:"],
+          reactions: ["I can't stop thinking about it!", "My flippers are tingling!",
+            "I'm adding this to my logbook immediately.", "Ten out of ten, no notes.",
+            "This is exactly why I love this job.", "I did a little happy waddle."],
+          emojis: ['🌌', '✨', '🪐', '☄️', '🔭', '🌠'],
+        },
+        mars: {
+          openers: ["Just got a postcard from Mars:", "Rover cam caught this:", "Fresh from the red planet:",
+            "My pen pal on Mars sent this:", "Straight off the rover's camera:"],
+          reactions: ["I'd waddle a lot slower on that terrain.", "Six wheels, zero complaints — respect.",
+            "I want a rover of my own now.", "Mars really said 'rocks, but make it art.'",
+            "This is why I keep an eye on the rover feeds."],
+          emojis: ['🔴', '🤖', '🪨', '🚙', '🛰️'],
+        },
+        epic: {
+          openers: ["Checked in on home today:", "Earth, from a million miles out:", "Today's view of us:",
+            "The satellite sent this back:", "This is what today looks like from way out there:"],
+          reactions: ["Everyone I know is on that one dot.", "Kind of puts the day in perspective.",
+            "It never gets old, honestly.", "Makes my problems feel very small.",
+            "I could stare at this all day."],
+          emojis: ['🌍', '🛰️', '🌎', '💙'],
+        },
+        library: {
+          openers: ["Dug this up from the archives:", "Found buried in NASA's library:", "Went digging and found this:",
+            "Pulled this out of the vault:", "This turned up in my search:"],
+          reactions: ["The archives never disappoint.", "I could dig through this library forever.",
+            "Filed under: absolutely wild.", "Honestly, my best find all week.",
+            "This is exactly the kind of thing I go looking for."],
+          emojis: ['📚', '🗂️', '✨', '🔍'],
+        },
+        eonet: {
+          openers: ["Something's happening down there:", "Live from orbit right now:", "Satellites are watching this one:",
+            "Just spotted this being tracked:", "This is unfolding as we speak:"],
+          reactions: ["The satellites really do see everything.", "Wild what you can track from orbit.",
+            "Keeping an eye on this one.", "Earth's always got something going on.",
+            "This is why I check the event feed."],
+          emojis: ['🌪️', '🌋', '🔥', '🛰️', '🌊'],
+        },
+      };
+      const voice = VOICE[sourceKey] || VOICE.apod;
+
+      const opener   = voice.openers[Math.floor(Math.random() * voice.openers.length)];
+      const reaction = voice.reactions[Math.floor(Math.random() * voice.reactions.length)];
+      const emoji    = voice.emojis[Math.floor(Math.random() * voice.emojis.length)];
 
       const firstSentence = (explanation.match(/^.*?[.!?](?=\s|$)/) || [explanation])[0] || '';
       const snippet    = firstSentence.length > 95 ? firstSentence.slice(0, 95).trim() + '…' : firstSentence;
