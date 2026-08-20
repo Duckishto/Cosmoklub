@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/loader.css">
-  <link rel="stylesheet" href="assets/css/legal.css?v=6">
+  <link rel="stylesheet" href="assets/css/legal.css?v=7">
 </head>
 <body>
 
@@ -115,10 +115,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           Documents
         </button>
-        <div class="lg-crumb">
-          <span class="dot"></span>
-          <span class="here">{{ activeDoc.label }}</span>
-        </div>
       </div>
 
       <!-- Reading surface. Keyed by activeDoc.id so switching documents
@@ -130,7 +126,6 @@
           <span class="lg-doc-eyebrow">Legal &amp; Policies</span>
           <h1 class="lg-doc-title">{{ activeDoc.label }}</h1>
           <p class="lg-doc-lead">{{ activeDoc.lead }}</p>
-          <span class="lg-doc-status"><span class="pulse"></span> Not yet published</span>
         </header>
 
         <!-- Placeholder body: skeleton standing in for the real document
