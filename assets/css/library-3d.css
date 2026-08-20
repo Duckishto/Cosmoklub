@@ -387,7 +387,7 @@ body.library-3d-active
 
   filter:
     blur(.8px)
-    brightness(.84)
+    
     saturate(.78);
 
   z-index: 1;
