@@ -238,7 +238,7 @@ createApp({
           { text: 'Our Team', href: '../team.html' },
           { text: 'Apply as Staff', href: '../staff-application.html' },
           { text: 'Report Bug', href: '../report-bug.html' },
-          { text: 'Contact', href: 'mailto:hello@cosmoklub.space' } ] },
+          { text: 'Contact', href: '../contact.html' } ] },
         { title: 'Legal', links: [
           { text: 'Terms of Service', href: '../index.html#tos' },
           { text: 'Privacy Policy', href: '../index.html#privacy' },
