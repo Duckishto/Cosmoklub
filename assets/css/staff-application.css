@@ -241,3 +241,16 @@
   /* tight middle ground: two columns but info doesn't need to be as wide */
   .staff-layout { grid-template-columns: minmax(220px, 0.9fr) minmax(320px, 1.3fr); }
 }
+
+.staff-info-art {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  margin: 1.1rem auto 0;
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 900px) {
+  .staff-info-art { max-width: 190px; }
+}
