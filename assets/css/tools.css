@@ -108,6 +108,19 @@
   position: relative;
   z-index: 1;
 }
+.uc-page nav,
+.uc-crumb {
+  position: static;
+  transform: none;
+  width: auto;
+  max-width: none;
+  height: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  animation: none;
+}
 .uc-crumb {
   display: flex;
   flex-wrap: wrap;
