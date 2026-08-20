@@ -369,6 +369,16 @@
   }
   .uc-inner { padding: 0 1.5rem; }
   .uc-hero { padding: 100px 0 50px; }
+  /* Photo is a wide 1920x700 crop; on a narrow-but-tall mobile hero,
+     background-size:cover zooms in hard and the desktop left-to-right
+     text-protection gradient no longer lines up with where the copy
+     sits (it's full-width here, not just the left column), so the
+     lower text/buttons end up sitting directly on bright photo detail.
+     Swap to a near-flat, fully-opaque wash so legibility doesn't depend
+     on which slice of the image the crop happens to land on. */
+  .uc-hero-overlay {
+    background: linear-gradient(180deg, rgba(7,6,26,0.95) 0%, rgba(7,6,26,0.9) 55%, rgba(7,6,26,0.96) 100%);
+  }
   .uc-panel,
   .uc-panel.is-mirrored { grid-template-columns: 1fr; }
   .uc-panel { padding: 1.4rem; }
