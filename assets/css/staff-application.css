@@ -88,6 +88,7 @@
   }
   .staff-info-art {
     margin-top: auto;
+    margin-bottom: -72px;
   }
 }
 
@@ -247,6 +248,8 @@
 
 .staff-info-art {
   display: block;
+  position: relative;
+  z-index: 2;
   width: 100%;
   max-width: 175px;
   height: auto;
@@ -256,7 +259,7 @@
   animation: staff-pensia-float 4.5s ease-in-out infinite;
 }
 @media (max-width: 900px) {
-  .staff-info-art { max-width: 145px; margin-top: 1rem; }
+  .staff-info-art { max-width: 145px; margin-top: 1rem; margin-bottom: -60px; }
 }
 
 @keyframes staff-pensia-float {

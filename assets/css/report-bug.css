@@ -231,6 +231,8 @@
 
 .staff-info-art {
   display: block;
+  position: relative;
+  z-index: 2;
   width: 100%;
   max-width: 175px;
   height: auto;
