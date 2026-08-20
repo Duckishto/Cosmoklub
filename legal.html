@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/loader.css">
-  <link rel="stylesheet" href="assets/css/legal.css?v=5">
+  <link rel="stylesheet" href="assets/css/legal.css?v=6">
 </head>
 <body>
 
@@ -87,8 +87,8 @@
     <!-- Sidebar: grouped list of legal documents -->
     <aside class="lg-side" :class="{ 'is-open': sidebarOpen }">
       <div class="lg-side-brand">
-        <img draggable="false" src="assets/images/logo.png" alt="" />
-        <span>Legal Center</span>
+        <span class="lg-side-kicker">Documentation</span>
+        <span class="lg-side-title">Legal Center</span>
       </div>
 
       <div class="lg-side-group" v-for="(sec, si) in sections" :key="'sec-'+si">
@@ -121,46 +121,54 @@
         </div>
       </div>
 
-      <!-- Document header -->
-      <span class="lg-doc-eyebrow">Legal &amp; Policies</span>
-      <h1 class="lg-doc-title">{{ activeDoc.label }}</h1>
-      <p class="lg-doc-lead">{{ activeDoc.lead }}</p>
-      <span class="lg-doc-status"><span class="pulse"></span> Not yet published</span>
+      <!-- Reading surface. Keyed by activeDoc.id so switching documents
+           re-mounts the panel (restarting the shimmer for the new one). -->
+      <article class="lg-doc-card" :key="activeDoc.id">
 
-      <div class="lg-divider"></div>
+        <!-- Document header -->
+        <header class="lg-doc-head">
+          <span class="lg-doc-eyebrow">Legal &amp; Policies</span>
+          <h1 class="lg-doc-title">{{ activeDoc.label }}</h1>
+          <p class="lg-doc-lead">{{ activeDoc.lead }}</p>
+          <span class="lg-doc-status"><span class="pulse"></span> Not yet published</span>
+        </header>
 
-      <!-- Placeholder body: skeleton lines standing in for the real
-           document text, which hasn't been drafted/published yet.
-           Keyed by activeDoc.id so switching documents restarts the
-           shimmer for the new selection. -->
-      <div class="lg-skel" :key="activeDoc.id">
-        <div class="lg-skel-section">
-          <div class="lg-skel-line head"></div>
-          <div class="lg-skel-line w-95"></div>
-          <div class="lg-skel-line w-90"></div>
-          <div class="lg-skel-line w-85"></div>
-          <div class="lg-skel-line w-65"></div>
-        </div>
-        <div class="lg-skel-section">
-          <div class="lg-skel-line head"></div>
-          <div class="lg-skel-line w-90"></div>
-          <div class="lg-skel-line w-95"></div>
-          <div class="lg-skel-line w-78"></div>
-        </div>
-        <div class="lg-skel-section">
-          <div class="lg-skel-line head"></div>
-          <div class="lg-skel-line w-85"></div>
-          <div class="lg-skel-line w-95"></div>
-          <div class="lg-skel-line w-90"></div>
-          <div class="lg-skel-line w-50"></div>
-        </div>
-      </div>
+        <!-- Placeholder body: skeleton standing in for the real document
+             text, which hasn't been drafted/published yet. Grouped into a
+             lead paragraph plus titled sections so it reads like a page of
+             copy loading in, not a stack of identical bars. -->
+        <div class="lg-doc-body">
+          <div class="lg-skel-para">
+            <div class="lg-skel-line w-100"></div>
+            <div class="lg-skel-line w-96"></div>
+            <div class="lg-skel-line w-88"></div>
+            <div class="lg-skel-line w-40"></div>
+          </div>
 
-      <!-- Coming-soon note -->
-      <div class="lg-note">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <p>We're still finishing this document and will publish the full text right here. Questions in the meantime? <a href="contact.html">Get in touch</a>.</p>
-      </div>
+          <div class="lg-skel-section">
+            <div class="lg-skel-line head"></div>
+            <div class="lg-skel-line w-100"></div>
+            <div class="lg-skel-line w-93"></div>
+            <div class="lg-skel-line w-97"></div>
+            <div class="lg-skel-line w-72"></div>
+          </div>
+
+          <div class="lg-skel-section">
+            <div class="lg-skel-line head short"></div>
+            <div class="lg-skel-line w-96"></div>
+            <div class="lg-skel-line w-100"></div>
+            <div class="lg-skel-line w-84"></div>
+            <div class="lg-skel-line w-58"></div>
+          </div>
+        </div>
+
+        <!-- Coming-soon note -->
+        <div class="lg-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <p>We're still finishing this document and will publish the full text right here. Questions in the meantime? <a href="contact.html">Get in touch</a>.</p>
+        </div>
+
+      </article>
 
     </main>
   </div>
