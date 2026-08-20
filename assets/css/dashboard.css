@@ -1553,14 +1553,29 @@ body.graphing-active .bottom-nav {
   }
 }
 
-/* Fix the top/bottom background seams after moving navigation to the top */
+/* =========================================================
+   FINAL FULL-WIDTH NAV SEAM FIX
 
+   The Dashboard navigation is now mounted at the top, while
+   the old topbar and bottom navigation are hidden. The 3D
+   Library layer still reads these variables for its fixed
+   canvas and background overlay, so leaving the old values
+   (56px / 64px) creates horizontal color bands at both edges.
+   ========================================================= */
+
+:root {
+  --topbar-h: 0px;
+  --nav-h: 0px;
+  --safe-bot: 0px;
+}
+
+/* Keep every Dashboard surface on the same transparent aurora layer. */
 html,
 body,
 #app,
 .app-shell,
 .content {
-  background-color: transparent !important;
+  background: transparent !important;
 }
 
 .content {
@@ -1568,22 +1583,6 @@ body,
   padding-bottom: 0 !important;
 }
 
-/* Make sure no old bottom-navigation background remains */
-.bottom-nav {
-  bottom: auto !important;
-  background: transparent !important;
-  border-bottom: none !important;
-}
-
-/* Keep the compact glass state unchanged */
-.bottom-nav.compact,
-.bottom-nav.nav-leaving {
-  background: rgba(14, 11, 30, 0.82) !important;
-  backdrop-filter: blur(20px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
-}
-
-/* Mobile spacing */
 @media (max-width: 720px) {
   .content {
     padding-top: 72px !important;
