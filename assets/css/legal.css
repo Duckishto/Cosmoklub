@@ -82,9 +82,22 @@
 }
 
 /* ---------- Sidebar ---------- */
-.legal-sidebar {
+/* Split into two elements on purpose. Sticky positioning + backdrop-filter
+   + border-radius + a semi-transparent background, all on the SAME
+   element, is a known Chromium/Edge compositing bug: the browser paints a
+   stray rounded "seam" of the element near the top edge where it becomes
+   stuck, because it can't reliably composite a blurred, rounded, sticky
+   layer as one unit (this is what caused the ghost pill artifact above
+   the first nav item). Splitting it avoids the bug entirely: the OUTER
+   wrapper only does positioning (sticky, nothing else to composite), and
+   the INNER card only does visuals (blur, radius, background) as a
+   normal, non-sticky block that paints once and stays put. */
+.legal-sidebar-sticky {
   position: sticky;
   top: 90px;
+}
+
+.legal-sidebar {
   background: linear-gradient(180deg, rgba(26,20,54,0.92), rgba(13,11,28,0.92));
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
@@ -92,6 +105,10 @@
   border-radius: var(--radius);
   padding: 10px;
   box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+  /* Forces its own stable compositing layer instead of sharing one with
+     the sticky wrapper — belt-and-braces against the same seam bug. */
+  isolation: isolate;
+  transform: translateZ(0);
 }
 
 .legal-nav {
@@ -299,7 +316,7 @@
      block above the panel. .legal-nav/.legal-nav-item are left alone —
      their desktop defaults (column, full-width items) are exactly the
      vertical list we want here too, so there's nothing to override. */
-  .legal-sidebar { position: static; }
+  .legal-sidebar-sticky { position: static; }
 }
 
 @media (max-width: 600px) {
