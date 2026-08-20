@@ -1,13 +1,25 @@
-// CosmoKlub — Staff Application page logic.
+// CosmoKlub: Staff Application page logic.
 // Mirrors the lightweight nav/starfield/lang setup used on team.js/object.js,
 // plus a form that inserts into the `staff_applications` table (see
 // supabase/schema.sql) using the same Supabase client index.html's
 // register/login form uses (loaded via /assets/js/lib/supabase-client.js below).
 //
 // If Supabase isn't configured yet (no SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY
-// env vars set — see assets/js/lib/supabase-client.js for setup steps), submitting
+// env vars set, see assets/js/lib/supabase-client.js for setup steps), submitting
 // shows a fallback message pointing people at hello@cosmoklub.space instead
 // of silently failing.
+//
+// Anti-spam: two lightweight, no-backend traps plus a resubmission cooldown.
+//   1. Honeypot (`honeypot` below, rendered as .hp-field in the HTML): an
+//      input real visitors never see or reach, but that simple bots fill in
+//      because it looks like a normal field to them. Any value in it means
+//      the submission is dropped without ever reaching Supabase.
+//   2. Minimum fill time (`formLoadedAt`): bots that skip the honeypot
+//      often still submit near-instantly. Anything submitted within
+//      MIN_FILL_MS of the page loading is treated as spam.
+//   3. Resubmission cooldown: after a real submission succeeds, further
+//      submissions from the same browser are blocked for COOLDOWN_MS via
+//      localStorage, so "Submit another" can't be used to flood the table.
 
 const { createApp } = Vue;
 
@@ -23,6 +35,11 @@ const emptyForm = () => ({
   why: '', experience: '', availability: '', consent: false,
 });
 
+// Anti-spam tuning, see the file header comment above for what each does.
+const MIN_FILL_MS = 2500;                          // faster than this = bot
+const COOLDOWN_MS = 10 * 60 * 1000;                 // 10 minutes between submits
+const COOLDOWN_KEY = 'cosmoklub-staff-app-last-submit';
+
 createApp({
   data() {
     return {
@@ -35,6 +52,8 @@ createApp({
 
       ICONS,
       form: emptyForm(),
+      honeypot: '',
+      formLoadedAt: 0,
       errors: {},
       loading: false,
       success: false,
@@ -43,6 +62,7 @@ createApp({
 
   mounted() {
     window.CosmoKlub.initStarfield();
+    this.formLoadedAt = Date.now();
     window.addEventListener('scroll', () => {
       const y = window.scrollY;
       this.navScrolled = y > 20;
@@ -66,7 +86,34 @@ createApp({
     },
 
     async submitApplication() {
+      // Honeypot: real visitors never see or reach this field (see
+      // .hp-field in staff-application.css). Anything in it means a bot
+      // filled it in, drop the submission without hitting Supabase, and
+      // fake success so the bot has no signal it was caught.
+      if (this.honeypot.trim()) {
+        this.success = true;
+        return;
+      }
+
       if (!this.validate()) return;
+
+      // Minimum fill time: a real person needs at least a few seconds to
+      // read the form and type into it. Anything submitted faster than
+      // that, past the honeypot, is almost certainly a bot.
+      if (Date.now() - this.formLoadedAt < MIN_FILL_MS) {
+        this.errors = { submit: 'That went through a little too fast. Give the form a moment and try again.' };
+        return;
+      }
+
+      // Resubmission cooldown: stop the same browser from using "Submit
+      // another" to flood the table with repeated applications.
+      const cooldown = this.cooldownRemainingMs();
+      if (cooldown > 0) {
+        const mins = Math.ceil(cooldown / 60000);
+        this.errors = { submit: `You've already sent an application recently. Try again in about ${mins} minute${mins === 1 ? '' : 's'}.` };
+        return;
+      }
+
       this.loading = true;
       this.errors = {};
 
@@ -74,7 +121,7 @@ createApp({
       if (!client) {
         this.loading = false;
         this.errors = {
-          submit: "Applications aren't connected yet — email hello@cosmoklub.space with your name, the track you're applying for, and why you'd like to join."
+          submit: "Applications aren't connected yet. Email hello@cosmoklub.space with your name, the track you're applying for, and why you'd like to join."
         };
         return;
       }
@@ -95,6 +142,7 @@ createApp({
           this.loading = false;
           return;
         }
+        this.markSubmitted();
         this.loading = false;
         this.success = true;
       } catch (err) {
@@ -103,8 +151,28 @@ createApp({
       }
     },
 
+    // How much of the resubmission cooldown is left, in ms (0 = clear to
+    // submit). Wrapped in try/catch since localStorage can throw in some
+    // private-browsing modes, if that happens we just don't cooldown-gate
+    // rather than blocking real applicants over it.
+    cooldownRemainingMs() {
+      try {
+        const last = Number(localStorage.getItem(COOLDOWN_KEY) || 0);
+        const remaining = COOLDOWN_MS - (Date.now() - last);
+        return remaining > 0 ? remaining : 0;
+      } catch (err) {
+        return 0;
+      }
+    },
+
+    markSubmitted() {
+      try { localStorage.setItem(COOLDOWN_KEY, String(Date.now())); } catch (err) { /* ignore */ }
+    },
+
     resetForm() {
       this.form = emptyForm();
+      this.honeypot = '';
+      this.formLoadedAt = Date.now();
       this.errors = {};
       this.success = false;
     },
