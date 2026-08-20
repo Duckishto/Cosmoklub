@@ -3,299 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-
   <title>CosmoKlub: Forum & Library & Chat</title>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  >
-
-  <!-- KaTeX -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
-  >
-
-  <script
-    defer
-    src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
-  ></script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- KaTeX — LaTeX math rendering for the calculator display -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <link rel="stylesheet" href="assets/css/dashboard.css">
-  <link rel="stylesheet" href="assets/css/library-3d.css?v=2">
+  <link rel="stylesheet" href="assets/css/library-3d.css">
   <link rel="stylesheet" href="assets/css/loader.css">
-
-  <!-- Emergency logo size protection -->
-  <style>
-    .topbar .brand {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: flex-start !important;
-
-      width: auto !important;
-      max-width: 190px !important;
-      height: 56px !important;
-
-      flex-shrink: 0 !important;
-      overflow: hidden !important;
-      text-decoration: none !important;
-    }
-
-    .topbar .brand-logo {
-      display: block !important;
-
-      width: auto !important;
-      height: 36px !important;
-      max-width: 180px !important;
-      max-height: 36px !important;
-
-      object-fit: contain !important;
-      user-select: none !important;
-    }
-
-    @media (max-width: 720px) {
-      .topbar .brand {
-        max-width: 160px !important;
-      }
-
-      .topbar .brand-logo {
-        height: 32px !important;
-        max-width: 150px !important;
-        max-height: 32px !important;
-      }
-    }
-  </style>
 </head>
-
 <body>
 
-  <!-- Existing animated background -->
-  <div class="aurora-wrap">
-    <div class="aurora-base"></div>
-    <div class="aurora-1"></div>
-    <div class="aurora-2"></div>
-    <div class="aurora-3"></div>
-  </div>
+<div class="aurora-wrap"><div class="aurora-base"></div><div class="aurora-1"></div><div class="aurora-2"></div><div class="aurora-3"></div></div>
+<canvas id="star-canvas"></canvas>
+<canvas id="library-3d-canvas" aria-hidden="true"></canvas>
+<div class="page-grid"></div>
 
-  <canvas id="star-canvas"></canvas>
+<div id="app">
+  <div class="app-shell">
 
-  <!-- Library-only 3D scene -->
-  <canvas
-    id="library-3d-canvas"
-    aria-hidden="true"
-  ></canvas>
-
-  <div class="page-grid"></div>
-
-  <div id="app">
-    <div class="app-shell">
-
-      <!-- Top bar -->
-      <div class="topbar">
-
-        <a
-          class="brand"
-          href="dashboard.html?tab=library"
-          aria-label="Open the CosmoKlub Library"
-        >
-          <img
-            class="brand-logo"
-            src="assets/images/logo.png"
-            alt="CosmoKlub"
-            draggable="false"
-            width="180"
-            height="36"
-            style="
-              display:block !important;
-              width:auto !important;
-              height:36px !important;
-              max-width:180px !important;
-              max-height:36px !important;
-              object-fit:contain !important;
-            "
-          >
-        </a>
-
-        <div class="topbar-spacer"></div>
-
-        <div class="topbar-actions">
-
-          <div class="icon-btn" aria-label="Notifications">
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
-              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-
-            <span class="icon-dot"></span>
-          </div>
-
-          <div class="icon-btn" aria-label="Settings">
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="3"/>
-
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-            </svg>
-          </div>
-
+    <!-- Top bar -->
+    <div class="topbar">
+      <a class="brand" href="dashboard.html?tab=library" aria-label="Open the CosmoKlub Library">
+        <img class="brand-logo" src="assets/images/logo.png" alt="CosmoKlub" draggable="false">
+      </a>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-actions">
+        <div class="icon-btn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="icon-dot"></span>
         </div>
-      </div>
-
-      <!-- Current selected dashboard page -->
-      <div class="content">
-        <component :is="tabComponents[activeTab]"></component>
-      </div>
-
-      <!-- Bottom navigation -->
-      <div class="bottom-nav">
-
-        <div
-          class="nav-item"
-          :class="{active: activeTab === 'forum'}"
-          @click="activeTab = 'forum'"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>
-          </svg>
-
-          Forum
+        <div class="icon-btn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </div>
-
-        <div
-          class="nav-item"
-          :class="{active: activeTab === 'library'}"
-          @click="activeTab = 'library'"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          </svg>
-
-          Library
-        </div>
-
-        <!-- Home button -->
-        <a
-          class="nav-item fab-item"
-          href="/"
-          aria-label="CosmoKlub home"
-        >
-          <div class="nav-fab">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M3 10.8 12 3l9 7.8"/>
-              <path d="M5.5 9.5V21h13V9.5"/>
-              <path d="M9.5 21v-6.5h5V21"/>
-            </svg>
-          </div>
-        </a>
-
-        <div
-          class="nav-item"
-          :class="{active: activeTab === 'planetarium'}"
-          @click="activeTab = 'planetarium'"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="4" y="2" width="16" height="20" rx="2"/>
-            <line x1="8" y1="6" x2="16" y2="6"/>
-            <line x1="8" y1="10" x2="8" y2="10"/>
-            <line x1="12" y1="10" x2="12" y2="10"/>
-            <line x1="16" y1="10" x2="16" y2="10"/>
-            <line x1="8" y1="14" x2="8" y2="14"/>
-            <line x1="12" y1="14" x2="12" y2="14"/>
-            <line x1="16" y1="14" x2="16" y2="14"/>
-            <line x1="8" y1="18" x2="16" y2="18"/>
-          </svg>
-
-          Calculator
-        </div>
-
-        <div
-          class="nav-item"
-          :class="{active: activeTab === 'chat'}"
-          @click="activeTab = 'chat'"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-          </svg>
-
-          Chat
-        </div>
-
       </div>
     </div>
+
+    <div class="content">
+      <!-- Each tab is an independent component; see components/*.js.
+           tabComponents maps tab name -> component, defined in app.js. -->
+      <component :is="tabComponents[activeTab]"></component>
+    </div>
+
+    <!-- Bottom navigation (5 items: Forum, Library, new-post FAB, Planetarium, Chat) -->
+    <div class="bottom-nav">
+      <div class="nav-item" :class="{active: activeTab === 'forum'}" @click="activeTab = 'forum'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>
+        Forum
+      </div>
+      <div class="nav-item" :class="{active: activeTab === 'library'}" @click="activeTab = 'library'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Library
+      </div>
+      <a class="nav-item fab-item" href="/" aria-label="CosmoKlub home">
+        <div class="nav-fab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6.5h5V21"/></svg>
+        </div>
+      </a>
+      <div class="nav-item" :class="{active: activeTab === 'planetarium'}" @click="activeTab = 'planetarium'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8" y2="10"/><line x1="12" y1="10" x2="12" y2="10"/><line x1="16" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
+        Calculator
+      </div>
+      <div class="nav-item" :class="{active: activeTab === 'chat'}" @click="activeTab = 'chat'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        Chat
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <!-- Shared helpers -->
-  <script src="assets/js/common.js"></script>
+<!-- Shared helpers (starfield backdrop) -->
+<script src="assets/js/common.js"></script>
 
-  <!-- Supabase -->
-  <script src="assets/js/lib/supabase-client.js"></script>
+<!-- Supabase client must load before progress.js, which uses it to sync
+     XP/lesson-completions server-side for signed-in users -->
+<script src="assets/js/lib/supabase-client.js"></script>
 
-  <!-- Library progression -->
-  <script src="assets/js/course-data.js"></script>
-  <script src="assets/js/progress.js"></script>
+<!-- Library progression data must load before library.js -->
+<script src="assets/js/course-data.js"></script>
+<script src="assets/js/progress.js"></script>
 
-  <!-- Dashboard components -->
-  <script src="assets/js/components/forum.js"></script>
-  <script src="assets/js/components/library.js"></script>
-  <script src="assets/js/components/chat.js"></script>
-  <script src="assets/js/components/planetarium.js"></script>
+<!-- Components must load before app.js, which registers and mounts them -->
+<script src="assets/js/components/forum.js"></script>
+<script src="assets/js/components/library.js"></script>
+<script src="assets/js/components/chat.js"></script>
+<script src="assets/js/components/planetarium.js"></script>
 
-  <!-- Library 3D engine -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-  <!-- Main application -->
-  <script src="assets/js/app.js"></script>
-  <script src="assets/js/library-3d.js?v=2"></script>
-  <script src="assets/js/loader.js"></script>
-
+<!-- Three.js powers the Library-only real-time 3D scene. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/library-3d.js"></script>
+<script src="assets/js/loader.js"></script>
 </body>
 </html>
