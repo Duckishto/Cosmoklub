@@ -77,8 +77,8 @@ createApp({
       };
     },
     // Same footer link groups as the rest of the site. The Legal column
-    // now points at this page's own sections instead of the scattered
-    // index.html#tos / report-bug# placeholders used elsewhere.
+    // now points at this page's own sections, matching the footer on
+    // every other page (which links here instead of the old modal).
     footerCols() {
       return [
         { title: 'Tools', links: [
