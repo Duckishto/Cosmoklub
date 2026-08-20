@@ -45,14 +45,10 @@ createApp({
         { id: 'community', label: 'Community Guidelines', meta: 'Not yet published', icon: DOC_ICONS.heart },
         { id: 'cookies', label: 'Cookie Policy', meta: 'Not yet published', icon: DOC_ICONS.cookie }
       ],
-      activeDoc: 'tos',
     };
   },
 
   computed: {
-    activeDocObj() {
-      return this.docs.find(d => d.id === this.activeDoc) || this.docs[0];
-    },
     // Same Tools / Use cases dropdown content as every other root page.
     navMenus() {
       return {
@@ -108,9 +104,13 @@ createApp({
   mounted() {
     window.CosmoKlub.initStarfield();
 
-    // Deep-link support: legal.html#privacy opens straight on that doc.
+    // Deep-link support: legal.html#privacy scrolls straight to that
+    // section on load. A tick's delay lets Vue finish its first render
+    // so the target element actually exists in the DOM to scroll to.
     const hash = (location.hash || '').replace('#', '');
-    if (this.docs.some(d => d.id === hash)) this.activeDoc = hash;
+    if (this.docs.some(d => d.id === hash)) {
+      this.$nextTick(() => this.scrollToDoc(hash, false));
+    }
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.nav-has-menu')) this.openMenu = null;
@@ -124,20 +124,22 @@ createApp({
     toggleMenu(key) { this.openMenu = this.openMenu === key ? null : key; },
     closeMenu() { this.openMenu = null; },
 
-    selectDoc(id) {
-      this.activeDoc = id;
+    // Scrolls to a document section by id. `smooth` is false for the
+    // on-load deep-link (an instant jump reads better than an animated
+    // scroll on first paint) and true for in-page clicks.
+    scrollToDoc(id, smooth = true) {
+      document.getElementById(id)?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
       history.replaceState(null, '', `#${id}`);
     },
 
     // Footer "Legal" links use plain #hash hrefs so they still work if JS
     // is slow to boot; once Vue is up we intercept to avoid a jarring
-    // native jump and just switch the active doc in place.
+    // native jump and smooth-scroll to the section instead.
     onFooterLegalClick(e, href) {
       const id = href.replace('#', '');
       if (!this.docs.some(d => d.id === id)) return;
       e.preventDefault();
-      this.selectDoc(id);
-      document.querySelector('.legal-shell')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.scrollToDoc(id);
     },
   },
 }).mount('#legal-app');
