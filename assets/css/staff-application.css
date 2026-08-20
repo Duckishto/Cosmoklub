@@ -1,11 +1,11 @@
-/* staff-application.css — Staff Application page.
+/* staff-application.css: Staff Application page.
    Reuses tokens/components from style.css (nav, aurora, footer, section
    eyebrow, .form-group/.form-row/.error-msg/.tos-check/.btn-submit/
    .success-screen from the auth form) and only adds what's specific to
    this page: the hero, the two-column layout, the role chips, and a
    textarea style (style.css only styles <input>/<select>).
 
-   Layout notes — built to hold up at any viewport ratio, not just the
+   Layout notes, built to hold up at any viewport ratio, not just the
    usual phone/tablet/desktop widths:
      - Nothing here depends on viewport HEIGHT (no 100vh sections), so
        short/landscape windows just scroll normally instead of clipping.
@@ -13,18 +13,19 @@
        two columns once there's genuinely room for both (see the
        min-width media query), so narrow-but-tall AND short-but-wide
        windows both get a layout that fits instead of a forced grid.
-     - .content caps out at 1160px and stays centered, so ultra-wide
-       monitors get a comfortable reading width instead of a stretched
-       form running edge to edge.
+     - .content uses the same 1280px max-width and 3rem gutter as the
+       homepage's <section> rule, resources.html's .res-page and
+       team.html's .content, so this page lines up with the rest of the
+       site instead of running its own narrower 1160px column.
      - Every fixed size below is either a min()/clamp() or paired with a
        narrower fallback in the max-width queries at the bottom. */
 
 #staff-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
 
 .content {
-  max-width: 1160px; width: 100%;
+  max-width: 1280px; width: 100%;
   margin: 0 auto;
-  padding: 90px 24px 72px;
+  padding: 90px 3rem 72px;
   flex: 1;
 }
 
@@ -61,7 +62,7 @@
 }
 
 /* ---------- Two-column layout ---------- */
-/* Single column until there's real room for both panels side by side —
+/* Single column until there's real room for both panels side by side,
    using a min-width switch (rather than assuming "mobile vs desktop")
    means a narrow-but-tall window and a short-but-wide one both land on
    whichever layout actually fits their available width. */
@@ -211,9 +212,25 @@
   min-height: 320px;
 }
 
+/* Honeypot field for the anti-spam trap in staff-application.js. Hidden
+   off-screen (not display:none/visibility:hidden) since some bots skip
+   fields hidden that way but still fill in ones that are merely
+   positioned off-canvas. Real visitors, using a mouse, keyboard or screen
+   reader, never see or reach it: tabindex="-1" skips it, aria-hidden
+   removes it from the accessibility tree, and it sits off-screen either
+   way. */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* ---------- Narrower screens ---------- */
 @media (max-width: 900px) {
-  .content { padding: 80px 16px 60px; }
+  .content { padding: 80px 1.5rem 60px; }
 }
 @media (min-width: 860px) and (max-width: 1000px) {
   /* tight middle ground: two columns but info doesn't need to be as wide */
