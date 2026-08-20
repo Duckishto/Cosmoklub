@@ -187,66 +187,22 @@
   letter-spacing: -0.03em;
   margin-bottom: 1.8rem;
 }
-/*
 .uc-photo-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.1rem;
 }
 .uc-photo {
   position: relative;
   border-radius: 14px;
   overflow: hidden;
-  aspect-ratio: 5 / 3;
+  aspect-ratio: 3 / 4;
   border: 1px solid var(--uc-line);
   background:
     radial-gradient(ellipse 80% 60% at 50% 15%, var(--uc-soft), transparent 60%),
     linear-gradient(160deg, #14102c 0%, #08061a 100%);
   transition: border-color var(--tr), transform var(--tr), box-shadow var(--tr);
 }
-*/
-.uc-photo-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 1.1rem;
-}
-
-.uc-photo {
-  position: relative;
-  border-radius: 14px;
-  overflow: hidden;
-  aspect-ratio: 5 / 3;
-
-  border: 1px solid var(--uc-line);
-
-  background:
-    radial-gradient(
-      ellipse 80% 60% at 50% 15%,
-      var(--uc-soft),
-      transparent 60%
-    ),
-    linear-gradient(160deg, #14102c 0%, #08061a 100%);
-
-  transition:
-    border-color var(--tr),
-    transform var(--tr),
-    box-shadow var(--tr);
-}
-
-/* First 2 photos = 2 columns */
-.uc-photo:nth-child(1),
-.uc-photo:nth-child(2) {
-  grid-column: span 3;
-}
-
-/* Next 3 photos = 3 columns */
-.uc-photo:nth-child(3),
-.uc-photo:nth-child(4),
-.uc-photo:nth-child(5) {
-  grid-column: span 2;
-}
-
 .uc-photo:hover {
   transform: translateY(-4px);
   border-color: var(--uc);
