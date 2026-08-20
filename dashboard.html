@@ -36,6 +36,15 @@
       -webkit-user-drag: none;
     }
 
+    .home-nav-link,
+    .home-nav-link:link,
+    .home-nav-link:visited,
+    .home-nav-link:hover,
+    .home-nav-link:active {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
     @media (max-width: 480px) {
       .brand-logo {
         height: 40px;
@@ -148,15 +157,11 @@
         </div>
 
         <!-- Home button -->
-        <div
-          class="nav-item fab-item"
-          role="button"
-          tabindex="0"
-          aria-label="Go to CosmoKlub home page"
+        <a
+          class="nav-item fab-item home-nav-link"
+          href="https://cosmoklub.pages.dev/"
+          aria-label="Go to the CosmoKlub home page"
           title="Home"
-          @click="window.location.href='https://cosmoklub.pages.dev/'"
-          @keydown.enter="window.location.href='https://cosmoklub.pages.dev/'"
-          @keydown.space.prevent="window.location.href='https://cosmoklub.pages.dev/'"
         >
           <div class="nav-fab">
             <svg
@@ -173,7 +178,7 @@
               <path d="M9.5 20v-6h5v6"/>
             </svg>
           </div>
-        </div>
+        </a>
 
         <div
           class="nav-item"
