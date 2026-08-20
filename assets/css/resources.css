@@ -113,6 +113,19 @@
 .res-meta span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .res-error { margin-top: 0.8rem; font-size: 0.82rem; color: #f87171; }
 
+.res-hero.is-empty { display: block; }
+.res-hero-empty { padding: 3.5rem 1rem; }
+.res-stale-note {
+  margin-top: 0.7rem;
+  font-size: 0.78rem;
+  color: var(--glow);
+  background: rgba(124,58,237,0.1);
+  border: 1px solid rgba(168,85,247,0.24);
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  line-height: 1.5;
+}
+
 /* ---------- Feed ---------- */
 
 .res-feed-head {
@@ -392,6 +405,8 @@
   cursor: pointer;
 }
 .res-retry:hover { border-color: var(--violet); background: rgba(124,58,237,0.2); }
+.res-retry:disabled { opacity: 0.6; cursor: default; }
+.res-retry:disabled:hover { border-color: var(--border); background: rgba(124,58,237,0.1); }
 
 /* read more */
 /* ---------- Article reader ---------- */
