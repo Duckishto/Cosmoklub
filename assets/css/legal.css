@@ -75,81 +75,16 @@
   margin: 0 auto;
 }
 
-/* ---------- Layout: sticky doc-list sidebar + document column ---------- */
-/* Fixed (non-fr) track widths, centered as a unit with justify-content,
-   rather than letting a single narrow column float alone in the middle
-   of the 1280px content area. This uses noticeably more of the page's
-   width while keeping each document's line length comfortable to read. */
-.legal-layout {
-  display: grid;
-  grid-template-columns: 250px minmax(0, 820px);
-  gap: 48px;
-  justify-content: center;
-  align-items: start;
-}
-
-.legal-sidebar {
-  position: sticky;
-  /* Matches .legal-doc's scroll-margin-top so the highlighted item and
-     the section it points to line up under the fixed/compact nav. */
-  top: 100px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  background: linear-gradient(180deg, rgba(22,18,46,0.78), rgba(11,9,24,0.82));
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(168,85,247,0.2);
-  border-radius: var(--radius);
-  padding: 1rem;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
-}
-
-.legal-sidebar-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 0.35rem 0.7rem 0.6rem;
-}
-
-.legal-sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0.62rem 0.7rem;
-  border-radius: 10px;
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: 1px solid transparent;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-.legal-sidebar-icon {
-  display: flex;
-  flex-shrink: 0;
-  color: inherit;
-}
-.legal-sidebar-icon svg { width: 17px; height: 17px; display: block; }
-.legal-sidebar-item:hover {
-  background: rgba(124,58,237,0.1);
-  color: var(--white);
-}
-.legal-sidebar-item.active {
-  background: rgba(124,58,237,0.16);
-  border-color: rgba(168,85,247,0.35);
-  color: var(--white);
-}
-.legal-sidebar-item.active .legal-sidebar-icon { color: var(--violet); }
-
-/* ---------- Docs: stacked document cards ---------- */
+/* ---------- Docs: single stacked column ---------- */
+/* Narrower than the page's 1280px content width and centered — this is
+   a reading column now, not a two-pane layout, so full width would make
+   each line uncomfortably long. */
 .legal-docs {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  min-width: 0;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
 .legal-doc {
@@ -265,23 +200,6 @@
 /* ---------- Narrower screens ---------- */
 @media (max-width: 900px) {
   .content { padding: 76px 1.5rem 56px; }
-
-  /* Sidebar can't stay beside the content once there's no room for two
-     columns — it becomes a non-sticky, horizontally scrollable tab strip
-     sitting above the stacked cards instead. */
-  .legal-layout { grid-template-columns: 1fr; gap: 18px; }
-  .legal-sidebar {
-    position: static;
-    flex-direction: row;
-    align-items: center;
-    overflow-x: auto;
-    gap: 6px;
-    padding: 0.6rem;
-    scrollbar-width: none;
-  }
-  .legal-sidebar::-webkit-scrollbar { display: none; }
-  .legal-sidebar-label { display: none; }
-  .legal-sidebar-item { flex: 0 0 auto; white-space: nowrap; }
 }
 
 @media (max-width: 600px) {
