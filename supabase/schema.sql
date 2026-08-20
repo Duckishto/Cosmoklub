@@ -123,3 +123,41 @@ create policy "Anyone can submit a staff application"
 -- No select/update/delete policy is defined for anon or authenticated —
 -- applications are only readable via the Dashboard (service role), so
 -- applicants can't see each other's submissions or their status here.
+
+-- ---------------------------------------------------------------------------
+-- Bug reports (report-bug.html / report-bug.js)
+--
+-- Same shape as staff_applications above: no account required, anon insert
+-- only, reviewed from the Supabase Dashboard (service role bypasses RLS).
+-- Client-side anti-spam (honeypot + minimum fill time + resubmission
+-- cooldown, see report-bug.js) keeps bot noise out before it ever reaches
+-- this table; RLS here is what stops anyone from reading/editing others'
+-- reports even if they get past that.
+-- ---------------------------------------------------------------------------
+
+-- 1. Table -------------------------------------------------------------------
+create table if not exists public.bug_reports (
+  id             bigint generated always as identity primary key,
+  title          text not null,
+  email          text,
+  page_url       text,
+  severity       text not null check (severity in ('minor', 'moderate', 'major', 'critical')),
+  browser        text,
+  steps          text not null,
+  actual         text not null,
+  screenshot_url text,
+  status         text not null default 'open' check (status in ('open', 'triaging', 'fixed', 'wontfix')),
+  created_at     timestamptz not null default now()
+);
+
+-- 2. Row Level Security -------------------------------------------------------
+alter table public.bug_reports enable row level security;
+
+-- Anyone (including anonymous visitors) can submit a bug report.
+create policy "Anyone can submit a bug report"
+  on public.bug_reports for insert
+  with check (true);
+
+-- No select/update/delete policy is defined for anon or authenticated —
+-- reports are only readable via the Dashboard (service role), so
+-- reporters can't see each other's submissions or their status here.
