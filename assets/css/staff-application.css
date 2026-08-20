@@ -81,10 +81,13 @@
   .staff-layout {
     grid-template-columns: minmax(260px, 1fr) minmax(340px, 1.25fr);
     gap: 36px;
+    align-items: stretch;
   }
   .staff-info {
-    position: sticky;
-    top: 96px;
+    position: static;
+  }
+  .staff-info-art {
+    margin-top: auto;
   }
 }
 
@@ -245,12 +248,12 @@
 .staff-info-art {
   display: block;
   width: 100%;
-  max-width: 260px;
+  max-width: 175px;
   height: auto;
-  margin: 1.6rem auto 0;
+  margin: 1.4rem auto 0;
   pointer-events: none;
   user-select: none;
 }
 @media (max-width: 900px) {
-  .staff-info-art { max-width: 200px; margin-top: 1.2rem; }
+  .staff-info-art { max-width: 145px; margin-top: 1rem; }
 }
