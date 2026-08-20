@@ -1,0 +1,263 @@
+/* contact.css: Contact Us page.
+   Reuses tokens/components from style.css (nav, aurora, footer, section
+   eyebrow) and duplicates the small .staff-hero/.staff-h1 hero pattern
+   already used on staff-application.html/report-bug.html so this page
+   sits at the same 1280px content width and reads as part of the same
+   site. Everything below that hero (the two contact cards, the "also on"
+   bar, and the numbered FAQ list) is new, styled after the reference
+   layout but in CosmoKlub's own violet palette instead of the reference's
+   teal one.
+
+   Same layout notes as the other content pages: no 100vh sections, single
+   column until there's real room for two, sizes are clamp()/min() or have
+   a narrower fallback in the queries at the bottom. */
+
+#contact-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
+
+.content {
+  max-width: 1280px; width: 100%;
+  margin: 0 auto;
+  padding: 90px 3rem 72px;
+  flex: 1;
+}
+
+/* ---------- Page hero (same pattern as staff-application/report-bug) ---------- */
+.staff-hero {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.staff-hero .hero-eyebrow { font-size: 0.85rem; }
+.staff-h1 {
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  text-shadow: 0 0 20px rgba(124,58,237,0.2);
+}
+.staff-h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--violet) 20%, var(--glow) 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.staff-sub {
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ---------- Two contact-channel cards ---------- */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+@media (min-width: 700px) {
+  .contact-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  background: #0c0a1c;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.7rem 1.6rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--tr), transform var(--tr), background var(--tr);
+}
+.contact-card:hover {
+  border-color: rgba(168,85,247,0.5);
+  background: #100c22;
+  transform: translateY(-2px);
+}
+
+.contact-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+.contact-card-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(135deg, var(--purple), var(--violet));
+  flex-shrink: 0;
+}
+.contact-card-arrow {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  transition: background var(--tr), border-color var(--tr), transform var(--tr);
+}
+.contact-card:hover .contact-card-arrow {
+  background: var(--violet);
+  border-color: var(--violet);
+  transform: translate(1px, -1px);
+}
+
+.contact-card-eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--glow);
+  margin-bottom: 0.35rem;
+}
+.contact-card h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+.contact-card p {
+  font-size: 0.87rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1.1rem;
+}
+.contact-card-value {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.contact-card-caption {
+  display: block;
+  font-size: 0.76rem;
+  color: rgba(139,122,168,0.75);
+  margin-top: 0.2rem;
+}
+
+/* ---------- "Also on" channels bar ---------- */
+.contact-channels-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  background: #0c0a1c;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 8px;
+}
+.contact-channels-text .contact-card-eyebrow { margin-bottom: 0.3rem; }
+.contact-channels-text h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.01em;
+}
+.contact-channels-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.contact-channels-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--stardust);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: background var(--tr), border-color var(--tr), color var(--tr);
+}
+.contact-channels-links a:hover {
+  background: var(--violet);
+  border-color: var(--violet);
+  color: #fff;
+}
+
+/* ---------- Numbered FAQ ---------- */
+.contact-faq-section { padding: 44px 0 0; }
+.contact-faq-title {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.6rem;
+}
+.contact-faq-title em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--violet) 20%, var(--glow) 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.contact-faq-list {
+  display: flex;
+  flex-direction: column;
+  background: #0c0a1c;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.contact-faq-item {
+  display: flex;
+  gap: 1.4rem;
+  padding: 1.4rem 1.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.contact-faq-item:last-child { border-bottom: 0; }
+.contact-faq-num {
+  flex-shrink: 0;
+  width: 2.4rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--violet);
+  line-height: 1.5;
+}
+.contact-faq-body h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.3rem;
+}
+.contact-faq-body p {
+  font-size: 0.86rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.contact-faq-body p a {
+  color: var(--glow);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- Narrower screens ---------- */
+@media (max-width: 900px) {
+  .content { padding: 80px 1.5rem 60px; }
+  .contact-channels-bar { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .contact-faq-item { flex-direction: column; gap: 0.4rem; }
+  .contact-faq-num { width: auto; }
+}
