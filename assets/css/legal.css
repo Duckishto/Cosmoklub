@@ -7,29 +7,31 @@
    relying on contact.css/report-bug.css for those, which this page
    never loads, so the header rendered completely unstyled).
 
-   Layout below the hero is a docs-style sidebar + content pane (list of
-   legal documents on the left, active document on the right). Every
-   document is a "not yet published" placeholder for now: no real policy
-   text is faked here, just a title, a status line and skeleton lines
-   reusing the project's existing shimmer-loading treatment (see
-   .res-skel in resources.css).
+   Layout below the hero is a single scrolling column of document
+   sections (Terms, Privacy, Community Guidelines, Cookies), one after
+   another — no sidebar, no active/selected doc. Every document is a
+   "not yet published" placeholder for now: no real policy text is
+   faked here, just a title, a status line and skeleton lines reusing
+   the project's existing shimmer-loading treatment (see .res-skel in
+   resources.css). This replaces an earlier sidebar + active-panel
+   version of this page, which combined position:sticky with
+   backdrop-filter and border-radius on the same element — a known
+   Chromium/Edge combo that painted a stray rounded "seam" artifact.
+   Going with a plain stacked layout (nothing sticky at all) sidesteps
+   that bug entirely rather than working around it.
 
-   Sidebar/panel are deliberately semi-opaque + blurred + shadowed
-   ("glass card" treatment, ~line 80 and ~line 190) rather than a flat
-   fill: a flat fill close to the page's own near-black background was
-   nearly invisible against the darker part of the aurora gradient,
-   which read as "items floating with nothing behind them." The blur +
-   shadow keeps the card visible regardless of what's behind it.
+   Each .legal-doc card is deliberately semi-opaque + blurred + shadowed
+   ("glass card" treatment, ~line 60) rather than a flat fill: a flat
+   fill close to the page's own near-black background was nearly
+   invisible against the darker part of the aurora gradient, which read
+   as "content floating with nothing behind it." The blur + shadow keeps
+   each card visible regardless of what's behind it.
 
-   .legal-nav-item is a <button>, so it also resets outline/appearance
-   and defines its own :focus-visible ring (~line 110): left alone,
-   Safari/Chrome draw a native focus halo behind unstyled buttons, which
-   showed up as a stray dark pill around whichever item last had focus.
-
-   Responsive strategy: every size below is clamp()/min() where it can
-   vary continuously, with explicit fallbacks in the "Narrower screens"
-   block at the bottom for 900 / 860 / 600 / 480 / 380px so the page
-   holds together all the way down to small phones, not just tablets. */
+   Responsive strategy: sizes are clamp()/min() where they can vary
+   continuously, with explicit fallbacks in the "Narrower screens" block
+   at the bottom for 900 / 600 / 480 / 380px. There's no separate mobile
+   layout mode to maintain here — it's the same single column at every
+   width, just with tighter padding as things narrow. */
 
 #legal-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
 
@@ -73,138 +75,32 @@
   margin: 0 auto;
 }
 
-/* ---------- Docs shell: sidebar + content pane ---------- */
-.legal-shell {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 28px;
-  align-items: start;
-}
-
-/* ---------- Sidebar ---------- */
-/* Split into two elements on purpose. Sticky positioning + backdrop-filter
-   + border-radius + a semi-transparent background, all on the SAME
-   element, is a known Chromium/Edge compositing bug: the browser paints a
-   stray rounded "seam" of the element near the top edge where it becomes
-   stuck, because it can't reliably composite a blurred, rounded, sticky
-   layer as one unit (this is what caused the ghost pill artifact above
-   the first nav item). Splitting it avoids the bug entirely: the OUTER
-   wrapper only does positioning (sticky, nothing else to composite), and
-   the INNER card only does visuals (blur, radius, background) as a
-   normal, non-sticky block that paints once and stays put. */
-.legal-sidebar-sticky {
-  position: sticky;
-  top: 90px;
-}
-
-.legal-sidebar {
-  background: linear-gradient(180deg, rgba(26,20,54,0.92), rgba(13,11,28,0.92));
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border: 1px solid rgba(168,85,247,0.25);
-  border-radius: var(--radius);
-  padding: 10px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-  /* Forces its own stable compositing layer instead of sharing one with
-     the sticky wrapper — belt-and-braces against the same seam bug. */
-  isolation: isolate;
-  transform: translateZ(0);
-}
-
-.legal-nav {
+/* ---------- Docs: single stacked column ---------- */
+/* Narrower than the page's 1280px content width and centered — this is
+   a reading column now, not a two-pane layout, so full width would make
+   each line uncomfortably long. */
+.legal-docs {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 24px;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
-.legal-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  width: 100%;
-  padding: 11px 12px;
-  /* Faint resting border/fill so every row already reads as its own
-     card, not just the active one. */
-  border: 1px solid rgba(124,58,237,0.12);
-  border-radius: 9px;
-  background: rgba(255,255,255,0.015);
-  color: var(--muted);
-  font-family: var(--font);
-  font-size: 1rem;
-  text-align: left;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  outline: none;
-  transition: background var(--tr), border-color var(--tr), color var(--tr), box-shadow var(--tr);
-}
-.legal-nav-item:hover {
-  background: var(--glass);
-  border-color: rgba(168,85,247,0.28);
-  color: var(--white);
-}
-.legal-nav-item.active {
-  background: linear-gradient(100deg, rgba(124,58,237,0.26), rgba(168,85,247,0.12));
-  border-color: rgba(168,85,247,0.45);
-  color: var(--white);
-  box-shadow: 0 6px 18px rgba(124,58,237,0.2);
-}
-/* Custom keyboard-focus ring instead of the browser's native one (which
-   renders as a stray dark capsule behind unstyled buttons on Safari/
-   Chrome, especially on a dark background). */
-.legal-nav-item:focus-visible {
-  border-color: rgba(192,132,252,0.7);
-  box-shadow: 0 0 0 3px rgba(168,85,247,0.28);
-}
-
-.legal-nav-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 34px; height: 34px;
-  border-radius: 9px;
-  background: rgba(124,58,237,0.14);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  transition: color var(--tr), background var(--tr), border-color var(--tr);
-}
-.legal-nav-item:hover .legal-nav-icon,
-.legal-nav-item.active .legal-nav-icon {
-  color: var(--violet);
-  background: rgba(124,58,237,0.22);
-  border-color: rgba(168,85,247,0.4);
-}
-.legal-nav-icon svg { display: block; width: 17px; height: 17px; }
-
-.legal-nav-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.legal-nav-text strong {
-  font-size: 0.88rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.legal-nav-text em {
-  font-style: normal;
-  font-size: 0.72rem;
-  color: var(--muted);
-  opacity: 0.8;
-  white-space: nowrap;
-}
-
-/* ---------- Content pane ---------- */
-.legal-panel {
+.legal-doc {
   background: linear-gradient(180deg, rgba(22,18,46,0.88), rgba(11,9,24,0.92));
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
   border: 1px solid rgba(168,85,247,0.22);
   border-radius: var(--radius);
   padding: 2rem 2.1rem 2.3rem;
-  min-height: 420px;
   box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+  /* Offsets the deep-link scroll target so a jump to #privacy etc.
+     doesn't tuck the card's top edge under the fixed/compact nav. */
+  scroll-margin-top: 100px;
 }
 
-.legal-panel-head {
+.legal-doc-head {
   display: flex;
   align-items: flex-start;
   gap: 14px;
@@ -212,9 +108,7 @@
   margin-bottom: 1.6rem;
   border-bottom: 1px solid var(--border);
 }
-/* Icon chip mirrors the sidebar's active icon, ties header to whichever
-   document is selected instead of a bare text block. */
-.legal-panel-head-icon {
+.legal-doc-icon {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -225,8 +119,8 @@
   border: 1px solid rgba(168,85,247,0.32);
   color: var(--violet);
 }
-.legal-panel-head-icon svg { width: 21px; height: 21px; display: block; }
-.legal-panel-head-text { min-width: 0; }
+.legal-doc-icon svg { width: 21px; height: 21px; display: block; }
+.legal-doc-head-text { min-width: 0; }
 .legal-eyebrow {
   display: block;
   font-size: 0.72rem;
@@ -236,14 +130,12 @@
   color: var(--muted);
   margin-bottom: 0.4rem;
 }
-.legal-panel-head h2 {
+.legal-doc-head h2 {
   font-size: clamp(1.4rem, 2.6vw, 1.9rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--white);
 }
-/* Plain status line, replaces the old pulsing "Coming soon" pill —
-   same information (from doc.meta), none of the fake-urgency styling. */
 .legal-status {
   display: block;
   margin-top: 0.5rem;
@@ -253,8 +145,8 @@
 
 /* ---------- Skeleton "text loading" body ---------- */
 /* Wrapped in its own faint card so it reads as a distinct "document
-   preview" area rather than lines floating loose on the panel bg. */
-.legal-panel-skel {
+   preview" area rather than lines floating loose on the card bg. */
+.legal-doc-skel {
   background: rgba(255,255,255,0.015);
   border: 1px solid rgba(124,58,237,0.1);
   border-radius: 14px;
@@ -287,12 +179,12 @@
 
 /* Filled info card instead of a thin top-border line — reads as a
    finished, deliberate "here's what's happening" note rather than an
-   afterthought tacked under the skeleton. */
-.legal-panel-note {
+   afterthought. Sits once at the bottom of the whole stack rather than
+   repeating under every document. */
+.legal-note {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-top: 1.4rem;
   padding: 1.1rem 1.2rem;
   background: rgba(124,58,237,0.08);
   border: 1px solid rgba(124,58,237,0.2);
@@ -301,47 +193,34 @@
   font-size: 0.88rem;
   line-height: 1.65;
 }
-.legal-panel-note svg { flex-shrink: 0; margin-top: 2px; color: var(--violet); }
-.legal-panel-note a { color: var(--violet); text-decoration: underline; text-underline-offset: 2px; }
-.legal-panel-note a:hover { color: var(--glow); }
+.legal-note svg { flex-shrink: 0; margin-top: 2px; color: var(--violet); }
+.legal-note a { color: var(--violet); text-decoration: underline; text-underline-offset: 2px; }
+.legal-note a:hover { color: var(--glow); }
 
 /* ---------- Narrower screens ---------- */
 @media (max-width: 900px) {
   .content { padding: 76px 1.5rem 56px; }
 }
 
-@media (max-width: 860px) {
-  .legal-shell { grid-template-columns: 1fr; gap: 16px; }
-  /* Sidebar drops out of the sticky side-rail and just becomes a normal
-     block above the panel. .legal-nav/.legal-nav-item are left alone —
-     their desktop defaults (column, full-width items) are exactly the
-     vertical list we want here too, so there's nothing to override. */
-  .legal-sidebar-sticky { position: static; }
-}
-
 @media (max-width: 600px) {
-  .legal-panel { padding: 1.5rem 1.3rem 1.8rem; }
-  .legal-panel-skel { padding: 1.3rem 1.2rem; }
+  .legal-doc { padding: 1.5rem 1.3rem 1.8rem; }
+  .legal-doc-skel { padding: 1.3rem 1.2rem; }
 }
 
 @media (max-width: 480px) {
   .content { padding: 72px 1.1rem 48px; }
   .staff-hero { margin: 0 auto 30px; gap: 10px; }
-  .legal-nav-item { padding: 9px 10px; gap: 8px; }
-  .legal-nav-icon { width: 30px; height: 30px; }
-  .legal-nav-icon svg { width: 15px; height: 15px; }
-  .legal-nav-text strong { font-size: 0.82rem; }
-  .legal-panel { padding: 1.25rem 1.1rem 1.5rem; border-radius: 14px; }
-  .legal-panel-head { padding-bottom: 1.1rem; margin-bottom: 1.3rem; gap: 10px; }
-  .legal-panel-head-icon { width: 36px; height: 36px; border-radius: 10px; }
-  .legal-panel-head-icon svg { width: 18px; height: 18px; }
-  .legal-panel-head h2 { font-size: 1.3rem; }
-  .legal-panel-skel { padding: 1.1rem 1rem; border-radius: 12px; }
-  .legal-panel-note { margin-top: 1.2rem; padding: 0.95rem 1rem; font-size: 0.84rem; }
+  .legal-docs { gap: 18px; }
+  .legal-doc { padding: 1.25rem 1.1rem 1.5rem; border-radius: 14px; }
+  .legal-doc-head { padding-bottom: 1.1rem; margin-bottom: 1.3rem; gap: 10px; }
+  .legal-doc-icon { width: 36px; height: 36px; border-radius: 10px; }
+  .legal-doc-icon svg { width: 18px; height: 18px; }
+  .legal-doc-head h2 { font-size: 1.3rem; }
+  .legal-doc-skel { padding: 1.1rem 1rem; border-radius: 12px; }
+  .legal-note { padding: 0.95rem 1rem; font-size: 0.84rem; }
 }
 
 @media (max-width: 380px) {
-  .legal-nav-text strong { font-size: 0.78rem; }
   .legal-skel-line.title { width: 60%; }
-  .legal-panel-head { flex-wrap: wrap; }
+  .legal-doc-head { flex-wrap: wrap; }
 }
