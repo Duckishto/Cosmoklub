@@ -90,10 +90,10 @@ createApp({
         {
           title: 'Platform',
           links: [
-            { text: 'Object Browser', href: 'object.html' },
-            { text: 'Astronomy Picture', href: 'object.html' },
-            { text: 'Media Gallery', href: 'object.html' },
-            { text: '3D Planetarium', href: 'object.html' }
+            { text: 'Object Browser', href: 'tools/library.html' },
+            { text: 'Astronomy Picture', href: 'resources.html' },
+            { text: 'Media Gallery', href: 'tools/library.html' },
+            { text: '3D Planetarium', href: 'index.html' }
           ]
         },
         {
@@ -102,7 +102,7 @@ createApp({
             { text: 'Lessons', href: 'lesson.html' },
             { text: 'Roadmap', href: 'roadmap.html' },
             { text: 'Dashboard', href: 'dashboard.html' },
-            { text: 'Function Grapher', href: 'object.html' }
+            { text: 'Function Grapher', href: 'tools/calcgraph.html' }
           ]
         },
         {

@@ -446,10 +446,10 @@ createApp({
         {
           title: 'Platform',
           links: [
-            { text: 'Object Browser', href: 'object.html' },
-            { text: 'Astronomy Picture', href: 'object.html' },
-            { text: 'Media Gallery', href: 'object.html' },
-            { text: '3D Planetarium', href: 'object.html' }
+            { text: 'Object Browser', href: 'tools/library.html' },
+            { text: 'Astronomy Picture', href: 'resources.html' },
+            { text: 'Media Gallery', href: 'tools/library.html' },
+            { text: '3D Planetarium', href: 'index.html' }
           ]
         },
         {
@@ -458,7 +458,7 @@ createApp({
             { text: 'Lessons', href: 'lesson.html' },
             { text: 'Roadmap', href: 'roadmap.html' },
             { text: 'Dashboard', href: 'dashboard.html' },
-            { text: 'Function Grapher', href: 'object.html' }
+            { text: 'Function Grapher', href: 'tools/calcgraph.html' }
           ]
         },
         {
@@ -503,13 +503,13 @@ createApp({
       // fallback until an image is supplied.
       const H = this.heroImages;
       return [
-        { key: 'shotObject',   descKey: 'shotObjectDesc',   img: H.objectBrowser, href: 'object.html' },
-        { key: 'shotApod',     descKey: 'shotApodDesc',     pos: 'tr', img: H.apod,        href: 'object.html' },
-        { key: 'shotGraph',    descKey: 'shotGraphDesc',    pos: 'tl', img: H.grapher,     href: 'object.html' },
-        { key: 'shotGallery',  descKey: 'shotGalleryDesc',  pos: 'bl', img: H.gallery,     href: 'object.html' },
-        { key: 'shotPlanet',   descKey: 'shotPlanetDesc',   pos: 'br', img: H.planetarium, href: 'object.html' },
-        { key: 'shotForum',    descKey: 'shotForumDesc',    pos: 'rb', img: H.community,   href: 'object.html' },
-        { key: 'shotObserver', descKey: 'shotObserverDesc', pos: 'll', img: H.observer,    href: 'object.html' }
+        { key: 'shotObject',   descKey: 'shotObjectDesc',   img: H.objectBrowser, href: 'tools/library.html' },
+        { key: 'shotApod',     descKey: 'shotApodDesc',     pos: 'tr', img: H.apod,        href: 'resources.html' },
+        { key: 'shotGraph',    descKey: 'shotGraphDesc',    pos: 'tl', img: H.grapher,     href: 'tools/calcgraph.html' },
+        { key: 'shotGallery',  descKey: 'shotGalleryDesc',  pos: 'bl', img: H.gallery,     href: 'tools/library.html' },
+        { key: 'shotPlanet',   descKey: 'shotPlanetDesc',   pos: 'br', img: H.planetarium, href: 'index.html' },
+        { key: 'shotForum',    descKey: 'shotForumDesc',    pos: 'rb', img: H.community,   href: 'tools/forum.html' },
+        { key: 'shotObserver', descKey: 'shotObserverDesc', pos: 'll', img: H.observer,    href: 'tools/comserver.html' }
       ];
     },
     // Everything except the big central image (index 0). `idx` keeps the

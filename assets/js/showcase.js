@@ -91,7 +91,11 @@ if (wrap && canvas && tabsEl) {
   }
 
   function setLoading(on) {
-    if (loadingEl) loadingEl.classList.toggle('is-hidden', !on);
+    if (!loadingEl) return;
+    if (on && window.CosmoKlub && window.CosmoKlub.planetLoader && !loadingEl.querySelector('.ck-planets')) {
+      loadingEl.appendChild(window.CosmoKlub.planetLoader());
+    }
+    loadingEl.classList.toggle('is-hidden', !on);
   }
 
   function load(index) {

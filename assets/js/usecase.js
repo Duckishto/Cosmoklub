@@ -225,9 +225,9 @@ createApp({
     footerCols() {
       return [
         { title: 'Platform', links: [
-          { text: 'Object Browser', href: '../object.html' },
+          { text: 'Object Browser', href: '../tools/library.html' },
           { text: 'Astronomy Picture', href: '../resources.html' },
-          { text: 'Media Gallery', href: '../object.html' },
+          { text: 'Media Gallery', href: '../tools/library.html' },
           { text: '3D Planetarium', href: '../index.html' } ] },
         { title: 'Explore', links: [
           { text: 'Lessons', href: '../lesson.html' },

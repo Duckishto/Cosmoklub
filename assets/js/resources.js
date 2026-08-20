@@ -79,10 +79,10 @@ createApp({
         {
           title: 'Platform',
           links: [
-            { text: 'Object Browser', href: 'object.html' },
-            { text: 'Astronomy Picture', href: 'object.html' },
-            { text: 'Media Gallery', href: 'object.html' },
-            { text: '3D Planetarium', href: 'object.html' }
+            { text: 'Object Browser', href: 'tools/library.html' },
+            { text: 'Astronomy Picture', href: 'resources.html' },
+            { text: 'Media Gallery', href: 'tools/library.html' },
+            { text: '3D Planetarium', href: 'index.html' }
           ]
         },
         {
@@ -91,7 +91,7 @@ createApp({
             { text: 'Lessons', href: 'lesson.html' },
             { text: 'Roadmap', href: 'roadmap.html' },
             { text: 'Dashboard', href: 'dashboard.html' },
-            { text: 'Function Grapher', href: 'object.html' }
+            { text: 'Function Grapher', href: 'tools/calcgraph.html' }
           ]
         },
         {
@@ -119,10 +119,10 @@ createApp({
         tools: {
           label: 'Tools for exploring the sky',
           items: [
-            { title: 'Forum', desc: 'Ask questions and share observations with other members.', href: 'object.html', icon: ICONS.forum },
-            { title: 'Library', desc: 'Browse NASA images, media and mission archives.', href: 'object.html', icon: ICONS.book },
-            { title: 'Calculator & Graphing', desc: 'Plot functions and run astronomical calculations.', href: 'object.html', icon: ICONS.chart },
-            { title: 'Community Server', desc: 'Join the live chat and observation sessions.', href: 'object.html', icon: ICONS.server }
+            { title: 'Forum', desc: 'Ask questions and share observations with other members.', href: 'tools/forum.html', icon: ICONS.forum },
+            { title: 'Library', desc: 'Browse NASA images, media and mission archives.', href: 'tools/library.html', icon: ICONS.book },
+            { title: 'Calculator & Graphing', desc: 'Plot functions and run astronomical calculations.', href: 'tools/calcgraph.html', icon: ICONS.chart },
+            { title: 'Community Server', desc: 'Join the live chat and observation sessions.', href: 'tools/comserver.html', icon: ICONS.server }
           ]
         },
         usecases: {
