@@ -88,29 +88,29 @@ createApp({
     footerCols() {
       return [
         {
-          title: 'Platform',
+          title: 'Tools',
           links: [
-            { text: 'Object Browser', href: 'tools/library.html' },
-            { text: 'Astronomy Picture', href: 'resources.html' },
-            { text: 'Media Gallery', href: 'tools/library.html' },
-            { text: '3D Planetarium', href: 'index.html' }
+            { text: 'Forum', href: 'tools/forum.html' },
+            { text: 'Library', href: 'tools/library.html' },
+            { text: 'Calculator & Graphing', href: 'tools/calcgraph.html' },
+            { text: 'Community Server', href: 'tools/comserver.html' }
           ]
         },
         {
-          title: 'Explore',
+          title: 'Use Cases',
           links: [
-            { text: 'Lessons', href: 'lesson.html' },
-            { text: 'Roadmap', href: 'roadmap.html' },
-            { text: 'Dashboard', href: 'dashboard.html' },
-            { text: 'Function Grapher', href: 'tools/calcgraph.html' }
+            { text: 'Student', href: 'usecases/student.html' },
+            { text: 'Professor', href: 'usecases/professor.html' },
+            { text: 'Tutor', href: 'usecases/tutor.html' },
+            { text: 'Hobbyist', href: 'usecases/hobbyist.html' }
           ]
         },
         {
-          title: 'Company',
+          title: 'Project',
           links: [
             { text: 'Our Team', href: 'team.html' },
             { text: 'Apply as Staff', href: 'staff-application.html' },
-            { text: 'Community', href: '#' },
+            { text: 'Report Bug', href: '#' },
             { text: 'Contact', href: 'mailto:hello@cosmoklub.space' }
           ]
         },

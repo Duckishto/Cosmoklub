@@ -224,20 +224,20 @@ createApp({
     },
     footerCols() {
       return [
-        { title: 'Platform', links: [
-          { text: 'Object Browser', href: '../tools/library.html' },
-          { text: 'Astronomy Picture', href: '../resources.html' },
-          { text: 'Media Gallery', href: '../tools/library.html' },
-          { text: '3D Planetarium', href: '../index.html' } ] },
-        { title: 'Explore', links: [
-          { text: 'Lessons', href: '../lesson.html' },
-          { text: 'Roadmap', href: '../roadmap.html' },
-          { text: 'Dashboard', href: '../dashboard.html' },
-          { text: 'Resources', href: '../resources.html' } ] },
-        { title: 'Company', links: [
+        { title: 'Tools', links: [
+          { text: 'Forum', href: '../tools/forum.html' },
+          { text: 'Library', href: '../tools/library.html' },
+          { text: 'Calculator & Graphing', href: '../tools/calcgraph.html' },
+          { text: 'Community Server', href: '../tools/comserver.html' } ] },
+        { title: 'Use Cases', links: [
+          { text: 'Student', href: 'student.html' },
+          { text: 'Professor', href: 'professor.html' },
+          { text: 'Tutor', href: 'tutor.html' },
+          { text: 'Hobbyist', href: 'hobbyist.html' } ] },
+        { title: 'Project', links: [
           { text: 'Our Team', href: '../team.html' },
           { text: 'Apply as Staff', href: '../staff-application.html' },
-          { text: 'Community', href: '#' },
+          { text: 'Report Bug', href: '#' },
           { text: 'Contact', href: 'mailto:hello@cosmoklub.space' } ] },
         { title: 'Legal', links: [
           { text: 'Terms of Service', href: '../index.html#tos' },
