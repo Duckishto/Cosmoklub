@@ -20,6 +20,7 @@ createApp({
     return {
       mobileMenuOpen: false,
       openMenu: null,
+      rights: 'All rights reserved.',
 
       // ── Team roster ──────────────────────────────────────────────────
       // Every card on the page (Project Lead, Developer Team, Research
@@ -80,6 +81,33 @@ createApp({
           ]
         }
       };
+    },
+    // Same footer link groups as index.html, resources.html and the
+    // tools/usecases subpages, with root-relative hrefs since team.html
+    // lives at the project root.
+    footerCols() {
+      return [
+        { title: 'Tools', links: [
+          { text: 'Forum', href: 'tools/forum.html' },
+          { text: 'Library', href: 'tools/library.html' },
+          { text: 'Calculator & Graphing', href: 'tools/calcgraph.html' },
+          { text: 'Community Server', href: 'tools/comserver.html' } ] },
+        { title: 'Use Cases', links: [
+          { text: 'Student', href: 'usecases/student.html' },
+          { text: 'Professor', href: 'usecases/professor.html' },
+          { text: 'Tutor', href: 'usecases/tutor.html' },
+          { text: 'Hobbyist', href: 'usecases/hobbyist.html' } ] },
+        { title: 'Project', links: [
+          { text: 'Our Team', href: 'team.html' },
+          { text: 'Apply as Staff', href: 'staff-application.html' },
+          { text: 'Report Bug', href: '#' },
+          { text: 'Contact', href: 'mailto:hello@cosmoklub.space' } ] },
+        { title: 'Legal', links: [
+          { text: 'Terms of Service', href: 'index.html#tos' },
+          { text: 'Privacy Policy', href: 'index.html#privacy' },
+          { text: 'Community Guidelines', href: '#' },
+          { text: 'Cookie Policy', href: '#' } ] }
+      ];
     }
   },
 
