@@ -386,9 +386,8 @@ body.library-3d-active
   opacity: .75;
 
   filter:
+     
     blur(.8px)
-    
-    saturate(.78);
 
   z-index: 1;
 }
