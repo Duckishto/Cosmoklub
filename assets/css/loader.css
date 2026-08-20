@@ -3,23 +3,23 @@
   align-items: flex-end;
   justify-content: center;
   gap: 18px;
-  height: 46px;
+  height: 42px;
 }
 
 .ck-planet {
   position: relative;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   flex-shrink: 0;
-  animation: ckBob 1.35s ease-in-out infinite;
+  animation: ckWave 1.5s ease-in-out infinite;
 }
-.ck-planet:nth-child(2) { animation-delay: 0.18s; }
-.ck-planet:nth-child(3) { animation-delay: 0.36s; }
+.ck-planet:nth-child(2) { animation-delay: 0.15s; }
+.ck-planet:nth-child(3) { animation-delay: 0.3s; }
 
-@keyframes ckBob {
-  0%, 100% { transform: translateY(6px) scale(0.92); opacity: 0.55; }
-  45%      { transform: translateY(-8px) scale(1); opacity: 1; }
+@keyframes ckWave {
+  0%, 60%, 100% { transform: translateY(0) scale(0.9); opacity: 0.55; }
+  30%           { transform: translateY(-11px) scale(1); opacity: 1; }
 }
 
 .ck-planet::after {
@@ -86,17 +86,17 @@
   visibility: hidden;
 }
 .ck-boot .ck-planets {
-  gap: 26px;
-  height: 64px;
+  gap: 24px;
+  height: 58px;
 }
 .ck-boot .ck-planet {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
 }
 .ck-boot .ck-ring {
-  width: 76px;
-  height: 20px;
-  margin: -10px 0 0 -38px;
+  width: 66px;
+  height: 18px;
+  margin: -9px 0 0 -33px;
 }
 .ck-boot-text {
   font-family: var(--font);
@@ -108,11 +108,11 @@
 }
 
 @media (max-width: 600px) {
-  .ck-boot .ck-planets { gap: 18px; height: 52px; }
-  .ck-boot .ck-planet { width: 36px; height: 36px; }
-  .ck-boot .ck-ring { width: 60px; height: 16px; margin: -8px 0 0 -30px; }
-  .ck-planet { width: 28px; height: 28px; }
-  .ck-planets { gap: 14px; }
+  .ck-boot .ck-planets { gap: 16px; height: 46px; }
+  .ck-boot .ck-planet { width: 32px; height: 32px; }
+  .ck-boot .ck-ring { width: 52px; height: 14px; margin: -7px 0 0 -26px; }
+  .ck-planet { width: 24px; height: 24px; }
+  .ck-planets { gap: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
