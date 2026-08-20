@@ -1628,3 +1628,40 @@ body {
     background-size: 21px 21px, auto, auto, auto !important;
   }
 }
+
+/* Final icon layer: place the logo above the glass gradients as a fallback
+   for browsers that retain the inline SVG rendering. */
+.bottom-nav .fab-item .nav-fab > svg,
+.bottom-nav .fab-item .nav-fab svg {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* The FAB should contain no inline icon at all; the logo is supplied by
+   the CSS image layer below. */
+.bottom-nav .fab-item .nav-fab > * {
+  display: none !important;
+}
+
+.bottom-nav .fab-item .nav-fab::after {
+  background:
+    url("../images/logo-tab.png") center / 24px 24px no-repeat,
+    radial-gradient(
+      circle at var(--fab-highlight-x) var(--fab-highlight-y),
+      rgba(255,255,255,.31),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.17),
+      transparent 34% 66%,
+      rgba(168,85,247,.13)
+    ) !important;
+}
+
+@media (max-width: 720px) {
+  .bottom-nav .fab-item .nav-fab::after {
+    background-size: 21px 21px, auto, auto !important;
+  }
+}
