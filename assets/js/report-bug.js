@@ -124,10 +124,10 @@ createApp({
           { text: 'Report Bug', href: 'report-bug.html' },
           { text: 'Contact', href: 'contact.html' } ] },
         { title: 'Legal', links: [
-          { text: 'Terms of Service', href: 'index.html#tos' },
-          { text: 'Privacy Policy', href: 'index.html#privacy' },
-          { text: 'Community Guidelines', href: '#' },
-          { text: 'Cookie Policy', href: '#' } ] }
+          { text: 'Terms of Service', href: 'legal.html#tos' },
+          { text: 'Privacy Policy', href: 'legal.html#privacy' },
+          { text: 'Community Guidelines', href: 'legal.html#community' },
+          { text: 'Cookie Policy', href: 'legal.html#cookies' } ] }
       ];
     }
   },
