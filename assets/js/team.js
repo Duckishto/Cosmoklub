@@ -1,17 +1,25 @@
 // CosmoKlub — Our Team page logic.
-// Mirrors the lightweight nav/starfield/lang setup used on object.html.
+// Nav now mirrors the shared "compact" bar used on the rest of the site
+// (Tools / Use cases dropdowns + Sign in / Register) instead of the old
+// language-switcher nav.
 
 const { createApp } = Vue;
+
+const I = {
+  cap: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>`,
+  users: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>`,
+  chart: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+  scope: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  book: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  forum: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg>`,
+  server: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><line x1="6" y1="6.5" x2="6.01" y2="6.5"/><line x1="6" y1="17.5" x2="6.01" y2="17.5"/></svg>`
+};
 
 createApp({
   data() {
     return {
       mobileMenuOpen: false,
-      langOpen: false,
-      navScrolled: false,
-      navCompact: false,
-      currentLang: window.CosmoKlub.LANGS[0],
-      langs: window.CosmoKlub.LANGS,
+      openMenu: null,
 
       // ── Team roster ──────────────────────────────────────────────────
       // Every card on the page (Project Lead, Developer Team, Research
@@ -47,17 +55,46 @@ createApp({
     };
   },
 
-  mounted() {
-    window.CosmoKlub.initStarfield();
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      this.navScrolled = y > 20;
-      this.navCompact = y > 80;
-    }, { passive: true });
-    document.addEventListener('click', (e) => { if (!e.target.closest('.lang-wrap')) this.langOpen = false; });
+  computed: {
+    // Same Tools / Use cases dropdown content as index.html, resources.html
+    // and the tools/usecases subpages, with root-relative hrefs since
+    // team.html lives at the project root.
+    navMenus() {
+      return {
+        tools: {
+          label: 'Tools for exploring the sky',
+          items: [
+            { title: 'Forum', desc: 'Ask questions and share observations with other members.', href: 'tools/forum.html', icon: I.forum },
+            { title: 'Library', desc: 'Browse NASA images, media and mission archives.', href: 'tools/library.html', icon: I.book },
+            { title: 'Calculator & Graphing', desc: 'Plot functions and run astronomical calculations.', href: 'tools/calcgraph.html', icon: I.chart },
+            { title: 'Community Server', desc: 'Join the live chat and observation sessions.', href: 'tools/comserver.html', icon: I.server }
+          ]
+        },
+        usecases: {
+          label: 'User personas',
+          items: [
+            { title: 'Student', desc: 'Follow guided lessons and track your progress.', href: 'usecases/student.html', icon: I.cap },
+            { title: 'Professor', desc: 'Build courses and monitor your class in one place.', href: 'usecases/professor.html', icon: I.users },
+            { title: 'Tutor', desc: 'Run sessions and share material with your learners.', href: 'usecases/tutor.html', icon: I.chart },
+            { title: 'Hobbyist', desc: 'Plan observations and log what you find in the sky.', href: 'usecases/hobbyist.html', icon: I.scope }
+          ]
+        }
+      };
+    }
   },
 
   methods: {
-    setLang(l) { this.currentLang = l; this.langOpen = false; },
+    toggleMenu(key) { this.openMenu = this.openMenu === key ? null : key; },
+    closeMenu() { this.openMenu = null; }
+  },
+
+  mounted() {
+    window.CosmoKlub.initStarfield();
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-has-menu')) this.openMenu = null;
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.openMenu = null;
+    });
   },
 }).mount('#team-app');
