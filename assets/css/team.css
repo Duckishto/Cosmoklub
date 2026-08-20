@@ -90,16 +90,24 @@
   margin: 0 auto;
 }
 
-/* ---------- Card grid ---------- */
+/* ---------- Card grid ----------
+   auto-fill + a capped max (260px) was leaving rows with few members
+   (e.g. 3-person Developer/Research teams) stuck as small, oddly-centred
+   cards instead of growing to fill the row. auto-fit lets existing tracks
+   stretch to fill leftover space, and a higher max lets a short row of
+   2-3 cards actually use the row's width instead of staying pinned small. */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  max-width: 900px;
+  margin: 0 auto;
   justify-content: center;
   gap: 24px;
 }
 /* Project Lead gets one centred, slightly larger card */
 .team-grid-lead {
-  grid-template-columns: minmax(220px, 280px);
+  grid-template-columns: minmax(240px, 320px);
+  max-width: none;
   justify-content: center;
 }
 
@@ -107,7 +115,7 @@
   background: #0c0a1c;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 2rem 1.4rem 1.7rem;
+  padding: 2.4rem 1.6rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -138,11 +146,11 @@
 }
 
 .team-card-photo {
-  width: 104px;
-  height: 104px;
+  width: 128px;
+  height: 128px;
   border-radius: 50% !important;
   overflow: hidden;
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.3rem;
   border: 1px solid var(--border);
   outline: 4px solid rgba(168,85,247,0.08);
   outline-offset: 3px;
@@ -165,21 +173,21 @@
 }
 
 .team-grid-lead .team-card-photo {
-  width: 132px;
-  height: 132px;
+  width: 156px;
+  height: 156px;
   outline-width: 5px;
   outline-offset: 4px;
 }
 
 .team-card-name {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
   color: var(--white);
 }
 .team-card-role {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -187,7 +195,7 @@
   margin-bottom: 0.6rem;
 }
 .team-card-bio {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -269,5 +277,9 @@
 
 @media (max-width: 900px) {
   .content { padding: 96px 1.5rem 48px; }
-  .team-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 220px)); justify-content: center; gap: 16px; }
+  .team-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); max-width: 560px; justify-content: center; gap: 16px; }
+}
+
+@media (max-width: 520px) {
+  .team-grid { grid-template-columns: 1fr; max-width: 280px; }
 }
