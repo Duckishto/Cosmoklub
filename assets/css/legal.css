@@ -1,226 +1,292 @@
-/* legal.css: Legal Center hub page.
-   Reuses tokens/components from style.css (nav, aurora, footer, hero
-   eyebrow) and the same .staff-hero pattern as contact.html/staff-
-   application.html/report-bug.html, so this page sits at the same
-   1280px content width and reads as part of the same site. This file
-   DEFINES .staff-hero/.staff-h1/.staff-sub itself (it was previously
-   relying on contact.css/report-bug.css for those, which this page
-   never loads, so the header rendered completely unstyled).
+/* legal.css — CosmoKlub Legal Center, documentation-portal layout.
 
-   Layout below the hero is a single scrolling column of document
-   sections (Terms, Privacy, Community Guidelines, Cookies), one after
-   another — no sidebar, no active/selected doc. Every document is a
-   "not yet published" placeholder for now: no real policy text is
-   faked here, just a title, a status line and skeleton lines reusing
-   the project's existing shimmer-loading treatment (see .res-skel in
-   resources.css). This replaces an earlier sidebar + active-panel
-   version of this page, which combined position:sticky with
-   backdrop-filter and border-radius on the same element — a known
-   Chromium/Edge combo that painted a stray rounded "seam" artifact.
-   Going with a plain stacked layout (nothing sticky at all) sidesteps
-   that bug entirely rather than working around it.
+   Reuses the shared site chrome from style.css (the compact top nav,
+   aurora background, and site-footer) so the topbar and footer match
+   every other page exactly. Between them sits a docs layout: a fixed
+   left sidebar listing the legal documents grouped into sections, a
+   slim breadcrumb bar at the top of the reading pane, and the pane
+   itself. No real policy copy is published yet, so the pane renders a
+   shimmering skeleton placeholder (see .lg-skel-* + legalShimmer) in
+   place of each document's body.
 
-   Each .legal-doc card is deliberately semi-opaque + blurred + shadowed
-   ("glass card" treatment, ~line 60) rather than a flat fill: a flat
-   fill close to the page's own near-black background was nearly
-   invisible against the darker part of the aurora gradient, which read
-   as "content floating with nothing behind it." The blur + shadow keeps
-   each card visible regardless of what's behind it.
+   No theme toggle and no language switcher by request — the page is
+   dark-only and English-only, matching the rest of the site.
 
-   Responsive strategy: sizes are clamp()/min() where they can vary
-   continuously, with explicit fallbacks in the "Narrower screens" block
-   at the bottom for 900 / 600 / 480 / 380px. There's no separate mobile
-   layout mode to maintain here — it's the same single column at every
-   width, just with tighter padding as things narrow. */
+   Mobile: the sidebar is off-canvas (slides in from the left behind a
+   toggle button in the breadcrumb bar) and the reading pane goes full
+   width. Everything below is one column at every size. */
 
 #legal-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
 
-.content {
-  max-width: 1280px; width: 100%;
+/* ---------- Shell: sidebar + main, sitting under the fixed nav ---------- */
+.lg-shell {
+  flex: 1;
+  width: 100%;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 90px 3rem 72px;
+  padding: 92px 2rem 0;
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  gap: 2.4rem;
+  align-items: start;
 }
 
-/* ---------- Page header (same pattern as contact/report-bug/staff-application) ---------- */
-.staff-hero {
-  text-align: center;
-  max-width: 640px;
-  margin: 0 auto 44px;
+/* ---------- Sidebar ---------- */
+.lg-side {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+  max-height: calc(100vh - 112px);
+  overflow-y: auto;
+  padding: 1.4rem 1.2rem 2rem;
+  background: linear-gradient(180deg, rgba(22,18,46,0.72), rgba(11,9,24,0.78));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168,85,247,0.4) transparent;
+}
+.lg-side::-webkit-scrollbar { width: 7px; }
+.lg-side::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.35); border-radius: 4px; }
+
+.lg-side-brand {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+  padding: 0 0.4rem 1.1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
 }
-.staff-hero .hero-eyebrow { font-size: 0.85rem; }
-.staff-h1 {
-  font-size: clamp(2.1rem, 4vw, 3.2rem);
+.lg-side-brand img { height: 30px; width: auto; display: block; }
+.lg-side-brand span {
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
   color: var(--white);
-  text-shadow: 0 0 20px rgba(124,58,237,0.2);
 }
-.staff-h1 em {
-  font-style: normal;
-  background: linear-gradient(135deg, var(--violet) 20%, var(--glow) 80%);
+
+.lg-side-group { margin-bottom: 1.3rem; }
+.lg-side-group:last-child { margin-bottom: 0; }
+.lg-side-group-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 0.55rem;
+  margin-bottom: 0.5rem;
+}
+.lg-side-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.5rem 0.6rem;
+  border-radius: 9px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.lg-side-link svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.85; }
+.lg-side-link:hover { background: rgba(124,58,237,0.1); color: var(--white); }
+.lg-side-link.is-active {
+  background: rgba(124,58,237,0.18);
+  border-color: rgba(168,85,247,0.34);
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* ---------- Main reading pane ---------- */
+.lg-main { min-width: 0; padding-bottom: 3rem; }
+
+/* Breadcrumb / context bar at the top of the pane */
+.lg-crumbbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.7rem 0;
+  margin-bottom: 1.6rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.lg-crumb { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.lg-crumb .dot {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 1.6px solid rgba(168,85,247,0.5);
+  flex-shrink: 0;
+}
+.lg-crumb .sep { opacity: 0.4; }
+.lg-crumb .here { color: var(--white); font-weight: 600; }
+.lg-crumbbar-spacer { flex: 1; }
+
+/* Sidebar toggle — only visible on mobile (see media query) */
+.lg-side-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 0.42rem 0.7rem;
+  background: rgba(124,58,237,0.14);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--white);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lg-side-toggle svg { width: 16px; height: 16px; }
+
+/* Document header */
+.lg-doc-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #a855f7 0%, #c084fc 50%, #e879f9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  margin-bottom: 0.9rem;
 }
-.staff-sub {
-  color: var(--muted);
-  font-size: 1.02rem;
-  line-height: 1.75;
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-/* ---------- Docs: single stacked column ---------- */
-/* Narrower than the page's 1280px content width and centered — this is
-   a reading column now, not a two-pane layout, so full width would make
-   each line uncomfortably long. */
-.legal-docs {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 760px;
-  margin: 0 auto;
-}
-
-.legal-doc {
-  background: linear-gradient(180deg, rgba(22,18,46,0.88), rgba(11,9,24,0.92));
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border: 1px solid rgba(168,85,247,0.22);
-  border-radius: var(--radius);
-  padding: 2rem 2.1rem 2.3rem;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
-  /* Offsets the deep-link scroll target so a jump to #privacy etc.
-     doesn't tuck the card's top edge under the fixed/compact nav. */
-  scroll-margin-top: 100px;
-}
-
-.legal-doc-head {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding-bottom: 1.4rem;
-  margin-bottom: 1.6rem;
-  border-bottom: 1px solid var(--border);
-}
-.legal-doc-icon {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: rgba(124,58,237,0.16);
-  border: 1px solid rgba(168,85,247,0.32);
-  color: var(--violet);
-}
-.legal-doc-icon svg { width: 21px; height: 21px; display: block; }
-.legal-doc-head-text { min-width: 0; }
-.legal-eyebrow {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.4rem;
-}
-.legal-doc-head h2 {
-  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+.lg-doc-title {
+  font-size: clamp(2rem, 4vw, 2.9rem);
   font-weight: 800;
-  letter-spacing: -0.02em;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
   color: var(--white);
+  margin-bottom: 0.7rem;
+  text-shadow: 0 0 22px rgba(124,58,237,0.18);
 }
-.legal-status {
-  display: block;
-  margin-top: 0.5rem;
-  font-size: 0.82rem;
+.lg-doc-lead {
   color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 620px;
+}
+.lg-doc-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1.3rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(124,58,237,0.12);
+  border: 1px solid rgba(168,85,247,0.28);
+  color: var(--glow);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.lg-doc-status .pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--glow);
+  box-shadow: 0 0 0 0 rgba(192,132,252,0.6);
+  animation: lgPulse 1.8s ease-out infinite;
+}
+@keyframes lgPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(192,132,252,0.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(192,132,252,0); }
+  100% { box-shadow: 0 0 0 0 rgba(192,132,252,0); }
 }
 
-/* ---------- Skeleton "text loading" body ---------- */
-/* Wrapped in its own faint card so it reads as a distinct "document
-   preview" area rather than lines floating loose on the card bg. */
-.legal-doc-skel {
-  background: rgba(255,255,255,0.015);
-  border: 1px solid rgba(124,58,237,0.1);
-  border-radius: 14px;
-  padding: 1.6rem 1.7rem;
+.lg-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2rem 0;
 }
 
-.legal-skel-group { margin-bottom: 1.6rem; }
-.legal-skel-group:last-child { margin-bottom: 0; }
+/* ---------- Skeleton placeholder body ---------- */
+/* Stands in for the real (not-yet-written) policy text. Each "section"
+   is a faux heading line plus a few body lines, all shimmering. */
+.lg-skel-section { margin-bottom: 2.2rem; }
+.lg-skel-section:last-child { margin-bottom: 0; }
 
-.legal-skel-line {
-  height: 0.85em;
-  border-radius: 5px;
-  margin-bottom: 0.65rem;
+.lg-skel-line {
+  height: 0.9em;
+  border-radius: 6px;
+  margin-bottom: 0.8rem;
   background: linear-gradient(100deg, #191333 25%, #241c4d 50%, #191333 75%);
   background-size: 200% 100%;
   animation: legalShimmer 1.3s linear infinite;
 }
-.legal-skel-line:last-child { margin-bottom: 0; }
-.legal-skel-line.title { height: 1.1em; width: 42%; margin-bottom: 1.1rem; }
-.legal-skel-line.w-95 { width: 95%; }
-.legal-skel-line.w-88 { width: 88%; }
-.legal-skel-line.w-72 { width: 72%; }
-.legal-skel-line.w-60 { width: 60%; }
-.legal-skel-line.w-40 { width: 40%; }
+.lg-skel-line:last-child { margin-bottom: 0; }
+.lg-skel-line.head { height: 1.5em; width: 38%; margin-bottom: 1.3rem; border-radius: 7px; }
+.lg-skel-line.w-95 { width: 95%; }
+.lg-skel-line.w-90 { width: 90%; }
+.lg-skel-line.w-85 { width: 85%; }
+.lg-skel-line.w-78 { width: 78%; }
+.lg-skel-line.w-65 { width: 65%; }
+.lg-skel-line.w-50 { width: 50%; }
 
 @keyframes legalShimmer {
   from { background-position: 200% 0; }
   to   { background-position: -200% 0; }
 }
 
-/* Filled info card instead of a thin top-border line — reads as a
-   finished, deliberate "here's what's happening" note rather than an
-   afterthought. Sits once at the bottom of the whole stack rather than
-   repeating under every document. */
-.legal-note {
+/* ---------- "Coming soon" note under the skeleton ---------- */
+.lg-note {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  margin-top: 2.4rem;
   padding: 1.1rem 1.2rem;
   background: rgba(124,58,237,0.08);
   border: 1px solid rgba(124,58,237,0.2);
   border-radius: 12px;
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   line-height: 1.65;
 }
-.legal-note svg { flex-shrink: 0; margin-top: 2px; color: var(--violet); }
-.legal-note a { color: var(--violet); text-decoration: underline; text-underline-offset: 2px; }
-.legal-note a:hover { color: var(--glow); }
+.lg-note svg { flex-shrink: 0; margin-top: 2px; color: var(--violet); width: 17px; height: 17px; }
+.lg-note a { color: var(--violet); text-decoration: underline; text-underline-offset: 2px; }
+.lg-note a:hover { color: var(--glow); }
 
-/* ---------- Narrower screens ---------- */
-@media (max-width: 900px) {
-  .content { padding: 76px 1.5rem 56px; }
+/* Backdrop behind the off-canvas sidebar on mobile */
+.lg-side-scrim {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(4,3,12,0.6);
+  backdrop-filter: blur(2px);
 }
 
-@media (max-width: 600px) {
-  .legal-doc { padding: 1.5rem 1.3rem 1.8rem; }
-  .legal-doc-skel { padding: 1.3rem 1.2rem; }
+/* ---------- Tablet ---------- */
+@media (max-width: 1000px) {
+  .lg-shell { grid-template-columns: 220px minmax(0, 1fr); gap: 1.6rem; padding: 88px 1.4rem 0; }
+}
+
+/* ---------- Mobile: off-canvas sidebar ---------- */
+@media (max-width: 760px) {
+  .lg-shell {
+    display: block;
+    padding: 84px 1.2rem 0;
+  }
+  .lg-side {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 50;
+    width: 82%;
+    max-width: 300px;
+    max-height: none;
+    border-radius: 0 16px 16px 0;
+    padding-top: 1.4rem;
+    transform: translateX(-105%);
+    transition: transform 0.32s cubic-bezier(.4,0,.2,1);
+  }
+  .lg-side.is-open { transform: translateX(0); }
+  .lg-side-scrim.is-open { display: block; }
+  .lg-side-toggle { display: inline-flex; }
+  .lg-main { padding-top: 0.4rem; }
 }
 
 @media (max-width: 480px) {
-  .content { padding: 72px 1.1rem 48px; }
-  .staff-hero { margin: 0 auto 30px; gap: 10px; }
-  .legal-docs { gap: 18px; }
-  .legal-doc { padding: 1.25rem 1.1rem 1.5rem; border-radius: 14px; }
-  .legal-doc-head { padding-bottom: 1.1rem; margin-bottom: 1.3rem; gap: 10px; }
-  .legal-doc-icon { width: 36px; height: 36px; border-radius: 10px; }
-  .legal-doc-icon svg { width: 18px; height: 18px; }
-  .legal-doc-head h2 { font-size: 1.3rem; }
-  .legal-doc-skel { padding: 1.1rem 1rem; border-radius: 12px; }
-  .legal-note { padding: 0.95rem 1rem; font-size: 0.84rem; }
-}
-
-@media (max-width: 380px) {
-  .legal-skel-line.title { width: 60%; }
-  .legal-doc-head { flex-wrap: wrap; }
+  .lg-shell { padding: 80px 1rem 0; }
+  .lg-doc-lead { font-size: 0.98rem; }
+  .lg-note { padding: 0.95rem 1rem; font-size: 0.86rem; }
 }
