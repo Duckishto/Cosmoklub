@@ -29,12 +29,18 @@
 .res-hero-media {
   position: relative;
   min-height: 340px;
+  /* Cap it so a tall/portrait or very high-res APOD photo can't blow the
+     card out to its full intrinsic height — the image below is absolutely
+     positioned to fill this box, so object-fit:cover crops instead. */
+  max-height: 480px;
   background:
     radial-gradient(ellipse 70% 70% at 45% 35%, rgba(124,58,237,0.20), transparent 62%),
     linear-gradient(135deg, #14102c 0%, #0b0818 100%);
 }
 .res-hero-media img,
 .res-hero-media iframe {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -495,7 +501,7 @@ a.res-fallback:hover .res-videomark { border-color: var(--violet); background: r
   .res-hero-section, .res-feed-section { padding: 32px 0; }
   .res-hero-section { padding-top: 0; }
   .res-hero { grid-template-columns: 1fr; }
-  .res-hero-media { min-height: 240px; }
+  .res-hero-media { min-height: 240px; max-height: 340px; }
   .res-hero-body { padding: 1.4rem; }
 }
 /* tablet */
@@ -515,7 +521,7 @@ a.res-fallback:hover .res-videomark { border-color: var(--violet); background: r
   .res-dates { width: 100%; }
   .res-dates label { flex: 1 1 46%; }
   .res-dates input[type="date"] { flex: 1; width: 100%; min-height: 38px; }
-  .res-hero-media { min-height: 200px; }
+  .res-hero-media { min-height: 200px; max-height: 260px; }
 }
 /* very small phones */
 @media (max-width: 400px) {
