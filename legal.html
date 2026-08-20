@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/loader.css">
-  <link rel="stylesheet" href="assets/css/legal.css?v=4">
+  <link rel="stylesheet" href="assets/css/legal.css?v=5">
 </head>
 <body>
 
@@ -78,61 +78,91 @@
     </div>
   </nav>
 
-  <div class="content">
+  <!-- Docs portal shell: sidebar + reading pane -->
+  <div class="lg-shell">
 
-    <!-- Page header -->
-    <div class="staff-hero">
-      <span class="hero-eyebrow">Legal &amp; policies</span>
-      <h1 class="staff-h1">Legal <em>Center</em></h1>
-      <p class="staff-sub">Every agreement and policy that governs how you use CosmoKlub, collected in one place.</p>
-    </div>
+    <!-- Scrim behind the mobile off-canvas sidebar -->
+    <div class="lg-side-scrim" :class="{ 'is-open': sidebarOpen }" @click="sidebarOpen = false"></div>
 
-    <!-- Docs: one section per legal document, stacked top to bottom.
-         No sidebar, no active/selected doc — every document is just
-         visible on scroll, in order. Each is still a "coming soon"
-         placeholder (skeleton lines, no real policy text) until the
-         actual Terms/Privacy/Guidelines/Cookie copy is ready. -->
-    <section class="legal-docs">
-      <article
-        class="legal-doc"
-        v-for="doc in docs"
-        :key="doc.id"
-        :id="doc.id"
-      >
-        <div class="legal-doc-head">
-          <span class="legal-doc-icon" v-html="doc.icon"></span>
-          <div class="legal-doc-head-text">
-            <span class="legal-eyebrow">Legal Center</span>
-            <h2>{{ doc.label }}</h2>
-            <span class="legal-status">{{ doc.meta }}</span>
-          </div>
-        </div>
-
-        <!-- Placeholder body: skeleton lines standing in for the real
-             document text, which hasn't been drafted/published yet. -->
-        <div class="legal-doc-skel">
-          <div class="legal-skel-group">
-            <div class="legal-skel-line title"></div>
-            <div class="legal-skel-line w-95"></div>
-            <div class="legal-skel-line w-88"></div>
-            <div class="legal-skel-line w-72"></div>
-          </div>
-          <div class="legal-skel-group">
-            <div class="legal-skel-line title"></div>
-            <div class="legal-skel-line w-95"></div>
-            <div class="legal-skel-line w-60"></div>
-          </div>
-        </div>
-      </article>
-
-      <!-- One shared note for the whole page instead of repeating it
-           under every document. -->
-      <div class="legal-note">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <p>We're still finishing these documents and will publish the full text right here. Questions in the meantime? <a href="contact.html">Get in touch</a>.</p>
+    <!-- Sidebar: grouped list of legal documents -->
+    <aside class="lg-side" :class="{ 'is-open': sidebarOpen }">
+      <div class="lg-side-brand">
+        <img draggable="false" src="assets/images/logo.png" alt="" />
+        <span>Legal Center</span>
       </div>
-    </section>
 
+      <div class="lg-side-group" v-for="(sec, si) in sections" :key="'sec-'+si">
+        <span class="lg-side-group-label">{{ sec.label }}</span>
+        <a
+          v-for="doc in sec.docs"
+          :key="doc.id"
+          class="lg-side-link"
+          :class="{ 'is-active': doc.id === activeId }"
+          @click="selectDoc(doc.id)"
+        >
+          <span v-html="doc.icon"></span>
+          <span>{{ doc.label }}</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Reading pane -->
+    <main class="lg-main">
+
+      <!-- Breadcrumb / context bar -->
+      <div class="lg-crumbbar">
+        <button class="lg-side-toggle" @click="sidebarOpen = true" aria-label="Open document list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Documents
+        </button>
+        <div class="lg-crumb">
+          <span class="dot"></span>
+          <span class="here">{{ activeDoc.label }}</span>
+        </div>
+      </div>
+
+      <!-- Document header -->
+      <span class="lg-doc-eyebrow">Legal &amp; Policies</span>
+      <h1 class="lg-doc-title">{{ activeDoc.label }}</h1>
+      <p class="lg-doc-lead">{{ activeDoc.lead }}</p>
+      <span class="lg-doc-status"><span class="pulse"></span> Not yet published</span>
+
+      <div class="lg-divider"></div>
+
+      <!-- Placeholder body: skeleton lines standing in for the real
+           document text, which hasn't been drafted/published yet.
+           Keyed by activeDoc.id so switching documents restarts the
+           shimmer for the new selection. -->
+      <div class="lg-skel" :key="activeDoc.id">
+        <div class="lg-skel-section">
+          <div class="lg-skel-line head"></div>
+          <div class="lg-skel-line w-95"></div>
+          <div class="lg-skel-line w-90"></div>
+          <div class="lg-skel-line w-85"></div>
+          <div class="lg-skel-line w-65"></div>
+        </div>
+        <div class="lg-skel-section">
+          <div class="lg-skel-line head"></div>
+          <div class="lg-skel-line w-90"></div>
+          <div class="lg-skel-line w-95"></div>
+          <div class="lg-skel-line w-78"></div>
+        </div>
+        <div class="lg-skel-section">
+          <div class="lg-skel-line head"></div>
+          <div class="lg-skel-line w-85"></div>
+          <div class="lg-skel-line w-95"></div>
+          <div class="lg-skel-line w-90"></div>
+          <div class="lg-skel-line w-50"></div>
+        </div>
+      </div>
+
+      <!-- Coming-soon note -->
+      <div class="lg-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p>We're still finishing this document and will publish the full text right here. Questions in the meantime? <a href="contact.html">Get in touch</a>.</p>
+      </div>
+
+    </main>
   </div>
 
   <footer class="site-footer">
