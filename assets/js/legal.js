@@ -48,13 +48,6 @@ createApp({
       // reading pane shows the same skeleton for whichever is active.
       sections: [
         {
-          label: 'Getting Started',
-          docs: [
-            { id: 'overview', label: 'Legal Documentation Portal', lead: 'An overview of the agreements and policies that govern your use of CosmoKlub.', icon: DOC_ICONS.book },
-            { id: 'beta', label: 'Beta Program Terms', lead: 'Additional terms that apply while CosmoKlub is in its beta phase.', icon: DOC_ICONS.flag }
-          ]
-        },
-        {
           label: 'Core Legal Documents',
           docs: [
             { id: 'tos', label: 'Terms of Service', lead: 'The terms governing access to and use of the platform.', icon: DOC_ICONS.scroll },
