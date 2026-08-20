@@ -220,29 +220,98 @@ body {
 .content::-webkit-scrollbar-track { background: transparent; }
 .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-/* ---------- Bottom Navigation ---------- */
+/* ---------- Floating Glass Bottom Navigation ---------- */
+
 .bottom-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: calc(var(--nav-h) + var(--safe-bot));
-  padding: 0 6px var(--safe-bot);
+  left: 50%;
+  right: auto;
+  bottom: calc(14px + var(--safe-bot));
+
+  width: min(1160px, calc(100% - 3rem));
+  height: var(--nav-h);
+  padding: 0 1.5rem;
+
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background: linear-gradient(0deg, rgba(10, 8, 30, 0.96), rgba(7, 6, 26, 0.88));
-  backdrop-filter: blur(24px);
-  border-top: 1px solid var(--border);
-  z-index: 10;
-  transition: transform 0.32s cubic-bezier(.4, 0, .2, 1), opacity 0.32s ease;
+
+  transform: translateX(-50%);
+
+  /* Same glass material as the homepage compact navigation */
+  background: rgba(14, 11, 30, 0.82);
+
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
+
+  z-index: 1000;
+
+  transition:
+    transform 0.32s cubic-bezier(.4, 0, .2, 1),
+    opacity 0.32s ease;
 }
-/* Graphing mode: nav slides down out of view so the graph gets the full area.
-   Leaving graphing removes the class and it slides back up. */
+
+/* Keep Dashboard navigation elements above the glass */
+.bottom-nav .nav-item {
+  position: relative;
+  z-index: 1;
+}
+
+/*
+  Graphing mode:
+  preserve horizontal centering while sliding the bar downward.
+*/
 body.graphing-active .bottom-nav {
-  transform: translateY(100%);
+  transform: translate(
+    -50%,
+    calc(100% + 14px + var(--safe-bot))
+  );
+
   opacity: 0;
   pointer-events: none;
+}
+
+/* Leave enough room for the floating navigation */
+.content {
+  padding-bottom:
+    calc(
+      var(--nav-h) +
+      var(--safe-bot) +
+      38px
+    );
+}
+
+/* Mobile floating navigation */
+@media (max-width: 720px) {
+  .bottom-nav {
+    bottom: calc(10px + var(--safe-bot));
+    width: calc(100% - 1.5rem);
+    padding: 0 0.5rem;
+    border-radius: 16px;
+  }
+
+  body.graphing-active .bottom-nav {
+    transform: translate(
+      -50%,
+      calc(100% + 10px + var(--safe-bot))
+    );
+  }
+
+  .content {
+    padding-bottom:
+      calc(
+        var(--nav-h) +
+        var(--safe-bot) +
+        30px
+      );
+  }
 }
 
 .nav-item {
