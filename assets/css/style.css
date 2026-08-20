@@ -1456,14 +1456,6 @@ img {
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 .showcase-loading.is-hidden { opacity: 0; visibility: hidden; }
-.showcase-loading span {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  border: 2.5px solid rgba(168,85,247,0.25);
-  border-top-color: var(--violet);
-  animation: showcaseSpin 0.8s linear infinite;
-}
-@keyframes showcaseSpin { to { transform: rotate(360deg); } }
 
 .showcase-tabs {
   display: flex;
