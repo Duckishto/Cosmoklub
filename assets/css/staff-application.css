@@ -39,6 +39,12 @@
   align-items: center;
   gap: 14px;
 }
+/* Match team.html's hero-eyebrow size (0.85rem) instead of the larger
+   1rem default in style.css, so "Join The Crew" reads the same scale
+   as "The People Behind CosmoKlub" on the Our Team page. */
+.staff-hero .hero-eyebrow {
+  font-size: 0.85rem;
+}
 .staff-h1 {
   font-size: clamp(2.1rem, 4vw, 3.2rem);
   font-weight: 800;
