@@ -33,6 +33,14 @@ const PERSONAS = {
       { title: 'Threaded discussions', desc: 'Keep every question and its answers organised by topic so nothing gets lost.', image: '../assets/images/tools/forum-tool-1.jpg' },
       { title: 'Verified educators', desc: 'See which replies come from tutors and professors so you know who to trust.', image: '../assets/images/tools/forum-tool-2.jpg' },
       { title: 'Searchable history', desc: 'Find answers to questions other learners have already asked before posting your own.', image: '../assets/images/tools/forum-tool-3.jpg' }
+    ],
+    faqs: [
+      {q: 'How do I ask a question?',
+       a: 'Create a new forum post, describe what you are stuck on, and add any relevant details.'},
+      {q: 'Who can answer my question?',
+       a: 'Tutors, professors and other learners can contribute answers to forum discussions.'},
+      {q: 'Can I search previous questions?',
+       a: 'Yes. The forum includes searchable discussion history so you can find existing answers.'}
     ]
 
   },
@@ -58,6 +66,14 @@ const PERSONAS = {
       { title: 'NASA image search', desc: 'Search official NASA and mission archives by object, date or keyword.', image: '../assets/images/tools/library-tool-1.jpg' },
       { title: 'Object profiles', desc: 'Every image links back to the object catalogue entry that explains it.', image: '../assets/images/tools/library-tool-2.jpg' },
       { title: 'Saved collections', desc: 'Bookmark images and media to revisit later or share with others.', image: '../assets/images/tools/library-tool-3.jpg' }
+    ],
+    faqs: [
+      {q: 'What can I search for?',
+       a: 'You can search NASA images, mission archives and astronomical objects.'},
+      {q: 'Can I save images?',
+       a: 'Yes. You can save images and media into collections for later.'},
+      {q: 'Where do the images come from?',
+       a: 'The library is designed around official NASA and mission archives.'}
     ]
 
   },
@@ -83,6 +99,15 @@ const PERSONAS = {
       { title: 'Live chat', desc: 'Talk with other members in real time during lessons and observation sessions.', image: '../assets/images/tools/comserver-tool-1.jpg' },
       { title: 'Session scheduling', desc: 'See upcoming group sessions and join the ones that fit your plans.', image: '../assets/images/tools/comserver-tool-2.jpg' },
       { title: 'Direct access to staff', desc: 'Reach tutors and moderators directly when you need a fast answer.', image: '../assets/images/tools/comserver-tool-3.jpg' }
+    ],
+    faqs: [
+      {q: 'What happens in the community server?',
+       a: 'Members can chat in real time during lessons and observation sessions.'},
+      {q: 'Can I join observation sessions?',
+       a: 'Yes. You can see upcoming sessions and join the ones that fit your plans.'},
+      {q: 'Can I contact staff?',
+       a: 'Yes. The server provides direct access to tutors and moderators.'
+      }
     ]
 
   },
@@ -108,6 +133,14 @@ const PERSONAS = {
       { title: 'Function grapher', desc: 'Plot functions live and see how changing a variable changes the graph.', image: '../assets/images/tools/calcgraph-tool-1.jpg' },
       { title: 'Astronomical calculators', desc: 'Run the calculations used throughout the lessons, from orbits to magnitudes.', image: '../assets/images/tools/calcgraph-tool-2.jpg' },
       { title: 'Step by step working', desc: 'See the reasoning behind every result, not just the final number.', image: '../assets/images/tools/calcgraph-tool-3.jpg' }
+    ],
+    faqs: [
+      {q: 'Can I graph functions?',
+       a: 'Yes. The function grapher lets you plot functions and see how variables affect the graph.'},
+      {q: 'What astronomical calculations are available?',
+       a: 'The calculator is designed for calculations used throughout the astronomy lessons, including orbits and magnitudes.'},
+      {q: 'Can I see the working behind a result?',
+       a: 'Yes. The calculator can show the reasoning behind the result rather than only the final number.'}
     ]
 
   },
@@ -135,19 +168,7 @@ createApp({
   },
   computed: {
     persona() { return PERSONAS[this.personaKey]; },
-    faqs() {
-      return [
-        { q: 'help? help? help? help? help? help? help? help? help? help? help? help? help? help?',
-          a: 'WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!?' },
-        { q: 'help? help? help? help? help? help? help? help? help? help? help? help? help? help?',
-          a: 'WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!?' },
-        { q: 'help? help? help? help? help? help? help? help? help? help? help? help? help? help?',
-          a: 'WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!?' },
-        { q: 'help? help? help? help? help? help? help? help? help? help? help? help? help? help?',
-          a: 'WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!?' },
-        { q: 'help? help? help? help? help? help? help? help? help? help? help? help? help? help?',
-          a: 'WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!? WHAT!?' }
-      ];
+    faqs() {return this.persona.faqs || [];
     },
     navMenus() {
       return {
