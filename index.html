@@ -774,7 +774,7 @@
             <p class="pam-explanation">{{ pensiaArticle.explanation }}</p>
             <div class="pam-footer">
               <span class="pam-credit" v-if="pensiaArticle.copyright">Image © {{ pensiaArticle.copyright }}</span>
-              <span class="pam-credit" v-else>Image &amp; data via NASA's Astronomy Picture of the Day</span>
+              <span class="pam-credit" v-else>{{ pensiaArticle.credit || "Image & data via NASA's Astronomy Picture of the Day" }}</span>
               <span class="pam-date" v-if="pensiaArticle.date">{{ pensiaArticle.date }}</span>
             </div>
           </div>
@@ -804,7 +804,7 @@
   <script src="assets/js/common.js"></script>
 
   <!-- Vue app -->
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js?v=2"></script>
 
   <!-- Home <-> Object swipe transition -->
 
