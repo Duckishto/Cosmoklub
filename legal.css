@@ -1,0 +1,330 @@
+/* legal.css — CosmoKlub Legal Center, documentation-portal layout.
+
+   Reuses the shared site chrome from style.css (the compact top nav,
+   aurora background, and site-footer) so the topbar and footer match
+   every other page exactly. Between them sits a docs layout: a fixed
+   left sidebar listing the legal documents grouped into sections, a
+   slim breadcrumb bar at the top of the reading pane, and the pane
+   itself. No real policy copy is published yet, so the pane renders a
+   shimmering skeleton placeholder (see .lg-skel-* + legalShimmer) in
+   place of each document's body.
+
+   No theme toggle and no language switcher by request — the page is
+   dark-only and English-only, matching the rest of the site.
+
+   Mobile: the sidebar is off-canvas (slides in from the left behind a
+   toggle button in the breadcrumb bar) and the reading pane goes full
+   width. Everything below is one column at every size. */
+
+#legal-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ---------- Shell: sidebar + main, sitting under the fixed nav ---------- */
+.lg-shell {
+  flex: 1;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 92px 2rem 0;
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  gap: 2.4rem;
+  align-items: start;
+}
+
+/* ---------- Sidebar ---------- */
+.lg-side {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+  max-height: calc(100vh - 112px);
+  overflow-y: auto;
+  padding: 1.4rem 1.2rem 2rem;
+  background: linear-gradient(180deg, rgba(22,18,46,0.72), rgba(11,9,24,0.78));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168,85,247,0.4) transparent;
+}
+.lg-side::-webkit-scrollbar { width: 7px; }
+.lg-side::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.35); border-radius: 4px; }
+
+.lg-side-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 0.55rem 1.1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.lg-side-kicker {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lg-side-title {
+  font-weight: 800;
+  font-size: 1.12rem;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.lg-side-group { margin-bottom: 1.3rem; }
+.lg-side-group:last-child { margin-bottom: 0; }
+.lg-side-group-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 0.55rem;
+  margin-bottom: 0.5rem;
+}
+.lg-side-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.5rem 0.6rem;
+  border-radius: 9px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.lg-side-link svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.85; }
+.lg-side-link:hover { background: rgba(124,58,237,0.1); color: var(--white); }
+.lg-side-link.is-active {
+  background: rgba(124,58,237,0.18);
+  border-color: rgba(168,85,247,0.34);
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* ---------- Main reading pane ---------- */
+.lg-main { min-width: 0; padding-bottom: 3rem; }
+
+/* Breadcrumb / context bar at the top of the pane */
+.lg-crumbbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.7rem 0;
+  margin-bottom: 1.6rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.lg-crumb { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.lg-crumb .dot {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 1.6px solid rgba(168,85,247,0.5);
+  flex-shrink: 0;
+}
+.lg-crumb .sep { opacity: 0.4; }
+.lg-crumb .here { color: var(--white); font-weight: 600; }
+.lg-crumbbar-spacer { flex: 1; }
+
+/* Sidebar toggle — only visible on mobile (see media query) */
+.lg-side-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 0.42rem 0.7rem;
+  background: rgba(124,58,237,0.14);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--white);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lg-side-toggle svg { width: 16px; height: 16px; }
+
+/* ---------- Reading surface ---------- */
+/* The document sits on its own panel so the copy (and the skeleton
+   standing in for it) reads as a page of content rather than bars
+   floating loose on the aurora background. */
+.lg-doc-card {
+  background: linear-gradient(180deg, rgba(20,16,42,0.66), rgba(11,9,24,0.72));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 2.6rem 2.8rem 2.4rem;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.03);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+/* Document header */
+.lg-doc-head {
+  padding-bottom: 1.8rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.lg-doc-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #a855f7 0%, #c084fc 50%, #e879f9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.85rem;
+}
+.lg-doc-title {
+  font-size: clamp(1.9rem, 3.6vw, 2.7rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 22px rgba(124,58,237,0.18);
+}
+.lg-doc-lead {
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.7;
+  max-width: 620px;
+}
+.lg-doc-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(124,58,237,0.12);
+  border: 1px solid rgba(168,85,247,0.28);
+  color: var(--glow);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.lg-doc-status .pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--glow);
+  box-shadow: 0 0 0 0 rgba(192,132,252,0.6);
+  animation: lgPulse 1.8s ease-out infinite;
+}
+@keyframes lgPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(192,132,252,0.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(192,132,252,0); }
+  100% { box-shadow: 0 0 0 0 rgba(192,132,252,0); }
+}
+
+/* ---------- Skeleton placeholder body ---------- */
+/* Stands in for the real (not-yet-written) policy text. A lead
+   paragraph, then titled sections — shaped like real copy loading in,
+   not a stack of identical full-width bars. */
+.lg-doc-body { max-width: 680px; }
+.lg-skel-para { margin-bottom: 2.4rem; }
+.lg-skel-section { margin-bottom: 2.4rem; }
+.lg-skel-section:last-child,
+.lg-skel-para:last-child { margin-bottom: 0; }
+
+.lg-skel-line {
+  height: 12px;
+  border-radius: 5px;
+  margin-bottom: 0.85rem;
+  background: linear-gradient(100deg, rgba(124,58,237,0.07) 25%, rgba(168,85,247,0.16) 50%, rgba(124,58,237,0.07) 75%);
+  background-size: 200% 100%;
+  animation: legalShimmer 1.5s ease-in-out infinite;
+}
+.lg-skel-line:last-child { margin-bottom: 0; }
+/* Faux section heading: taller, darker-violet, more space beneath. */
+.lg-skel-line.head {
+  height: 20px;
+  width: 34%;
+  margin-bottom: 1.4rem;
+  border-radius: 6px;
+  background: linear-gradient(100deg, rgba(168,85,247,0.14) 25%, rgba(192,132,252,0.28) 50%, rgba(168,85,247,0.14) 75%);
+  background-size: 200% 100%;
+}
+.lg-skel-line.head.short { width: 26%; }
+.lg-skel-line.w-100 { width: 100%; }
+.lg-skel-line.w-97 { width: 97%; }
+.lg-skel-line.w-96 { width: 96%; }
+.lg-skel-line.w-93 { width: 93%; }
+.lg-skel-line.w-88 { width: 88%; }
+.lg-skel-line.w-84 { width: 84%; }
+.lg-skel-line.w-72 { width: 72%; }
+.lg-skel-line.w-58 { width: 58%; }
+.lg-skel-line.w-40 { width: 40%; }
+
+@keyframes legalShimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ---------- "Coming soon" note under the skeleton ---------- */
+.lg-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 2.6rem;
+  padding: 1.1rem 1.2rem;
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.lg-note svg { flex-shrink: 0; margin-top: 2px; color: var(--violet); width: 17px; height: 17px; }
+.lg-note a { color: var(--violet); text-decoration: underline; text-underline-offset: 2px; }
+.lg-note a:hover { color: var(--glow); }
+
+/* Backdrop behind the off-canvas sidebar on mobile */
+.lg-side-scrim {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(4,3,12,0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1000px) {
+  .lg-shell { grid-template-columns: 220px minmax(0, 1fr); gap: 1.6rem; padding: 88px 1.4rem 0; }
+}
+
+/* ---------- Mobile: off-canvas sidebar ---------- */
+@media (max-width: 760px) {
+  .lg-shell {
+    display: block;
+    padding: 84px 1.2rem 0;
+  }
+  .lg-side {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 50;
+    width: 82%;
+    max-width: 300px;
+    max-height: none;
+    border-radius: 0 16px 16px 0;
+    padding-top: 1.4rem;
+    transform: translateX(-105%);
+    transition: transform 0.32s cubic-bezier(.4,0,.2,1);
+  }
+  .lg-side.is-open { transform: translateX(0); }
+  .lg-side-scrim.is-open { display: block; }
+  .lg-side-toggle { display: inline-flex; }
+  .lg-main { padding-top: 0.4rem; }
+  .lg-doc-card { padding: 1.8rem 1.6rem 1.8rem; border-radius: 16px; }
+  .lg-doc-head { padding-bottom: 1.4rem; margin-bottom: 1.6rem; }
+}
+
+@media (max-width: 480px) {
+  .lg-shell { padding: 80px 1rem 0; }
+  .lg-doc-card { padding: 1.4rem 1.2rem 1.5rem; }
+  .lg-doc-lead { font-size: 0.96rem; }
+  .lg-note { padding: 0.95rem 1rem; font-size: 0.86rem; }
+}
