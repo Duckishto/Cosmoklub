@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/loader.css">
-  <link rel="stylesheet" href="assets/css/legal.css?v=2">
+  <link rel="stylesheet" href="assets/css/legal.css?v=3">
 </head>
 <body>
 
@@ -110,7 +110,8 @@
 
       <div class="legal-panel">
         <div class="legal-panel-head">
-          <div>
+          <span class="legal-panel-head-icon" v-html="activeDocObj.icon"></span>
+          <div class="legal-panel-head-text">
             <span class="legal-eyebrow">Legal Center</span>
             <h2>{{ activeDocObj.label }}</h2>
             <span class="legal-status">{{ activeDocObj.meta }}</span>
