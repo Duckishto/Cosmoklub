@@ -155,9 +155,9 @@
                   <input id="tos-chk" type="checkbox" v-model="form.tos" @change="touch('tos')" />
                   <label for="tos-chk">
                     {{ t.tosAgree }}
-                    <a href="index.html#tos">{{ t.tos }}</a>
+                    <a href="legal.html#tos" target="_blank" rel="noopener">{{ t.tos }}</a>
                     {{ t.tosAnd }}
-                    <a href="index.html#privacy">{{ t.privacy }}</a>.
+                    <a href="legal.html#privacy" target="_blank" rel="noopener">{{ t.privacy }}</a>.
                   </label>
                 </div>
                 <div class="auth-err" v-if="errors.tos">{{ errors.tos }}</div>
