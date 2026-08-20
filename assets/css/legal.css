@@ -110,26 +110,14 @@
 /* ---------- Main reading pane ---------- */
 .lg-main { min-width: 0; padding-bottom: 3rem; }
 
-/* Breadcrumb / context bar at the top of the pane */
+/* Context bar at the top of the pane. On desktop it holds nothing
+   (the sidebar toggle is mobile-only), so it collapses away; on mobile
+   it becomes the row that holds the "Documents" toggle button. */
 .lg-crumbbar {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0.7rem 0;
-  margin-bottom: 1.6rem;
-  border-bottom: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 0.88rem;
 }
-.lg-crumb { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.lg-crumb .dot {
-  width: 15px; height: 15px; border-radius: 50%;
-  border: 1.6px solid rgba(168,85,247,0.5);
-  flex-shrink: 0;
-}
-.lg-crumb .sep { opacity: 0.4; }
-.lg-crumb .here { color: var(--white); font-weight: 600; }
-.lg-crumbbar-spacer { flex: 1; }
 
 /* Sidebar toggle — only visible on mobile (see media query) */
 .lg-side-toggle {
@@ -193,30 +181,6 @@
   font-size: 1.02rem;
   line-height: 1.7;
   max-width: 620px;
-}
-.lg-doc-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 1.4rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
-  background: rgba(124,58,237,0.12);
-  border: 1px solid rgba(168,85,247,0.28);
-  color: var(--glow);
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-.lg-doc-status .pulse {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--glow);
-  box-shadow: 0 0 0 0 rgba(192,132,252,0.6);
-  animation: lgPulse 1.8s ease-out infinite;
-}
-@keyframes lgPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(192,132,252,0.55); }
-  70%  { box-shadow: 0 0 0 7px rgba(192,132,252,0); }
-  100% { box-shadow: 0 0 0 0 rgba(192,132,252,0); }
 }
 
 /* ---------- Skeleton placeholder body ---------- */
@@ -317,6 +281,7 @@
   .lg-side.is-open { transform: translateX(0); }
   .lg-side-scrim.is-open { display: block; }
   .lg-side-toggle { display: inline-flex; }
+  .lg-crumbbar { margin-bottom: 1.2rem; }
   .lg-main { padding-top: 0.4rem; }
   .lg-doc-card { padding: 1.8rem 1.6rem 1.8rem; border-radius: 16px; }
   .lg-doc-head { padding-bottom: 1.4rem; margin-bottom: 1.6rem; }
