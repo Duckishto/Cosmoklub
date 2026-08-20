@@ -1569,9 +1569,13 @@ body.graphing-active .bottom-nav {
   --safe-bot: 0px;
 }
 
-/* Keep every Dashboard surface on the same transparent aurora layer. */
+/* Keep the original dark document base under the translucent aurora. */
 html,
-body,
+body {
+  background: #07061a !important;
+}
+
+/* Let the aurora, stars, and 3D canvas show through the app surfaces. */
 #app,
 .app-shell,
 .content {
