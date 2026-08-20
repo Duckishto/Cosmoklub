@@ -2,16 +2,25 @@
    Reuses tokens/components from style.css (nav, aurora, footer, hero
    eyebrow) and the same .staff-hero pattern as contact.html/staff-
    application.html/report-bug.html, so this page sits at the same
-   1280px content width and reads as part of the same site.
+   1280px content width and reads as part of the same site. This file
+   now also DEFINES .staff-hero/.staff-h1/.staff-sub itself (it was
+   previously relying on contact.css/report-bug.css for those, which
+   this page never loads, so the header rendered completely unstyled).
 
    Layout below the hero is a docs-style sidebar + content pane (list of
    legal documents on the left, active document on the right) — same
    structural idea as a typical docs site, redrawn in CosmoKlub's own
    violet palette instead of copying anyone else's colors. Every document
-   is a "coming soon" placeholder for now: no real policy text is faked
-   here, just a title, a badge, and skeleton lines reusing the project's
-   existing shimmer-loading treatment (see .res-skel in resources.css)
-   so it reads as "still loading/being written", not as broken content. */
+   is a "not yet published" placeholder for now: no real policy text is
+   faked here, just a title, a status line and skeleton lines reusing the
+   project's existing shimmer-loading treatment (see .res-skel in
+   resources.css) so it reads as "still being written", not as broken
+   content.
+
+   Responsive strategy: every size below is clamp()/min() where it can
+   vary continuously, with explicit fallbacks in the "Narrower screens"
+   block at the bottom for 900 / 860 / 600 / 480 / 380px so the page
+   holds together all the way down to small phones, not just tablets. */
 
 #legal-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
 
@@ -21,15 +30,46 @@
   padding: 90px 3rem 72px;
 }
 
+/* ---------- Page header (same pattern as contact/report-bug/staff-application) ---------- */
+.staff-hero {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.staff-hero .hero-eyebrow { font-size: 0.85rem; }
+.staff-h1 {
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  text-shadow: 0 0 20px rgba(124,58,237,0.2);
+}
+.staff-h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--violet) 20%, var(--glow) 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.staff-sub {
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
 /* ---------- Docs shell: sidebar + content pane ---------- */
 .legal-shell {
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 28px;
   align-items: start;
-}
-@media (max-width: 860px) {
-  .legal-shell { grid-template-columns: 1fr; }
 }
 
 /* ---------- Sidebar ---------- */
@@ -41,24 +81,11 @@
   border-radius: var(--radius);
   padding: 10px;
 }
-@media (max-width: 860px) {
-  .legal-sidebar {
-    position: static;
-    padding: 10px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .legal-sidebar::-webkit-scrollbar { display: none; }
-}
 
 .legal-nav {
   display: flex;
   flex-direction: column;
   gap: 4px;
-}
-@media (max-width: 860px) {
-  .legal-nav { flex-direction: row; gap: 8px; }
 }
 
 .legal-nav-item {
@@ -75,7 +102,6 @@
   text-align: left;
   cursor: pointer;
   transition: background var(--tr), border-color var(--tr), color var(--tr);
-  white-space: nowrap;
 }
 .legal-nav-item:hover {
   background: var(--glass);
@@ -86,26 +112,43 @@
   border-color: rgba(168,85,247,0.4);
   color: var(--white);
 }
+
+/* Icon now sits in its own chip (matches .nav-dropdown-icon elsewhere on
+   the site) instead of a bare stroke icon floating in the row — reads
+   much less flat/placeholder-ish. */
 .legal-nav-icon {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: rgba(124,58,237,0.14);
+  border: 1px solid var(--border);
   color: var(--muted);
-  transition: color var(--tr);
+  transition: color var(--tr), background var(--tr), border-color var(--tr);
 }
-.legal-nav-item.active .legal-nav-icon,
-.legal-nav-item:hover .legal-nav-icon { color: var(--violet); }
-.legal-nav-icon svg { display: block; width: 18px; height: 18px; }
+.legal-nav-item:hover .legal-nav-icon,
+.legal-nav-item.active .legal-nav-icon {
+  color: var(--violet);
+  background: rgba(124,58,237,0.22);
+  border-color: rgba(168,85,247,0.4);
+}
+.legal-nav-icon svg { display: block; width: 17px; height: 17px; }
 
 .legal-nav-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.legal-nav-text strong { font-size: 0.88rem; font-weight: 700; letter-spacing: -0.01em; }
+.legal-nav-text strong {
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
 .legal-nav-text em {
   font-style: normal;
   font-size: 0.72rem;
   color: var(--muted);
   opacity: 0.8;
-}
-@media (max-width: 860px) {
-  .legal-nav-text em { display: none; }
+  white-space: nowrap;
 }
 
 /* ---------- Content pane ---------- */
@@ -116,16 +159,8 @@
   padding: 2rem 2.1rem 2.3rem;
   min-height: 420px;
 }
-@media (max-width: 600px) {
-  .legal-panel { padding: 1.5rem 1.3rem 1.8rem; }
-}
 
 .legal-panel-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
   padding-bottom: 1.4rem;
   margin-bottom: 1.6rem;
   border-bottom: 1px solid var(--border);
@@ -145,34 +180,13 @@
   letter-spacing: -0.02em;
   color: var(--white);
 }
-
-.legal-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  flex-shrink: 0;
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  background: #352762;
-  border: 1px solid rgba(168,85,247,0.35);
-  color: var(--glow);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.legal-badge-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--glow);
-  box-shadow: 0 0 0 0 rgba(192,132,252,0.6);
-  animation: legalPulse 1.8s ease-out infinite;
-}
-@keyframes legalPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(192,132,252,0.55); }
-  70%  { box-shadow: 0 0 0 7px rgba(192,132,252,0); }
-  100% { box-shadow: 0 0 0 0 rgba(192,132,252,0); }
+/* Plain status line, replaces the old pulsing "Coming soon" pill —
+   same information (from doc.meta), none of the fake-urgency styling. */
+.legal-status {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--muted);
 }
 
 /* ---------- Skeleton "text loading" body ---------- */
@@ -214,3 +228,45 @@
 .legal-panel-note svg { flex-shrink: 0; margin-top: 2px; color: var(--violet); }
 .legal-panel-note a { color: var(--violet); text-decoration: underline; text-underline-offset: 2px; }
 .legal-panel-note a:hover { color: var(--glow); }
+
+/* ---------- Narrower screens ---------- */
+@media (max-width: 900px) {
+  .content { padding: 76px 1.5rem 56px; }
+}
+
+@media (max-width: 860px) {
+  .legal-shell { grid-template-columns: 1fr; gap: 16px; }
+  .legal-sidebar {
+    position: static;
+    padding: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .legal-sidebar::-webkit-scrollbar { display: none; }
+  .legal-nav { flex-direction: row; gap: 8px; }
+  .legal-nav-item { width: auto; }
+  .legal-nav-text em { display: none; }
+}
+
+@media (max-width: 600px) {
+  .legal-panel { padding: 1.5rem 1.3rem 1.8rem; }
+}
+
+@media (max-width: 480px) {
+  .content { padding: 72px 1.1rem 48px; }
+  .staff-hero { margin: 0 auto 30px; gap: 10px; }
+  .legal-nav-item { padding: 9px 10px; gap: 8px; }
+  .legal-nav-icon { width: 30px; height: 30px; }
+  .legal-nav-icon svg { width: 15px; height: 15px; }
+  .legal-nav-text strong { font-size: 0.82rem; }
+  .legal-panel { padding: 1.25rem 1.1rem 1.5rem; border-radius: 14px; }
+  .legal-panel-head { padding-bottom: 1.1rem; margin-bottom: 1.3rem; }
+  .legal-panel-head h2 { font-size: 1.35rem; }
+  .legal-panel-note { margin-top: 1.5rem; padding-top: 1.2rem; font-size: 0.84rem; }
+}
+
+@media (max-width: 380px) {
+  .legal-nav-text strong { font-size: 0.78rem; }
+  .legal-skel-line.title { width: 60%; }
+}
