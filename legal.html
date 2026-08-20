@@ -87,77 +87,51 @@
       <p class="staff-sub">Every agreement and policy that governs how you use CosmoKlub, collected in one place.</p>
     </div>
 
-    <!-- Sidebar + docs: on wide screens a sticky doc-list sits beside the
-         stacked document cards, so the layout uses the full content width
-         instead of a lone narrow column floating in the middle of the
-         page. The sidebar highlights whichever doc is currently in view
-         (via IntersectionObserver in legal.js) and clicking an entry
-         smooth-scrolls to it, same behavior as the footer's Legal links.
-         Below 900px the sidebar collapses into a horizontal scrollable
-         tab strip above the cards (see legal.css). -->
-    <div class="legal-layout">
-
-      <nav class="legal-sidebar" aria-label="Legal documents">
-        <span class="legal-sidebar-label">On this page</span>
-        <a
-          v-for="doc in docs"
-          :key="'side-'+doc.id"
-          href="#"
-          class="legal-sidebar-item"
-          :class="{ active: activeDoc === doc.id }"
-          @click.prevent="scrollToDoc(doc.id)"
-        >
-          <span class="legal-sidebar-icon" v-html="doc.icon"></span>
-          <span class="legal-sidebar-text">{{ doc.label }}</span>
-        </a>
-      </nav>
-
-      <!-- Docs: one section per legal document, stacked top to bottom.
-           Each is still a "coming soon" placeholder (skeleton lines, no
-           real policy text) until the actual Terms/Privacy/Guidelines/
-           Cookie copy is ready. -->
-      <section class="legal-docs">
-        <article
-          class="legal-doc"
-          v-for="doc in docs"
-          :key="doc.id"
-          :id="doc.id"
-        >
-          <div class="legal-doc-head">
-            <span class="legal-doc-icon" v-html="doc.icon"></span>
-            <div class="legal-doc-head-text">
-              <span class="legal-eyebrow">Legal Center</span>
-              <h2>{{ doc.label }}</h2>
-              <span class="legal-status">{{ doc.meta }}</span>
-            </div>
+    <!-- Docs: one section per legal document, stacked top to bottom.
+         No sidebar, no active/selected doc — every document is just
+         visible on scroll, in order. Each is still a "coming soon"
+         placeholder (skeleton lines, no real policy text) until the
+         actual Terms/Privacy/Guidelines/Cookie copy is ready. -->
+    <section class="legal-docs">
+      <article
+        class="legal-doc"
+        v-for="doc in docs"
+        :key="doc.id"
+        :id="doc.id"
+      >
+        <div class="legal-doc-head">
+          <span class="legal-doc-icon" v-html="doc.icon"></span>
+          <div class="legal-doc-head-text">
+            <span class="legal-eyebrow">Legal Center</span>
+            <h2>{{ doc.label }}</h2>
+            <span class="legal-status">{{ doc.meta }}</span>
           </div>
-
-          <!-- Placeholder body: skeleton lines standing in for the real
-               document text, which hasn't been drafted/published yet. -->
-          <div class="legal-doc-skel">
-            <div class="legal-skel-group">
-              <div class="legal-skel-line title"></div>
-              <div class="legal-skel-line w-95"></div>
-              <div class="legal-skel-line w-88"></div>
-              <div class="legal-skel-line w-72"></div>
-            </div>
-            <div class="legal-skel-group">
-              <div class="legal-skel-line title"></div>
-              <div class="legal-skel-line w-95"></div>
-              <div class="legal-skel-line w-60"></div>
-            </div>
-          </div>
-        </article>
-
-        <!-- One shared note for the whole page instead of repeating it
-             under every document. -->
-        <div class="legal-note">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          <p>We're still finishing these documents and will publish the full text right here. Questions in the meantime? <a href="contact.html">Get in touch</a>.</p>
         </div>
-      </section>
 
-    </div>
+        <!-- Placeholder body: skeleton lines standing in for the real
+             document text, which hasn't been drafted/published yet. -->
+        <div class="legal-doc-skel">
+          <div class="legal-skel-group">
+            <div class="legal-skel-line title"></div>
+            <div class="legal-skel-line w-95"></div>
+            <div class="legal-skel-line w-88"></div>
+            <div class="legal-skel-line w-72"></div>
+          </div>
+          <div class="legal-skel-group">
+            <div class="legal-skel-line title"></div>
+            <div class="legal-skel-line w-95"></div>
+            <div class="legal-skel-line w-60"></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- One shared note for the whole page instead of repeating it
+           under every document. -->
+      <div class="legal-note">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p>We're still finishing these documents and will publish the full text right here. Questions in the meantime? <a href="contact.html">Get in touch</a>.</p>
+      </div>
+    </section>
 
   </div>
 
