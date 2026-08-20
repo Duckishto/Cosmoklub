@@ -1,456 +1,182 @@
 /* ===================================================
    CosmoKlub Library — cinematic 3D enhancement layer
+   This file is intentionally isolated from dashboard.css.
    =================================================== */
 
-/* Prevent underline on the center Home button */
 .bottom-nav a.nav-item {
   text-decoration: none;
 }
 
-/* ===================================================
-   LOGO SIZE PROTECTION
-   =================================================== */
-
-.topbar .brand {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-
-  width: auto !important;
-  max-width: 190px !important;
-  height: var(--topbar-h) !important;
-
-  flex-shrink: 0 !important;
-  overflow: hidden !important;
-  text-decoration: none !important;
-}
-
-.topbar .brand-logo {
-  display: block !important;
-
-  width: auto !important;
-  height: 36px !important;
-
-  max-width: 180px !important;
-  max-height: 36px !important;
-
-  object-fit: contain !important;
-  user-select: none !important;
-}
-
-/* ===================================================
-   THREE.JS CANVAS
-   =================================================== */
-
 #library-3d-canvas {
   position: fixed;
-
   top: var(--topbar-h);
   right: 0;
   bottom: calc(var(--nav-h) + var(--safe-bot));
   left: 0;
-
   z-index: 0;
-
   width: 100%;
-
-  height:
-    calc(
-      100%
-      - var(--topbar-h)
-      - var(--nav-h)
-      - var(--safe-bot)
-    );
-
+  height: calc(100% - var(--topbar-h) - var(--nav-h) - var(--safe-bot));
   pointer-events: none;
-
   opacity: 0;
-
-  filter:
-    saturate(1.15)
-    contrast(1.04);
-
-  transition:
-    opacity
-    650ms
-    cubic-bezier(.22, 1, .36, 1);
+  filter: saturate(1.15) contrast(1.04);
+  transition: opacity 650ms cubic-bezier(.22, 1, .36, 1);
 }
 
 body.library-3d-active #library-3d-canvas {
   opacity: .92;
 }
 
-/* ===================================================
-   BACKGROUND
-   =================================================== */
-
 body.library-3d-active .aurora-wrap {
   opacity: .72;
-
-  transition:
-    opacity
-    600ms
-    ease;
+  transition: opacity 600ms ease;
 }
 
 body.library-3d-active .page-grid {
   opacity: .38;
-
-  mask-image:
-    linear-gradient(
-      to bottom,
-      #000 0%,
-      rgba(0, 0, 0, .4) 58%,
-      transparent 100%
-    );
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .4) 58%, transparent 100%);
 }
-
-/* ===================================================
-   LIBRARY LAYOUT
-   =================================================== */
 
 body.library-3d-active .content {
   position: relative;
-
   z-index: 2;
-
   perspective: 1400px;
   perspective-origin: 50% 25%;
 }
 
 body.library-3d-active .library-roadmap {
   position: relative;
-
   z-index: 2;
-
   isolation: isolate;
 }
 
 body.library-3d-active .library-roadmap::before {
   content: '';
-
   position: fixed;
-
   top: var(--topbar-h);
   right: 0;
   bottom: calc(var(--nav-h) + var(--safe-bot));
   left: 0;
-
   z-index: -1;
-
   pointer-events: none;
-
   background:
-    radial-gradient(
-      circle at 77% 29%,
-      rgba(124, 58, 237, .17),
-      transparent 31%
-    ),
-
-    radial-gradient(
-      circle at 19% 19%,
-      rgba(20, 184, 166, .1),
-      transparent 28%
-    ),
-
-    linear-gradient(
-      180deg,
-      rgba(2, 4, 18, .03),
-      rgba(3, 2, 12, .4)
-    );
+    radial-gradient(circle at 77% 29%, rgba(124, 58, 237, .17), transparent 31%),
+    radial-gradient(circle at 19% 19%, rgba(20, 184, 166, .1), transparent 28%),
+    linear-gradient(180deg, rgba(2, 4, 18, .03), rgba(3, 2, 12, .4));
 }
-
-/* ===================================================
-   GLASS ELEMENTS
-   =================================================== */
 
 body.library-3d-active .library-hero,
 body.library-3d-active .rank-panel,
 body.library-3d-active .roadmap-card {
-  border-color:
-    rgba(168, 85, 247, .34);
-
-  backdrop-filter:
-    blur(14px)
-    saturate(1.2);
-
-  -webkit-backdrop-filter:
-    blur(14px)
-    saturate(1.2);
+  border-color: rgba(168, 85, 247, .34);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
 }
-
-/* ===================================================
-   LIBRARY HERO
-   =================================================== */
 
 body.library-3d-active .library-hero {
   position: relative;
-
   overflow: hidden;
-
   background:
-    linear-gradient(
-      115deg,
-      rgba(7, 20, 46, .62),
-      rgba(33, 12, 61, .44)
-    ),
-
+    linear-gradient(115deg, rgba(7, 20, 46, .62), rgba(33, 12, 61, .44)),
     rgba(5, 5, 20, .34);
-
   box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, .06),
-
-    0 30px 100px
-    rgba(0, 0, 0, .2);
-
-  animation:
-    library-hero-arrive
-    800ms
-    cubic-bezier(.16, 1, .3, 1)
-    both;
+    inset 0 1px 0 rgba(255, 255, 255, .06),
+    0 30px 100px rgba(0, 0, 0, .2);
+  animation: library-hero-arrive 800ms cubic-bezier(.16, 1, .3, 1) both;
 }
 
 body.library-3d-active .library-hero::after {
   content: '';
-
   position: absolute;
-
   top: -70%;
   left: -30%;
-
   width: 45%;
   height: 240%;
-
   pointer-events: none;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, .075),
-      transparent
-    );
-
-  transform:
-    rotate(18deg);
-
-  animation:
-    library-hero-scan
-    7s
-    ease-in-out
-    infinite
-    1s;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .075), transparent);
+  transform: rotate(18deg);
+  animation: library-hero-scan 7s ease-in-out infinite 1s;
 }
-
-/* ===================================================
-   ROADMAP GRID
-   =================================================== */
 
 body.library-3d-active .roadmap-grid {
   perspective: 1200px;
 }
 
-/* ===================================================
-   ROADMAP CARDS
-   =================================================== */
-
 body.library-3d-active .roadmap-card {
   background:
-    linear-gradient(
-      135deg,
-      rgba(8, 33, 63, .48),
-      rgba(38, 10, 61, .38)
-    ),
-
+    linear-gradient(135deg, rgba(8, 33, 63, .48), rgba(38, 10, 61, .38)),
     rgba(7, 5, 24, .44);
-
   box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, .055),
-
-    0 18px 55px
-    rgba(0, 0, 0, .16);
-
-  animation:
-    library-card-arrive
-    700ms
-    cubic-bezier(.16, 1, .3, 1)
-    both;
+    inset 0 1px 0 rgba(255, 255, 255, .055),
+    0 18px 55px rgba(0, 0, 0, .16);
+  animation: library-card-arrive 700ms cubic-bezier(.16, 1, .3, 1) both;
 }
 
-body.library-3d-active .roadmap-card:nth-child(2) {
-  animation-delay: 70ms;
-}
-
-body.library-3d-active .roadmap-card:nth-child(3) {
-  animation-delay: 140ms;
-}
-
-body.library-3d-active .roadmap-card:nth-child(4) {
-  animation-delay: 210ms;
-}
-
-body.library-3d-active .roadmap-card:nth-child(5) {
-  animation-delay: 280ms;
-}
-
-body.library-3d-active .roadmap-card:nth-child(6) {
-  animation-delay: 350ms;
-}
+body.library-3d-active .roadmap-card:nth-child(2) { animation-delay: 70ms; }
+body.library-3d-active .roadmap-card:nth-child(3) { animation-delay: 140ms; }
+body.library-3d-active .roadmap-card:nth-child(4) { animation-delay: 210ms; }
+body.library-3d-active .roadmap-card:nth-child(5) { animation-delay: 280ms; }
+body.library-3d-active .roadmap-card:nth-child(6) { animation-delay: 350ms; }
 
 body.library-3d-active .roadmap-card.card-liquid-hover {
-  border-color:
-    rgba(192, 132, 252, .66);
-
+  border-color: rgba(192, 132, 252, .66);
   box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, .1),
-
-    0 24px 70px
-    rgba(12, 4, 32, .52),
-
-    0 0 35px
-    rgba(124, 58, 237, .13);
+    inset 0 1px 0 rgba(255, 255, 255, .1),
+    0 24px 70px rgba(12, 4, 32, .52),
+    0 0 35px rgba(124, 58, 237, .13);
 }
 
-body.library-3d-active
-.roadmap-card
-> *:not(.card-mouse-light) {
-  transform:
-    translateZ(20px);
+body.library-3d-active .roadmap-card > *:not(.card-mouse-light) {
+  transform: translateZ(20px);
 }
-
-/* ===================================================
-   SMALL UI ELEMENTS
-   =================================================== */
 
 body.library-3d-active .roadmap-icon,
 body.library-3d-active .lesson-tier,
 body.library-3d-active .unlock-pill {
-  box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, .08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
 }
-
-/* ===================================================
-   RANK PANEL
-   =================================================== */
 
 body.library-3d-active .rank-panel {
   background:
-    radial-gradient(
-      circle at 75% 15%,
-      rgba(216, 180, 254, .13),
-      transparent 45%
-    ),
-
-    linear-gradient(
-      135deg,
-      rgba(81, 20, 137, .52),
-      rgba(42, 10, 77, .46)
-    );
-
+    radial-gradient(circle at 75% 15%, rgba(216, 180, 254, .13), transparent 45%),
+    linear-gradient(135deg, rgba(81, 20, 137, .52), rgba(42, 10, 77, .46));
   box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, .09),
-
-    0 22px 60px
-    rgba(13, 4, 30, .25);
+    inset 0 1px 0 rgba(255, 255, 255, .09),
+    0 22px 60px rgba(13, 4, 30, .25);
 }
-
-/* ===================================================
-   ANIMATIONS
-   =================================================== */
 
 @keyframes library-hero-arrive {
   from {
     opacity: 0;
-
-    transform:
-      translate3d(0, 24px, -40px)
-      scale(.985);
-
-    filter:
-      blur(8px);
+    transform: translate3d(0, 24px, -40px) scale(.985);
+    filter: blur(8px);
   }
-
   to {
     opacity: 1;
-
-    transform:
-      translate3d(0, 0, 0)
-      scale(1);
-
-    filter:
-      blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
   }
 }
 
 @keyframes library-card-arrive {
   from {
     opacity: 0;
-
-    transform:
-      translate3d(0, 30px, -60px)
-      rotateX(4deg);
-
-    filter:
-      blur(6px);
+    transform: translate3d(0, 30px, -60px) rotateX(4deg);
+    filter: blur(6px);
   }
-
   to {
     opacity: 1;
-
-    transform:
-      translate3d(0, 0, 0)
-      rotateX(0);
-
-    filter:
-      blur(0);
+    transform: translate3d(0, 0, 0) rotateX(0);
+    filter: blur(0);
   }
 }
 
 @keyframes library-hero-scan {
-  0%,
-  12% {
-    transform:
-      translateX(0)
-      rotate(18deg);
-
-    opacity: 0;
-  }
-
-  25% {
-    opacity: 1;
-  }
-
-  50%,
-  100% {
-    transform:
-      translateX(430%)
-      rotate(18deg);
-
-    opacity: 0;
-  }
+  0%, 12% { transform: translateX(0) rotate(18deg); opacity: 0; }
+  25% { opacity: 1; }
+  50%, 100% { transform: translateX(430%) rotate(18deg); opacity: 0; }
 }
 
-/* ===================================================
-   MOBILE
-   =================================================== */
-
 @media (max-width: 720px) {
-  .topbar .brand {
-    max-width: 160px !important;
-  }
-
-  .topbar .brand-logo {
-    height: 32px !important;
-
-    max-width: 150px !important;
-    max-height: 32px !important;
-  }
-
   body.library-3d-active #library-3d-canvas {
     opacity: .7;
   }
@@ -458,25 +184,14 @@ body.library-3d-active .rank-panel {
   body.library-3d-active .library-hero,
   body.library-3d-active .rank-panel,
   body.library-3d-active .roadmap-card {
-    backdrop-filter:
-      blur(10px)
-      saturate(1.12);
-
-    -webkit-backdrop-filter:
-      blur(10px)
-      saturate(1.12);
+    backdrop-filter: blur(10px) saturate(1.12);
+    -webkit-backdrop-filter: blur(10px) saturate(1.12);
   }
 
-  body.library-3d-active
-  .roadmap-card
-  > *:not(.card-mouse-light) {
+  body.library-3d-active .roadmap-card > *:not(.card-mouse-light) {
     transform: none;
   }
 }
-
-/* ===================================================
-   REDUCED MOTION
-   =================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   #library-3d-canvas,
