@@ -1,354 +1,355 @@
 /* ===================================================
-   CosmoKlub Dashboard Forum — 3D Animation Layer
-   Only targets the Forum tab inside dashboard.html
+   CosmoKlub Dashboard Forum
+   Performance-optimized animation layer
    =================================================== */
 
-/* ---------- Forum layout ---------- */
+/*
+  Performance changes:
+
+  - No backdrop-filter on thread cards.
+  - No filter:blur() across every surrounding card.
+  - No changing card width, height, margin or padding.
+  - No permanent will-change layers.
+  - No large moving reflections across full-width cards.
+  - Uses GPU-friendly scale, translate and opacity.
+*/
+
+/* ---------- Forum feed ---------- */
 
 .thread-list {
   position: relative;
   isolation: isolate;
-  perspective: 1500px;
-  perspective-origin: 50% 20%;
-  padding-inline: 10px;
-  margin-inline: -10px;
+  perspective: 1300px;
+  perspective-origin: 50% 16%;
 }
 
-.thread-card {
-  --forum-card-scale: 1;
-  --forum-card-blur: 0px;
-  --forum-card-brightness: 1;
+/* ---------- Thread cards ---------- */
 
+.thread-card {
   position: relative;
   z-index: 1;
-  width: 100%;
-  min-height: 118px;
   overflow: hidden;
 
-  scale: var(--forum-card-scale);
-  filter:
-    blur(var(--forum-card-blur))
-    brightness(var(--forum-card-brightness));
+  scale: 1;
+  translate: 0 0;
+  opacity: 1;
 
   transform-origin: center;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
 
-  will-change:
-    transform,
-    scale,
-    filter,
-    width,
-    min-height,
-    padding,
-    margin;
+  /*
+    Isolates card layout calculations without
+    clipping the card's external shadow.
+  */
+  contain: layout style;
 
   background:
-    radial-gradient(
-      circle at 85% 15%,
-      rgba(168, 85, 247, .055),
-      transparent 38%
-    ),
     linear-gradient(
       135deg,
-      rgba(8, 33, 63, .3),
-      rgba(38, 10, 61, .26)
+      rgba(8, 33, 63, .27),
+      rgba(38, 10, 61, .23)
     ),
-    rgba(7, 5, 24, .55);
-
-  backdrop-filter:
-    blur(13px)
-    saturate(1.16);
-
-  -webkit-backdrop-filter:
-    blur(13px)
-    saturate(1.16);
+    rgba(7, 5, 24, .52);
 
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .045),
-    0 14px 36px rgba(0, 0, 0, .12);
+    inset 0 1px 0
+    rgba(255, 255, 255, .035),
+
+    0 10px 28px
+    rgba(0, 0, 0, .1);
 
   animation:
     forum-thread-arrive
-    760ms
+    520ms
     cubic-bezier(.16, 1, .3, 1)
     backwards;
 
   transition:
-    width 500ms cubic-bezier(.16, 1, .3, 1),
-    min-height 500ms cubic-bezier(.16, 1, .3, 1),
-    padding 500ms cubic-bezier(.16, 1, .3, 1),
-    margin 500ms cubic-bezier(.16, 1, .3, 1),
-    scale 500ms cubic-bezier(.16, 1, .3, 1),
-    filter 380ms ease,
-    border-color 300ms ease,
-    background 380ms ease,
-    box-shadow 500ms cubic-bezier(.16, 1, .3, 1);
+    scale
+    300ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    translate
+    300ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    opacity
+    220ms
+    ease,
+
+    border-color
+    220ms
+    ease,
+
+    background
+    260ms
+    ease,
+
+    box-shadow
+    300ms
+    ease;
 }
 
-/* ---------- Staggered entrance ---------- */
+/* ---------- Lightweight entrance delays ---------- */
 
 .thread-card:nth-child(1) {
-  animation-delay: 100ms;
+  animation-delay: 60ms;
 }
 
 .thread-card:nth-child(2) {
-  animation-delay: 160ms;
+  animation-delay: 100ms;
 }
 
 .thread-card:nth-child(3) {
-  animation-delay: 220ms;
+  animation-delay: 140ms;
 }
 
 .thread-card:nth-child(4) {
-  animation-delay: 280ms;
+  animation-delay: 180ms;
 }
 
 .thread-card:nth-child(5) {
-  animation-delay: 340ms;
+  animation-delay: 220ms;
 }
 
 .thread-card:nth-child(6) {
-  animation-delay: 400ms;
+  animation-delay: 260ms;
 }
 
 .thread-card:nth-child(7) {
-  animation-delay: 460ms;
+  animation-delay: 300ms;
 }
 
 .thread-card:nth-child(8) {
-  animation-delay: 520ms;
+  animation-delay: 340ms;
 }
 
 .thread-card:nth-child(n + 9) {
-  animation-delay: 580ms;
+  animation-delay: 380ms;
 }
 
-/* ---------- Selected-card focus ---------- */
+/* ---------- Feed focus ---------- */
 
 /*
-  The hovered card expands vertically and horizontally.
-  The surrounding cards become smaller and blurred,
-  but they remain fully visible with no opacity fading.
+  Opacity and scale are much faster than blurring
+  every card. No layout reflow is triggered.
 */
 
-.thread-list:has(.thread-card:hover)
+.thread-list:hover
 .thread-card:not(:hover) {
-  --forum-card-scale: .975;
-  --forum-card-blur: .75px;
-  --forum-card-brightness: .88;
-
-  width: calc(100% - 22px);
-  min-height: 104px;
-  margin-inline: 11px;
-  padding-block: 11px;
-  z-index: 1;
+  scale: .992;
+  opacity: .76;
 }
 
-.thread-list:has(.thread-card:hover)
-.thread-card:hover {
-  --forum-card-scale: 1.014;
-  --forum-card-blur: 0px;
-  --forum-card-brightness: 1.08;
+/* Selected thread */
 
-  width: calc(100% + 16px);
-  min-height: 154px;
-  margin-inline: -8px;
-  padding: 20px 22px;
-  z-index: 20;
+.thread-list
+.thread-card:hover {
+  z-index: 10;
+  scale: 1.01;
+  opacity: 1;
 
   border-color:
-    rgba(192, 132, 252, .72);
+    rgba(192, 132, 252, .62);
 
   background:
     radial-gradient(
-      circle at 84% 14%,
-      rgba(168, 85, 247, .2),
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 18% 110%,
-      rgba(14, 165, 233, .1),
-      transparent 38%
+      circle at 84% 18%,
+      rgba(168, 85, 247, .12),
+      transparent 35%
     ),
     linear-gradient(
       135deg,
-      rgba(9, 39, 72, .56),
-      rgba(51, 13, 76, .5)
+      rgba(10, 39, 70, .43),
+      rgba(48, 13, 70, .4)
     ),
-    rgba(8, 5, 28, .72);
+    rgba(8, 5, 28, .65);
 
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .11),
-    0 30px 75px rgba(5, 2, 20, .5),
-    0 0 42px rgba(124, 58, 237, .16);
+    inset 0 1px 0
+    rgba(255, 255, 255, .075),
+
+    0 18px 44px
+    rgba(5, 2, 20, .32),
+
+    0 0 24px
+    rgba(124, 58, 237, .08);
 }
 
-/* ---------- Cursor light ---------- */
+/*
+  Promote only the card currently being interacted
+  with instead of promoting every thread permanently.
+*/
 
-.thread-card::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-
-  background:
-    radial-gradient(
-      circle at 72% 20%,
-      rgba(216, 180, 254, .16),
-      transparent 30%
-    );
-
-  transition:
-    opacity 350ms ease;
+.thread-card:hover {
+  will-change:
+    transform,
+    scale,
+    translate;
 }
 
-.thread-card:hover::after {
-  opacity: 1;
-}
-
-/* Keep thread content above visual effects */
-
-.thread-card > * {
-  position: relative;
-  z-index: 2;
-  transform: translateZ(18px);
-}
-
-/* ---------- Moving glass reflection ---------- */
+/* ---------- Lightweight card glow ---------- */
 
 .thread-card::before {
   content: "";
+
   position: absolute;
-  top: -140%;
-  left: -34%;
-  z-index: 1;
-  width: 20%;
-  height: 390%;
+  top: -45%;
+  right: -8%;
+  z-index: 0;
+
+  width: 220px;
+  height: 220px;
+
   pointer-events: none;
   opacity: 0;
-  rotate: 16deg;
+
+  border-radius: 50%;
 
   background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(192, 132, 252, .07),
-      rgba(255, 255, 255, .12),
-      rgba(192, 132, 252, .06),
-      transparent
+    radial-gradient(
+      circle,
+      rgba(192, 132, 252, .13),
+      transparent 68%
     );
 
   transition:
-    left 900ms cubic-bezier(.16, 1, .3, 1),
-    opacity 260ms ease;
+    opacity 220ms ease;
 }
 
 .thread-card:hover::before {
-  left: 120%;
   opacity: 1;
 }
 
-/* ---------- Thread content animations ---------- */
+/* Keep content above the glow */
 
-.thread-head {
+.thread-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Thread content ---------- */
+
+.thread-head,
+.thread-title,
+.thread-body,
+.thread-foot {
+  translate: 0 0;
+
   transition:
-    translate 420ms cubic-bezier(.16, 1, .3, 1);
+    translate
+    260ms
+    cubic-bezier(.16, 1, .3, 1);
+}
+
+.thread-card:hover .thread-head {
+  translate: 2px 0;
+}
+
+.thread-card:hover .thread-title {
+  translate: 3px 0;
+}
+
+.thread-card:hover .thread-body {
+  translate: 3px 0;
+}
+
+.thread-card:hover .thread-foot {
+  translate: 2px 0;
 }
 
 .thread-title {
   transition:
-    translate 420ms cubic-bezier(.16, 1, .3, 1),
-    color 300ms ease,
-    letter-spacing 300ms ease;
-}
+    translate
+    260ms
+    cubic-bezier(.16, 1, .3, 1),
 
-.thread-body {
-  transition:
-    translate 440ms cubic-bezier(.16, 1, .3, 1),
-    color 300ms ease;
-}
-
-.thread-foot {
-  transition:
-    translate 460ms cubic-bezier(.16, 1, .3, 1);
-}
-
-.thread-card:hover .thread-head {
-  translate: 3px -1px;
+    color
+    220ms
+    ease;
 }
 
 .thread-card:hover .thread-title {
-  translate: 5px 0;
   color: #ffffff;
-  letter-spacing: .002em;
 }
 
-.thread-card:hover .thread-body {
-  translate: 5px 0;
-  color: rgba(233, 213, 255, .76);
-}
-
-.thread-card:hover .thread-foot {
-  translate: 4px 2px;
-}
-
-/* ---------- Avatar movement ---------- */
+/* ---------- Avatar ---------- */
 
 .avatar {
+  scale: 1;
+  rotate: 0deg;
+  backface-visibility: hidden;
+
   transition:
-    scale 400ms cubic-bezier(.16, 1, .3, 1),
-    rotate 400ms cubic-bezier(.16, 1, .3, 1),
-    box-shadow 350ms ease,
-    filter 350ms ease;
+    scale
+    280ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    rotate
+    280ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    box-shadow
+    250ms
+    ease;
 }
 
 .thread-card:hover .avatar {
-  scale: 1.1;
-  rotate: -4deg;
-  filter: brightness(1.12) saturate(1.12);
+  scale: 1.065;
+  rotate: -2deg;
 
   box-shadow:
-    0 10px 26px rgba(0, 0, 0, .35),
-    0 0 20px rgba(168, 85, 247, .2);
+    0 7px 18px
+    rgba(0, 0, 0, .25);
 }
 
-/* ---------- Category tag ---------- */
+/* ---------- Thread category ---------- */
 
 .thread-tag {
+  scale: 1;
+
   transition:
-    translate 360ms cubic-bezier(.16, 1, .3, 1),
-    scale 360ms cubic-bezier(.16, 1, .3, 1),
-    border-color 300ms ease,
-    background 300ms ease,
-    box-shadow 300ms ease;
+    scale
+    240ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    border-color
+    220ms
+    ease,
+
+    background
+    220ms
+    ease;
 }
 
 .thread-card:hover .thread-tag {
-  translate: -3px 1px;
-  scale: 1.06;
+  scale: 1.025;
 
   border-color:
-    rgba(192, 132, 252, .48);
+    rgba(192, 132, 252, .38);
 
   background:
-    rgba(168, 85, 247, .18);
-
-  box-shadow:
-    0 0 18px rgba(168, 85, 247, .12);
+    rgba(168, 85, 247, .14);
 }
 
-/* ---------- Stats ---------- */
+/* ---------- Thread statistics ---------- */
 
 .stat {
+  translate: 0 0;
+
   transition:
-    translate 300ms cubic-bezier(.16, 1, .3, 1),
-    color 250ms ease;
+    translate
+    220ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    color
+    200ms
+    ease;
 }
 
 .stat:hover {
-  translate: 0 -2px;
+  translate: 0 -1px;
   color: var(--glow);
 }
 
@@ -356,117 +357,84 @@
   color: #6ee7b7;
 }
 
-/* ---------- Tonight's Sky entrance ---------- */
+/* ---------- Tonight's Sky ---------- */
 
 .sky-strip {
   position: relative;
   overflow: hidden;
-  transform-style: preserve-3d;
 
   animation:
     forum-sky-arrive
-    760ms
+    520ms
     cubic-bezier(.16, 1, .3, 1)
     both;
 
   transition:
-    translate 420ms cubic-bezier(.16, 1, .3, 1),
-    scale 420ms cubic-bezier(.16, 1, .3, 1),
-    border-color 300ms ease,
-    background 350ms ease,
-    box-shadow 420ms cubic-bezier(.16, 1, .3, 1);
-}
+    translate
+    280ms
+    cubic-bezier(.16, 1, .3, 1),
 
-.sky-strip::before {
-  content: "";
-  position: absolute;
-  top: -110%;
-  left: -30%;
-  width: 18%;
-  height: 320%;
-  pointer-events: none;
-  opacity: 0;
-  rotate: 17deg;
+    scale
+    280ms
+    cubic-bezier(.16, 1, .3, 1),
 
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(216, 180, 254, .14),
-      rgba(255, 255, 255, .18),
-      transparent
-    );
+    border-color
+    220ms
+    ease,
 
-  transition:
-    left 850ms cubic-bezier(.16, 1, .3, 1),
-    opacity 260ms ease;
+    box-shadow
+    280ms
+    ease;
 }
 
 .sky-strip:hover {
-  translate: 0 -4px;
-  scale: 1.005;
+  translate: 0 -2px;
+  scale: 1.002;
 
   border-color:
-    rgba(192, 132, 252, .7);
+    rgba(192, 132, 252, .52);
 
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .1),
-    0 22px 58px rgba(8, 3, 28, .42),
-    0 0 32px rgba(124, 58, 237, .14);
+    0 14px 34px
+    rgba(8, 3, 28, .25);
 }
 
-.sky-strip:hover::before {
-  left: 118%;
-  opacity: 1;
-}
-
-/* ---------- Animated moon icon ---------- */
+/* ---------- Moon icon ---------- */
 
 .sb-icon {
-  position: relative;
-
-  animation:
-    forum-moon-float
-    3.6s
-    ease-in-out
-    infinite;
+  scale: 1;
+  rotate: 0deg;
 
   transition:
-    scale 350ms cubic-bezier(.16, 1, .3, 1),
-    rotate 350ms cubic-bezier(.16, 1, .3, 1),
-    box-shadow 350ms ease;
-}
+    scale
+    260ms
+    cubic-bezier(.16, 1, .3, 1),
 
-.sb-icon::after {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  pointer-events: none;
-  border: 1px solid rgba(192, 132, 252, .25);
-  border-radius: 50%;
+    rotate
+    260ms
+    cubic-bezier(.16, 1, .3, 1),
 
-  animation:
-    forum-moon-ring
-    2.8s
-    ease-out
-    infinite;
+    box-shadow
+    240ms
+    ease;
 }
 
 .sky-strip:hover .sb-icon {
-  scale: 1.1;
-  rotate: 8deg;
+  scale: 1.07;
+  rotate: 4deg;
 
   box-shadow:
-    0 0 25px rgba(168, 85, 247, .25);
+    0 0 16px
+    rgba(168, 85, 247, .16);
 }
 
-/* ---------- Filter controls ---------- */
+/* ---------- Filters ---------- */
 
 .chip-row {
   animation:
     forum-controls-arrive
-    720ms
-    100ms
+    480ms
+    70ms
     cubic-bezier(.16, 1, .3, 1)
     both;
 }
@@ -474,32 +442,41 @@
 .section-eyebrow-row {
   animation:
     forum-controls-arrive
-    720ms
-    180ms
+    480ms
+    120ms
     cubic-bezier(.16, 1, .3, 1)
     both;
 }
 
 .chip {
-  position: relative;
-  overflow: hidden;
+  translate: 0 0;
+  scale: 1;
 
   transition:
-    translate 300ms cubic-bezier(.16, 1, .3, 1),
-    scale 300ms cubic-bezier(.16, 1, .3, 1),
-    border-color 260ms ease,
-    color 260ms ease,
-    background 260ms ease,
-    box-shadow 300ms ease;
+    translate
+    220ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    scale
+    220ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    border-color
+    200ms
+    ease,
+
+    color
+    200ms
+    ease,
+
+    background
+    200ms
+    ease;
 }
 
 .chip:hover {
-  translate: 0 -3px;
-  scale: 1.035;
-
-  box-shadow:
-    0 9px 24px rgba(8, 3, 25, .32),
-    0 0 18px rgba(168, 85, 247, .12);
+  translate: 0 -2px;
+  scale: 1.02;
 }
 
 .chip:active {
@@ -509,28 +486,27 @@
 
 .chip.active {
   translate: 0 -1px;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .09),
-    0 0 20px rgba(168, 85, 247, .15);
 }
 
 /* ---------- See-all link ---------- */
 
 .section-link {
+  translate: 0 0;
+
   transition:
-    translate 260ms cubic-bezier(.16, 1, .3, 1),
-    color 260ms ease,
-    text-shadow 260ms ease;
+    translate
+    220ms
+    cubic-bezier(.16, 1, .3, 1),
+
+    color
+    200ms
+    ease;
 }
 
 .section-link:hover {
-  translate: -3px 0;
+  translate: -2px 0;
   color: var(--glow);
   opacity: 1;
-
-  text-shadow:
-    0 0 12px rgba(168, 85, 247, .4);
 }
 
 /* ---------- Keyframes ---------- */
@@ -538,127 +514,80 @@
 @keyframes forum-sky-arrive {
   from {
     opacity: 0;
-    translate: 0 -22px;
-    scale: .985;
-    filter: blur(8px);
+    translate: 0 -14px;
+    scale: .99;
   }
 
   to {
     opacity: 1;
     translate: 0 0;
     scale: 1;
-    filter: blur(0);
   }
 }
 
 @keyframes forum-controls-arrive {
   from {
     opacity: 0;
-    translate: 0 18px;
-    filter: blur(6px);
+    translate: 0 12px;
   }
 
   to {
     opacity: 1;
     translate: 0 0;
-    filter: blur(0);
   }
 }
 
 @keyframes forum-thread-arrive {
   from {
     opacity: 0;
-    translate: 0 34px;
-    scale: .965;
-    filter: blur(10px) brightness(1.16);
-  }
-
-  68% {
-    opacity: 1;
-    filter: blur(1px) brightness(1.06);
+    translate: 0 18px;
+    scale: .985;
   }
 
   to {
     opacity: 1;
     translate: 0 0;
     scale: 1;
-    filter: blur(0) brightness(1);
   }
 }
 
-@keyframes forum-moon-float {
-  0%,
-  100% {
-    translate: 0 0;
-    rotate: 0deg;
-  }
-
-  50% {
-    translate: 0 -4px;
-    rotate: 5deg;
-  }
-}
-
-@keyframes forum-moon-ring {
-  0% {
-    scale: .8;
-    opacity: .58;
-  }
-
-  72%,
-  100% {
-    scale: 1.42;
-    opacity: 0;
-  }
-}
-
-/* ---------- Mobile ---------- */
+/* ---------- Mobile and touch ---------- */
 
 @media (max-width: 720px) {
-  .thread-list {
-    padding-inline: 0;
-    margin-inline: 0;
-  }
-
-  .thread-list:has(.thread-card:hover)
+  .thread-list:hover
   .thread-card:not(:hover),
-  .thread-list:has(.thread-card:hover)
-  .thread-card:hover {
-    width: 100%;
-    min-height: 118px;
-    margin-inline: 0;
-    padding: 14px;
 
-    --forum-card-scale: 1;
-    --forum-card-blur: 0px;
-    --forum-card-brightness: 1;
+  .thread-list
+  .thread-card:hover {
+    scale: 1;
+    opacity: 1;
   }
 
-  .thread-card > * {
-    transform: none;
+  .thread-card:hover .thread-head,
+  .thread-card:hover .thread-title,
+  .thread-card:hover .thread-body,
+  .thread-card:hover .thread-foot {
+    translate: 0 0;
   }
 
   .sky-strip:hover {
-    translate: 0 -2px;
+    translate: 0 0;
     scale: 1;
   }
 }
 
-/* ---------- Touch devices ---------- */
-
 @media (hover: none) {
-  .thread-list:has(.thread-card:hover)
+  .thread-list:hover
   .thread-card:not(:hover),
-  .thread-list:has(.thread-card:hover)
-  .thread-card:hover {
-    width: 100%;
-    min-height: 118px;
-    margin-inline: 0;
-    padding: 14px;
 
-    --forum-card-scale: 1;
-    --forum-card-blur: 0px;
-    --forum-card-brightness: 1;
+  .thread-list
+  .thread-card:hover {
+    scale: 1;
+    opacity: 1;
+  }
+
+  .thread-card:hover {
+    will-change: auto;
   }
 }
 
@@ -668,28 +597,32 @@
   .sky-strip,
   .chip-row,
   .section-eyebrow-row,
-  .thread-card,
-  .sb-icon,
-  .sb-icon::after {
+  .thread-card {
     animation: none !important;
   }
 
   .thread-card,
-  .thread-card *,
+  .thread-head,
+  .thread-title,
+  .thread-body,
+  .thread-foot,
+  .avatar,
+  .thread-tag,
+  .stat,
   .sky-strip,
+  .sb-icon,
   .chip,
   .section-link {
     transition: none !important;
   }
 
-  .thread-card {
-    width: 100% !important;
-    min-height: 118px !important;
-    margin-inline: 0 !important;
-    padding: 14px !important;
-    transform: none !important;
-    translate: 0 !important;
-    scale: 1 !important;
-    filter: none !important;
+  .thread-list:hover
+  .thread-card:not(:hover),
+
+  .thread-list
+  .thread-card:hover {
+    translate: 0 0;
+    scale: 1;
+    opacity: 1;
   }
 }
