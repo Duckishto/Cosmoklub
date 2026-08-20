@@ -641,7 +641,7 @@
                 </div>
                 <div class="tos-check">
                   <input id="tos-chk" type="checkbox" v-model="form.tos"/>
-                  <label for="tos-chk">{{ t.tosAgree }} <a href="#" @click.prevent="openModal('tos')">{{ t.tos }}</a> {{ t.tosAnd }} <a href="#" @click.prevent="openModal('privacy')">{{ t.privacy }}</a>.</label>
+                  <label for="tos-chk">{{ t.tosAgree }} <a href="legal.html#tos" target="_blank" rel="noopener">{{ t.tos }}</a> {{ t.tosAnd }} <a href="legal.html#privacy" target="_blank" rel="noopener">{{ t.privacy }}</a>.</label>
                 </div>
                 <div class="error-msg" v-if="errors.tos" style="margin-bottom:0.7rem">{{ errors.tos }}</div>
                 <div class="error-msg" v-if="errors.submit" style="margin-bottom:0.7rem">{{ errors.submit }}</div>
