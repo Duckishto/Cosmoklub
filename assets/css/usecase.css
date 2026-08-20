@@ -100,9 +100,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    radial-gradient(ellipse 55% 80% at 78% 40%, var(--uc-soft), transparent 62%),
-    linear-gradient(90deg, rgba(7,6,26,0.97) 0%, rgba(7,6,26,0.9) 30%, rgba(7,6,26,0.55) 55%, rgba(7,6,26,0.15) 75%, rgba(7,6,26,0) 100%);
+  background: linear-gradient(90deg, rgba(7,6,26,0.97) 0%, rgba(7,6,26,0.92) 32%, rgba(7,6,26,0.62) 52%, rgba(7,6,26,0.2) 72%, rgba(7,6,26,0) 88%);
 }
 /* Fallback look while persona.heroImage is empty: no photo behind it, so go back to a flat opaque tint. */
 .uc-hero:not([style*="background-image"]) .uc-hero-overlay {
