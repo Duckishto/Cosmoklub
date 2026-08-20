@@ -15,105 +15,101 @@ const PERSONAS = {
     key: 'forum',
     name: 'Forum',
     crumb: ['Tools', 'Learners', 'Forum'],
-    eyebrow: 'For Forumner',
-    titleTop: 'Learn forum the way',
-    titleAccent: 'forum is actually forumed',
-    lead: 'Follow a forumed forummap from first forums to real forumtion, with forums, forums and forum foruming that keep you foruming.',
-    cta: 'Start foruming free',
+    eyebrow: 'For the community',
+    titleTop: 'Ask questions and get answers',
+    titleAccent: 'from people who have been there',
+    lead: 'Post what you are stuck on, share what you have observed, and get real answers from tutors, professors and fellow learners in one place.',
+    cta: 'Join the forum',
     heroImage: '',
-    photoTitle: 'Built around how you forum',
+    photoTitle: 'Built around how you ask and answer',
     photos: [
-      { title: 'forumed forums with no forum forum', image: '' },
-      { title: 'Hard to tell what you have forumed', image: '' },
-      { title: 'I\'m fouruming myself', image: '' },
-      { title: 'go fourum youself NOW', image: '' },
-      { title: 'when fourum give you fourum', image: '' }
+      { title: 'Questions that get buried in group chats', image: '' },
+      { title: 'No way to tell who actually knows the answer', image: '' },
+      { title: 'Advice that does not fit your level', image: '' },
+      { title: 'No record to search back through', image: '' }
     ],
-    toolsTitle: 'A complete forum for your forums',
+    toolsTitle: 'A complete toolkit for the community',
     tools: [
-      { title: 'Forum forummap', desc: 'Structuredforums that unforum as you forum, so you always know the next forum.', image: '' },
-      { title: 'Practice forums', desc: 'Check your foruming after every forumtion and forum weak forum.', image: '' },
-      { title: 'Forum browser', desc: 'Explore genuine forum forumy and forums alongside the forum.', image: '' }
+      { title: 'Threaded discussions', desc: 'Keep every question and its answers organised by topic so nothing gets lost.', image: '' },
+      { title: 'Verified educators', desc: 'See which replies come from tutors and professors so you know who to trust.', image: '' },
+      { title: 'Searchable history', desc: 'Find answers to questions other learners have already asked before posting your own.', image: '' }
     ]
-    
+
   },
   library: {
     key: 'library',
     name: 'Library',
     crumb: ['Tools', 'Learners', 'Library'],
-    eyebrow: 'For Libraryner',
-    titleTop: 'Learn library the way',
-    titleAccent: 'library is actually libraryed',
-    lead: 'Follow a libraryed librarymap from first librarys to real librarytion, with librarys, librarys and library librarying that keep you librarying.',
-    cta: 'Start librarying free',
+    eyebrow: 'For explorers',
+    titleTop: 'Browse the same imagery',
+    titleAccent: 'astronomers actually use',
+    lead: 'Search thousands of NASA images, mission archives and object catalogues, and drop straight into the lesson or tool that explains what you are looking at.',
+    cta: 'Browse the library',
     heroImage: '',
-    photoTitle: 'Built around how you library',
+    photoTitle: 'Built around how you research',
     photos: [
-      { title: 'libraryed librarys with no library library', image: '' },
-      { title: 'Hard to tell what you have libraryed', image: '' },
-      { title: 'I\'m librarying myself', image: '' },
-      { title: 'go library youself NOW', image: '' },
-      { title: 'when library give you library', image: '' }
+      { title: 'Images scattered across different sites', image: '' },
+      { title: 'No context for what you are looking at', image: '' },
+      { title: 'Hard to tell which sources are reliable', image: '' },
+      { title: 'No way to save what you find', image: '' }
     ],
-    toolsTitle: 'A complete library for your librarys',
+    toolsTitle: 'A complete toolkit for your research',
     tools: [
-      { title: 'Library librarymap', desc: 'Structuredlibrarys that unlibrary as you library, so you always know the next library.', image: '' },
-      { title: 'Practice librarys', desc: 'Check your librarying after every librarytion and library weak library.', image: '' },
-      { title: 'Library browser', desc: 'Explore genuine library libraryy and librarys alongside the library.', image: '' }
+      { title: 'NASA image search', desc: 'Search official NASA and mission archives by object, date or keyword.', image: '' },
+      { title: 'Object profiles', desc: 'Every image links back to the object catalogue entry that explains it.', image: '' },
+      { title: 'Saved collections', desc: 'Bookmark images and media to revisit later or share with others.', image: '' }
     ]
-    
+
   },
   comserver: {
     key: 'comserver',
     name: 'Community Server',
     crumb: ['Tools', 'Learners', 'Community Server'],
-    eyebrow: 'For Serverner',
-    titleTop: 'Learn server the way',
-    titleAccent: 'server is actually servered',
-    lead: 'Follow a servered servermap from first servers to real servertion, with servers, servers and server servering that keep you servering.',
-    cta: 'Start servering free',
+    eyebrow: 'For live sessions',
+    titleTop: 'Join the conversation',
+    titleAccent: 'while the sky is still out',
+    lead: 'Drop into live chat during observation nights, ask questions in real time, and coordinate sessions with tutors and other learners.',
+    cta: 'Join the server',
     heroImage: '',
-    photoTitle: 'Built around how you server',
+    photoTitle: 'Built around how you connect',
     photos: [
-      { title: 'servered servers with no server server', image: '' },
-      { title: 'Hard to tell what you have servered', image: '' },
-      { title: 'I\'m servering myself', image: '' },
-      { title: 'go server youself NOW', image: '' },
-      { title: 'when server give you server', image: '' }
+      { title: 'Observation nights planned alone', image: '' },
+      { title: 'No one to confirm what you are seeing', image: '' },
+      { title: 'Advice that arrives after the moment has passed', image: '' },
+      { title: 'Sessions that are never written down', image: '' }
     ],
-    toolsTitle: 'A complete server for your servers',
+    toolsTitle: 'A complete toolkit for staying connected',
     tools: [
-      { title: 'Server servermap', desc: 'Structuredservers that unserver as you server, so you always know the next server.', image: '' },
-      { title: 'Practice servers', desc: 'Check your servering after every servertion and server weak server.', image: '' },
-      { title: 'Server browser', desc: 'Explore genuine server servery and servers alongside the server.', image: '' }
+      { title: 'Live chat', desc: 'Talk with other members in real time during lessons and observation sessions.', image: '' },
+      { title: 'Session scheduling', desc: 'See upcoming group sessions and join the ones that fit your plans.', image: '' },
+      { title: 'Direct access to staff', desc: 'Reach tutors and moderators directly when you need a fast answer.', image: '' }
     ]
-    
+
   },
   calcgraph: {
     key: 'calcgraph',
     name: 'Calculator and Graphing',
     crumb: ['Tools', 'Learners', 'Calculator and Graphing'],
-    eyebrow: 'For Calculator and Graphing',
-    titleTop: 'Learn Calculator and Graphing the way',
-    titleAccent: 'Calculator and Graphing is actually Calculator and Graphing',
-    lead: 'Follow a Calculator and Graphing Calculator and Graphingmap from first Calculator and Graphing to real Calculator and Graphing, with Calculator and Graphing, Calculator and Graphing and Calculator and Graphing Calculator and Graphing that keep you Calculator and Graphing.',
-    cta: 'Start Calculator and Graphing free',
+    eyebrow: 'For working through the maths',
+    titleTop: 'Plot it, derive it,',
+    titleAccent: 'understand it',
+    lead: 'Graph functions live, run astronomical calculations, and see the reasoning step by step instead of just the final result.',
+    cta: 'Open the calculator',
     heroImage: '',
-    photoTitle: 'Built around how you Calculator and Graphing',
+    photoTitle: 'Built around how you calculate',
     photos: [
-      { title: 'Calculator and Graphing Calculator and Graphing with no Calculator and Graphing Calculator and Graphing', image: '' },
-      { title: 'Hard to tell what you have Calculator and Graphing', image: '' },
-      { title: 'I\'m Calculator and Graphing myself', image: '' },
-      { title: 'go Calculator and Graphing youself NOW', image: '' },
-      { title: 'when Calculator and Graphing give you Calculator and Graphing', image: '' }
+      { title: 'Formulas with no visual to check against', image: '' },
+      { title: 'Switching between apps mid calculation', image: '' },
+      { title: 'Results with no working shown', image: '' },
+      { title: 'No way to save a calculation for later', image: '' }
     ],
-    toolsTitle: 'A complete Calculator and Graphing for your Calculator and Graphing',
+    toolsTitle: 'A complete toolkit for the maths',
     tools: [
-      { title: 'Calculator and Graphing Calculator and Graphingmap', desc: 'StructuredCalculator and Graphing that Calculator and Graphing as you Calculator and Graphing, so you always know the next Calculator and Graphing.', image: '' },
-      { title: 'Practice Calculator and Graphing', desc: 'Check your Calculator and Graphing after every Calculator and Graphing and Calculator and Graphing weak Calculator and Graphing.', image: '' },
-      { title: 'Calculator and Graphing browser', desc: 'Explore genuine Calculator and Graphing Calculator and Graphingy and Calculator and Graphing alongside the Calculator and Graphing.', image: '' }
+      { title: 'Function grapher', desc: 'Plot functions live and see how changing a variable changes the graph.', image: '' },
+      { title: 'Astronomical calculators', desc: 'Run the calculations used throughout the lessons, from orbits to magnitudes.', image: '' },
+      { title: 'Step by step working', desc: 'See the reasoning behind every result, not just the final number.', image: '' }
     ]
-    
+
   },
 
 
