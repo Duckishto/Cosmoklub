@@ -72,6 +72,7 @@
   }
   .staff-info-art {
     margin-top: auto;
+    margin-bottom: -72px;
   }
 }
 
@@ -238,5 +239,5 @@
   user-select: none;
 }
 @media (max-width: 900px) {
-  .staff-info-art { max-width: 145px; margin-top: 1rem; }
+  .staff-info-art { max-width: 145px; margin-top: 1rem; margin-bottom: -60px; }
 }
