@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/loader.css">
   <link rel="stylesheet" href="assets/css/team.css">
-  <link rel="stylesheet" href="assets/css/transition.css">
 </head>
 <body>
 
@@ -20,27 +19,51 @@
 
 <div id="team-app" v-cloak>
 
-  <!-- Navigation -->
-  <nav :class="{ scrolled: navScrolled, compact: navCompact }">
+  <!-- Navigation (same bar as the homepage) -->
+  <nav class="compact">
     <a class="nav-logo" href="index.html">
       <img draggable="false" src="assets/images/logo.png" alt="CosmoKlub" class="nav-logo-img" />
     </a>
     <ul class="nav-links" :class="{open: mobileMenuOpen}">
       <li><a href="index.html" @click="mobileMenuOpen=false">Home</a></li>
-      <li><a href="tools/library.html" @click="mobileMenuOpen=false">Tools</a></li>
-      <li><a href="team.html" class="active-link" @click="mobileMenuOpen=false">Use cases</a></li>
-      <li><a href="staff-application.html" @click="mobileMenuOpen=false">Resources</a></li>
+      <li class="nav-has-menu">
+        <a href="tools/library.html" class="nav-menu-trigger" :class="{ 'is-open': openMenu === 'tools' }" @click.prevent="toggleMenu('tools')">
+          Tools
+          <svg class="nav-caret" :class="{ up: openMenu === 'tools' }" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="nav-dropdown" v-if="openMenu === 'tools'">
+          <span class="nav-dropdown-label">{{ navMenus.tools.label }}</span>
+          <div class="nav-dropdown-grid">
+            <a class="nav-dropdown-item" v-for="it in navMenus.tools.items" :key="it.title" :href="it.href" @click="closeMenu(); mobileMenuOpen=false">
+              <span class="nav-dropdown-icon" v-html="it.icon"></span>
+              <span class="nav-dropdown-text"><strong>{{ it.title }}</strong><em>{{ it.desc }}</em></span>
+            </a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-has-menu">
+        <a href="usecases/student.html" class="nav-menu-trigger" :class="{ 'is-open': openMenu === 'usecases' }" @click.prevent="toggleMenu('usecases')">
+          Use cases
+          <svg class="nav-caret" :class="{ up: openMenu === 'usecases' }" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="nav-dropdown" v-if="openMenu === 'usecases'">
+          <span class="nav-dropdown-label">{{ navMenus.usecases.label }}</span>
+          <div class="nav-dropdown-grid">
+            <a class="nav-dropdown-item" v-for="it in navMenus.usecases.items" :key="it.title" :href="it.href" @click="closeMenu(); mobileMenuOpen=false">
+              <span class="nav-dropdown-icon" v-html="it.icon"></span>
+              <span class="nav-dropdown-text"><strong>{{ it.title }}</strong><em>{{ it.desc }}</em></span>
+            </a>
+          </div>
+        </div>
+      </li>
+      <li><a href="resources.html" @click="mobileMenuOpen=false">Resources</a></li>
+      <li class="nav-link-auth"><a href="login.html">Sign in</a></li>
+      <li class="nav-link-auth nav-link-auth-primary"><a href="login.html?mode=register">Register</a></li>
     </ul>
     <div class="nav-right">
-      <div class="lang-wrap">
-        <button class="lang-btn" @click="langOpen=!langOpen">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          {{ currentLang.code }}
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="lang-dropdown" v-if="langOpen">
-          <button v-for="l in langs" :key="l.code" :class="{active:currentLang.code===l.code}" @click="setLang(l)">{{ l.flag }} {{ l.name }}</button>
-        </div>
+      <div class="nav-auth">
+        <a href="login.html" class="nav-signin">Sign in</a>
+        <a class="nav-signup" href="login.html?mode=register">Register</a>
       </div>
       <button
         class="nav-menu-btn"
@@ -143,7 +166,6 @@
 
 <script src="assets/js/common.js"></script>
 <script src="assets/js/team.js"></script>
-<script src="assets/js/transition.js"></script>
   <script src="assets/js/loader.js"></script>
 </body>
 </html>
