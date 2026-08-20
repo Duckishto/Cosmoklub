@@ -89,23 +89,25 @@
 
     <!-- Docs shell: sidebar + active document panel -->
     <section class="legal-shell">
-      <aside class="legal-sidebar">
-        <nav class="legal-nav">
-          <button
-            type="button"
-            class="legal-nav-item"
-            v-for="doc in docs"
-            :key="doc.id"
-            :class="{ active: activeDoc === doc.id }"
-            @click="selectDoc(doc.id)"
-          >
-            <span class="legal-nav-icon" v-html="doc.icon"></span>
-            <span class="legal-nav-text">
-              <strong>{{ doc.label }}</strong>
-              <em>{{ doc.meta }}</em>
-            </span>
-          </button>
-        </nav>
+      <aside class="legal-sidebar-sticky">
+        <div class="legal-sidebar">
+          <nav class="legal-nav">
+            <button
+              type="button"
+              class="legal-nav-item"
+              v-for="doc in docs"
+              :key="doc.id"
+              :class="{ active: activeDoc === doc.id }"
+              @click="selectDoc(doc.id)"
+            >
+              <span class="legal-nav-icon" v-html="doc.icon"></span>
+              <span class="legal-nav-text">
+                <strong>{{ doc.label }}</strong>
+                <em>{{ doc.meta }}</em>
+              </span>
+            </button>
+          </nav>
+        </div>
       </aside>
 
       <div class="legal-panel">
