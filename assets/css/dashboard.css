@@ -220,99 +220,7 @@ body {
 .content::-webkit-scrollbar-track { background: transparent; }
 .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-/* ---------- Floating Glass Bottom Navigation ---------- */
-
-.bottom-nav {
-  position: fixed;
-  left: 50%;
-  right: auto;
-  bottom: calc(14px + var(--safe-bot));
-
-  width: min(1160px, calc(100% - 3rem));
-  height: var(--nav-h);
-  padding: 0 1.5rem;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-
-  transform: translateX(-50%);
-
-  /* Same glass material as the homepage compact navigation */
-  background: rgba(14, 11, 30, 0.82);
-
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-
-  border: 1px solid rgba(124, 58, 237, 0.28);
-  border-radius: 18px;
-
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.045);
-
-  z-index: 1000;
-
-  transition:
-    transform 0.32s cubic-bezier(.4, 0, .2, 1),
-    opacity 0.32s ease;
-}
-
-/* Keep Dashboard navigation elements above the glass */
-.bottom-nav .nav-item {
-  position: relative;
-  z-index: 1;
-}
-
-/*
-  Graphing mode:
-  preserve horizontal centering while sliding the bar downward.
-*/
-body.graphing-active .bottom-nav {
-  transform: translate(
-    -50%,
-    calc(100% + 14px + var(--safe-bot))
-  );
-
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Leave enough room for the floating navigation */
-.content {
-  padding-bottom:
-    calc(
-      var(--nav-h) +
-      var(--safe-bot) +
-      38px
-    );
-}
-
-/* Mobile floating navigation */
-@media (max-width: 720px) {
-  .bottom-nav {
-    bottom: calc(10px + var(--safe-bot));
-    width: calc(100% - 1.5rem);
-    padding: 0 0.5rem;
-    border-radius: 16px;
-  }
-
-  body.graphing-active .bottom-nav {
-    transform: translate(
-      -50%,
-      calc(100% + 10px + var(--safe-bot))
-    );
-  }
-
-  .content {
-    padding-bottom:
-      calc(
-        var(--nav-h) +
-        var(--safe-bot) +
-        30px
-      );
-  }
-}
+/* navigation bar was here */
 
 .nav-item {
   position: relative;
@@ -1416,5 +1324,231 @@ body.graphing-active .bottom-nav {
   .nav-fab::after{
     animation:none!important;
     transition:none!important;
+  }
+}
+
+/* =========================================================
+   DASHBOARD TOP NAVIGATION
+   Replaces the old topbar and matches the homepage navigation
+   ========================================================= */
+
+/* Keep the old HTML available, but remove it visually */
+.topbar {
+  display: none !important;
+}
+
+/* First form: full-width transparent navigation */
+.bottom-nav {
+  position: fixed;
+  top: 0;
+  bottom: auto;
+  left: 50%;
+  right: auto;
+
+  width: 100%;
+  height: 60px;
+  padding: 0 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  transform: translateX(-50%);
+
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  z-index: 1000;
+
+  will-change:
+    width,
+    padding,
+    top,
+    transform,
+    opacity;
+
+  transition:
+    width 0.45s cubic-bezier(.65, 0, .35, 1),
+    padding 0.45s cubic-bezier(.65, 0, .35, 1),
+    top 0.45s cubic-bezier(.65, 0, .35, 1),
+    background 0.4s ease,
+    box-shadow 0.4s ease,
+    border-color 0.4s ease,
+    border-radius 0.4s ease,
+    opacity 0.32s ease,
+    transform 0.32s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Hide the first form after leaving the top */
+.bottom-nav.nav-away {
+  transform:
+    translateX(-50%)
+    translateY(-130%);
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Second form: floating blurred glass */
+.bottom-nav.compact {
+  top: 14px;
+
+  width: min(1160px, calc(100% - 3rem));
+  padding: 0 1.5rem;
+
+  background: rgba(14, 11, 30, 0.82);
+
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
+
+  animation:
+    dashboardNavDropIn
+    0.42s
+    cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Compact navigation leaving when returning upward */
+.bottom-nav.nav-leaving {
+  top: 14px;
+
+  width: min(1160px, calc(100% - 3rem));
+  padding: 0 1.5rem;
+
+  background: rgba(14, 11, 30, 0.82);
+
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35);
+
+  animation:
+    dashboardNavSlideOut
+    0.36s
+    cubic-bezier(.4, 0, 1, 1)
+    forwards;
+
+  pointer-events: none;
+}
+
+@keyframes dashboardNavDropIn {
+  from {
+    transform:
+      translateX(-50%)
+      translateY(-120%);
+
+    opacity: 0;
+  }
+
+  to {
+    transform:
+      translateX(-50%)
+      translateY(0);
+
+    opacity: 1;
+  }
+}
+
+@keyframes dashboardNavSlideOut {
+  from {
+    transform:
+      translateX(-50%)
+      translateY(0);
+
+    opacity: 1;
+  }
+
+  to {
+    transform:
+      translateX(-50%)
+      translateY(-130%);
+
+    opacity: 0;
+  }
+}
+
+/* Navigation items must remain above the glass */
+.bottom-nav .nav-item {
+  position: relative;
+  z-index: 1;
+}
+
+/* Content now starts below the navigation */
+.content {
+  padding:
+    calc(60px + 16px)
+    16px
+    16px;
+}
+
+/* Calculator graphing mode hides the top navigation upward */
+body.graphing-active .bottom-nav {
+  transform:
+    translateX(-50%)
+    translateY(-140%);
+
+  opacity: 0;
+  pointer-events: none;
+  animation: none !important;
+}
+
+/* Mobile layout */
+@media (max-width: 720px) {
+  .bottom-nav {
+    height: 60px;
+    padding: 0 0.5rem;
+  }
+
+  .bottom-nav.compact,
+  .bottom-nav.nav-leaving {
+    top: 10px;
+    width: calc(100% - 1.5rem);
+    padding: 0 0.5rem;
+    border-radius: 16px;
+  }
+
+  .content {
+    padding:
+      calc(60px + 12px)
+      10px
+      12px;
+  }
+
+  .nav-item {
+    padding-inline: 2px;
+  }
+
+  .nav-item svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nav-fab {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav,
+  .bottom-nav.compact,
+  .bottom-nav.nav-leaving {
+    animation: none !important;
+    transition: none !important;
   }
 }
