@@ -1,0 +1,993 @@
+/* ===================================================
+   CosmoKlub Roadmap — cinematic animation layer
+   Only affects roadmap.html
+   =================================================== */
+
+/* ---------- Animated background ---------- */
+
+body::before {
+  transform-origin: center top;
+
+  animation:
+    roadmap-background-drift
+    18s
+    ease-in-out
+    infinite alternate;
+}
+
+body::after {
+  animation:
+    roadmap-grid-drift
+    24s
+    linear
+    infinite;
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  animation:
+    roadmap-topbar-arrive
+    650ms
+    cubic-bezier(.16, 1, .3, 1)
+    both;
+}
+
+.brand-logo {
+  transition:
+    scale 320ms cubic-bezier(.16, 1, .3, 1),
+    filter 320ms ease;
+}
+
+.brand:hover .brand-logo {
+  scale: 1.04;
+
+  filter:
+    drop-shadow(
+      0 0 10px
+      rgba(168, 85, 247, .72)
+    );
+}
+
+/* ---------- Back button ---------- */
+
+.library-back {
+  animation:
+    roadmap-back-arrive
+    720ms
+    120ms
+    cubic-bezier(.16, 1, .3, 1)
+    backwards;
+
+  transition:
+    translate 300ms cubic-bezier(.16, 1, .3, 1),
+    scale 300ms cubic-bezier(.16, 1, .3, 1),
+    rotate 300ms cubic-bezier(.16, 1, .3, 1),
+    filter 220ms ease,
+    box-shadow 300ms ease;
+}
+
+.library-back:hover {
+  translate: -3px 0;
+  scale: 1.06;
+  rotate: -3deg;
+  transform: none;
+}
+
+.library-back:hover .library-back-arrow {
+  animation:
+    roadmap-arrow-bounce
+    700ms
+    ease-in-out
+    infinite;
+}
+
+/* ---------- Category header ---------- */
+
+.category-hero {
+  perspective: 1300px;
+}
+
+.category-hero-main {
+  transform-origin: center;
+  transform-style: preserve-3d;
+
+  animation:
+    roadmap-hero-arrive
+    820ms
+    100ms
+    cubic-bezier(.16, 1, .3, 1)
+    backwards;
+
+  transition:
+    translate 420ms cubic-bezier(.16, 1, .3, 1),
+    scale 420ms cubic-bezier(.16, 1, .3, 1),
+    border-color 320ms ease,
+    box-shadow 420ms ease,
+    background 320ms ease;
+}
+
+.category-hero-main:hover {
+  translate: 0 -4px;
+  scale: 1.008;
+
+  border-color:
+    rgba(192, 132, 252, .5);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, .07),
+
+    0 24px 60px
+    rgba(5, 2, 20, .35),
+
+    0 0 34px
+    rgba(124, 58, 237, .1);
+}
+
+/* Moving glass reflection */
+
+.category-hero-main::before {
+  content: "";
+
+  position: absolute;
+  top: -130%;
+  left: -28%;
+  z-index: 1;
+
+  width: 18%;
+  height: 380%;
+
+  pointer-events: none;
+  opacity: 0;
+  rotate: 16deg;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(192, 132, 252, .08),
+      rgba(255, 255, 255, .12),
+      transparent
+    );
+
+  transition:
+    left 900ms cubic-bezier(.16, 1, .3, 1),
+    opacity 260ms ease;
+}
+
+.category-hero-main:hover::before {
+  left: 118%;
+  opacity: 1;
+}
+
+/* ---------- Category icon ---------- */
+
+.category-icon {
+  transform-style: preserve-3d;
+
+  animation:
+    roadmap-icon-float
+    4s
+    ease-in-out
+    infinite;
+
+  transition:
+    scale 350ms cubic-bezier(.16, 1, .3, 1),
+    rotate 350ms cubic-bezier(.16, 1, .3, 1),
+    border-color 300ms ease,
+    box-shadow 350ms ease,
+    background 300ms ease;
+}
+
+.category-hero-main:hover .category-icon {
+  scale: 1.1;
+  rotate: -5deg;
+
+  border-color:
+    rgba(192, 132, 252, .38);
+
+  background:
+    rgba(168, 85, 247, .12);
+
+  box-shadow:
+    0 12px 26px
+    rgba(0, 0, 0, .25),
+
+    0 0 22px
+    rgba(168, 85, 247, .15);
+}
+
+/* ---------- Rank panel ---------- */
+
+.category-rank-panel {
+  position: relative;
+  overflow: hidden;
+
+  animation:
+    roadmap-rank-arrive
+    820ms
+    190ms
+    cubic-bezier(.16, 1, .3, 1)
+    backwards;
+
+  transition:
+    translate 420ms cubic-bezier(.16, 1, .3, 1),
+    scale 420ms cubic-bezier(.16, 1, .3, 1),
+    border-color 320ms ease,
+    box-shadow 420ms ease;
+}
+
+.category-rank-panel:hover {
+  translate: 0 -4px;
+  scale: 1.02;
+
+  border-color:
+    rgba(192, 132, 252, .54);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, .08),
+
+    0 24px 58px
+    rgba(5, 2, 20, .38),
+
+    0 0 30px
+    rgba(124, 58, 237, .13);
+}
+
+.category-rank-panel::before {
+  content: "";
+
+  position: absolute;
+  inset: -50%;
+
+  pointer-events: none;
+  opacity: .5;
+
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(192, 132, 252, .12),
+      transparent 35%
+    );
+
+  animation:
+    roadmap-rank-orbit
+    9s
+    linear
+    infinite;
+}
+
+/* Keep panel content above the orbit */
+
+.category-rank-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Progress bar ---------- */
+
+.category-progress-track {
+  position: relative;
+  overflow: hidden;
+}
+
+.category-progress-track::after {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -40%;
+
+  width: 30%;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, .45),
+      transparent
+    );
+
+  animation:
+    roadmap-progress-shine
+    3.2s
+    ease-in-out
+    infinite;
+}
+
+.category-progress-fill {
+  box-shadow:
+    0 0 14px
+    rgba(168, 85, 247, .38);
+
+  transition:
+    width
+    900ms
+    cubic-bezier(.16, 1, .3, 1);
+}
+
+/* ---------- Roadmap section ---------- */
+
+.course-section {
+  position: relative;
+  isolation: isolate;
+  perspective: 1400px;
+
+  animation:
+    roadmap-section-arrive
+    850ms
+    cubic-bezier(.16, 1, .3, 1)
+    backwards;
+}
+
+.course-section:nth-child(1) {
+  animation-delay: 260ms;
+}
+
+.course-section:nth-child(2) {
+  animation-delay: 360ms;
+}
+
+.course-section:nth-child(3) {
+  animation-delay: 460ms;
+}
+
+.course-section:nth-child(4) {
+  animation-delay: 560ms;
+}
+
+.course-section:nth-child(n + 5) {
+  animation-delay: 640ms;
+}
+
+/* ---------- Section banner ---------- */
+
+.section-banner {
+  transform-origin: center;
+  transform-style: preserve-3d;
+
+  transition:
+    translate 420ms cubic-bezier(.16, 1, .3, 1),
+    scale 420ms cubic-bezier(.16, 1, .3, 1),
+    border-color 300ms ease,
+    box-shadow 420ms ease,
+    background 300ms ease;
+}
+
+.section-banner:hover {
+  translate: 0 -4px;
+  scale: 1.018;
+
+  border-color:
+    rgba(192, 132, 252, .5);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(16, 49, 84, .48),
+      rgba(57, 18, 79, .42)
+    ),
+    rgba(124, 58, 237, .1);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, .07),
+
+    0 22px 58px
+    rgba(5, 2, 20, .35),
+
+    0 0 28px
+    rgba(124, 58, 237, .1);
+}
+
+/* ---------- Path atmosphere ---------- */
+
+.path {
+  position: relative;
+  isolation: isolate;
+  padding-block: 18px;
+  perspective: 1200px;
+}
+
+.path::before {
+  content: "";
+
+  position: absolute;
+  top: 2%;
+  bottom: 2%;
+  left: 50%;
+  z-index: -2;
+
+  width: 340px;
+
+  translate: -50% 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(124, 58, 237, .13),
+      transparent 68%
+    );
+
+  filter:
+    blur(24px);
+
+  animation:
+    roadmap-path-glow
+    6s
+    ease-in-out
+    infinite;
+}
+
+/* ---------- Lesson path items ---------- */
+
+.path-item {
+  position: relative;
+  z-index: 1;
+
+  scale: 1;
+  opacity: 1;
+  filter: none;
+
+  transform-style: preserve-3d;
+
+  animation:
+    roadmap-node-arrive
+    720ms
+    cubic-bezier(.16, 1, .3, 1)
+    backwards;
+
+  transition:
+    scale 480ms cubic-bezier(.16, 1, .3, 1),
+    filter 340ms ease;
+}
+
+/*
+  Because the path is displayed in reverse order,
+  these delays visually animate the roadmap upward.
+*/
+
+.path-item:nth-child(1) {
+  animation-delay: 340ms;
+}
+
+.path-item:nth-child(2) {
+  animation-delay: 410ms;
+}
+
+.path-item:nth-child(3) {
+  animation-delay: 480ms;
+}
+
+.path-item:nth-child(4) {
+  animation-delay: 550ms;
+}
+
+.path-item:nth-child(5) {
+  animation-delay: 620ms;
+}
+
+.path-item:nth-child(6) {
+  animation-delay: 690ms;
+}
+
+.path-item:nth-child(7) {
+  animation-delay: 760ms;
+}
+
+.path-item:nth-child(8) {
+  animation-delay: 830ms;
+}
+
+.path-item:nth-child(9) {
+  animation-delay: 900ms;
+}
+
+.path-item:nth-child(10) {
+  animation-delay: 970ms;
+}
+
+.path-item:nth-child(n + 11) {
+  animation-delay: 1040ms;
+}
+
+/* Blur and shrink surrounding lessons without fading */
+
+.path:has(.path-item:hover)
+.path-item:not(:hover) {
+  scale: .965;
+  opacity: 1;
+
+  filter:
+    blur(.7px);
+}
+
+/* Selected lesson grows around its center */
+
+.path:has(.path-item:hover)
+.path-item:hover {
+  scale: 1.055;
+  opacity: 1;
+  filter: none;
+  z-index: 20;
+}
+
+/* ---------- Liquid lesson nodes ---------- */
+
+.path-node {
+  scale: 1;
+
+  transition:
+    scale 420ms cubic-bezier(.16, 1, .3, 1),
+    border-radius .18s ease,
+    border-color .22s ease,
+    box-shadow .3s ease,
+    background .22s ease,
+    color .22s ease;
+}
+
+.path-item:not(.locked):hover
+.path-node {
+  scale: 1.1;
+
+  box-shadow:
+    0 22px 42px
+    rgba(0, 0, 0, .4),
+
+    0 0 0 1px
+    rgba(255, 255, 255, .16)
+    inset,
+
+    0 1px 0
+    rgba(255, 255, 255, .65)
+    inset,
+
+    0 0 0 8px
+    rgba(
+      var(--glass-accent),
+      .075
+    ),
+
+    0 0 42px
+    rgba(
+      var(--glass-accent),
+      .32
+    );
+}
+
+/* Pulse the first available lesson */
+
+.path-item:not(.locked):not(.completed):first-child
+.path-node {
+  animation:
+    roadmap-available-pulse
+    2.6s
+    ease-in-out
+    infinite;
+}
+
+/* ---------- Lesson information cards ---------- */
+
+.path-info {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+
+  transition:
+    translate 440ms cubic-bezier(.16, 1, .3, 1),
+    scale 440ms cubic-bezier(.16, 1, .3, 1),
+    border-color 300ms ease,
+    background 300ms ease,
+    box-shadow 440ms ease;
+}
+
+/* Moving reflection */
+
+.path-info::before {
+  content: "";
+
+  position: absolute;
+  top: -130%;
+  left: -38%;
+  z-index: 1;
+
+  width: 24%;
+  height: 380%;
+
+  pointer-events: none;
+  opacity: 0;
+  rotate: 16deg;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(192, 132, 252, .08),
+      rgba(255, 255, 255, .12),
+      transparent
+    );
+
+  transition:
+    left 800ms cubic-bezier(.16, 1, .3, 1),
+    opacity 240ms ease;
+}
+
+.path-item:hover
+.path-info::before {
+  left: 120%;
+  opacity: 1;
+}
+
+.path-item:hover
+.path-info {
+  translate: 8px 0;
+  scale: 1.025;
+
+  border-color:
+    rgba(192, 132, 252, .46);
+
+  background:
+    radial-gradient(
+      circle at 84% 16%,
+      rgba(168, 85, 247, .15),
+      transparent 40%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(18, 51, 84, .46),
+      rgba(55, 17, 77, .42)
+    ),
+    rgba(124, 58, 237, .08);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, .07),
+
+    0 20px 48px
+    rgba(5, 2, 20, .35),
+
+    0 0 26px
+    rgba(124, 58, 237, .1);
+}
+
+.path-title {
+  transition:
+    translate 320ms cubic-bezier(.16, 1, .3, 1),
+    color 280ms ease;
+}
+
+.path-meta {
+  transition:
+    translate 360ms cubic-bezier(.16, 1, .3, 1),
+    color 280ms ease;
+}
+
+.path-item:hover
+.path-title {
+  translate: 3px 0;
+  color: #ffffff;
+}
+
+.path-item:hover
+.path-meta {
+  translate: 3px 0;
+}
+
+/* Locked lessons remain subdued */
+
+.path-item.locked:hover {
+  scale: 1;
+}
+
+.path-item.locked:hover
+.path-info {
+  translate: 0 0;
+  scale: 1;
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes roadmap-background-drift {
+  from {
+    transform:
+      scale(1.02)
+      translate3d(-1%, -1%, 0);
+  }
+
+  to {
+    transform:
+      scale(1.08)
+      translate3d(1%, 1%, 0);
+  }
+}
+
+@keyframes roadmap-grid-drift {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+
+  to {
+    background-position:
+      40px 40px,
+      40px 40px;
+  }
+}
+
+@keyframes roadmap-topbar-arrive {
+  from {
+    opacity: 0;
+    translate: 0 -100%;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes roadmap-back-arrive {
+  from {
+    opacity: 0;
+    translate: -20px 0;
+    scale: .8;
+    rotate: -10deg;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+
+@keyframes roadmap-arrow-bounce {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: -3px 0;
+  }
+}
+
+@keyframes roadmap-hero-arrive {
+  from {
+    opacity: 0;
+    translate: 0 26px;
+    scale: .97;
+    filter: blur(9px);
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes roadmap-rank-arrive {
+  from {
+    opacity: 0;
+    translate: 24px 0;
+    scale: .94;
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes roadmap-icon-float {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: -2deg;
+  }
+
+  50% {
+    translate: 0 -5px;
+    rotate: 3deg;
+  }
+}
+
+@keyframes roadmap-rank-orbit {
+  from {
+    rotate: 0deg;
+  }
+
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes roadmap-progress-shine {
+  0% {
+    left: -40%;
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  60%,
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
+}
+
+@keyframes roadmap-section-arrive {
+  from {
+    opacity: 0;
+    translate: 0 38px;
+    scale: .975;
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes roadmap-node-arrive {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+    scale: .86;
+    filter: blur(8px);
+  }
+
+  70% {
+    opacity: 1;
+    filter: blur(1px);
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes roadmap-path-glow {
+  0%,
+  100% {
+    opacity: .45;
+    scale: .95 1;
+  }
+
+  50% {
+    opacity: .85;
+    scale: 1.08 1.04;
+  }
+}
+
+@keyframes roadmap-available-pulse {
+  0%,
+  100% {
+    scale: 1;
+
+    filter:
+      brightness(1);
+  }
+
+  50% {
+    scale: 1.06;
+
+    filter:
+      brightness(1.15);
+  }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 760px) {
+  .category-hero-main:hover,
+  .category-rank-panel:hover,
+  .section-banner:hover {
+    translate: 0 -2px;
+    scale: 1;
+  }
+
+  .path:has(.path-item:hover)
+  .path-item:not(:hover) {
+    scale: .98;
+
+    filter:
+      blur(.4px);
+  }
+
+  .path:has(.path-item:hover)
+  .path-item:hover {
+    scale: 1.02;
+  }
+
+  .path-item:hover
+  .path-info {
+    translate: 3px 0;
+    scale: 1.01;
+  }
+}
+
+/* ---------- Touch devices ---------- */
+
+@media (hover: none) {
+  .path:has(.path-item:hover)
+  .path-item:not(:hover),
+  .path:has(.path-item:hover)
+  .path-item:hover {
+    scale: 1;
+    filter: none;
+  }
+
+  .path-item:hover
+  .path-info {
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after,
+  .topbar,
+  .library-back,
+  .category-hero-main,
+  .category-rank-panel,
+  .category-icon,
+  .category-rank-panel::before,
+  .category-progress-track::after,
+  .course-section,
+  .path::before,
+  .path-item,
+  .path-node {
+    animation: none !important;
+  }
+
+  .library-back,
+  .category-hero-main,
+  .category-rank-panel,
+  .section-banner,
+  .path-item,
+  .path-node,
+  .path-info,
+  .path-title,
+  .path-meta {
+    transition: none !important;
+  }
+
+  .path-item,
+  .path:has(.path-item:hover)
+  .path-item:not(:hover),
+  .path:has(.path-item:hover)
+  .path-item:hover {
+    translate: 0 0;
+    scale: 1;
+    opacity: 1;
+    filter: none;
+  }
+}
