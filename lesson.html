@@ -4,43 +4,83 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Lesson | CosmoKlub</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="assets/css/lesson.css">
   <link rel="stylesheet" href="assets/css/loader.css">
+
+  <style>
+    .brand-logo {
+      display: block;
+      width: auto;
+      height: 48px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.3));
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    @media (max-width: 480px) {
+      .brand-logo {
+        height: 40px;
+      }
+    }
+  </style>
 </head>
+
 <body>
   <div class="page-shell">
     <div class="topbar">
-      <a href="dashboard.html" class="brand" aria-label="CosmoKlub home">
-        <svg width="22" height="22" viewBox="0 0 26 26" fill="none" aria-hidden="true">
-          <circle cx="13" cy="5" r="2.2" fill="#a855f7"/>
-          <circle cx="5" cy="18" r="1.7" fill="#c084fc"/>
-          <circle cx="21" cy="18" r="1.7" fill="#c084fc"/>
-          <circle cx="13" cy="14" r="1.3" fill="#e9d5ff" opacity="0.7"/>
-          <line x1="13" y1="5" x2="5" y2="18" stroke="#a855f7" stroke-width="1" stroke-opacity="0.55"/>
-          <line x1="13" y1="5" x2="21" y2="18" stroke="#a855f7" stroke-width="1" stroke-opacity="0.55"/>
-          <line x1="5" y1="18" x2="21" y2="18" stroke="#c084fc" stroke-width="1" stroke-opacity="0.45"/>
-        </svg>
-        CosmoKlub
+      <a
+        id="brandHome"
+        href="dashboard.html?tab=library"
+        class="brand"
+        aria-label="Return to the category roadmap"
+      >
+        <img
+          class="brand-logo"
+          src="assets/images/logo.png"
+          alt="CosmoKlub"
+          draggable="false"
+        >
       </a>
 
       <div class="topbar-spacer"></div>
 
       <div class="topbar-actions">
         <button class="icon-btn" type="button" aria-label="Notifications">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
+
           <span class="icon-dot"></span>
         </button>
 
         <button class="icon-btn" type="button" aria-label="Settings">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/>
           </svg>
         </button>
       </div>
@@ -50,7 +90,12 @@
       <main class="lesson-page">
         <div class="lesson-layout">
           <div class="back-column">
-            <button id="roadmapBack" class="roadmap-back" type="button" aria-label="Back to roadmap">
+            <button
+              id="roadmapBack"
+              class="roadmap-back"
+              type="button"
+              aria-label="Back to roadmap"
+            >
               <span class="roadmap-back-arrow"></span>
             </button>
           </div>
@@ -60,7 +105,11 @@
               <div class="lesson-cover-art">
                 <div class="lesson-brand">COSMOKLUB</div>
                 <div class="lesson-category" id="lessonCategory"></div>
-                <h1 id="lessonTitle">Lesson</h1>
+
+                <h1 id="lessonTitle">
+                  Lesson
+                </h1>
+
                 <p id="lessonDescription"></p>
 
                 <div class="lesson-cover-decoration">
@@ -83,43 +132,99 @@
                   </span>
                 </div>
 
-                <button id="startLearning" class="start-learning-button" type="button">
+                <button
+                  id="startLearning"
+                  class="start-learning-button"
+                  type="button"
+                >
                   Start Learning
                 </button>
               </div>
             </article>
 
-            <section id="learningExperience" class="learning-experience hidden">
+            <section
+              id="learningExperience"
+              class="learning-experience hidden"
+            >
               <div class="learning-topbar">
-                <button id="previousStep" class="step-nav-button step-nav-previous" type="button">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <button
+                  id="previousStep"
+                  class="step-nav-button step-nav-previous"
+                  type="button"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
                     <path d="m15 18-6-6 6-6"/>
                   </svg>
+
                   <span>Previous</span>
                 </button>
 
                 <div class="learning-progress-wrap">
                   <div class="learning-progress">
-                    <div id="learningProgressFill" class="learning-progress-fill"></div>
+                    <div
+                      id="learningProgressFill"
+                      class="learning-progress-fill"
+                    ></div>
                   </div>
-                  <span id="learningProgressText" class="learning-progress-text">1 / 1</span>
+
+                  <span
+                    id="learningProgressText"
+                    class="learning-progress-text"
+                  >
+                    1 / 1
+                  </span>
                 </div>
 
-                <button id="forwardStep" class="step-nav-button step-nav-next" type="button">
+                <button
+                  id="forwardStep"
+                  class="step-nav-button step-nav-next"
+                  type="button"
+                >
                   <span>Next</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
                     <path d="m9 18 6-6-6-6"/>
                   </svg>
                 </button>
               </div>
 
-              <div id="learningStage" class="learning-stage"></div>
+              <div
+                id="learningStage"
+                class="learning-stage"
+              ></div>
             </section>
           </div>
         </div>
       </main>
     </div>
   </div>
+
+  <script>
+    (() => {
+      const brandHome = document.getElementById('brandHome');
+      const currentParams = new URLSearchParams(window.location.search);
+      const currentCategory = currentParams.get('category');
+
+      if (brandHome && currentCategory) {
+        brandHome.href =
+          `roadmap.html?category=${encodeURIComponent(currentCategory)}`;
+      }
+    })();
+  </script>
 
   <script src="assets/js/lib/supabase-client.js"></script>
   <script src="assets/js/course-data.js"></script>
