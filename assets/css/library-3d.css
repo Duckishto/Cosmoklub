@@ -92,12 +92,33 @@ body.library-3d-active .content {
   perspective-origin: 50% 25%;
 }
 
+/*
+  Center the Library and add safe space around both sides.
+  This prevents zoomed and rotated cards from leaving the frame.
+*/
+
 body.library-3d-active .library-roadmap {
   position: relative;
 
   z-index: 2;
 
   isolation: isolate;
+
+  width:
+    min(
+      100%,
+      1880px
+    );
+
+  margin-inline:
+    auto;
+
+  padding-inline:
+    clamp(
+      20px,
+      2.2vw,
+      42px
+    );
 }
 
 body.library-3d-active .library-roadmap::before {
@@ -484,11 +505,6 @@ body.library-3d-active .rank-panel {
    SIX-CATEGORY INTRODUCTION
    =================================================== */
 
-/*
-  These use the individual translate and scale properties.
-  They do not override the JavaScript rotation transform.
-*/
-
 @keyframes library-card-arrive {
   from {
     opacity: 0;
@@ -552,6 +568,11 @@ body.library-3d-active .rank-panel {
   body.library-3d-active .roadmap-grid {
     display: grid !important;
     gap: 12px !important;
+  }
+
+  body.library-3d-active .library-roadmap {
+    width: 100%;
+    padding-inline: 2px;
   }
 
   body.library-3d-active
