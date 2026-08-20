@@ -1,0 +1,227 @@
+/* report-bug.css: Report a Bug page.
+   Deliberately mirrors staff-application.css class-for-class (.content,
+   .staff-hero/.staff-h1, .staff-layout, .staff-info/.staff-info-card,
+   .role-chip-grid, .staff-form-card, .hp-field) so this page lines up
+   with the rest of the site at the exact same 1280px content width and
+   uses the exact same form/card styling, rather than inventing a
+   parallel set of near-identical rules.
+
+   Same layout notes as staff-application.css: no 100vh sections, single
+   column until there's real room for two (min-width switch, not a
+   phone/tablet/desktop assumption), everything sized with clamp()/min()
+   or given a narrower fallback below. */
+
+#bug-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
+
+.content {
+  max-width: 1280px; width: 100%;
+  margin: 0 auto;
+  padding: 90px 3rem 72px;
+  flex: 1;
+}
+
+/* ---------- Page hero ---------- */
+.staff-hero {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.staff-hero .hero-eyebrow {
+  font-size: 0.85rem;
+}
+.staff-h1 {
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  text-shadow: 0 0 20px rgba(124,58,237,0.2);
+}
+.staff-h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--violet) 20%, var(--glow) 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.staff-sub {
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  max-width: 480px;
+}
+
+/* ---------- Two-column layout ---------- */
+.staff-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+@media (min-width: 860px) {
+  .staff-layout {
+    grid-template-columns: minmax(260px, 1fr) minmax(340px, 1.25fr);
+    gap: 36px;
+  }
+  .staff-info {
+    position: sticky;
+    top: 96px;
+  }
+}
+
+/* ---------- Info panel ---------- */
+.staff-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.staff-info-card {
+  background: #0c0a1c;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.5rem;
+}
+.staff-info-card h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+.staff-info-card > p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.role-chip-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.role-chip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+.role-chip-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.role-chip h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.15rem;
+}
+.role-chip p {
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.staff-info-note ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.staff-info-note li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.staff-info-note li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--violet);
+}
+
+/* ---------- Form card ---------- */
+.staff-form-card {
+  background: #0c0a1c;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 3vw, 2.2rem);
+  min-width: 0;
+}
+
+.optional-tag {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: rgba(139,122,168,0.7);
+  font-size: 0.78rem;
+}
+
+/* textarea isn't styled in style.css (only input/select are) */
+.form-group textarea {
+  width: 100%;
+  background: var(--glass2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 1rem;
+  padding: 0.78rem 1rem;
+  transition: border-color var(--tr);
+  outline: none;
+  resize: vertical;
+  min-height: 5.5em;
+}
+.form-group textarea::placeholder {
+  color: rgba(139,122,168,0.42);
+}
+.form-group textarea:focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.13);
+}
+.form-group textarea.err {
+  border-color: #f43f5e;
+}
+
+.staff-form-card .success-screen {
+  min-height: 320px;
+}
+
+/* Honeypot field for the anti-spam trap in report-bug.js. Hidden
+   off-screen (not display:none/visibility:hidden) since some bots skip
+   fields hidden that way but still fill in ones that are merely
+   positioned off-canvas. Real visitors, using a mouse, keyboard or screen
+   reader, never see or reach it: tabindex="-1" skips it, aria-hidden
+   removes it from the accessibility tree, and it sits off-screen either
+   way. */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ---------- Narrower screens ---------- */
+@media (max-width: 900px) {
+  .content { padding: 80px 1.5rem 60px; }
+}
+@media (min-width: 860px) and (max-width: 1000px) {
+  .staff-layout { grid-template-columns: minmax(220px, 0.9fr) minmax(320px, 1.3fr); }
+}
