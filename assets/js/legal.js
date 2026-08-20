@@ -1,14 +1,18 @@
-// CosmoKlub: Legal Center hub page logic.
-// Nav mirrors the shared "compact" bar used across the rest of the site,
-// same as contact.js/team.js/resources.js. This page has no form/Supabase
-// write of its own — it's a sidebar of legal documents, each currently a
-// "coming soon" placeholder (skeleton lines, no real policy text) until
-// the actual Terms/Privacy/Guidelines/Cookie copy is ready to publish here.
+// CosmoKlub: Legal Center — documentation-portal page logic.
+//
+// The shared "compact" top nav and the site footer are built from the
+// same data shape as every other page (contact.js/team.js/resources.js)
+// so they render identically. What's specific to this page is a docs
+// layout: a left sidebar of legal documents grouped into sections, and
+// a reading pane that shows the selected document. No real policy copy
+// is published yet, so the pane always renders a skeleton placeholder.
+//
+// By request: no theme toggle and no language switcher on this page.
 
 const { createApp } = Vue;
 
-// Nav dropdown icon set, same as every other page's own script so the
-// shared "compact" nav bar renders identically here.
+// Nav dropdown icon set — identical to the other pages' scripts so the
+// shared nav bar looks the same here.
 const NAV_ICONS = {
   cap: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>`,
   users: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>`,
@@ -19,36 +23,69 @@ const NAV_ICONS = {
   server: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><line x1="6" y1="6.5" x2="6.01" y2="6.5"/><line x1="6" y1="17.5" x2="6.01" y2="17.5"/></svg>`
 };
 
-// One icon per legal document, drawn in the same 1.8-stroke line style as
-// NAV_ICONS above so the sidebar reads as part of the same icon set.
+// One line-icon per legal document, in the same 1.8-stroke style.
 const DOC_ICONS = {
   scroll: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v9"/><path d="M15 2v5h5"/><path d="M6 21a2 2 0 0 1-2-2v-3h4v3a2 2 0 0 1-2 2z"/></svg>`,
   shield: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
   heart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>`,
-  cookie: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5z"/><circle cx="8.5" cy="12.5" r=".8" fill="currentColor" stroke="none"/><circle cx="12.5" cy="16.5" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".8" fill="currentColor" stroke="none"/></svg>`
+  cookie: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5z"/><circle cx="8.5" cy="12.5" r=".8" fill="currentColor" stroke="none"/><circle cx="12.5" cy="16.5" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".8" fill="currentColor" stroke="none"/></svg>`,
+  scale: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M7 7l-3 6a3 3 0 0 0 6 0z"/><path d="M17 7l-3 6a3 3 0 0 0 6 0z"/><path d="M7 21h10"/></svg>`,
+  lock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  flag: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`
 };
 
 createApp({
   data() {
     return {
-      mobileMenuOpen: false,
-      openMenu: null,
+      mobileMenuOpen: false, // top nav (mobile)
+      openMenu: null,        // top nav dropdown
+      sidebarOpen: false,    // docs sidebar (mobile off-canvas)
       rights: 'All rights reserved.',
 
-      // The four legal documents this hub collects. Every one of them is
-      // a placeholder right now — icon/label/meta only, no drafted policy
-      // text — the panel on the right always renders the same "coming
-      // soon" skeleton regardless of which doc is active.
-      docs: [
-        { id: 'tos', label: 'Terms of Service', meta: 'Not yet published', icon: DOC_ICONS.scroll },
-        { id: 'privacy', label: 'Privacy Policy', meta: 'Not yet published', icon: DOC_ICONS.shield },
-        { id: 'community', label: 'Community Guidelines', meta: 'Not yet published', icon: DOC_ICONS.heart },
-        { id: 'cookies', label: 'Cookie Policy', meta: 'Not yet published', icon: DOC_ICONS.cookie }
+      // The sidebar's grouped document list — laid out like a docs
+      // portal: a short "start here" group, the core documents, then
+      // the broader policies. Every entry is still a placeholder; the
+      // reading pane shows the same skeleton for whichever is active.
+      sections: [
+        {
+          label: 'Getting Started',
+          docs: [
+            { id: 'overview', label: 'Legal Documentation Portal', lead: 'An overview of the agreements and policies that govern your use of CosmoKlub.', icon: DOC_ICONS.book },
+            { id: 'beta', label: 'Beta Program Terms', lead: 'Additional terms that apply while CosmoKlub is in its beta phase.', icon: DOC_ICONS.flag }
+          ]
+        },
+        {
+          label: 'Core Legal Documents',
+          docs: [
+            { id: 'tos', label: 'Terms of Service', lead: 'The terms governing access to and use of the platform.', icon: DOC_ICONS.scroll },
+            { id: 'privacy', label: 'Privacy Policy', lead: 'How we collect, use, and protect your personal information.', icon: DOC_ICONS.shield },
+            { id: 'acceptable-use', label: 'Acceptable Use Policy', lead: 'What you may and may not do while using CosmoKlub.', icon: DOC_ICONS.scale },
+            { id: 'community', label: 'Community Guidelines', lead: 'The standards that keep our community welcoming and safe.', icon: DOC_ICONS.heart }
+          ]
+        },
+        {
+          label: 'Policies & Agreements',
+          docs: [
+            { id: 'security', label: 'Security Policy', lead: 'Our approach to protecting the platform and your data.', icon: DOC_ICONS.lock },
+            { id: 'cookies', label: 'Cookie Policy', lead: 'How and why CosmoKlub uses cookies and similar technologies.', icon: DOC_ICONS.cookie }
+          ]
+        }
       ],
+
+      activeId: 'tos',
     };
   },
 
   computed: {
+    // Flat list of every doc across all sidebar sections, so lookups
+    // (active doc, deep-link matching) don't have to walk the groups.
+    allDocs() {
+      return this.sections.flatMap(s => s.docs);
+    },
+    activeDoc() {
+      return this.allDocs.find(d => d.id === this.activeId) || this.allDocs[0];
+    },
+
     // Same Tools / Use cases dropdown content as every other root page.
     navMenus() {
       return {
@@ -73,8 +110,7 @@ createApp({
       };
     },
     // Same footer link groups as the rest of the site. The Legal column
-    // now points at this page's own sections, matching the footer on
-    // every other page (which links here instead of the old modal).
+    // deep-links into this page's own documents.
     footerCols() {
       return [
         { title: 'Tools', links: [
@@ -104,19 +140,15 @@ createApp({
   mounted() {
     window.CosmoKlub.initStarfield();
 
-    // Deep-link support: legal.html#privacy scrolls straight to that
-    // section on load. A tick's delay lets Vue finish its first render
-    // so the target element actually exists in the DOM to scroll to.
+    // Deep-link support: legal.html#privacy opens straight to that doc.
     const hash = (location.hash || '').replace('#', '');
-    if (this.docs.some(d => d.id === hash)) {
-      this.$nextTick(() => this.scrollToDoc(hash, false));
-    }
+    if (this.allDocs.some(d => d.id === hash)) this.activeId = hash;
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.nav-has-menu')) this.openMenu = null;
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') this.openMenu = null;
+      if (e.key === 'Escape') { this.openMenu = null; this.sidebarOpen = false; }
     });
   },
 
@@ -124,22 +156,23 @@ createApp({
     toggleMenu(key) { this.openMenu = this.openMenu === key ? null : key; },
     closeMenu() { this.openMenu = null; },
 
-    // Scrolls to a document section by id. `smooth` is false for the
-    // on-load deep-link (an instant jump reads better than an animated
-    // scroll on first paint) and true for in-page clicks.
-    scrollToDoc(id, smooth = true) {
-      document.getElementById(id)?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+    // Select a document in the reading pane. Closes the mobile sidebar,
+    // updates the URL hash, and scrolls the pane back to the top so the
+    // new document starts from its header.
+    selectDoc(id) {
+      this.activeId = id;
+      this.sidebarOpen = false;
       history.replaceState(null, '', `#${id}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
-    // Footer "Legal" links use plain #hash hrefs so they still work if JS
-    // is slow to boot; once Vue is up we intercept to avoid a jarring
-    // native jump and smooth-scroll to the section instead.
+    // Footer "Legal" links are plain #hash hrefs; intercept once Vue is
+    // up so they select the doc instead of doing a native jump.
     onFooterLegalClick(e, href) {
       const id = href.replace('#', '');
-      if (!this.docs.some(d => d.id === id)) return;
+      if (!this.allDocs.some(d => d.id === id)) return;
       e.preventDefault();
-      this.scrollToDoc(id);
+      this.selectDoc(id);
     },
   },
 }).mount('#legal-app');
