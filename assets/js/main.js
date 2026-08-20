@@ -154,18 +154,25 @@ createApp({
       authTab: 'register',
       billing: 'monthly',
       openFaq: null,
+      // Same idea: drop files into assets/images/home/ with these names.
+      // featurePanel: 1200x900px. ctaBanner: 1200x900px.
       sectionImages: {
-        featurePanel: '',
-        ctaBanner: ''
+        featurePanel: 'assets/images/home/feature-panel.jpg',
+        ctaBanner: 'assets/images/home/cta-banner.jpg'
       },
+      // Drop matching files into assets/images/hero/ using these exact
+      // names and they'll appear automatically — no further code changes
+      // needed. Recommended size: 1361 x 675px for all seven (each one
+      // can appear both as the big hero shot AND as a small satellite
+      // card, since clicking a card swaps it into the main slot).
       heroImages: {
-        objectBrowser: '',
-        apod: '',
-        grapher: '',
-        gallery: '',
-        planetarium: '',
-        community: '',
-        observer: ''
+        objectBrowser: 'assets/images/hero/object-browser.jpg',
+        apod: 'assets/images/hero/apod.jpg',
+        grapher: 'assets/images/hero/grapher.jpg',
+        gallery: 'assets/images/hero/gallery.jpg',
+        planetarium: 'assets/images/hero/planetarium.jpg',
+        community: 'assets/images/hero/community.jpg',
+        observer: 'assets/images/hero/observer.jpg'
       },
       stats: { objects: null, asteroids: null, apodDays: null },
       pensiaOpen: false,
@@ -227,7 +234,7 @@ createApp({
       return [
         {
           title: 'Create your account',
-          img: '',
+          img: 'assets/images/home/step-1.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Set up your profile in minutes.',
           bullets: [
             { svg: SVGS.telescope, text: 'Lorem ipsum dolor' },
@@ -237,7 +244,7 @@ createApp({
         },
         {
           title: 'Configure your tools',
-          img: '',
+          img: 'assets/images/home/step-2.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tailor everything to your workflow.',
           bullets: [
             { svg: SVGS.chart, text: 'Tempor incididunt' },
@@ -247,7 +254,7 @@ createApp({
         },
         {
           title: 'Start exploring',
-          img: '',
+          img: 'assets/images/home/step-3.jpg',
           desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dive into the night sky right away.',
           bullets: [
             { svg: SVGS.telescope, text: 'Ad minim veniam' },
@@ -268,10 +275,11 @@ createApp({
           { svg: SVGS.cpu, text: 'Migrate from other platforms' }
         ]
       };
+      // 1400x1000px each — assets/images/home/manage-1.jpg, -2.jpg, -3.jpg
       return [
-        { ...panel, img: '' },
-        { ...panel, img: '' },
-        { ...panel, img: '' }
+        { ...panel, img: 'assets/images/home/manage-1.jpg' },
+        { ...panel, img: 'assets/images/home/manage-2.jpg' },
+        { ...panel, img: 'assets/images/home/manage-3.jpg' }
       ];
     },
     plans() {
