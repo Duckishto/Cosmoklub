@@ -26,6 +26,10 @@ function trim(text, max) {
   return clean.length > max ? clean.slice(0, max).trimEnd() + '…' : clean;
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 createApp({
   data() {
     return {
@@ -35,6 +39,7 @@ createApp({
       apod: null,
       apodLoading: true,
       apodError: '',
+      apodStale: false,
       apodImgReady: false,
       apodImgFailed: false,
 
@@ -144,32 +149,54 @@ createApp({
     async loadApod() {
       this.apodLoading = true;
       this.apodError = '';
+      this.apodStale = false;
       this.apodImgReady = false;
       this.apodImgFailed = false;
-      try {
-        const r = await fetch(`${PROXY}?endpoint=apod`);
-        if (!r.ok) throw new Error('NASA returned ' + r.status);
-        const d = await r.json();
-        const item = Array.isArray(d) ? d[0] : d;
-        this.apod = {
-          title: item.title || 'Astronomy Picture of the Day',
-          summary: trim(item.explanation, 420),
-          image: item.media_type === 'video' ? item.url : (item.url || item.hdurl),
-          full: item.hdurl || item.url,
-          // apod.nasa.gov sends X-Frame-Options, so its own pages cannot be
-          // iframed ("refused to connect"). Only embed hosts that allow it.
-          mediaType: item.media_type === 'video'
-            ? (/youtube\.com|youtu\.be|vimeo\.com|player\./i.test(item.url || '') ? 'video' : 'link')
-            : 'image',
-          date: tidyDate(item.date),
-          credit: item.copyright ? item.copyright.replace(/\n/g, ' ').trim() : 'NASA',
-          link: 'https://apod.nasa.gov/apod/astropix.html'
-        };
-      } catch (err) {
-        this.apodError = 'Could not load today’s picture (' + err.message + ').';
-      } finally {
-        this.apodLoading = false;
+
+      const MAX_ATTEMPTS = 3;
+      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+        try {
+          const r = await fetch(`${PROXY}?endpoint=apod`);
+          if (!r.ok) {
+            // Rate-limit / server hiccup: worth a couple of quick retries
+            // before we give up — the edge fallback usually catches this
+            // anyway, so a genuine failure here is rare.
+            if ((r.status === 429 || r.status >= 500) && attempt < MAX_ATTEMPTS - 1) {
+              await sleep(700 * (attempt + 1));
+              continue;
+            }
+            throw new Error('NASA returned ' + r.status);
+          }
+          const d = await r.json();
+          const item = Array.isArray(d) ? d[0] : d;
+          this.apod = {
+            title: item.title || 'Astronomy Picture of the Day',
+            summary: trim(item.explanation, 420),
+            image: item.media_type === 'video' ? item.url : (item.url || item.hdurl),
+            full: item.hdurl || item.url,
+            // apod.nasa.gov sends X-Frame-Options, so its own pages cannot be
+            // iframed ("refused to connect"). Only embed hosts that allow it.
+            mediaType: item.media_type === 'video'
+              ? (/youtube\.com|youtu\.be|vimeo\.com|player\./i.test(item.url || '') ? 'video' : 'link')
+              : 'image',
+            date: tidyDate(item.date),
+            credit: item.copyright ? item.copyright.replace(/\n/g, ' ').trim() : 'NASA',
+            link: 'https://apod.nasa.gov/apod/astropix.html'
+          };
+          // The proxy marks it when it had to reach for its own stale
+          // safety-net copy instead of a fresh NASA response.
+          this.apodStale = r.headers.get('X-Cache') === 'STALE-FALLBACK';
+          this.apodError = '';
+          break;
+        } catch (err) {
+          if (attempt < MAX_ATTEMPTS - 1) {
+            await sleep(700 * (attempt + 1));
+            continue;
+          }
+          this.apodError = "NASA's picture feed isn't responding right now.";
+        }
       }
+      this.apodLoading = false;
     },
 
     async loadFeed(reset = true) {
