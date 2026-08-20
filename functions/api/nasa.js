@@ -33,6 +33,13 @@
 // imagery, image-library assets, rover manifests) is cached for an hour;
 // everything else for 5 minutes. 429/error responses are never cached.
 //
+// Stale fallback: for that same daily/static data, every successful
+// response is also kept in a second, six-day-long-lived cache entry. If a
+// later request to NASA fails (429 from the shared DEMO_KEY is the usual
+// case), we serve that last known-good copy instead of an error, tagged
+// with X-Cache: STALE-FALLBACK so the frontend can show a subtle "this may
+// not be today's" note rather than a broken/error state.
+//
 // Nothing in this repo or in git history contains a real key. If NASA_API_KEY
 // is not set, requests fall back to NASA's shared "DEMO_KEY" (rate-limited to
 // ~30 requests/hour/IP), so the page still works during initial setup.
@@ -131,6 +138,17 @@ export async function onRequestGet({ request, env }) {
     return res;
   }
 
+  // ---- Stale-fallback safety net: for slow-changing, non-binary endpoints
+  // (APOD and friends) we keep a second, much longer-lived copy of the last
+  // *successful* response around. If NASA errors or rate-limits us (very
+  // common on the shared DEMO_KEY — see file header), we serve that instead
+  // of a raw error, so a visitor almost never sees a broken card. It's kept
+  // separate from the cache above so it survives well past that cache's
+  // normal TTL without going stale-in-the-browser.
+  const fallbackKey = def.longCache && !def.binary
+    ? new Request(upstream.toString() + '&__fallback=1', request)
+    : null;
+
   try {
     const upstreamRes = await fetch(upstream.toString(), {
       headers: { Accept: def.binary ? 'image/png,*/*' : 'application/json' },
@@ -160,10 +178,47 @@ export async function onRequestGet({ request, env }) {
     // error, or every retry would be stuck replaying the same failure.
     if (upstreamRes.ok) {
       await cache.put(cacheKey, response.clone());
+      if (fallbackKey) {
+        // Six-day safety-net copy, independent of the short-lived cache
+        // above, so a run of 429s (e.g. the shared DEMO_KEY's hourly limit)
+        // still has something recent to fall back to.
+        const fallbackRes = new Response(body, {
+          status: 200,
+          headers: {
+            'Content-Type': response.headers.get('Content-Type'),
+            'Cache-Control': 'public, max-age=' + (60 * 60 * 24 * 6),
+            'X-NASA-Key-Source': keySource,
+          },
+        });
+        await cache.put(fallbackKey, fallbackRes);
+      }
+      return response;
+    }
+
+    // Upstream failed (rate-limited, NASA outage, etc). Reach for the
+    // last known-good copy rather than surfacing the raw error.
+    if (fallbackKey) {
+      const stale = await cache.match(fallbackKey);
+      if (stale) {
+        const res = new Response(stale.body, stale);
+        res.headers.set('X-Cache', 'STALE-FALLBACK');
+        res.headers.set('X-NASA-Key-Source', keySource);
+        return res;
+      }
     }
 
     return response;
   } catch (err) {
+    // Network-level failure reaching NASA at all — same fallback logic.
+    if (fallbackKey) {
+      const stale = await cache.match(fallbackKey);
+      if (stale) {
+        const res = new Response(stale.body, stale);
+        res.headers.set('X-Cache', 'STALE-FALLBACK');
+        res.headers.set('X-NASA-Key-Source', keySource);
+        return res;
+      }
+    }
     return jsonResponse({ error: 'Upstream request failed.', detail: String(err) }, 502);
   }
 }
