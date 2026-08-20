@@ -253,7 +253,16 @@
   margin: 1.4rem auto 0;
   pointer-events: none;
   user-select: none;
+  animation: staff-pensia-float 4.5s ease-in-out infinite;
 }
 @media (max-width: 900px) {
   .staff-info-art { max-width: 145px; margin-top: 1rem; }
+}
+
+@keyframes staff-pensia-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(-2deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .staff-info-art { animation: none; }
 }
