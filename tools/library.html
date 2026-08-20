@@ -73,26 +73,22 @@
 
     <main class="uc-page">
 
-      <section class="uc-hero">
+      <section class="uc-hero" :style="persona.heroImage ? { backgroundImage: 'url(' + persona.heroImage + ')' } : {}">
+        <div class="uc-hero-overlay"></div>
         <div class="uc-inner">
-          <div class="uc-hero-grid">
-            <div class="uc-hero-copy">
-              <nav class="uc-crumb" aria-label="Breadcrumb">
-                <template v-for="(c, ci) in persona.crumb" :key="ci">
-                  <span>{{ c }}</span>
-                  <i v-if="ci < persona.crumb.length - 1">/</i>
-                </template>
-              </nav>
-              <span class="uc-eyebrow">{{ persona.eyebrow }}</span>
-              <h1>{{ persona.titleTop }} <em>{{ persona.titleAccent }}</em></h1>
-              <p>{{ persona.lead }}</p>
-              <div class="uc-actions">
-                <a class="uc-btn-primary" href="../login.html?mode=register">{{ persona.cta }}</a>
-                <a class="uc-btn-ghost" href="../index.html#book-demo">Book Demo</a>
-              </div>
-            </div>
-            <div class="uc-hero-visual">
-              <img v-if="persona.heroImage" :src="persona.heroImage" :alt="persona.name" draggable="false" />
+          <div class="uc-hero-copy">
+            <nav class="uc-crumb" aria-label="Breadcrumb">
+              <template v-for="(c, ci) in persona.crumb" :key="ci">
+                <span>{{ c }}</span>
+                <i v-if="ci < persona.crumb.length - 1">/</i>
+              </template>
+            </nav>
+            <span class="uc-eyebrow">{{ persona.eyebrow }}</span>
+            <h1>{{ persona.titleTop }} <em>{{ persona.titleAccent }}</em></h1>
+            <p>{{ persona.lead }}</p>
+            <div class="uc-actions">
+              <a class="uc-btn-primary" href="../login.html?mode=register">{{ persona.cta }}</a>
+              <a class="uc-btn-ghost" href="../index.html#book-demo">Book Demo</a>
             </div>
           </div>
         </div>
