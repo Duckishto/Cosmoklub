@@ -6,6 +6,12 @@
   text-decoration: none;
 }
 
+/* Remove the thin line underneath the top navigation */
+body.library-3d-active .topbar {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
 /* ===================================================
    THREE.JS CANVAS
    =================================================== */
