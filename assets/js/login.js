@@ -110,7 +110,7 @@ createApp({
           links: [
             { text: 'Our Team', href: 'team.html' },
             { text: 'Apply as Staff', href: 'staff-application.html' },
-            { text: 'Report Bug', href: '#' },
+            { text: 'Report Bug', href: 'report-bug.html' },
             { text: 'Contact', href: 'mailto:hello@cosmoklub.space' }
           ]
         },
