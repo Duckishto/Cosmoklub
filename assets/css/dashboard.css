@@ -1593,3 +1593,388 @@ body {
     padding-bottom: 0 !important;
   }
 }
+
+/* =========================================================
+   HOMEPAGE-STYLE DASHBOARD NAVIGATION
+
+   Uses the existing Dashboard labels:
+   Forum, Library, Calculator, and Chat.
+   The former center Home/FAB control is intentionally hidden.
+   ========================================================= */
+
+.bottom-nav {
+  top: 12px !important;
+  bottom: auto !important;
+  left: 50% !important;
+  right: auto !important;
+
+  width: calc(100% - 24px) !important;
+  max-width: none !important;
+  height: 74px !important;
+  padding: 0 clamp(22px, 3vw, 58px) !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  column-gap: 14px !important;
+
+  background: rgba(14, 11, 30, 0.82) !important;
+  backdrop-filter: blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+
+  border: 1px solid rgba(124, 58, 237, 0.32) !important;
+  border-radius: 24px !important;
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Logo at the left, using assets/images/logo.png. */
+.bottom-nav::before {
+  content: "";
+  display: block;
+  flex: 0 0 clamp(154px, 13vw, 220px);
+  width: clamp(154px, 13vw, 220px);
+  height: 42px;
+  background: url("../images/logo.png") center / contain no-repeat;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Remove the old circular Home button. */
+.bottom-nav > .fab-item {
+  display: none !important;
+}
+
+/* Text-only homepage-style links. */
+.bottom-nav > .nav-item:not(.fab-item) {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 44px !important;
+  padding: 0 22px !important;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  border-radius: 10px !important;
+  color: rgba(245, 243, 255, 0.76) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  white-space: nowrap;
+  transition:
+    color 0.22s ease,
+    background 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease !important;
+}
+
+.bottom-nav > .nav-item:not(.fab-item) svg {
+  display: none !important;
+}
+
+/* Center the four links as a group beside the logo. */
+.bottom-nav > .nav-item:not(.fab-item):first-of-type {
+  margin-left: auto !important;
+}
+
+.bottom-nav > .nav-item:not(.fab-item):last-child {
+  margin-right: auto !important;
+}
+
+.bottom-nav > .nav-item:not(.fab-item):hover:not(.active) {
+  color: var(--white) !important;
+  background: rgba(124, 58, 237, 0.14) !important;
+  transform: translateY(-1px);
+}
+
+.bottom-nav > .nav-item:not(.fab-item).active,
+.bottom-nav > .nav-item:not(.fab-item).active:hover {
+  color: #fff !important;
+  background: linear-gradient(100deg, var(--purple), var(--violet)) !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.28) !important;
+  transform: none;
+}
+
+.bottom-nav > .nav-item:not(.fab-item)::after {
+  display: none !important;
+}
+
+/* Keep the homepage-style bar visible instead of using the old
+   temporary hidden state between the two Dashboard nav forms. */
+.bottom-nav.nav-away,
+.bottom-nav.nav-leaving {
+  top: 12px !important;
+  opacity: 1 !important;
+  transform: translateX(-50%) !important;
+  pointer-events: auto !important;
+  animation: none !important;
+}
+
+/* Keep the same full-width glass shape while the scroll transition runs. */
+.bottom-nav.compact,
+.bottom-nav.nav-leaving {
+  top: 12px !important;
+  width: calc(100% - 24px) !important;
+  max-width: none !important;
+  height: 74px !important;
+  padding: 0 clamp(22px, 3vw, 58px) !important;
+  border-radius: 24px !important;
+}
+
+@media (max-width: 720px) {
+  .bottom-nav,
+  .bottom-nav.compact,
+  .bottom-nav.nav-leaving {
+    top: 8px !important;
+    width: calc(100% - 16px) !important;
+    height: 58px !important;
+    padding: 0 10px !important;
+    border-radius: 18px !important;
+    column-gap: 4px !important;
+  }
+
+  .bottom-nav::before {
+    flex-basis: 112px;
+    width: 112px;
+    height: 32px;
+  }
+
+  .bottom-nav > .nav-item:not(.fab-item) {
+    height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 13px !important;
+  }
+}
+
+/* =========================================================
+   COMPACT CENTERED NAVIGATION
+   ========================================================= */
+
+.bottom-nav,
+.bottom-nav.compact,
+.bottom-nav.nav-leaving {
+  top: 14px !important;
+  width: min(1100px, calc(100% - 32px)) !important;
+  max-width: 1100px !important;
+  height: 60px !important;
+  padding: 0 18px !important;
+  column-gap: 8px !important;
+  border-radius: 18px !important;
+}
+
+.bottom-nav::before {
+  flex-basis: 140px !important;
+  width: 140px !important;
+  height: 32px !important;
+}
+
+.bottom-nav > .nav-item:not(.fab-item) {
+  height: 38px !important;
+  padding: 0 14px !important;
+  font-size: 15px !important;
+  transform: translateX(-70px);
+}
+
+.bottom-nav > .nav-item:not(.fab-item):hover:not(.active) {
+  transform: translateX(-70px) translateY(-1px) !important;
+}
+
+.bottom-nav > .nav-item:not(.fab-item).active,
+.bottom-nav > .nav-item:not(.fab-item).active:hover {
+  transform: translateX(-70px) !important;
+}
+
+@media (max-width: 720px) {
+  .bottom-nav,
+  .bottom-nav.compact,
+  .bottom-nav.nav-leaving {
+    top: 8px !important;
+    width: calc(100% - 20px) !important;
+    max-width: none !important;
+    height: 54px !important;
+    padding: 0 10px !important;
+    border-radius: 16px !important;
+    column-gap: 2px !important;
+  }
+
+  .bottom-nav::before {
+    flex-basis: 100px !important;
+    width: 100px !important;
+    height: 28px !important;
+  }
+
+  .bottom-nav > .nav-item:not(.fab-item) {
+    height: 34px !important;
+    padding: 0 8px !important;
+    font-size: 12px !important;
+    transform: translateX(-50px);
+  }
+
+  .bottom-nav > .nav-item:not(.fab-item):hover:not(.active) {
+    transform: translateX(-50px) translateY(-1px) !important;
+  }
+
+  .bottom-nav > .nav-item:not(.fab-item).active,
+  .bottom-nav > .nav-item:not(.fab-item).active:hover {
+    transform: translateX(-50px) !important;
+  }
+}
+
+/* =========================================================
+   CLICKABLE LOGO
+
+   Reuse the existing .topbar .brand link from dashboard.html
+   as the visible logo, while keeping the navigation layout
+   and its reserved logo space unchanged.
+   ========================================================= */
+
+.bottom-nav::before {
+  background: none !important;
+  visibility: hidden;
+}
+
+.topbar {
+  display: flex !important;
+  position: fixed !important;
+  top: 14px !important;
+  bottom: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  width: min(1100px, calc(100% - 32px)) !important;
+  max-width: 1100px !important;
+  height: 60px !important;
+  padding: 0 18px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: translateX(-50%) !important;
+  z-index: 1001 !important;
+  pointer-events: none !important;
+}
+
+.topbar .brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  pointer-events: auto !important;
+  width: 140px !important;
+  height: 32px !important;
+  flex: 0 0 140px !important;
+  text-decoration: none !important;
+}
+
+.topbar .brand-logo {
+  display: block !important;
+  width: auto !important;
+  height: 32px !important;
+  max-width: 140px !important;
+  max-height: 32px !important;
+  object-fit: contain !important;
+}
+
+.topbar-actions {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    top: 8px !important;
+    width: calc(100% - 20px) !important;
+    max-width: none !important;
+    height: 54px !important;
+    padding: 0 10px !important;
+  }
+
+  .topbar .brand {
+    width: 100px !important;
+    height: 28px !important;
+    flex-basis: 100px !important;
+  }
+
+  .topbar .brand-logo {
+    height: 28px !important;
+    max-width: 100px !important;
+    max-height: 28px !important;
+  }
+}
+
+/* =========================================================
+   CENTER THE HOME FAB WITH THE NAVIGATION GROUP
+   ========================================================= */
+
+.bottom-nav > .fab-item {
+  display: inline-flex !important;
+  flex: 0 0 60px !important;
+  width: 60px !important;
+  height: 44px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: translateX(-70px) !important;
+}
+
+.bottom-nav > .fab-item::after {
+  display: none !important;
+}
+
+.bottom-nav > .fab-item .nav-fab {
+  flex: 0 0 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+}
+
+@media (max-width: 720px) {
+  .bottom-nav > .fab-item {
+    flex-basis: 48px !important;
+    width: 48px !important;
+    height: 38px !important;
+    transform: translateX(-50px) !important;
+  }
+
+  .bottom-nav > .fab-item .nav-fab {
+    flex-basis: 42px !important;
+    width: 42px !important;
+    height: 42px !important;
+  }
+}
+
+/* Keep the liquid-glass Home button, but use the CosmoKlub tab logo
+   instead of the inline house icon. */
+.bottom-nav > .fab-item .nav-fab {
+  background:
+    url("../images/logo-tab.png") center / 24px 24px no-repeat,
+    radial-gradient(
+      circle at var(--fab-glass-x) var(--fab-glass-y),
+      rgba(255,255,255,.42) 0%,
+      rgba(255,255,255,.18) 11%,
+      rgba(255,255,255,.05) 27%,
+      transparent 47%
+    ),
+    radial-gradient(
+      circle at 72% 76%,
+      rgba(168,85,247,.26),
+      transparent 48%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.14),
+      rgba(124,58,237,.055) 46%,
+      rgba(168,85,247,.16)
+    ) !important;
+}
+
+.bottom-nav > .fab-item .nav-fab > svg {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .bottom-nav > .fab-item .nav-fab {
+    background-size: 21px 21px, auto, auto, auto !important;
+  }
+}
