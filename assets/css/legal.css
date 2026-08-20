@@ -1,0 +1,216 @@
+/* legal.css: Legal Center hub page.
+   Reuses tokens/components from style.css (nav, aurora, footer, hero
+   eyebrow) and the same .staff-hero pattern as contact.html/staff-
+   application.html/report-bug.html, so this page sits at the same
+   1280px content width and reads as part of the same site.
+
+   Layout below the hero is a docs-style sidebar + content pane (list of
+   legal documents on the left, active document on the right) — same
+   structural idea as a typical docs site, redrawn in CosmoKlub's own
+   violet palette instead of copying anyone else's colors. Every document
+   is a "coming soon" placeholder for now: no real policy text is faked
+   here, just a title, a badge, and skeleton lines reusing the project's
+   existing shimmer-loading treatment (see .res-skel in resources.css)
+   so it reads as "still loading/being written", not as broken content. */
+
+#legal-app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
+
+.content {
+  max-width: 1280px; width: 100%;
+  margin: 0 auto;
+  padding: 90px 3rem 72px;
+}
+
+/* ---------- Docs shell: sidebar + content pane ---------- */
+.legal-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .legal-shell { grid-template-columns: 1fr; }
+}
+
+/* ---------- Sidebar ---------- */
+.legal-sidebar {
+  position: sticky;
+  top: 90px;
+  background: #0c0a1c;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+@media (max-width: 860px) {
+  .legal-sidebar {
+    position: static;
+    padding: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .legal-sidebar::-webkit-scrollbar { display: none; }
+}
+
+.legal-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+@media (max-width: 860px) {
+  .legal-nav { flex-direction: row; gap: 8px; }
+}
+
+.legal-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--tr), border-color var(--tr), color var(--tr);
+  white-space: nowrap;
+}
+.legal-nav-item:hover {
+  background: var(--glass);
+  color: var(--white);
+}
+.legal-nav-item.active {
+  background: linear-gradient(100deg, rgba(124,58,237,0.22), rgba(168,85,247,0.1));
+  border-color: rgba(168,85,247,0.4);
+  color: var(--white);
+}
+.legal-nav-icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: color var(--tr);
+}
+.legal-nav-item.active .legal-nav-icon,
+.legal-nav-item:hover .legal-nav-icon { color: var(--violet); }
+.legal-nav-icon svg { display: block; width: 18px; height: 18px; }
+
+.legal-nav-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.legal-nav-text strong { font-size: 0.88rem; font-weight: 700; letter-spacing: -0.01em; }
+.legal-nav-text em {
+  font-style: normal;
+  font-size: 0.72rem;
+  color: var(--muted);
+  opacity: 0.8;
+}
+@media (max-width: 860px) {
+  .legal-nav-text em { display: none; }
+}
+
+/* ---------- Content pane ---------- */
+.legal-panel {
+  background: #0c0a1c;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 2.1rem 2.3rem;
+  min-height: 420px;
+}
+@media (max-width: 600px) {
+  .legal-panel { padding: 1.5rem 1.3rem 1.8rem; }
+}
+
+.legal-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 1.4rem;
+  margin-bottom: 1.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.legal-eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.legal-panel-head h2 {
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.legal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: #352762;
+  border: 1px solid rgba(168,85,247,0.35);
+  color: var(--glow);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.legal-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--glow);
+  box-shadow: 0 0 0 0 rgba(192,132,252,0.6);
+  animation: legalPulse 1.8s ease-out infinite;
+}
+@keyframes legalPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(192,132,252,0.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(192,132,252,0); }
+  100% { box-shadow: 0 0 0 0 rgba(192,132,252,0); }
+}
+
+/* ---------- Skeleton "text loading" body ---------- */
+.legal-skel-group { margin-bottom: 1.6rem; }
+.legal-skel-group:last-child { margin-bottom: 0; }
+
+.legal-skel-line {
+  height: 0.85em;
+  border-radius: 5px;
+  margin-bottom: 0.65rem;
+  background: linear-gradient(100deg, #14102c 25%, #1c1640 50%, #14102c 75%);
+  background-size: 200% 100%;
+  animation: legalShimmer 1.3s linear infinite;
+}
+.legal-skel-line:last-child { margin-bottom: 0; }
+.legal-skel-line.title { height: 1.1em; width: 42%; margin-bottom: 1.1rem; }
+.legal-skel-line.w-95 { width: 95%; }
+.legal-skel-line.w-88 { width: 88%; }
+.legal-skel-line.w-72 { width: 72%; }
+.legal-skel-line.w-60 { width: 60%; }
+.legal-skel-line.w-40 { width: 40%; }
+
+@keyframes legalShimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.legal-panel-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 2rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+.legal-panel-note svg { flex-shrink: 0; margin-top: 2px; color: var(--violet); }
+.legal-panel-note a { color: var(--violet); text-decoration: underline; text-underline-offset: 2px; }
+.legal-panel-note a:hover { color: var(--glow); }
