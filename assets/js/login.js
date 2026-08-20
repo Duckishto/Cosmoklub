@@ -81,7 +81,9 @@ createApp({
       showConfirm: false,
       currentUser: null,
       toast: null,
-      panelImage: ''
+      // Drop a file at assets/images/login/auth-visual.jpg (1000x1200px,
+      // portrait ~4:5) and it appears automatically.
+      panelImage: 'assets/images/login/auth-visual.jpg'
     };
   },
   computed: {
