@@ -21,11 +21,18 @@ const Forum = {
       <!-- Catalog shell: filter sidebar + card grid -->
       <div class="fxd-shell">
 
+        <!-- Backdrop only rendered/visible on mobile, while the sheet is open -->
+        <div class="fxd-sheet-backdrop" v-if="filtersOpen" @click="closeFilters"></div>
+
         <!-- ============ Filters (visual only) ============ -->
-        <aside class="fxd-side">
+        <aside class="fxd-side" :class="{ 'is-open': filtersOpen }">
+          <div class="fxd-sheet-handle"></div>
           <div class="fxd-side-head">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
             <span>Filters</span>
+            <button class="fxd-side-close" @click="closeFilters" aria-label="Close filters" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
           </div>
 
           <div class="fxd-search">
@@ -67,6 +74,10 @@ const Forum = {
           <div class="fxd-toolbar">
             <h2 class="fxd-title">Discussions</h2>
             <span class="fxd-count">{{ filteredThreads.length }} threads</span>
+            <button class="fxd-filters-btn" @click="openFilters" aria-label="Open filters" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+              Filters
+            </button>
           </div>
 
           <div class="fxd-tabs">
@@ -123,6 +134,7 @@ const Forum = {
   data() {
     return {
       activeChip: 'All',
+      filtersOpen: false,
 
       tags: [
         'Beginner Q&A',
@@ -455,6 +467,22 @@ const Forum = {
 
 
   methods: {
+
+    /* =========================================
+       MOBILE FILTER SHEET
+       ========================================= */
+
+    openFilters() {
+      this.filtersOpen = true;
+      const scroller = document.querySelector('.content');
+      if (scroller) scroller.style.overflow = 'hidden';
+    },
+
+    closeFilters() {
+      this.filtersOpen = false;
+      const scroller = document.querySelector('.content');
+      if (scroller) scroller.style.overflow = '';
+    },
 
     /* =========================================
        THREAD CARD INTERACTION
