@@ -164,43 +164,111 @@
 
         <div class="topbar-actions">
 
-          <div
-            class="icon-btn"
-            aria-label="Notifications"
-          >
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
+          <!-- Notifications -->
+          <button class="icon-btn" aria-label="Notifications" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
-
             <span class="icon-dot"></span>
+          </button>
+
+          <!-- Menu (3 lines) — opens the navigation popup -->
+          <div class="tb-menu-wrap">
+            <button
+              class="icon-btn"
+              :class="{ 'is-open': menuOpen }"
+              @click.stop="menuOpen = !menuOpen"
+              aria-label="Open menu"
+              :aria-expanded="menuOpen ? 'true' : 'false'"
+              type="button"
+            >
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+
+            <!-- Popup panel -->
+            <div class="tb-pop" v-if="menuOpen" @click.stop>
+              <div class="tb-pop-grid">
+
+                <a class="tb-pop-item" href="dashboard.html?tab=library" @click="activeTab='library'; menuOpen=false">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+                  <span>Library</span>
+                </a>
+
+                <a class="tb-pop-item" href="dashboard.html?tab=forum" @click="activeTab='forum'; menuOpen=false">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg></span>
+                  <span>Forum</span>
+                </a>
+
+                <a class="tb-pop-item" href="dashboard.html?tab=planetarium" @click="activeTab='planetarium'; menuOpen=false">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(-20 12 12)"/></svg></span>
+                  <span>Planetarium</span>
+                </a>
+
+                <a class="tb-pop-item" href="dashboard.html?tab=chat" @click="activeTab='chat'; menuOpen=false">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v9a2 2 0 0 1-2 2H8l-4 4V6c0-1.1.9-2 2-2z"/></svg></span>
+                  <span>Chat</span>
+                </a>
+
+                <a class="tb-pop-item" href="resources.html">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+                  <span>Resources</span>
+                </a>
+
+                <a class="tb-pop-item" href="roadmap.html">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h13l3 3-3 3H3z"/><path d="M21 18H8l-3-3 3-3"/></svg></span>
+                  <span>Roadmap</span>
+                </a>
+
+                <a class="tb-pop-item" href="team.html">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span>
+                  <span>Our Team</span>
+                </a>
+
+                <a class="tb-pop-item" href="contact.html">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                  <span>Contact</span>
+                </a>
+
+                <a class="tb-pop-item" href="index.html">
+                  <span class="tb-pop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+                  <span>Homepage</span>
+                </a>
+
+              </div>
+            </div>
           </div>
 
-          <div
-            class="icon-btn"
-            aria-label="Settings"
-          >
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
+          <!-- User profile -->
+          <div class="tb-menu-wrap">
+            <button
+              class="tb-profile"
+              :class="{ 'is-open': profileOpen }"
+              @click.stop="profileOpen = !profileOpen"
+              aria-label="Open profile menu"
+              :aria-expanded="profileOpen ? 'true' : 'false'"
+              type="button"
             >
-              <circle cx="12" cy="12" r="3"/>
+              <img src="assets/images/pensiaplaceholder.png" alt="" draggable="false" />
+            </button>
 
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-            </svg>
+            <div class="tb-pop tb-pop-sm" v-if="profileOpen" @click.stop>
+              <div class="tb-pop-user">
+                <img src="assets/images/pensiaplaceholder.png" alt="" draggable="false" />
+                <div class="tb-pop-user-text">
+                  <strong>My Account</strong>
+                  <em>Signed in</em>
+                </div>
+              </div>
+              <a class="tb-pop-row" href="dashboard.html">Dashboard</a>
+              <a class="tb-pop-row" href="staff-application.html">Apply as Staff</a>
+              <a class="tb-pop-row" href="report-bug.html">Report a Bug</a>
+              <a class="tb-pop-row is-danger" href="login.html">Sign out</a>
+            </div>
           </div>
 
         </div>
