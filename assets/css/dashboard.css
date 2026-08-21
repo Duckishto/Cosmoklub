@@ -1839,3 +1839,119 @@ body {
   .fxd-side { position: static; }
 }
 @media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   DASHBOARD TOPBAR — notification / menu / profile
+   Order in the bar: notification bell, hamburger (opens the
+   navigation popup), then the user profile avatar.
+   ============================================================ */
+
+.tb-menu-wrap { position: relative; display: flex; align-items: center; }
+
+.icon-btn.is-open {
+  background: rgba(124,58,237,0.2);
+  color: #f5f3ff;
+}
+
+/* Profile avatar button */
+.tb-profile {
+  width: 34px; height: 34px;
+  margin-left: 4px; padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(124,58,237,0.4);
+  background: #0b091a;
+  cursor: pointer; overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color .2s, box-shadow .2s;
+}
+.tb-profile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tb-profile:hover,
+.tb-profile.is-open {
+  border-color: rgba(168,85,247,0.85);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.22);
+}
+
+/* ---------- Popup panel ---------- */
+.tb-pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 60;
+  min-width: 420px;
+  padding: 0.9rem;
+  background: linear-gradient(180deg, rgba(24,19,50,0.98), rgba(12,10,28,0.98));
+  border: 1px solid rgba(124,58,237,0.35);
+  border-radius: 14px;
+  box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  animation: tbPopIn 0.16s ease-out;
+}
+@keyframes tbPopIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Two-column grid of destinations, like the reference menu */
+.tb-pop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem 0.6rem;
+}
+.tb-pop-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  color: #d9d2f0; text-decoration: none;
+  font-size: 0.9rem; font-weight: 600;
+  transition: background .18s, color .18s;
+}
+.tb-pop-item:hover { background: rgba(124,58,237,0.16); color: #fff; }
+.tb-pop-ic {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: grid; place-items: center;
+  border-radius: 9px;
+  background: rgba(124,58,237,0.16);
+  border: 1px solid rgba(124,58,237,0.3);
+  color: #c084fc;
+}
+.tb-pop-ic svg { width: 17px; height: 17px; }
+
+/* ---------- Smaller profile popup ---------- */
+.tb-pop-sm { min-width: 232px; padding: 0.65rem; }
+.tb-pop-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0.5rem 0.55rem 0.8rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(124,58,237,0.3);
+}
+.tb-pop-user img {
+  width: 38px; height: 38px; border-radius: 50%;
+  object-fit: cover; background: #0b091a;
+  border: 1px solid rgba(124,58,237,0.4); flex-shrink: 0;
+}
+.tb-pop-user-text { display: flex; flex-direction: column; min-width: 0; }
+.tb-pop-user-text strong { font-size: 0.9rem; color: #f5f3ff; font-weight: 700; }
+.tb-pop-user-text em { font-size: 0.75rem; color: #8b7aa8; font-style: normal; }
+
+.tb-pop-row {
+  display: block;
+  padding: 0.55rem 0.6rem;
+  border-radius: 9px;
+  color: #d9d2f0; text-decoration: none;
+  font-size: 0.87rem; font-weight: 600;
+  transition: background .18s, color .18s;
+}
+.tb-pop-row:hover { background: rgba(124,58,237,0.16); color: #fff; }
+.tb-pop-row.is-danger { color: #fb7185; }
+.tb-pop-row.is-danger:hover { background: rgba(244,63,94,0.16); color: #fda4af; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 560px) {
+  .tb-pop {
+    min-width: 0;
+    width: calc(100vw - 24px);
+    right: -8px;
+  }
+  .tb-pop-grid { grid-template-columns: 1fr; }
+}
