@@ -220,30 +220,7 @@ body {
 .content::-webkit-scrollbar-track { background: transparent; }
 .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-/* ---------- Bottom Navigation ---------- */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: calc(var(--nav-h) + var(--safe-bot));
-  padding: 0 6px var(--safe-bot);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  background: linear-gradient(0deg, rgba(10, 8, 30, 0.96), rgba(7, 6, 26, 0.88));
-  backdrop-filter: blur(24px);
-  border-top: 1px solid var(--border);
-  z-index: 10;
-  transition: transform 0.32s cubic-bezier(.4, 0, .2, 1), opacity 0.32s ease;
-}
-/* Graphing mode: nav slides down out of view so the graph gets the full area.
-   Leaving graphing removes the class and it slides back up. */
-body.graphing-active .bottom-nav {
-  transform: translateY(100%);
-  opacity: 0;
-  pointer-events: none;
-}
+/* navigation bar was here */
 
 .nav-item {
   position: relative;
@@ -1352,4 +1329,738 @@ body.graphing-active .bottom-nav {
     animation:none!important;
     transition:none!important;
   }
+}
+
+/* =========================================================
+   DASHBOARD TOP NAVIGATION
+   Replaces the old topbar and matches the homepage navigation
+   ========================================================= */
+
+/* Keep the old HTML available, but remove it visually */
+.topbar {
+  display: none !important;
+}
+
+/* First form: full-width transparent navigation */
+.bottom-nav {
+  position: fixed;
+  top: 0;
+  bottom: auto;
+  left: 50%;
+  right: auto;
+
+  width: 100%;
+  height: 60px;
+  padding: 0 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  transform: translateX(-50%);
+
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  z-index: 1000;
+
+  will-change:
+    width,
+    padding,
+    top,
+    transform,
+    opacity;
+
+  transition:
+    width 0.45s cubic-bezier(.65, 0, .35, 1),
+    padding 0.45s cubic-bezier(.65, 0, .35, 1),
+    top 0.45s cubic-bezier(.65, 0, .35, 1),
+    background 0.4s ease,
+    box-shadow 0.4s ease,
+    border-color 0.4s ease,
+    border-radius 0.4s ease,
+    opacity 0.32s ease,
+    transform 0.32s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Hide the first form after leaving the top */
+.bottom-nav.nav-away {
+  transform:
+    translateX(-50%)
+    translateY(-130%);
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Second form: floating blurred glass */
+.bottom-nav.compact {
+  top: 14px;
+
+  width: min(1160px, calc(100% - 3rem));
+  padding: 0 1.5rem;
+
+  background: rgba(14, 11, 30, 0.82);
+
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
+
+  animation:
+    dashboardNavDropIn
+    0.42s
+    cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Compact navigation leaving when returning upward */
+.bottom-nav.nav-leaving {
+  top: 14px;
+
+  width: min(1160px, calc(100% - 3rem));
+  padding: 0 1.5rem;
+
+  background: rgba(14, 11, 30, 0.82);
+
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35);
+
+  animation:
+    dashboardNavSlideOut
+    0.36s
+    cubic-bezier(.4, 0, 1, 1)
+    forwards;
+
+  pointer-events: none;
+}
+
+@keyframes dashboardNavDropIn {
+  from {
+    transform:
+      translateX(-50%)
+      translateY(-120%);
+
+    opacity: 0;
+  }
+
+  to {
+    transform:
+      translateX(-50%)
+      translateY(0);
+
+    opacity: 1;
+  }
+}
+
+@keyframes dashboardNavSlideOut {
+  from {
+    transform:
+      translateX(-50%)
+      translateY(0);
+
+    opacity: 1;
+  }
+
+  to {
+    transform:
+      translateX(-50%)
+      translateY(-130%);
+
+    opacity: 0;
+  }
+}
+
+/* Navigation items must remain above the glass */
+.bottom-nav .nav-item {
+  position: relative;
+  z-index: 1;
+}
+
+/* Content now starts below the navigation */
+.content {
+  padding:
+    calc(60px + 16px)
+    16px
+    16px;
+}
+
+/* Calculator graphing mode hides the top navigation upward */
+body.graphing-active .bottom-nav {
+  transform:
+    translateX(-50%)
+    translateY(-140%);
+
+  opacity: 0;
+  pointer-events: none;
+  animation: none !important;
+}
+
+/* Mobile layout */
+@media (max-width: 720px) {
+  .bottom-nav {
+    height: 60px;
+    padding: 0 0.5rem;
+  }
+
+  .bottom-nav.compact,
+  .bottom-nav.nav-leaving {
+    top: 10px;
+    width: calc(100% - 1.5rem);
+    padding: 0 0.5rem;
+    border-radius: 16px;
+  }
+
+  .content {
+    padding:
+      calc(60px + 12px)
+      10px
+      12px;
+  }
+
+  .nav-item {
+    padding-inline: 2px;
+  }
+
+  .nav-item svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nav-fab {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav,
+  .bottom-nav.compact,
+  .bottom-nav.nav-leaving {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* =========================================================
+   FINAL FULL-WIDTH NAV SEAM FIX
+
+   The Dashboard navigation is now mounted at the top, while
+   the old topbar and bottom navigation are hidden. The 3D
+   Library layer still reads these variables for its fixed
+   canvas and background overlay, so leaving the old values
+   (56px / 64px) creates horizontal color bands at both edges.
+   ========================================================= */
+
+:root {
+  --topbar-h: 0px;
+  --nav-h: 0px;
+  --safe-bot: 0px;
+}
+
+/* Keep the original dark document base under the translucent aurora. */
+html,
+body {
+  background: #07061a !important;
+}
+
+/* Let the aurora, stars, and 3D canvas show through the app surfaces. */
+#app,
+.app-shell,
+.content {
+  background: transparent !important;
+}
+
+.content {
+  padding-top: 76px !important;
+  padding-bottom: 0 !important;
+}
+
+@media (max-width: 720px) {
+  .content {
+    padding-top: 72px !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+/* Use logo-tab.png for the center liquid-glass button while preserving
+   the original glass gradients, glow, and animation. */
+.bottom-nav .fab-item .nav-fab {
+  background:
+    url("../images/logo-tab.png") center / 24px 24px no-repeat,
+    radial-gradient(
+      circle at var(--fab-glass-x) var(--fab-glass-y),
+      rgba(255,255,255,.42) 0%,
+      rgba(255,255,255,.18) 11%,
+      rgba(255,255,255,.05) 27%,
+      transparent 47%
+    ),
+    radial-gradient(
+      circle at 72% 76%,
+      rgba(168,85,247,.26),
+      transparent 48%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.14),
+      rgba(124,58,237,.055) 46%,
+      rgba(168,85,247,.16)
+    ) !important;
+}
+
+.bottom-nav .fab-item .nav-fab > svg {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .bottom-nav .fab-item .nav-fab {
+    background-size: 21px 21px, auto, auto, auto !important;
+  }
+}
+
+/* Final icon layer: place the logo above the glass gradients as a fallback
+   for browsers that retain the inline SVG rendering. */
+.bottom-nav .fab-item .nav-fab > svg,
+.bottom-nav .fab-item .nav-fab svg {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* The FAB should contain no inline icon at all; the logo is supplied by
+   the CSS image layer below. */
+.bottom-nav .fab-item .nav-fab > * {
+  display: none !important;
+}
+
+.bottom-nav .fab-item .nav-fab::after {
+  background:
+    url("../images/logo-tab.png") center / 24px 24px no-repeat,
+    radial-gradient(
+      circle at var(--fab-highlight-x) var(--fab-highlight-y),
+      rgba(255,255,255,.31),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.17),
+      transparent 34% 66%,
+      rgba(168,85,247,.13)
+    ) !important;
+}
+
+@media (max-width: 720px) {
+  .bottom-nav .fab-item .nav-fab::after {
+    background-size: 21px 21px, auto, auto !important;
+  }
+}
+
+/* ============================================================
+   DASHBOARD FORUM — catalog layout (.fxd-*)
+   Filter sidebar + thread card grid, CosmoKlub dark/violet.
+   Filters/tabs other than Category are visual placeholders.
+   ============================================================ */
+
+.fxd-shell {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 1.6rem;
+  align-items: start;
+  margin-top: 1.2rem;
+}
+
+/* ---------- Sidebar ---------- */
+.fxd-side {
+  position: sticky; top: 1rem;
+  background: linear-gradient(180deg, rgba(22,18,46,0.7), rgba(11,9,24,0.76));
+  border: 1px solid rgba(124,58,237,0.25);
+  border-radius: 14px;
+  padding: 1.1rem 1rem 1.3rem;
+}
+.fxd-side-head {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 800; font-size: 0.95rem; color: #f5f3ff;
+  padding-bottom: 0.85rem; margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(124,58,237,0.25);
+}
+.fxd-side-head svg { width: 17px; height: 17px; color: #a855f7; }
+
+.fxd-search { position: relative; margin-bottom: 0.8rem; }
+.fxd-search svg {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  width: 15px; height: 15px; color: #8b7aa8; pointer-events: none;
+}
+.fxd-search input {
+  width: 100%; box-sizing: border-box;
+  padding: 0.58rem 0.75rem 0.58rem 2.1rem;
+  background: rgba(9,7,20,0.6);
+  border: 1px solid rgba(124,58,237,0.25); border-radius: 9px;
+  color: #f5f3ff; font-family: inherit; font-size: 0.85rem; outline: none;
+}
+.fxd-search input::placeholder { color: #8b7aa8; }
+.fxd-search input:focus { border-color: rgba(168,85,247,0.6); }
+
+.fxd-select { position: relative; margin-bottom: 1.3rem; }
+.fxd-select select {
+  width: 100%; box-sizing: border-box; appearance: none; -webkit-appearance: none;
+  padding: 0.58rem 2.1rem 0.58rem 0.75rem;
+  background: rgba(9,7,20,0.6);
+  border: 1px solid rgba(124,58,237,0.25); border-radius: 9px;
+  color: #f5f3ff; font-family: inherit; font-size: 0.85rem; cursor: pointer; outline: none;
+}
+.fxd-select select option { background: #14102a; color: #f5f3ff; }
+.fxd-select svg {
+  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+  width: 13px; height: 13px; color: #8b7aa8; pointer-events: none;
+}
+
+.fxd-group { margin-bottom: 1.3rem; }
+.fxd-group:last-child { margin-bottom: 0; }
+.fxd-group-head {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #8b7aa8; margin-bottom: 0.6rem;
+}
+.fxd-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.fxd-pill {
+  padding: 0.35rem 0.72rem;
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.25); border-radius: 999px;
+  color: #d9d2f0; font-family: inherit; font-size: 0.76rem; font-weight: 600;
+  cursor: pointer; transition: background .2s, border-color .2s, color .2s;
+}
+.fxd-pill:hover { background: rgba(124,58,237,0.18); color: #fff; }
+.fxd-pill.is-active {
+  background: linear-gradient(100deg, rgba(124,58,237,0.5), rgba(168,85,247,0.32));
+  border-color: rgba(168,85,247,0.7); color: #fff;
+}
+
+/* ---------- Main ---------- */
+.fxd-main { min-width: 0; }
+.fxd-toolbar { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 0.9rem; }
+.fxd-title { font-size: 1.25rem; font-weight: 800; color: #f5f3ff; letter-spacing: -0.02em; }
+.fxd-count { font-size: 0.82rem; color: #8b7aa8; }
+
+.fxd-tabs {
+  display: flex; gap: 1.3rem;
+  border-bottom: 1px solid rgba(124,58,237,0.25);
+  margin-bottom: 1.3rem;
+}
+.fxd-tab {
+  position: relative; background: none; border: none; cursor: pointer;
+  padding: 0.55rem 0.1rem; font-family: inherit;
+  font-size: 0.88rem; font-weight: 600; color: #8b7aa8; transition: color .2s;
+}
+.fxd-tab:hover { color: #f5f3ff; }
+.fxd-tab.is-active { color: #f5f3ff; }
+.fxd-tab.is-active::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px; background: linear-gradient(90deg, #a855f7, #c084fc); border-radius: 2px;
+}
+
+/* ---------- Card grid ---------- */
+.fxd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+
+.fxd-card {
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, rgba(20,16,42,0.7), rgba(11,9,24,0.72));
+  border: 1px solid rgba(124,58,237,0.25); border-radius: 14px;
+  overflow: hidden; transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.fxd-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(168,85,247,0.5);
+  box-shadow: 0 16px 38px rgba(0,0,0,0.4);
+}
+
+.fxd-card-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #0b091a; }
+.fxd-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fxd-badge {
+  position: absolute; top: 9px; left: 9px; z-index: 2;
+  padding: 0.22rem 0.55rem; border-radius: 6px;
+  font-size: 0.64rem; font-weight: 800; letter-spacing: 0.06em; color: #fff;
+  background: linear-gradient(135deg, #059669, #34d399);
+  box-shadow: 0 3px 9px rgba(5,150,105,0.35);
+}
+.fxd-fav {
+  position: absolute; top: 9px; right: 9px; z-index: 2;
+  width: 28px; height: 28px; display: grid; place-items: center;
+  border-radius: 50%; cursor: pointer;
+  background: rgba(9,7,20,0.55); border: 1px solid rgba(255,255,255,0.14);
+  color: #fff; transition: background .2s;
+}
+.fxd-fav svg { width: 14px; height: 14px; }
+.fxd-fav:hover { background: rgba(244,63,94,0.85); border-color: transparent; }
+
+.fxd-card-body { display: flex; flex-direction: column; flex: 1; padding: 0.9rem 1rem 1rem; }
+.fxd-card-tag { font-size: 0.7rem; font-weight: 700; color: #c084fc; margin-bottom: 0.45rem; }
+.fxd-card-title {
+  font-size: 0.97rem; font-weight: 700; line-height: 1.32; color: #f5f3ff; margin-bottom: 0.4rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.fxd-card-desc {
+  font-size: 0.82rem; color: #8b7aa8; line-height: 1.55; margin-bottom: 0.85rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.fxd-card-author { display: flex; align-items: center; gap: 7px; margin-bottom: 0.85rem; }
+.fxd-avatar {
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  color: #fff; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+}
+.fxd-author-name { font-size: 0.8rem; color: #d9d2f0; font-weight: 500; }
+.fxd-lvl {
+  font-size: 0.66rem; font-weight: 700; color: #c084fc;
+  background: rgba(124,58,237,0.16); border-radius: 5px; padding: 0.1rem 0.35rem;
+}
+.fxd-card-meta {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding-top: 0.75rem; margin-top: auto;
+  border-top: 1px solid rgba(124,58,237,0.25);
+  font-size: 0.76rem; color: #8b7aa8;
+}
+.fxd-stat { display: inline-flex; align-items: center; gap: 5px; }
+.fxd-stat svg { width: 13px; height: 13px; opacity: 0.85; }
+.fxd-time { margin-left: auto; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1200px) { .fxd-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) {
+  .fxd-shell { grid-template-columns: 1fr; }
+  .fxd-side { position: static; }
+}
+@media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   DASHBOARD TOPBAR — notification / menu / profile
+   Order in the bar: notification bell, hamburger (opens the
+   navigation popup), then the user profile avatar.
+   ============================================================ */
+
+.tb-menu-wrap { position: relative; display: flex; align-items: center; }
+
+.icon-btn.is-open {
+  background: rgba(124,58,237,0.2);
+  color: #f5f3ff;
+}
+
+/* Profile avatar button */
+.tb-profile {
+  width: 34px; height: 34px;
+  margin-left: 4px; padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(124,58,237,0.4);
+  background: #0b091a;
+  cursor: pointer; overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color .2s, box-shadow .2s;
+}
+.tb-profile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tb-profile:hover,
+.tb-profile.is-open {
+  border-color: rgba(168,85,247,0.85);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.22);
+}
+
+/* ---------- Popup panel ---------- */
+.tb-pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 60;
+  min-width: 420px;
+  padding: 0.9rem;
+  background: linear-gradient(180deg, rgba(24,19,50,0.98), rgba(12,10,28,0.98));
+  border: 1px solid rgba(124,58,237,0.35);
+  border-radius: 14px;
+  box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  animation: tbPopIn 0.16s ease-out;
+}
+@keyframes tbPopIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Two-column grid of destinations, like the reference menu */
+.tb-pop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem 0.6rem;
+}
+.tb-pop-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  color: #d9d2f0; text-decoration: none;
+  font-size: 0.9rem; font-weight: 600;
+  transition: background .18s, color .18s;
+}
+.tb-pop-item:hover { background: rgba(124,58,237,0.16); color: #fff; }
+.tb-pop-ic {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: grid; place-items: center;
+  border-radius: 9px;
+  background: rgba(124,58,237,0.16);
+  border: 1px solid rgba(124,58,237,0.3);
+  color: #c084fc;
+}
+.tb-pop-ic svg { width: 17px; height: 17px; }
+
+/* ---------- Smaller profile popup ---------- */
+.tb-pop-sm { min-width: 232px; padding: 0.65rem; }
+.tb-pop-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0.5rem 0.55rem 0.8rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(124,58,237,0.3);
+}
+.tb-pop-user img {
+  width: 38px; height: 38px; border-radius: 50%;
+  object-fit: cover; background: #0b091a;
+  border: 1px solid rgba(124,58,237,0.4); flex-shrink: 0;
+}
+.tb-pop-user-text { display: flex; flex-direction: column; min-width: 0; }
+.tb-pop-user-text strong { font-size: 0.9rem; color: #f5f3ff; font-weight: 700; }
+.tb-pop-user-text em { font-size: 0.75rem; color: #8b7aa8; font-style: normal; }
+
+.tb-pop-row {
+  display: block;
+  padding: 0.55rem 0.6rem;
+  border-radius: 9px;
+  color: #d9d2f0; text-decoration: none;
+  font-size: 0.87rem; font-weight: 600;
+  transition: background .18s, color .18s;
+}
+.tb-pop-row:hover { background: rgba(124,58,237,0.16); color: #fff; }
+.tb-pop-row.is-danger { color: #fb7185; }
+.tb-pop-row.is-danger:hover { background: rgba(244,63,94,0.16); color: #fda4af; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 560px) {
+  .tb-pop {
+    min-width: 0;
+    width: calc(100vw - 24px);
+    right: -8px;
+  }
+  .tb-pop-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   TOPBAR RESTORE  (must stay last — overrides the older
+   "DASHBOARD TOP NAVIGATION" block above)
+
+   That earlier block hid .topbar and re-pinned .bottom-nav to the
+   top. The dashboard now uses the real .topbar, styled as the same
+   floating rounded pill as the homepage nav: logo on the left,
+   notification / menu / profile on the right. .bottom-nav goes back
+   to the bottom as the tab bar.
+   ============================================================ */
+
+/* ---------- Floating pill topbar (matches homepage nav.compact) ---------- */
+.topbar {
+  display: flex !important;
+  position: fixed !important;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: min(1160px, calc(100% - 3rem));
+  height: 60px;
+  padding: 0 1.5rem !important;
+
+  background: rgba(14, 11, 30, 0.82) !important;
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+  border: 1px solid rgba(124, 58, 237, 0.28) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+
+  z-index: 1000;
+  animation: dashTopbarIn 0.42s cubic-bezier(.4, 0, .2, 1);
+}
+@keyframes dashTopbarIn {
+  from { transform: translateX(-50%) translateY(-120%); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
+}
+
+/* The floating bar occupies 14px (offset) + 60px (height) = 74px.
+   Start the content well below that so there's a clear gap before the
+   sky strip rather than it sitting right against the bar. The bottom
+   nav has been removed, so only a small space is needed at the end. */
+.content {
+  padding-top: 124px;
+  padding-bottom: 32px;
+}
+
+/* ---------- Kill default browser button chrome ---------- */
+/* The topbar actions are <button> elements; without this they render
+   with the user-agent's white background and grey border. */
+.topbar button,
+.topbar .icon-btn,
+.topbar .tb-profile {
+  background: transparent;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
+  color: var(--muted);
+  padding: 0;
+}
+.topbar .icon-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.topbar .icon-btn:hover {
+  background: rgba(124, 58, 237, 0.18);
+  color: #f5f3ff;
+}
+.topbar .icon-btn.is-open {
+  background: rgba(124, 58, 237, 0.28);
+  color: #f5f3ff;
+}
+.topbar .tb-profile {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(124, 58, 237, 0.45);
+  overflow: hidden;
+  background: #0b091a;
+  cursor: pointer;
+}
+
+/* ---------- Old bottom tab bar: removed ---------- */
+/* The bottom navigation was deleted from dashboard.html; navigation now
+   lives in the topbar menu. Older rules further up this file still style
+   .bottom-nav, so keep it hidden in case the markup ever comes back. */
+.bottom-nav { display: none !important; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 720px) {
+  .topbar {
+    top: 8px;
+    width: calc(100% - 1.2rem);
+    height: 56px;
+    padding: 0 0.9rem !important;
+    border-radius: 15px !important;
+  }
+  .content { padding-top: 106px; }
 }
