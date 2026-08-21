@@ -11,6 +11,52 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/loader.css">
   <link rel="stylesheet" href="assets/css/resources.css">
+  <!-- Image fallback: any picture that fails to load (missing file) is
+       swapped to the shared CosmoKlub placeholder so no broken-image
+       icons appear. Covers <img> tags and the Vue-bound CSS hero
+       backgrounds. PLACEHOLDER path is relative to this page. -->
+  <script>
+  (function () {
+    var PLACEHOLDER = "assets/images/pensiaplaceholder.png";
+    // Swap a failed <img> to the placeholder (once).
+    function fixImg(img) {
+      if (!img || img.dataset.phDone) return;
+      img.dataset.phDone = "1";
+      img.src = PLACEHOLDER;
+      img.classList.add("is-placeholder");
+    }
+    // Capture load errors from any <img>, including ones added later by Vue.
+    document.addEventListener("error", function (e) {
+      var el = e.target;
+      if (el && el.tagName === "IMG") fixImg(el);
+    }, true);
+
+    // Heroes use CSS background-image (no error event). After Vue paints,
+    // test each hero's image URL and swap the background if it 404s.
+    function fixHeroBackgrounds() {
+      var heroes = document.querySelectorAll(".uc-hero, [data-bg-check]");
+      heroes.forEach(function (h) {
+        var bg = getComputedStyle(h).backgroundImage || "";
+        var m = bg.match(/url\((['"]?)(.*?)\1\)/);
+        if (!m || !m[2]) return;
+        var url = m[2];
+        if (url.indexOf("pensiaplaceholder") !== -1) return;
+        var probe = new Image();
+        probe.onerror = function () {
+          h.style.backgroundImage = "url(" + PLACEHOLDER + ")";
+          h.classList.add("hero-placeholder");
+        };
+        probe.src = url;
+      });
+    }
+    // Run after Vue has had a chance to render (a few passes for safety).
+    function scheduleHeroCheck() {
+      [300, 900, 1800].forEach(function (t) { setTimeout(fixHeroBackgrounds, t); });
+    }
+    if (document.readyState === "complete" || document.readyState === "interactive") scheduleHeroCheck();
+    else document.addEventListener("DOMContentLoaded", scheduleHeroCheck);
+  })();
+  </script>
 </head>
 <body>
   <div class="aurora-wrap" aria-hidden="true">
