@@ -2099,3 +2099,42 @@ body {
    lives in the topbar menu. Older rules further up this file still style
    .bottom-nav, so keep it hidden in case the markup ever comes back. */
 .bottom-nav { display: none !important; }
+/* ---------- Forum backdrop ----------
+   The CosmoKlub mark sits behind the forum as a watermark. It's fixed rather
+   than scrolling so it reads as part of the room, not part of the feed, and
+   pointer-events:none keeps it from swallowing clicks on the cards above it.
+   The mask fades the edges out so it never fights the text for contrast. */
+
+.fxd {
+  position: relative;
+}
+
+.fxd::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(78vmin, 720px);
+  height: min(78vmin, 720px);
+  transform: translate(-50%, -50%);
+  background: url("../images/logo-tab.png") center / contain no-repeat;
+  opacity: 0.055;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 38%, transparent 72%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 38%, transparent 72%);
+}
+
+/* Everything the forum renders sits above the watermark. */
+.fxd > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  .fxd::before {
+    width: min(88vmin, 420px);
+    height: min(88vmin, 420px);
+    opacity: 0.045;
+  }
+}

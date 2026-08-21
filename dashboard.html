@@ -9,7 +9,10 @@
   <!-- KaTeX — LaTeX math rendering for the calculator display -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <link rel="stylesheet" href="assets/css/dashboard.css?v=4">
+  <link rel="stylesheet" href="assets/css/dashboard.css?v=5">
+  <!-- Profile + Settings tabs — every rule is scoped under .profile-tab so it
+       can't reach the dashboard shell -->
+  <link rel="stylesheet" href="assets/css/profile.css">
   <link rel="stylesheet" href="assets/css/loader.css">
 </head>
 <body>
@@ -35,7 +38,8 @@
           <span class="icon-dot"></span>
         </button>
 
-        <button type="button" class="icon-btn" aria-label="Settings" title="Settings">
+        <button type="button" class="icon-btn" :class="{'is-open': activeTab === 'settings'}"
+                @click="setTab('settings')" aria-label="Settings" title="Settings">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </button>
 
@@ -93,6 +97,8 @@
 <script src="assets/js/components/library.js?v=3"></script>
 <script src="assets/js/components/chat.js"></script>
 <script src="assets/js/components/planetarium.js"></script>
+<script src="assets/js/components/profile.js"></script>
+<script src="assets/js/components/settings.js"></script>
 
 <script src="assets/js/app.js"></script>
   <script src="assets/js/loader.js"></script>
