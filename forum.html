@@ -201,103 +201,248 @@
       </div>
     </nav>
 
-    <main class="uc-page">
+    <main class="fx-page">
 
-      <section class="uc-hero" :style="persona.heroImage ? { backgroundImage: 'url(' + persona.heroImage + ')' } : {}">
-        <div class="uc-hero-overlay"></div>
-        <div class="uc-inner">
-          <div class="uc-hero-copy">
-            <nav class="uc-crumb" aria-label="Breadcrumb">
-              <template v-for="(c, ci) in persona.crumb" :key="ci">
-                <span>{{ c }}</span>
-                <i v-if="ci < persona.crumb.length - 1">/</i>
-              </template>
-            </nav>
-            <span class="uc-eyebrow">{{ persona.eyebrow }}</span>
-            <h1>{{ persona.titleTop }} <em>{{ persona.titleAccent }}</em></h1>
-            <p>{{ persona.lead }}</p>
-            <div class="uc-actions">
-              <a class="uc-btn-primary" href="../login.html?mode=register">{{ persona.cta }}</a>
-              <a class="uc-btn-ghost" href="../index.html#book-demo">Book Demo</a>
-            </div>
-          </div>
+      <!-- Catalog header -->
+      <header class="fx-head">
+        <div class="fx-head-inner">
+          <nav class="fx-crumb" aria-label="Breadcrumb">
+            <a href="../index.html">Home</a><i>/</i><a href="../tools/library.html">Tools</a><i>/</i><span>Forum</span>
+          </nav>
+          <h1 class="fx-title">Community Forum</h1>
+          <p class="fx-sub">Browse discussion boards, ask questions, and share what you find in the night sky with fellow members.</p>
         </div>
-      </section>
+      </header>
 
-      <section class="uc-band">
-        <div class="uc-inner">
-          <h2>{{ persona.photoTitle }}</h2>
-          <div class="uc-photo-grid">
-            <div class="uc-photo" v-for="p in persona.photos" :key="p.title">
-              <img v-if="p.image" :src="p.image" :alt="p.title" draggable="false" loading="lazy" />
-              <h3>{{ p.title }}</h3>
+      <div class="fx-shell">
+
+        <!-- ============ Filter sidebar (visual only) ============ -->
+        <aside class="fx-side">
+          <div class="fx-side-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+            <span>Filters</span>
+          </div>
+
+          <!-- Search -->
+          <div class="fx-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search boards" aria-label="Search boards" />
+          </div>
+
+          <!-- Sort -->
+          <div class="fx-select">
+            <select aria-label="Sort by">
+              <option>Most active</option>
+              <option>Newest</option>
+              <option>Most replies</option>
+              <option>Top rated</option>
+            </select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+
+          <!-- Level -->
+          <div class="fx-group">
+            <div class="fx-group-head"><span>Level</span></div>
+            <div class="fx-pills">
+              <button class="fx-pill is-active">All levels</button>
+              <button class="fx-pill">Beginner</button>
+              <button class="fx-pill">Intermediate</button>
+              <button class="fx-pill">Advanced</button>
             </div>
           </div>
-          
-          <div class="uc-phototwos-grid">
-            <div class="uc-phototwos" v-for="p in persona.phototwos" :key="p.title">
-              <img v-if="p.image" :src="p.image" :alt="p.title" draggable="false" loading="lazy" />
-              <h3>{{ p.title }}</h3>
+
+          <!-- Category -->
+          <div class="fx-group">
+            <div class="fx-group-head"><span>Category</span></div>
+            <div class="fx-pills">
+              <button class="fx-pill is-active">All</button>
+              <button class="fx-pill">Observing</button>
+              <button class="fx-pill">Astrophotography</button>
+              <button class="fx-pill">Equipment</button>
+              <button class="fx-pill">Deep sky</button>
+              <button class="fx-pill">Planetary</button>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section class="uc-band">
-        <div class="uc-inner">
-          <h2>{{ persona.toolsTitle }}</h2>
-          <div class="uc-tool-grid">
-            <div class="uc-tool" v-for="t in persona.tools" :key="t.title">
-              <div class="uc-tool-copy">
-                <h3>{{ t.title }}</h3>
-                <p>{{ t.desc }}</p>
+          <!-- Moderators -->
+          <div class="fx-group">
+            <div class="fx-group-head"><span>Moderators</span></div>
+            <button class="fx-mod is-active">All moderators</button>
+            <div class="fx-mod-list">
+              <div class="fx-mod-item">
+                <img class="fx-mod-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" />
+                <div class="fx-mod-text"><strong>Pensia</strong><em>Lead moderator, deep sky</em></div>
               </div>
-              <div class="uc-tool-shot">
-                <img v-if="t.image" :src="t.image" :alt="t.title" draggable="false" loading="lazy" />
+              <div class="fx-mod-item">
+                <img class="fx-mod-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" />
+                <div class="fx-mod-text"><strong>Orion</strong><em>Astrophotography</em></div>
+              </div>
+              <div class="fx-mod-item">
+                <img class="fx-mod-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" />
+                <div class="fx-mod-text"><strong>Vega</strong><em>Equipment &amp; optics</em></div>
+              </div>
+              <div class="fx-mod-item">
+                <img class="fx-mod-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" />
+                <div class="fx-mod-text"><strong>Lyra</strong><em>Beginner help</em></div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </aside>
 
-      <section class="uc-band">
-        <div class="uc-inner">
-          <div class="uc-panels">
-            <div class="uc-panel" v-for="(pn, pi) in persona.panels" :key="pn.title" :class="{ 'is-mirrored': pi % 2 === 1 }">
-              <div class="uc-panel-copy">
-                <h3>{{ pn.title }}</h3>
-                <p>{{ pn.desc }}</p>
-                <ul>
-                  <li v-for="pt in pn.points" :key="pt">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    {{ pt }}
-                  </li>
-                </ul>
-              </div>
-              <div class="uc-panel-visual">
-                <img v-if="pn.image" :src="pn.image" :alt="pn.title" draggable="false" loading="lazy" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        <!-- ============ Catalog main ============ -->
+        <section class="fx-main">
 
-      <section class="uc-band uc-faq">
-        <div class="uc-inner">
-          <h2 class="faq-title">Frequently asked questions</h2>
-          <div class="faq-list">
-            <div class="faq-item" :class="{ open: openFaq === fi }" v-for="(f, fi) in faqs" :key="'faq-'+fi">
-              <button class="faq-q" @click="openFaq = openFaq === fi ? null : fi" :aria-expanded="openFaq === fi">
-                <span>{{ f.q }}</span>
-                <span class="faq-chevron" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                </span>
-              </button>
-              <div class="faq-a" v-if="openFaq === fi"><p>{{ f.a }}</p></div>
+          <!-- Toolbar: count + tabs -->
+          <div class="fx-toolbar">
+            <div class="fx-toolbar-left">
+              <h2 class="fx-boards-title">Discussion Boards</h2>
+              <span class="fx-count">18 boards</span>
             </div>
           </div>
-        </div>
-      </section>
+          <div class="fx-tabs">
+            <button class="fx-tab is-active">All</button>
+            <button class="fx-tab">Popular</button>
+            <button class="fx-tab">New</button>
+          </div>
+
+          <!-- Card grid -->
+          <div class="fx-grid">
+
+            <!-- CARD template repeated with varied content -->
+            <!-- 1 -->
+            <article class="fx-card">
+              <div class="fx-card-media">
+                <span class="fx-badge">HOT</span>
+                <button class="fx-fav" aria-label="Save board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+                <img class="is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" loading="lazy" />
+              </div>
+              <div class="fx-card-body">
+                <span class="fx-card-tag">Observing</span>
+                <h3 class="fx-card-title">Getting Started with Stargazing</h3>
+                <p class="fx-card-desc">First telescope, first night out, and how to find your way around the sky.</p>
+                <div class="fx-stars"><span class="fx-stars-fill">★★★★★</span> <span class="fx-stars-num">4.9</span> <span class="fx-stars-count">(212)</span></div>
+                <div class="fx-card-foot">
+                  <div class="fx-author"><img class="fx-author-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" /><span>Lyra</span></div>
+                </div>
+                <div class="fx-card-meta">
+                  <span class="fx-meta-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg> 1,240 posts</span>
+                  <span class="fx-meta-live">● Active</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2 -->
+            <article class="fx-card">
+              <div class="fx-card-media">
+                <span class="fx-badge fx-badge-new">NEW</span>
+                <button class="fx-fav" aria-label="Save board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+                <img class="is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" loading="lazy" />
+              </div>
+              <div class="fx-card-body">
+                <span class="fx-card-tag">Astrophotography</span>
+                <h3 class="fx-card-title">Deep-Sky Imaging Techniques</h3>
+                <p class="fx-card-desc">Stacking, guiding, and processing faint galaxies and nebulae from your backyard.</p>
+                <div class="fx-stars"><span class="fx-stars-fill">★★★★★</span> <span class="fx-stars-num">4.8</span> <span class="fx-stars-count">(97)</span></div>
+                <div class="fx-card-foot">
+                  <div class="fx-author"><img class="fx-author-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" /><span>Orion</span></div>
+                </div>
+                <div class="fx-card-meta">
+                  <span class="fx-meta-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg> 640 posts</span>
+                  <span class="fx-meta-live">● Active</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 3 -->
+            <article class="fx-card">
+              <div class="fx-card-media">
+                <span class="fx-badge">HOT</span>
+                <button class="fx-fav" aria-label="Save board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+                <img class="is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" loading="lazy" />
+              </div>
+              <div class="fx-card-body">
+                <span class="fx-card-tag">Equipment</span>
+                <h3 class="fx-card-title">Telescopes &amp; Gear Talk</h3>
+                <p class="fx-card-desc">Reviews, mounts, eyepieces and buying advice for every budget.</p>
+                <div class="fx-stars"><span class="fx-stars-fill">★★★★★</span> <span class="fx-stars-num">4.7</span> <span class="fx-stars-count">(158)</span></div>
+                <div class="fx-card-foot">
+                  <div class="fx-author"><img class="fx-author-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" /><span>Vega</span></div>
+                </div>
+                <div class="fx-card-meta">
+                  <span class="fx-meta-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg> 980 posts</span>
+                  <span class="fx-meta-live">● Active</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 4 -->
+            <article class="fx-card">
+              <div class="fx-card-media">
+                <button class="fx-fav" aria-label="Save board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+                <img class="is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" loading="lazy" />
+              </div>
+              <div class="fx-card-body">
+                <span class="fx-card-tag">Planetary</span>
+                <h3 class="fx-card-title">The Solar System This Month</h3>
+                <p class="fx-card-desc">What's up tonight — planets, conjunctions, and the best times to look.</p>
+                <div class="fx-stars"><span class="fx-stars-fill">★★★★★</span> <span class="fx-stars-num">4.9</span> <span class="fx-stars-count">(74)</span></div>
+                <div class="fx-card-foot">
+                  <div class="fx-author"><img class="fx-author-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" /><span>Pensia</span></div>
+                </div>
+                <div class="fx-card-meta">
+                  <span class="fx-meta-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg> 415 posts</span>
+                  <span class="fx-meta-live">● Active</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 5 -->
+            <article class="fx-card">
+              <div class="fx-card-media">
+                <span class="fx-badge fx-badge-new">NEW</span>
+                <button class="fx-fav" aria-label="Save board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+                <img class="is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" loading="lazy" />
+              </div>
+              <div class="fx-card-body">
+                <span class="fx-card-tag">Deep sky</span>
+                <h3 class="fx-card-title">Galaxies, Nebulae &amp; Clusters</h3>
+                <p class="fx-card-desc">Share your observations and finder charts for faint fuzzies.</p>
+                <div class="fx-stars"><span class="fx-stars-fill">★★★★★</span> <span class="fx-stars-num">4.6</span> <span class="fx-stars-count">(53)</span></div>
+                <div class="fx-card-foot">
+                  <div class="fx-author"><img class="fx-author-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" /><span>Orion</span></div>
+                </div>
+                <div class="fx-card-meta">
+                  <span class="fx-meta-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg> 302 posts</span>
+                  <span class="fx-meta-live">● Active</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 6 -->
+            <article class="fx-card">
+              <div class="fx-card-media">
+                <button class="fx-fav" aria-label="Save board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+                <img class="is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" loading="lazy" />
+              </div>
+              <div class="fx-card-body">
+                <span class="fx-card-tag">Beginner</span>
+                <h3 class="fx-card-title">Ask Anything — New Members</h3>
+                <p class="fx-card-desc">No question too small. Introduce yourself and get help from the community.</p>
+                <div class="fx-stars"><span class="fx-stars-fill">★★★★★</span> <span class="fx-stars-num">5.0</span> <span class="fx-stars-count">(319)</span></div>
+                <div class="fx-card-foot">
+                  <div class="fx-author"><img class="fx-author-avatar is-placeholder-src" src="../assets/images/pensiaplaceholder.png" alt="" draggable="false" /><span>Lyra</span></div>
+                </div>
+                <div class="fx-card-meta">
+                  <span class="fx-meta-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8A8.5 8.5 0 0 1 21 11.5z"/></svg> 2,010 posts</span>
+                  <span class="fx-meta-live">● Active</span>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+      </div>
+
     </main>
 
     <footer class="site-footer">
@@ -422,5 +567,52 @@
   <script src="../assets/js/common.js"></script>
   <script src="../assets/js/tools.js"></script>
   <script src="../assets/js/loader.js"></script>
+  <!-- Image fallback: any picture that fails to load (missing file) is
+       swapped to the shared CosmoKlub placeholder so no broken-image
+       icons appear. Covers <img> tags and the Vue-bound CSS hero
+       backgrounds. PLACEHOLDER path is relative to this page. -->
+  <script>
+  (function () {
+    var PLACEHOLDER = "../assets/images/pensiaplaceholder.png";
+    // Swap a failed <img> to the placeholder (once).
+    function fixImg(img) {
+      if (!img || img.dataset.phDone) return;
+      img.dataset.phDone = "1";
+      img.src = PLACEHOLDER;
+      img.classList.add("is-placeholder");
+    }
+    // Capture load errors from any <img>, including ones added later by Vue.
+    document.addEventListener("error", function (e) {
+      var el = e.target;
+      if (el && el.tagName === "IMG") fixImg(el);
+    }, true);
+
+    // Heroes use CSS background-image (no error event). After Vue paints,
+    // test each hero's image URL and swap the background if it 404s.
+    function fixHeroBackgrounds() {
+      var heroes = document.querySelectorAll(".uc-hero, [data-bg-check]");
+      heroes.forEach(function (h) {
+        var bg = getComputedStyle(h).backgroundImage || "";
+        var m = bg.match(/url\((['"]?)(.*?)\1\)/);
+        if (!m || !m[2]) return;
+        var url = m[2];
+        if (url.indexOf("pensiaplaceholder") !== -1) return;
+        var probe = new Image();
+        probe.onerror = function () {
+          h.style.backgroundImage = "url(" + PLACEHOLDER + ")";
+          h.classList.add("hero-placeholder");
+        };
+        probe.src = url;
+      });
+    }
+    // Run after Vue has had a chance to render (a few passes for safety).
+    function scheduleHeroCheck() {
+      [300, 900, 1800].forEach(function (t) { setTimeout(fixHeroBackgrounds, t); });
+    }
+    if (document.readyState === "complete" || document.readyState === "interactive") scheduleHeroCheck();
+    else document.addEventListener("DOMContentLoaded", scheduleHeroCheck);
+  })();
+  </script>
+
 </body>
 </html>
