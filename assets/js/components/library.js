@@ -1338,9 +1338,11 @@ const Library={
 
       style.textContent=`
 
+        /* Fills the full content width, same as the forum's .fxd shell —
+           previously capped at 1180px and centered, which left large dead
+           margins on wider screens instead of using the available space. */
         .library-roadmap{
-          max-width:1180px;
-          margin:0 auto;
+          width:100%;
         }
 
         .library-roadmap .section{
@@ -1372,10 +1374,13 @@ const Library={
 
         .rank-title{
           color:var(--stardust);
-          /* matches the forum's .thread-title (14px/600) */
-          font-size:14px;
-          font-weight:600;
-          line-height:1.35;
+          /* page heading — matches the forum's .fxd-title scale (1.25rem/800)
+             instead of the old .thread-title (a small in-card label, not a
+             page header), which made this read too small/quiet */
+          font-size:1.15rem;
+          font-weight:800;
+          letter-spacing:-0.01em;
+          line-height:1.4;
           max-width:720px;
         }
 
@@ -1548,9 +1553,10 @@ const Library={
 
         .rank-panel-rank{
           color:var(--stardust);
-          /* matches the forum's largest text (14px) */
-          font-size:14px;
-          font-weight:700;
+          /* matches the forum's .fxd-title scale (1.25rem/800) so the rank
+             badge reads as a headline stat, not fine print */
+          font-size:1.1rem;
+          font-weight:800;
           margin-top:9px;
 
           display:flex;
@@ -1563,8 +1569,8 @@ const Library={
           align-items:center;
           justify-content:center;
 
-          /* graphic, kept slightly above the 14px text scale */
-          font-size:18px;
+          /* graphic, kept slightly above the rank text scale */
+          font-size:20px;
           line-height:1;
 
           filter:
@@ -1580,25 +1586,20 @@ const Library={
           margin-top:8px;
         }
 
+        /* Fluid column count instead of a hard 2-then-3 breakpoint: cards
+           keep a sensible ~280px minimum width and the grid fills whatever
+           space is actually available (2 cols on tablet, 3 on a laptop,
+           all 6 in one row on a wide desktop) — same "use the full width"
+           behavior as the forum's card grid, without stretching each card
+           into an oversized, disproportionate tile. */
         .roadmap-grid{
           grid-template-columns:
             repeat(
-              2,
-              minmax(0,1fr)
+              auto-fit,
+              minmax(280px,1fr)
             );
 
-          gap:16px;
-        }
-
-        @media(min-width:980px){
-
-          .roadmap-grid{
-            grid-template-columns:
-              repeat(
-                3,
-                minmax(0,1fr)
-              );
-          }
+          gap:18px;
         }
 
         .roadmap-card{
@@ -1793,7 +1794,12 @@ const Library={
         .roadmap-banner{
           position:relative;
 
-          height:104px;
+          /* scales with card width (like the forum's 16:9 thread image)
+             instead of a flat fixed height, so wider cards on bigger
+             screens don't end up with a thin, disproportionate strip */
+          aspect-ratio:3.2/1;
+          min-height:100px;
+          max-height:160px;
           flex-shrink:0;
 
           border-radius:16px 16px 0 0;
@@ -2239,8 +2245,10 @@ const Library={
 
         @media(max-width:760px){
 
-          .rank-summary,
-          .roadmap-grid{
+          /* .roadmap-grid is left out here on purpose — its auto-fit
+             minmax(280px,1fr) columns already collapse to one column once
+             the viewport gets that narrow. */
+          .rank-summary{
 
             grid-template-columns:
               1fr;
