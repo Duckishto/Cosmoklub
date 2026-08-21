@@ -1586,25 +1586,43 @@ const Library={
           margin-top:8px;
         }
 
-        /* Fluid column count instead of a hard 2-then-3 breakpoint: cards
-           keep a sensible ~280px minimum width and the grid fills whatever
-           space is actually available (2 cols on tablet, 3 on a laptop,
-           all 6 in one row on a wide desktop) — same "use the full width"
-           behavior as the forum's card grid, without stretching each card
-           into an oversized, disproportionate tile. */
+        /* Fixed 3-column grid, same approach as the forum's .fxd-grid:
+           columns don't keep multiplying on ultra-wide screens (which,
+           with exactly 6 cards, would leave an orphaned card alone on its
+           own row) — instead the 3 columns just grow wider, same as the
+           forum's cards do. */
         .roadmap-grid{
           grid-template-columns:
             repeat(
-              auto-fit,
-              minmax(280px,1fr)
+              3,
+              minmax(0,1fr)
             );
 
           gap:18px;
         }
 
+        @media(max-width:1200px){
+
+          .roadmap-grid{
+            grid-template-columns:
+              repeat(
+                2,
+                minmax(0,1fr)
+              );
+          }
+        }
+
+        @media(max-width:560px){
+
+          .roadmap-grid{
+            grid-template-columns:
+              1fr;
+          }
+        }
+
         .roadmap-card{
 
-          min-height:216px;
+          min-height:250px;
 
           display:flex;
           flex-direction:column;
@@ -1798,8 +1816,8 @@ const Library={
              instead of a flat fixed height, so wider cards on bigger
              screens don't end up with a thin, disproportionate strip */
           aspect-ratio:3.2/1;
-          min-height:100px;
-          max-height:160px;
+          min-height:112px;
+          max-height:170px;
           flex-shrink:0;
 
           border-radius:16px 16px 0 0;
@@ -1906,11 +1924,11 @@ const Library={
           position:absolute;
           top:10px;
 
-          font-size:10px;
+          font-size:11.5px;
           font-weight:800;
           letter-spacing:.05em;
 
-          padding:3px 8px;
+          padding:4px 10px;
           border-radius:999px;
 
           z-index:2;
@@ -1950,8 +1968,8 @@ const Library={
           position:relative;
           z-index:2;
 
-          width:44px;
-          height:44px;
+          width:52px;
+          height:52px;
 
           display:flex;
           align-items:center;
@@ -1981,8 +1999,8 @@ const Library={
         }
 
         .banner-icon-mark svg{
-          width:25px;
-          height:25px;
+          width:30px;
+          height:30px;
         }
 
         .roadmap-body{
@@ -1990,9 +2008,9 @@ const Library={
 
           display:flex;
           flex-direction:column;
-          gap:9px;
+          gap:10px;
 
-          padding:14px;
+          padding:18px;
         }
 
         .lesson-desc{
@@ -2010,7 +2028,7 @@ const Library={
             space-between;
           gap:10px;
           color:var(--muted);
-          font-size:11px;
+          font-size:12.5px;
         }
 
         .meta-item{
@@ -2084,9 +2102,9 @@ const Library={
               .7
             );
 
-          font-size:10px;
+          font-size:11.5px;
           font-weight:700;
-          padding:3px 8px;
+          padding:4px 10px;
         }
 
         .unlock-pill.is-open{
@@ -2245,9 +2263,6 @@ const Library={
 
         @media(max-width:760px){
 
-          /* .roadmap-grid is left out here on purpose — its auto-fit
-             minmax(280px,1fr) columns already collapse to one column once
-             the viewport gets that narrow. */
           .rank-summary{
 
             grid-template-columns:
