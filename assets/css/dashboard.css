@@ -165,7 +165,7 @@ body {
   cursor: pointer;
 }
 .brand-logo {
-  height: 26px;
+  height: 40px;
   width: auto;
   display: block;
   filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.35));
@@ -2116,6 +2116,6 @@ body {
     border-radius: 15px !important;
   }
   .content { padding-top: 106px; }
-  .brand-logo { height: 22px; }
+  .brand-logo { height: 32px; }
   .tb-pop { min-width: 0; }
 }
