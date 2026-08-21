@@ -82,8 +82,10 @@ createApp({
       currentUser: null,
       toast: null,
       // Drop a file at assets/images/login/auth-visual.jpg (1000x1200px,
-      // portrait ~4:5) and it appears automatically.
-      panelImage: 'assets/images/pensiaplaceholder.png'
+      // portrait ~4:5) and it appears automatically. If the file is
+      // missing, the page-wide <img> error handler in login.html swaps
+      // this to the shared placeholder, so this is safe to leave as-is.
+      panelImage: 'assets/images/login/auth-visual.jpg'
     };
   },
   computed: {
