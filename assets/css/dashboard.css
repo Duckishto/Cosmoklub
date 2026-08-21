@@ -1955,3 +1955,56 @@ body {
   }
   .tb-pop-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   TOPBAR RESTORE  (must stay last — overrides the older
+   "DASHBOARD TOP NAVIGATION" block above)
+
+   That earlier block hid .topbar and re-pinned .bottom-nav to the
+   top of the screen. The dashboard now uses the real .topbar
+   (logo left; notification, menu and profile on the right), so:
+     - .topbar is visible again and sticks to the top
+     - .bottom-nav goes back to being the bottom tab bar
+   ============================================================ */
+
+.topbar {
+  display: flex !important;
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+
+/* Return the tab bar to the bottom of the viewport */
+.bottom-nav,
+.bottom-nav.compact,
+.bottom-nav.nav-leaving,
+.bottom-nav.nav-away {
+  position: fixed !important;
+  top: auto !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+
+  width: 100% !important;
+  max-width: none !important;
+  padding: 0 1rem !important;
+
+  transform: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+
+  background: linear-gradient(180deg, rgba(12,9,34,0.92), rgba(7,6,26,0.96)) !important;
+  backdrop-filter: blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+
+  border: none !important;
+  border-top: 1px solid rgba(124,58,237,0.28) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 -6px 24px rgba(0,0,0,0.35) !important;
+
+  animation: none !important;
+  z-index: 950 !important;
+}
+
+/* Keep page content clear of the fixed bottom bar */
+.content { padding-bottom: calc(var(--nav-h, 62px) + 16px); }
