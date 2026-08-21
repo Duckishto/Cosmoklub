@@ -59,89 +59,105 @@ const Library={
 
             <div class="card-mouse-light"></div>
 
-            <div class="roadmap-card-top">
+            <div
+              class="roadmap-banner"
+              :class="'banner-'+lesson.id"
+            >
+
+              <span class="banner-blob banner-blob-a"></span>
+              <span class="banner-blob banner-blob-b"></span>
+
+              <div class="banner-level-pill">
+                LV {{ lesson.level }}
+              </div>
 
               <div
-                class="lesson-icon roadmap-icon"
-                v-html="lesson.svg"
-              ></div>
-
-              <div
-                class="lesson-tier"
+                class="banner-tier-pill"
                 :class="lesson.tierClass"
               >
                 {{ lesson.rank }}
               </div>
 
-            </div>
-
-            <div class="lesson-title">
-              {{ lesson.title }}
-            </div>
-
-            <div class="lesson-desc">
-              {{ lesson.desc }}
-            </div>
-
-            <div class="lesson-progress-row">
-
-              <span>
-                Level {{ lesson.level }}
-              </span>
-
-              <span>
-                {{ lesson.completedLessons }} /
-                {{ lesson.totalLessons }}
-              </span>
-
-            </div>
-
-            <div class="lesson-progress-track">
-
               <div
-                class="lesson-progress-fill"
-                :style="{
-                  width:progressPercent(lesson)+'%'
-                }"
+                class="banner-icon-mark"
+                v-html="lesson.svg"
               ></div>
 
             </div>
 
-            <div class="unlock-row">
+            <div class="roadmap-body">
 
-              <div class="unlock-pill is-open">
-                Active learning
+              <div class="lesson-title">
+                {{ lesson.title }}
               </div>
 
-              <div
-                class="unlock-pill"
-                :class="{
-                  'is-open':lesson.quizUnlocked
-                }"
-              >
-                Quiz
+              <div class="lesson-desc">
+                {{ lesson.desc }}
               </div>
 
-              <div
-                class="unlock-pill"
-                :class="{
-                  'is-open':lesson.nextUnlocked
-                }"
-              >
-                Next lesson
+              <div class="lesson-meta-row">
+
+                <span class="meta-item">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                  {{ lesson.completedLessons }} / {{ lesson.totalLessons }} lessons
+                </span>
+
+                <span class="meta-item meta-item-xp">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 11-13h-7l1-7z"/></svg>
+                  {{ lesson.xp }} XP
+                </span>
+
               </div>
 
-            </div>
+              <div class="lesson-progress-track">
 
-            <div class="lesson-next">
+                <div
+                  class="lesson-progress-fill"
+                  :style="{
+                    width:progressPercent(lesson)+'%'
+                  }"
+                ></div>
 
-              <span>
-                {{ lesson.nextLabel }}
-              </span>
+              </div>
 
-              <strong>
-                {{ lesson.xp }} XP
-              </strong>
+              <div class="unlock-row">
+
+                <div class="unlock-pill is-open">
+                  Active learning
+                </div>
+
+                <div
+                  class="unlock-pill"
+                  :class="{
+                    'is-open':lesson.quizUnlocked
+                  }"
+                >
+                  Quiz
+                </div>
+
+                <div
+                  class="unlock-pill"
+                  :class="{
+                    'is-open':lesson.nextUnlocked
+                  }"
+                >
+                  Next lesson
+                </div>
+
+              </div>
+
+              <div class="lesson-next">
+
+                <span>
+                  {{ lesson.nextLabel }}
+                </span>
+
+                <span class="lesson-next-cta">
+                  Continue
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                </span>
+
+              </div>
 
             </div>
 
@@ -1322,6 +1338,11 @@ const Library={
 
       style.textContent=`
 
+        .library-roadmap{
+          max-width:1180px;
+          margin:0 auto;
+        }
+
         .library-roadmap .section{
           margin-bottom:20px;
         }
@@ -1566,7 +1587,18 @@ const Library={
               minmax(0,1fr)
             );
 
-          gap:12px;
+          gap:16px;
+        }
+
+        @media(min-width:980px){
+
+          .roadmap-grid{
+            grid-template-columns:
+              repeat(
+                3,
+                minmax(0,1fr)
+              );
+          }
         }
 
         .roadmap-card{
@@ -1576,7 +1608,10 @@ const Library={
           display:flex;
           flex-direction:column;
 
-          gap:9px;
+          gap:0;
+          padding:0;
+
+          border-radius:16px;
 
           background:
 
@@ -1755,25 +1790,140 @@ const Library={
           z-index:3;
         }
 
-        .roadmap-card-top{
+        .roadmap-banner{
+          position:relative;
+
+          height:104px;
+          flex-shrink:0;
+
+          border-radius:16px 16px 0 0;
+          overflow:hidden;
+
           display:flex;
-          align-items:flex-start;
-          justify-content:
-            space-between;
-          gap:10px;
+          align-items:flex-end;
+          justify-content:flex-end;
+
+          padding:10px;
         }
 
-        .roadmap-icon{
-          width:34px;
-          height:34px;
-          margin-bottom:0;
+        .banner-stars{
+          background:
+            linear-gradient(
+              135deg,
+              #f59e0b,
+              #dc2626
+            );
+        }
 
+        .banner-galaxies{
+          background:
+            linear-gradient(
+              135deg,
+              #8b5cf6,
+              #ec4899
+            );
+        }
+
+        .banner-cosmology{
+          background:
+            linear-gradient(
+              135deg,
+              #1d4ed8,
+              #7c3aed
+            );
+        }
+
+        .banner-planets{
+          background:
+            linear-gradient(
+              135deg,
+              #0ea5e9,
+              #06b6d4
+            );
+        }
+
+        .banner-nebulae{
+          background:
+            linear-gradient(
+              135deg,
+              #d946ef,
+              #6366f1
+            );
+        }
+
+        .banner-observing{
+          background:
+            linear-gradient(
+              135deg,
+              #fb923c,
+              #4c1d95
+            );
+        }
+
+        .banner-blob{
+          position:absolute;
+          border-radius:50%;
+          filter:blur(16px);
+          pointer-events:none;
+        }
+
+        .banner-blob-a{
+          width:90px;
+          height:90px;
+          top:-32px;
+          left:-18px;
           background:
             rgba(
               255,
               255,
               255,
-              .05
+              .32
+            );
+        }
+
+        .banner-blob-b{
+          width:70px;
+          height:70px;
+          bottom:-30px;
+          right:34%;
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              .16
+            );
+        }
+
+        .banner-level-pill,
+        .banner-tier-pill{
+          position:absolute;
+          top:10px;
+
+          font-size:10px;
+          font-weight:800;
+          letter-spacing:.05em;
+
+          padding:3px 8px;
+          border-radius:999px;
+
+          z-index:2;
+
+          -webkit-backdrop-filter:blur(6px);
+          backdrop-filter:blur(6px);
+        }
+
+        .banner-level-pill{
+          left:10px;
+
+          color:#fff;
+
+          background:
+            rgba(
+              10,
+              8,
+              24,
+              .42
             );
 
           border:
@@ -1782,16 +1932,71 @@ const Library={
               255,
               255,
               255,
-              .08
+              .24
             );
         }
 
-        .roadmap-icon svg{
-          width:21px;
-          height:21px;
+        .banner-tier-pill{
+          right:10px;
         }
 
-        .lesson-progress-row,
+        .banner-icon-mark{
+          position:relative;
+          z-index:2;
+
+          width:44px;
+          height:44px;
+
+          display:flex;
+          align-items:center;
+          justify-content:center;
+
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              .16
+            );
+
+          border:
+            1px solid
+            rgba(
+              255,
+              255,
+              255,
+              .28
+            );
+
+          border-radius:12px;
+
+          -webkit-backdrop-filter:blur(6px);
+          backdrop-filter:blur(6px);
+        }
+
+        .banner-icon-mark svg{
+          width:25px;
+          height:25px;
+        }
+
+        .roadmap-body{
+          flex:1;
+
+          display:flex;
+          flex-direction:column;
+          gap:9px;
+
+          padding:14px;
+        }
+
+        .lesson-desc{
+          display:-webkit-box;
+          -webkit-line-clamp:2;
+          -webkit-box-orient:vertical;
+          overflow:hidden;
+        }
+
+        .lesson-meta-row,
         .lesson-next{
           display:flex;
           align-items:center;
@@ -1800,6 +2005,23 @@ const Library={
           gap:10px;
           color:var(--muted);
           font-size:11px;
+        }
+
+        .meta-item{
+          display:inline-flex;
+          align-items:center;
+          gap:5px;
+          white-space:nowrap;
+        }
+
+        .meta-item svg{
+          flex-shrink:0;
+          opacity:.75;
+        }
+
+        .meta-item-xp{
+          color:var(--glow);
+          font-weight:700;
         }
 
         .lesson-progress-track{
@@ -1881,9 +2103,23 @@ const Library={
             );
         }
 
-        .lesson-next strong{
+        .lesson-next-cta{
+          display:inline-flex;
+          align-items:center;
+          gap:4px;
+
           color:var(--glow);
+          font-weight:700;
           white-space:nowrap;
+        }
+
+        .lesson-next-cta svg{
+          transition:
+            transform .18s ease;
+        }
+
+        .roadmap-card:hover .lesson-next-cta svg{
+          transform:translateX(2px);
         }
 
         .tier-bronze{
@@ -1979,6 +2215,26 @@ const Library={
               253,
               .25
             );
+        }
+
+        /* Tier pills placed on top of the colorful banner need a dark
+           frosted chip instead of each tier's own light background tint —
+           the text/border colors above still flow through via currentColor. */
+        .banner-tier-pill.tier-bronze,
+        .banner-tier-pill.tier-silver,
+        .banner-tier-pill.tier-gold,
+        .banner-tier-pill.tier-platinum,
+        .banner-tier-pill.tier-diamond{
+          background:
+            rgba(
+              10,
+              8,
+              24,
+              .55
+            );
+          border:
+            1px solid
+            currentColor;
         }
 
         @media(max-width:760px){
