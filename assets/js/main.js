@@ -157,8 +157,8 @@ createApp({
       // Same idea: drop files into assets/images/home/ with these names.
       // featurePanel: 1200x900px. ctaBanner: 1200x900px.
       sectionImages: {
-        featurePanel: 'assets/images/home/feature-panel.jpg',
-        ctaBanner: 'assets/images/home/cta-banner.jpg'
+        featurePanel: 'assets/images/pensiaplaceholder.png',
+        ctaBanner: 'assets/images/pensiaplaceholder.png'
       },
       // Drop matching files into assets/images/hero/ using these exact
       // names and they'll appear automatically — no further code changes
@@ -166,13 +166,13 @@ createApp({
       // can appear both as the big hero shot AND as a small satellite
       // card, since clicking a card swaps it into the main slot).
       heroImages: {
-        objectBrowser: 'assets/images/hero/object-browser.jpg',
-        apod: 'assets/images/hero/apod.jpg',
-        grapher: 'assets/images/hero/grapher.jpg',
-        gallery: 'assets/images/hero/gallery.jpg',
-        planetarium: 'assets/images/hero/planetarium.jpg',
-        community: 'assets/images/hero/community.jpg',
-        observer: 'assets/images/hero/observer.jpg'
+        objectBrowser: 'assets/images/pensiaplaceholder.png',
+        apod: 'assets/images/pensiaplaceholder.png',
+        grapher: 'assets/images/pensiaplaceholder.png',
+        gallery: 'assets/images/pensiaplaceholder.png',
+        planetarium: 'assets/images/pensiaplaceholder.png',
+        community: 'assets/images/pensiaplaceholder.png',
+        observer: 'assets/images/pensiaplaceholder.png'
       },
       stats: { objects: null, asteroids: null, apodDays: null },
       pensiaOpen: false,
@@ -234,7 +234,7 @@ createApp({
       return [
         {
           title: 'Create your account',
-          img: 'assets/images/home/step-1.jpg',
+          img: 'assets/images/pensiaplaceholder.png',
           desc: 'Create your CosmoKlub profile in minutes and personalize your astronomy learning experience.',
           bullets: [
             { svg: SVGS.telescope, text: 'Choose your astronomy interests' },
@@ -244,7 +244,7 @@ createApp({
         },
         {
           title: 'Configure your tools',
-          img: 'assets/images/home/step-2.jpg',
+          img: 'assets/images/pensiaplaceholder.png',
           desc: 'Set up the astronomy tools and learning categories that match the way you explore the night sky.',
           bullets: [
             { svg: SVGS.chart, text: 'Plan observing sessions' },
@@ -254,7 +254,7 @@ createApp({
         },
         {
           title: 'Start exploring',
-          img: 'assets/images/home/step-3.jpg',
+          img: 'assets/images/pensiaplaceholder.png',
           desc: 'Begin structured lessons, explore the night sky, and connect with the astronomy community.',
           bullets: [
             { svg: SVGS.telescope, text: 'Follow guided learning roadmaps' },
@@ -277,9 +277,9 @@ createApp({
       };
       // 1400x1000px each — assets/images/home/manage-1.jpg, -2.jpg, -3.jpg
       return [
-        { ...panel, img: 'assets/images/home/manage-1.jpg' },
-        { ...panel, img: 'assets/images/home/manage-2.jpg' },
-        { ...panel, img: 'assets/images/home/manage-3.jpg' }
+        { ...panel, img: 'assets/images/pensiaplaceholder.png' },
+        { ...panel, img: 'assets/images/pensiaplaceholder.png' },
+        { ...panel, img: 'assets/images/pensiaplaceholder.png' }
       ];
     },
     plans() {
