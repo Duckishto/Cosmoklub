@@ -10,6 +10,13 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <link rel="stylesheet" href="assets/css/dashboard.css?v=5">
+  <!-- Study Roadmap header + Overall Rank panel (Library tab). Previously
+       injected at runtime from a JS string in components/library.js, which
+       made it fragile and was why the header/rank panel sometimes rendered
+       unstyled. Now a real stylesheet, always loaded. Must come after
+       dashboard.css since it uses the --stardust/--violet/etc. variables
+       defined there. -->
+  <link rel="stylesheet" href="assets/css/library.css?v=1">
   <!-- Profile + Settings tabs — every rule is scoped under .profile-tab so it
        can't reach the dashboard shell -->
   <link rel="stylesheet" href="assets/css/profile.css">
