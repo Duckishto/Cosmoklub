@@ -642,21 +642,21 @@ body {
 }
 
 .lesson-title {
-  /* matches the forum's current .fxd-card-title (0.97rem/700) —
-     previously matched the old, now-unused .thread-title (14px/600),
-     which read noticeably smaller/lighter than the rest of the app */
-  font-size: 0.97rem;
+  /* bumped up from the forum's card-title scale (0.97rem) — the dense
+     dashboard scale read too small for a card that's meant to be a primary
+     tappable unit, not a compact list row */
+  font-size: 1.08rem;
   font-weight: 700;
   color: var(--stardust);
   margin-bottom: 4px;
-  line-height: 1.32;
+  line-height: 1.3;
 }
 .lesson-desc {
-  /* matches the forum's current .fxd-card-desc (0.82rem / 1.55) —
-     previously matched the old, now-unused .thread-body */
-  font-size: 0.82rem;
+  /* bumped up from the forum's card-desc scale (0.82rem) for the same
+     reason — these cards carry more weight on the page than a thread card */
+  font-size: 0.92rem;
   color: var(--muted);
-  line-height: 1.55;
+  line-height: 1.6;
   margin-bottom: 8px;
 }
 .lesson-info {
