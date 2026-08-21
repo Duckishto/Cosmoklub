@@ -1351,13 +1351,10 @@ const Library={
 
         .rank-title{
           color:var(--stardust);
-          font-size:
-            clamp(
-              22px,
-              4vw,
-              34px
-            );
-          line-height:1.05;
+          /* matches the forum's .thread-title (14px/600) */
+          font-size:14px;
+          font-weight:600;
+          line-height:1.35;
           max-width:720px;
         }
 
@@ -1530,8 +1527,9 @@ const Library={
 
         .rank-panel-rank{
           color:var(--stardust);
-          font-size:26px;
-          font-weight:900;
+          /* matches the forum's largest text (14px) */
+          font-size:14px;
+          font-weight:700;
           margin-top:9px;
 
           display:flex;
@@ -1544,7 +1542,8 @@ const Library={
           align-items:center;
           justify-content:center;
 
-          font-size:25px;
+          /* graphic, kept slightly above the 14px text scale */
+          font-size:18px;
           line-height:1;
 
           filter:
