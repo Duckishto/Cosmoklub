@@ -1687,7 +1687,9 @@ body {
 /* ---------- Sidebar ---------- */
 .fxd-side {
   position: sticky; top: 1rem;
-  background: linear-gradient(180deg, rgba(22,18,46,0.7), rgba(11,9,24,0.76));
+  background: linear-gradient(180deg, rgba(22,18,46,0.92), rgba(11,9,24,0.95));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(124,58,237,0.25);
   border-radius: 14px;
   padding: 1.1rem 1rem 1.3rem;
@@ -1840,7 +1842,7 @@ body {
 @media (max-width: 1200px) { .fxd-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 900px) {
   .fxd-shell { grid-template-columns: 1fr; }
-  .fxd-side { position: static; }
+  .fxd-side { position: sticky; top: 0; z-index: 5; }
 }
 @media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
 
