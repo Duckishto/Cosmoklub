@@ -72,6 +72,7 @@
   grid-template-columns: 1fr 1fr;
   width: 100%;
   max-width: 1000px;
+  height: 745px; /* fixed so the login/register card (and its image panel) never resize between tabs */
   border-radius: 22px;
   overflow: hidden;
   background: #0e0b1f;
@@ -83,14 +84,21 @@
   position: relative;
   padding: 2.6rem 2.4rem;
   display: flex;
-  align-items: center;
+  align-items: center; /* fallback for browsers without support for the line below */
+  align-items: safe center; /* keeps content from being clipped at the top when it overflows */
+  min-height: 0; /* lets this flex/grid item shrink so overflow-y can actually kick in */
+  overflow-y: auto;
 }
+/* Slim, on-theme scrollbar for when a form (e.g. the longer register steps) needs to scroll */
+.auth-form-side::-webkit-scrollbar { width: 6px; }
+.auth-form-side::-webkit-scrollbar-track { background: transparent; }
+.auth-form-side::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.35); border-radius: 999px; }
 .auth-form-inner {
   width: 100%;
-  min-height: 512px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .auth-mark {
@@ -434,21 +442,21 @@
 
 /* Large desktops — let the card breathe */
 @media (min-width: 1400px) {
-  .auth-card { max-width: 1120px; }
+  .auth-card { max-width: 1120px; height: 758px; }
   .auth-form-side { padding: 3rem 3rem; }
 }
 
 /* Small laptops / large tablets */
 @media (max-width: 1100px) {
-  .auth-card { max-width: 900px; }
+  .auth-card { max-width: 900px; height: 730px; }
   .auth-form-side { padding: 2.2rem 2rem; }
 }
 
 /* Tablet portrait — drop the visual panel, single column */
 @media (max-width: 900px) {
-  .auth-card { grid-template-columns: 1fr; max-width: 560px; }
+  .auth-card { grid-template-columns: 1fr; max-width: 560px; height: auto; }
   .auth-visual { display: none; }
-  .auth-form-side { padding: 2rem 1.8rem; }
+  .auth-form-side { padding: 2rem 1.8rem; overflow-y: visible; }
 }
 
 /* Large phones */
