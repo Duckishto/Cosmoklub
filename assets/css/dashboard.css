@@ -139,19 +139,44 @@ body {
   height: 100%;
 }
 
-/* ---------- Top Bar ---------- */
+/* =========================================================
+   TOP BAR — styled to match the homepage's floating "compact"
+   nav pill (see nav.compact in style.css): a rounded glass
+   bar docked a little way from the top edge, purple border,
+   blurred backdrop. The dashboard components inside it
+   (brand button, notification/settings icons, hamburger menu
+   + its dropdown) are unchanged — only the visual language is
+   shared with the homepage now. This is the single, canonical
+   definition; do not redeclare `.topbar` elsewhere in this file.
+   ========================================================= */
 .topbar {
   display: flex;
   align-items: center;
   gap: 14px;
-  height: var(--topbar-h);
-  padding: 0 20px;
-  background: linear-gradient(180deg, rgba(12, 9, 34, 0.9), rgba(7, 6, 26, 0.82));
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
+
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: min(1160px, calc(100% - 3rem));
+  height: 60px;
+  padding: 0 1.5rem;
+
+  background: rgba(14, 11, 30, 0.82);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.045);
+
+  z-index: 1000;
+  animation: dashTopbarIn 0.42s cubic-bezier(.4, 0, .2, 1);
+}
+@keyframes dashTopbarIn {
+  from { transform: translateX(-50%) translateY(-120%); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
 }
 
 .brand {
@@ -163,9 +188,13 @@ body {
   border: none;
   padding: 0;
   cursor: pointer;
+  transition: transform 0.35s ease;
 }
+.brand:hover { transform: translateY(-1px); }
 .brand-logo {
-  height: 40px;
+  /* matches homepage .nav-logo-img, which stays 48px tall even in
+     the docked/compact nav state */
+  height: 48px;
   width: auto;
   display: block;
   filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.35));
@@ -178,8 +207,21 @@ body {
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+/* Kill default browser button chrome (the UA's own font/outline/
+   appearance) without touching background or border — .icon-btn and
+   .tb-profile each own their own background/border below, and a
+   `.topbar button` reset that also set those would beat them on
+   specificity (0,1,1 vs 0,1,0) and silently override them. */
+.topbar button {
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
+  padding: 0;
 }
 
 .icon-btn {
@@ -189,20 +231,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9px;
+  border-radius: 10px;
   cursor: pointer;
   color: var(--muted);
-  transition: background var(--tr), color var(--tr);
+  /* homepage utility buttons (.lang-btn, .nav-menu-btn) carry a
+     visible glass + border treatment at rest, not just on hover */
+  background: var(--glass2);
+  border: 1px solid var(--border);
+  transition: background var(--tr), color var(--tr), border-color var(--tr), box-shadow var(--tr), transform var(--tr);
 }
 .icon-btn:hover {
-  background: var(--glass);
-  color: var(--stardust);
+  background: rgba(124, 58, 237, 0.16);
+  border-color: var(--violet);
+  color: var(--white);
+  box-shadow: 0 0 16px rgba(124, 58, 237, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+.icon-btn.is-open {
+  background: rgba(124, 58, 237, 0.24);
+  border-color: var(--violet);
+  color: var(--white);
 }
 
 .icon-dot {
   position: absolute;
-  top: 7px;
-  right: 7px;
+  top: 6px;
+  right: 6px;
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -210,18 +264,59 @@ body {
   border: 1.5px solid #07061a;
 }
 
+.tb-menu-wrap { position: relative; display: flex; align-items: center; }
+
+/* Profile avatar button — not currently wired into dashboard.html,
+   kept for when a profile entry point is added to the topbar. */
+.tb-profile {
+  width: 34px; height: 34px;
+  margin-left: 4px; padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(124, 58, 237, 0.4);
+  background: #0b091a;
+  cursor: pointer; overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color .2s, box-shadow .2s;
+}
+.tb-profile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tb-profile:hover,
+.tb-profile.is-open {
+  border-color: rgba(168, 85, 247, 0.85);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.22);
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 720px) {
+  .topbar {
+    top: 8px;
+    width: calc(100% - 1.2rem);
+    height: 56px;
+    padding: 0 0.9rem;
+    border-radius: 15px;
+  }
+  .brand-logo { height: 34px; }
+  .tb-pop { min-width: 0; }
+}
+
 /* ---------- Scrollable Content Area ---------- */
 .content {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 16px 16px calc(var(--nav-h) + var(--safe-bot) + 8px);
+  /* clears the floating topbar (top:14px + height:60px = 74px) with
+     room to breathe, mirroring the gap the homepage leaves below its
+     own docked nav pill */
+  padding: 100px 16px 32px;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
 .content::-webkit-scrollbar { width: 4px; }
 .content::-webkit-scrollbar-track { background: transparent; }
 .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+@media (max-width: 720px) {
+  .content { padding: 84px 12px 24px; }
+}
 
 /* navigation bar was here */
 
@@ -1335,14 +1430,13 @@ body {
 }
 
 /* =========================================================
-   DASHBOARD TOP NAVIGATION
-   Replaces the old topbar and matches the homepage navigation
+   LEGACY BOTTOM NAV (unused)
+   dashboard.html no longer contains a `.bottom-nav` element —
+   navigation lives in the `.topbar` defined near the top of this
+   file. This block is kept only because later rules in this file
+   still reference `.bottom-nav`; it has no effect on the page as
+   currently marked up.
    ========================================================= */
-
-/* Keep the old HTML available, but remove it visually */
-.topbar {
-  display: none !important;
-}
 
 /* First form: full-width transparent navigation */
 .bottom-nav {
@@ -1590,14 +1684,17 @@ body {
 }
 
 .content {
-  padding-top: 76px !important;
-  padding-bottom: 0 !important;
+  /* clears the floating topbar pill (top:14px + height:60px = 74px)
+     with room to breathe, mirroring the gap the homepage leaves
+     below its own docked nav pill */
+  padding-top: 100px;
+  padding-bottom: 32px;
 }
 
 @media (max-width: 720px) {
   .content {
-    padding-top: 72px !important;
-    padding-bottom: 0 !important;
+    padding-top: 84px;
+    padding-bottom: 24px;
   }
 }
 
@@ -1850,84 +1947,59 @@ body {
 @media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
 
 /* ============================================================
-   DASHBOARD TOPBAR — notification / menu / profile
-   Order in the bar: notification bell, hamburger (opens the
-   navigation popup), then the user profile avatar.
+   DASHBOARD TOPBAR POPUP — the hamburger's navigation dropdown.
+   Styled to match the homepage's .nav-dropdown exactly (same
+   background, border, blur, shadow, radius) since `.tb-menu-wrap`,
+   `.icon-btn`, and `.tb-profile` are already defined up in the
+   "TOP BAR" section.
    ============================================================ */
-
-.tb-menu-wrap { position: relative; display: flex; align-items: center; }
-
-.icon-btn.is-open {
-  background: rgba(124,58,237,0.2);
-  color: #f5f3ff;
-}
-
-/* Profile avatar button */
-.tb-profile {
-  width: 34px; height: 34px;
-  margin-left: 4px; padding: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(124,58,237,0.4);
-  background: #0b091a;
-  cursor: pointer; overflow: hidden;
-  flex-shrink: 0;
-  transition: border-color .2s, box-shadow .2s;
-}
-.tb-profile img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.tb-profile:hover,
-.tb-profile.is-open {
-  border-color: rgba(168,85,247,0.85);
-  box-shadow: 0 0 0 3px rgba(124,58,237,0.22);
-}
 
 /* ---------- Popup panel ---------- */
 .tb-pop {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 12px);
   right: 0;
   z-index: 60;
   min-width: 420px;
-  padding: 0.9rem;
-  background: linear-gradient(180deg, rgba(24,19,50,0.98), rgba(12,10,28,0.98));
-  border: 1px solid rgba(124,58,237,0.35);
-  border-radius: 14px;
-  box-shadow: 0 22px 60px rgba(0,0,0,0.55);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  animation: tbPopIn 0.16s ease-out;
+  padding: 1.2rem;
+  background: rgba(16, 13, 34, 0.97);
+  border: 1px solid rgba(168, 85, 247, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  animation: tbPopIn 0.22s cubic-bezier(.4, 0, .2, 1);
 }
 @keyframes tbPopIn {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Small heading above the destinations grid, matching the marketing
-   site's .nav-dropdown-label on the usecases pages. */
+/* Small heading above the destinations grid — matches the homepage's
+   .nav-dropdown-label exactly. */
 .tb-pop-label {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #8b7aa8;
-  margin: 0.1rem 0.15rem 0.75rem;
+  color: var(--white);
+  margin-bottom: 0.9rem;
 }
 
-/* Two-column grid of destinations, like the reference menu */
+/* Two-column grid of destinations, like the homepage's .nav-dropdown-grid */
 .tb-pop-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.3rem 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
 }
 .tb-pop-item {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 0.62rem 0.65rem;
+  display: flex; align-items: flex-start; gap: 0.7rem;
+  padding: 0.7rem;
   border-radius: 12px;
   color: #d9d2f0; text-decoration: none;
   transition: background .18s, color .18s;
   cursor: pointer;
 }
-.tb-pop-item:hover { background: rgba(124,58,237,0.16); color: #fff; }
+.tb-pop-item:hover { background: rgba(124,58,237,0.14); color: #fff; }
 .tb-pop-item.is-active {
   background: linear-gradient(100deg, rgba(124,58,237,0.5), rgba(168,85,247,0.32));
   color: #fff;
@@ -1946,21 +2018,23 @@ body {
 .tb-pop-item.is-soon:hover { background: none; color: #d9d2f0; }
 
 .tb-pop-ic {
-  width: 34px; height: 34px; flex-shrink: 0;
+  width: 38px; height: 38px; flex-shrink: 0;
   display: grid; place-items: center;
-  border-radius: 9px;
-  background: rgba(124,58,237,0.16);
-  border: 1px solid rgba(124,58,237,0.3);
+  border-radius: 10px;
+  background: rgba(124,58,237,0.14);
+  border: 1px solid var(--border);
   color: #c084fc;
 }
-.tb-pop-ic svg { width: 17px; height: 17px; }
+.tb-pop-ic svg { width: 19px; height: 19px; }
 
-.tb-pop-text { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; padding-top: 0.1rem; }
+.tb-pop-text { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .tb-pop-text strong {
   display: flex; align-items: center; gap: 0.4rem;
-  font-size: 0.87rem; font-weight: 700; line-height: 1.2;
+  font-size: 0.9rem; font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--white);
 }
-.tb-pop-text span { font-size: 0.73rem; color: #8b7aa8; line-height: 1.4; }
+.tb-pop-text span { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
 .tb-pop-soon {
   display: inline-block;
   font-size: 0.6rem;
@@ -2014,108 +2088,14 @@ body {
 }
 
 /* ============================================================
-   TOPBAR RESTORE  (must stay last — overrides the older
-   "DASHBOARD TOP NAVIGATION" block above)
-
-   That earlier block hid .topbar and re-pinned .bottom-nav to the
-   top. The dashboard now uses the real .topbar, styled as the same
-   floating rounded pill as the homepage nav: logo on the left,
-   notification / menu / profile on the right. .bottom-nav goes back
-   to the bottom as the tab bar.
+   The dashboard's topbar (floating pill, matching the homepage
+   nav) is defined once, near the top of this file, under
+   "TOP BAR". This trailing section used to redeclare it a second
+   time with `!important` — that's gone now; there is exactly one
+   `.topbar` rule in this file.
    ============================================================ */
 
-/* ---------- Floating pill topbar (matches homepage nav.compact) ---------- */
-.topbar {
-  display: flex !important;
-  position: fixed !important;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: min(1160px, calc(100% - 3rem));
-  height: 60px;
-  padding: 0 1.5rem !important;
-
-  background: rgba(14, 11, 30, 0.82) !important;
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-
-  border: 1px solid rgba(124, 58, 237, 0.28) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-
-  z-index: 1000;
-  animation: dashTopbarIn 0.42s cubic-bezier(.4, 0, .2, 1);
-}
-@keyframes dashTopbarIn {
-  from { transform: translateX(-50%) translateY(-120%); opacity: 0; }
-  to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
-}
-
-/* The floating bar occupies 14px (offset) + 60px (height) = 74px.
-   Start the content well below that so there's a clear gap before the
-   sky strip rather than it sitting right against the bar. The bottom
-   nav has been removed, so only a small space is needed at the end. */
-.content {
-  padding-top: 124px;
-  padding-bottom: 32px;
-}
-
-/* ---------- Kill default browser button chrome ---------- */
-/* The topbar actions are <button> elements; without this they render
-   with the user-agent's white background and grey border. */
-.topbar button,
-.topbar .icon-btn,
-.topbar .tb-profile {
-  background: transparent;
-  border: none;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  font: inherit;
-  color: var(--muted);
-  padding: 0;
-}
-.topbar .icon-btn {
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-.topbar .icon-btn:hover {
-  background: rgba(124, 58, 237, 0.18);
-  color: #f5f3ff;
-}
-.topbar .icon-btn.is-open {
-  background: rgba(124, 58, 237, 0.28);
-  color: #f5f3ff;
-}
-.topbar .tb-profile {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  border: 1px solid rgba(124, 58, 237, 0.45);
-  overflow: hidden;
-  background: #0b091a;
-  cursor: pointer;
-}
-
-/* ---------- Old bottom tab bar: removed ---------- */
 /* The bottom navigation was deleted from dashboard.html; navigation now
    lives in the topbar menu. Older rules further up this file still style
    .bottom-nav, so keep it hidden in case the markup ever comes back. */
 .bottom-nav { display: none !important; }
-
-/* ---------- Mobile ---------- */
-@media (max-width: 720px) {
-  .topbar {
-    top: 8px;
-    width: calc(100% - 1.2rem);
-    height: 56px;
-    padding: 0 0.9rem !important;
-    border-radius: 15px !important;
-  }
-  .content { padding-top: 106px; }
-  .brand-logo { height: 32px; }
-  .tb-pop { min-width: 0; }
-}
