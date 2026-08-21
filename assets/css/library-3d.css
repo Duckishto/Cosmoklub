@@ -1,6 +1,20 @@
 /* ===================================================
    CosmoKlub Library — cinematic 3D enhancement layer
    This file is intentionally isolated from dashboard.css.
+
+   Mobile/responsive pass:
+   - All hover-driven card expansion/blur effects are now
+     gated behind `(hover: hover) and (pointer: fine)` so
+     touch devices (phones, tablets, touch laptops) never
+     get stuck in an expanded/blurred state after a tap —
+     touchscreens fire `:hover` on tap but have no reliable
+     way to "un-hover", which is what made the grid look
+     broken/off on phones.
+   - The grid/card layout and the "mobile" breakpoint are
+     unified to a single 760px cutoff (previously 720px in
+     this file vs 760px in the injected component styles,
+     which left a ~40px dead zone with a half-broken layout).
+   - Extra tuning added for very small phones (<=380px).
    =================================================== */
 
 .bottom-nav a.nav-item {
@@ -199,6 +213,12 @@ body.library-3d-active .roadmap-card {
 
   z-index: 1;
 
+  /* Touch devices only ever tap-navigate this card; make sure a
+     finger dragging to scroll the page never gets "captured" by
+     the card even though the JS tilt effect is no longer attached
+     on touch/coarse pointers. */
+  touch-action: pan-y;
+
   background:
     linear-gradient(
       135deg,
@@ -304,114 +324,148 @@ body.library-3d-active
 }
 
 /* ===================================================
-   Centered horizontal expansion
+   Centered horizontal expansion (pointer devices only)
+
+   Touchscreens fire `:hover` on tap and have no dependable
+   "un-hover" gesture, so a tapped category card would stay
+   expanded — and every other card would stay blurred — until
+   the user happened to tap somewhere else. Restricting these
+   effects to devices that truly support hover (mouse/trackpad)
+   keeps the grid stable on phones and tablets while preserving
+   the effect on desktop.
    =================================================== */
 
-/*
-  Left-side selected category:
+@media (hover: hover) and (pointer: fine) {
 
-  The card receives more layout space and then moves
-  slightly left. This makes its visual center stay in
-  approximately the same location while growing on
-  both its left and right sides.
-*/
+  /*
+    Left-side selected category:
 
-body.library-3d-active
-.roadmap-card:nth-child(odd):hover {
-  flex-basis:
-    calc(58% - 12px);
+    The card receives more layout space and then moves
+    slightly left. This makes its visual center stay in
+    approximately the same location while growing on
+    both its left and right sides.
+  */
 
-  translate:
-    max(-72px, -4vw)
-    0;
+  body.library-3d-active
+  .roadmap-card:nth-child(odd):hover {
+    flex-basis:
+      calc(58% - 12px);
+
+    translate:
+      max(-72px, -4vw)
+      0;
+  }
+
+  /* Shrink and push away its right-side partner. */
+
+  body.library-3d-active
+  .roadmap-card:nth-child(odd):hover
+  +
+  .roadmap-card {
+    flex-basis:
+      calc(42% - 12px);
+
+    translate: 0 0;
+  }
+
+  /*
+    Shrink the left-side card when its right-side
+    partner is selected.
+  */
+
+  body.library-3d-active
+  .roadmap-card:nth-child(odd):has(
+    + .roadmap-card:hover
+  ) {
+    flex-basis:
+      calc(42% - 12px);
+
+    translate: 0 0;
+  }
+
+  /*
+    Right-side selected category:
+
+    The layout expands the card toward the left.
+    Moving it slightly right gives it equal expansion
+    space on both the left and right sides.
+  */
+
+  body.library-3d-active
+  .roadmap-card:nth-child(even):hover {
+    flex-basis:
+      calc(58% - 12px);
+
+    translate:
+      min(72px, 4vw)
+      0;
+  }
+
+  /* ---------- Surrounding category focus ---------- */
+
+  /*
+    Non-selected categories become smaller and blurred.
+
+    Opacity remains 1, so there is no fading.
+  */
+
+  body.library-3d-active
+  .roadmap-grid:has(.roadmap-card:hover)
+  .roadmap-card:not(:hover) {
+    min-height: 202px;
+    scale: .965;
+    opacity: 1;
+
+    filter:
+      blur(.8px);
+
+    z-index: 1;
+  }
+
+  /*
+    The selected category grows vertically from its
+    center because the grid uses align-items:center.
+
+    Combined with the centered horizontal translation,
+    the category grows in every direction.
+  */
+
+  body.library-3d-active
+  .roadmap-grid:has(.roadmap-card:hover)
+  .roadmap-card:hover {
+    min-height: 264px;
+    scale: 1.035;
+    opacity: 1;
+    filter: none;
+
+    z-index: 20;
+  }
+
 }
 
-/* Shrink and push away its right-side partner. */
+/* ---------- Medium desktop safety (pointer devices only) ---------- */
 
-body.library-3d-active
-.roadmap-card:nth-child(odd):hover
-+
-.roadmap-card {
-  flex-basis:
-    calc(42% - 12px);
+@media (hover: hover) and (pointer: fine) and (min-width: 761px) and (max-width: 1100px) {
 
-  translate: 0 0;
+  body.library-3d-active
+  .roadmap-card:nth-child(odd):hover {
+    translate:
+      max(-44px, -4vw)
+      0;
+  }
+
+  body.library-3d-active
+  .roadmap-card:nth-child(even):hover {
+    translate:
+      min(44px, 4vw)
+      0;
+  }
+
 }
 
-/*
-  Shrink the left-side card when its right-side
-  partner is selected.
-*/
-
-body.library-3d-active
-.roadmap-card:nth-child(odd):has(
-  + .roadmap-card:hover
-) {
-  flex-basis:
-    calc(42% - 12px);
-
-  translate: 0 0;
-}
-
-/*
-  Right-side selected category:
-
-  The layout expands the card toward the left.
-  Moving it slightly right gives it equal expansion
-  space on both the left and right sides.
-*/
-
-body.library-3d-active
-.roadmap-card:nth-child(even):hover {
-  flex-basis:
-    calc(58% - 12px);
-
-  translate:
-    min(72px, 4vw)
-    0;
-}
-
-/* ---------- Surrounding category focus ---------- */
-
-/*
-  Non-selected categories become smaller and blurred.
-
-  Opacity remains 1, so there is no fading.
-*/
-
-body.library-3d-active
-.roadmap-grid:has(.roadmap-card:hover)
-.roadmap-card:not(:hover) {
-  min-height: 202px;
-  scale: .965;
-  opacity: 1;
-
-  filter:
-    blur(.8px);
-
-  z-index: 1;
-}
-
-/*
-  The selected category grows vertically from its
-  center because the grid uses align-items:center.
-
-  Combined with the centered horizontal translation,
-  the category grows in every direction.
-*/
-
-body.library-3d-active
-.roadmap-grid:has(.roadmap-card:hover)
-.roadmap-card:hover {
-  min-height: 264px;
-  scale: 1.035;
-  opacity: 1;
-  filter: none;
-
-  z-index: 20;
-}
-
-/* ---------- Selected card glow ---------- */
+/* ---------- Selected card glow ----------
+   Toggled purely via JS (pointer: fine devices only), so it
+   naturally never fires on touch — no extra media query needed. */
 
 body.library-3d-active
 .roadmap-card.card-liquid-hover {
@@ -438,12 +492,16 @@ body.library-3d-active
 
 /* ---------- 3D content depth ---------- */
 
-body.library-3d-active
-.roadmap-card
->
-*:not(.card-mouse-light) {
-  transform:
-    translateZ(20px);
+@media (hover: hover) and (pointer: fine) {
+
+  body.library-3d-active
+  .roadmap-card
+  >
+  *:not(.card-mouse-light) {
+    transform:
+      translateZ(20px);
+  }
+
 }
 
 body.library-3d-active .roadmap-icon,
@@ -546,10 +604,10 @@ body.library-3d-active .rank-panel {
   }
 }
 
-/* ---------- Medium desktop safety ---------- */
+/* ---------- Tablet / narrow desktop ---------- */
 
 @media (
-  min-width: 721px
+  min-width: 761px
 )
 and
 (
@@ -560,25 +618,12 @@ and
     padding-inline:
       clamp(34px, 4vw, 50px);
   }
-
-  body.library-3d-active
-  .roadmap-card:nth-child(odd):hover {
-    translate:
-      max(-44px, -4vw)
-      0;
-  }
-
-  body.library-3d-active
-  .roadmap-card:nth-child(even):hover {
-    translate:
-      min(44px, 4vw)
-      0;
-  }
 }
 
-/* ---------- Mobile ---------- */
+/* ---------- Mobile (phones + narrow tablets) ---------- */
 
-@media (max-width: 720px) {
+@media (max-width: 760px) {
+
   body.library-3d-active
   #library-3d-canvas {
     opacity: .7;
@@ -608,13 +653,14 @@ and
   body.library-3d-active
   .roadmap-grid {
     display: grid !important;
+    grid-template-columns: 1fr;
     gap: 12px !important;
   }
 
   body.library-3d-active
   .library-roadmap {
     width: 100%;
-    padding-inline: 8px;
+    padding-inline: 10px;
   }
 
   body.library-3d-active
@@ -636,13 +682,33 @@ and
     + .roadmap-card:hover
   ) {
     width: auto;
-    min-height: 216px;
+    min-height: 200px;
     translate: 0 0;
     scale: 1;
     opacity: 1;
     filter: none;
 
     flex-basis: auto;
+  }
+}
+
+/* ---------- Very small phones ---------- */
+
+@media (max-width: 380px) {
+
+  body.library-3d-active
+  .library-roadmap {
+    padding-inline: 6px;
+  }
+
+  body.library-3d-active
+  .roadmap-grid {
+    gap: 10px !important;
+  }
+
+  body.library-3d-active
+  .roadmap-card {
+    min-height: 184px;
   }
 }
 
