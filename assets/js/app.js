@@ -9,6 +9,30 @@ const VALID_TABS = [
   'chat'
 ];
 
+// Icons for the topbar hamburger dropdown. Forum/Library/Calculator/Chat
+// reuse the exact glyphs already used elsewhere in the dashboard; Profile
+// and Minigames are new since those destinations don't exist yet.
+const NAV_ICONS = {
+  forum: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>`,
+  library: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  calculator: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8" y2="10"/><line x1="12" y1="10" x2="12" y2="10"/><line x1="16" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>`,
+  chat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
+  profile: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.5 3.6-8 8-8s8 3.5 8 8"/></svg>`,
+  minigames: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M7 10v5M4.5 12.5h5"/><circle cx="16" cy="10.5" r="1"/><circle cx="18.5" cy="13" r="1"/></svg>`
+};
+
+// Destinations shown in the topbar hamburger dropdown, in the requested
+// order. `tab` is null for pages that don't exist yet (Profile, Minigames)
+// — they're listed for visibility but intentionally not linked anywhere.
+const NAV_DESTINATIONS = [
+  { key: 'forum', label: 'Forum', desc: 'Ask questions & share observations', tab: 'forum', icon: NAV_ICONS.forum },
+  { key: 'library', label: 'Library', desc: 'NASA imagery & mission archives', tab: 'library', icon: NAV_ICONS.library },
+  { key: 'calculator', label: 'Calculator', desc: 'Graph, solve & compute live', tab: 'planetarium', icon: NAV_ICONS.calculator },
+  { key: 'chat', label: 'Chat', desc: 'Message the community', tab: 'chat', icon: NAV_ICONS.chat },
+  { key: 'profile', label: 'Profile', desc: 'Your account & progress', tab: null, icon: NAV_ICONS.profile },
+  { key: 'minigames', label: 'Minigames', desc: 'Space themed mini games', tab: null, icon: NAV_ICONS.minigames }
+];
+
 function getTabFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const tab = params.get('tab');
@@ -348,6 +372,12 @@ createApp({
     profileOpen(open) { if (open) this.menuOpen = false; }
   },
 
+  computed: {
+    navDestinations() {
+      return NAV_DESTINATIONS;
+    }
+  },
+
   methods: {
     setTab(tab) {
       if (!VALID_TABS.includes(tab)) {
@@ -355,6 +385,17 @@ createApp({
       }
 
       this.activeTab = tab;
+    },
+
+    // Dropdown item click. Destinations without a tab (Profile, Minigames)
+    // don't exist yet, so this intentionally does nothing for them —
+    // they're listed but not linked anywhere.
+    goToDestination(dest) {
+      if (!dest || !dest.tab) {
+        return;
+      }
+
+      this.setTab(dest.tab);
     },
 
     closeTopbarPopups() {
