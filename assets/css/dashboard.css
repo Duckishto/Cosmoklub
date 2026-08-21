@@ -1960,7 +1960,9 @@ body {
 @media (max-width: 1200px) { .fxd-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 900px) {
   .fxd-shell { grid-template-columns: 1fr; }
-  .fxd-side { position: sticky; top: 0; z-index: 5; }
+  /* Stacked, the sidebar sits above the feed — leaving it sticky pinned it to
+     the top of the viewport where it covered every card scrolling past. */
+  .fxd-side { position: static; top: auto; z-index: auto; }
 }
 @media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
 
@@ -2221,8 +2223,20 @@ body {
 .fxd-newpost-btn svg { width: 14px; height: 14px; }
 
 @media (max-width: 520px) {
-  .fxd-newpost-text { display: none; }
-  .fxd-newpost-btn { margin-left: auto; }
+  /* Shrink the button to its icon rather than hiding the prompt — a box with
+     no words in it reads as broken. */
+  .fxd-newpost { gap: 0.6rem; padding: 0.75rem 0.85rem; }
+  .fxd-newpost-btn-label { display: none; }
+  .fxd-newpost-btn {
+    margin-left: auto;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  .fxd-newpost-avatar { width: 30px; height: 30px; font-size: 13px; }
+  .fxd-newpost-text { font-size: 13px; }
 }
 
 /* ---------- Composer ---------- */
