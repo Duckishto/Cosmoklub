@@ -2000,8 +2000,8 @@ body {
    the topbar. The bottom nav has been removed, so only a small
    breathing space is needed at the end of the page. */
 .content {
-  padding-top: 104px;
-  padding-bottom: 32px;
+  padding-top: 128px !important;
+  padding-bottom: 32px !important;
 }
 
 /* ---------- Kill default browser button chrome ---------- */
@@ -2058,5 +2058,5 @@ body {
     padding: 0 0.9rem !important;
     border-radius: 15px !important;
   }
-  .content { padding-top: 88px; }
+  .content { padding-top: 108px !important; }
 }
