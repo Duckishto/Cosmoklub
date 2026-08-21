@@ -427,3 +427,19 @@
   .uc-btn-primary:hover, .uc-btn-ghost:hover { transform: none; }
   .uc-btn-primary, .uc-btn-ghost { min-height: 44px; }
 }
+
+/* ---------- Missing-image placeholder ---------- */
+/* Failed <img> elements are swapped to pensiaplaceholder.png and tagged
+   .is-placeholder by the inline fallback script; a 404 hero gets
+   .hero-placeholder. Center the placeholder art in any box shape. */
+img.is-placeholder {
+  object-fit: cover !important;
+  object-position: center center !important;
+  background: #0b091a;
+}
+.uc-hero.hero-placeholder {
+  background-color: #0b091a !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}

@@ -3709,3 +3709,21 @@ nav:not(.nav-hidden) {
       transparent;
   }
 }
+
+/* ---------- Missing-image placeholder ---------- */
+/* Any <img> that fails to load is swapped (by the inline fallback
+   script) to pensiaplaceholder.png and tagged .is-placeholder; heroes
+   that 404 get .hero-placeholder. The placeholder's artwork is centered,
+   so force centered covering here (overriding object-position:top) and
+   give a dark space-navy backdrop for any letterboxing. */
+img.is-placeholder {
+  object-fit: cover !important;
+  object-position: center center !important;
+  background: #0b091a;
+}
+.hero-placeholder {
+  background-color: #0b091a !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
