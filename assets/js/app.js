@@ -317,6 +317,11 @@ createApp({
     return {
       activeTab: getTabFromUrl(),
 
+      // Topbar popups: the hamburger navigation panel and the
+      // profile dropdown. Only one is open at a time.
+      menuOpen: false,
+      profileOpen: false,
+
       tabComponents: {
         forum: Forum,
         library: Library,
@@ -334,7 +339,13 @@ createApp({
       }
 
       setUrlTab(newTab);
-    }
+      this.menuOpen = false;
+      this.profileOpen = false;
+    },
+
+    // Opening one topbar popup closes the other.
+    menuOpen(open) { if (open) this.profileOpen = false; },
+    profileOpen(open) { if (open) this.menuOpen = false; }
   },
 
   methods: {
@@ -344,6 +355,11 @@ createApp({
       }
 
       this.activeTab = tab;
+    },
+
+    closeTopbarPopups() {
+      this.menuOpen = false;
+      this.profileOpen = false;
     },
 
     handlePopState() {
@@ -366,6 +382,12 @@ createApp({
       'popstate',
       this.handlePopState
     );
+
+    // Clicking anywhere outside a popup, or pressing Escape, closes it.
+    document.addEventListener('click', this.closeTopbarPopups);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.closeTopbarPopups();
+    });
 
     if (
       window.CosmoKlub &&
