@@ -1353,35 +1353,39 @@ const Library={
           padding:2px 0 4px;
         }
 
+        /* Capped so the title and rank panel stay a sensible distance
+           apart on very wide/ultrawide screens — full-width grid columns
+           here left them looking like two disconnected floating pieces
+           with a dead gap between them. The card grid below still goes
+           edge-to-edge; only this header row is bounded. */
         .rank-summary{
           display:grid;
           grid-template-columns:
             minmax(0,1fr)
-            220px;
-          gap:14px;
+            260px;
+          gap:24px;
           align-items:stretch;
+          max-width:1500px;
           margin-bottom:14px;
         }
 
         .rank-kicker{
           color:var(--violet);
-          font-size:11px;
+          font-size:12.5px;
           font-weight:800;
           letter-spacing:.12em;
           text-transform:uppercase;
-          margin-bottom:5px;
+          margin-bottom:7px;
         }
 
         .rank-title{
           color:var(--stardust);
-          /* page heading — matches the forum's .fxd-title scale (1.25rem/800)
-             instead of the old .thread-title (a small in-card label, not a
-             page header), which made this read too small/quiet */
-          font-size:1.15rem;
+          /* proper hero heading now that it has room to breathe */
+          font-size:1.6rem;
           font-weight:800;
           letter-spacing:-0.01em;
-          line-height:1.4;
-          max-width:720px;
+          line-height:1.35;
+          max-width:640px;
         }
 
         .liquid-rank-panel{
@@ -1400,9 +1404,9 @@ const Library={
 
           --rank-rotate:0deg;
 
-          min-height:118px;
+          min-height:132px;
 
-          padding:14px;
+          padding:20px;
 
           display:flex;
           flex-direction:column;
@@ -1545,7 +1549,7 @@ const Library={
 
         .rank-panel-label{
           color:var(--muted);
-          font-size:10px;
+          font-size:11px;
           font-weight:800;
           letter-spacing:.12em;
           text-transform:uppercase;
@@ -1553,15 +1557,14 @@ const Library={
 
         .rank-panel-rank{
           color:var(--stardust);
-          /* matches the forum's .fxd-title scale (1.25rem/800) so the rank
-             badge reads as a headline stat, not fine print */
-          font-size:1.1rem;
+          /* headline stat — biggest text in the hero besides the title */
+          font-size:1.4rem;
           font-weight:800;
-          margin-top:9px;
+          margin-top:10px;
 
           display:flex;
           align-items:center;
-          gap:9px;
+          gap:10px;
         }
 
         .rank-panel-emoji{
@@ -1570,7 +1573,7 @@ const Library={
           justify-content:center;
 
           /* graphic, kept slightly above the rank text scale */
-          font-size:20px;
+          font-size:26px;
           line-height:1;
 
           filter:
@@ -1582,8 +1585,8 @@ const Library={
 
         .rank-panel-meta{
           color:var(--muted);
-          font-size:11px;
-          margin-top:8px;
+          font-size:12.5px;
+          margin-top:9px;
         }
 
         /* Fixed 3-column grid, same approach as the forum's .fxd-grid:
