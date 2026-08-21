@@ -1961,20 +1961,86 @@ body {
    "DASHBOARD TOP NAVIGATION" block above)
 
    That earlier block hid .topbar and re-pinned .bottom-nav to the
-   top of the screen. The dashboard now uses the real .topbar
-   (logo left; notification, menu and profile on the right), so:
-     - .topbar is visible again and sticks to the top
-     - .bottom-nav goes back to being the bottom tab bar
+   top. The dashboard now uses the real .topbar, styled as the same
+   floating rounded pill as the homepage nav: logo on the left,
+   notification / menu / profile on the right. .bottom-nav goes back
+   to the bottom as the tab bar.
    ============================================================ */
 
+/* ---------- Floating pill topbar (matches homepage nav.compact) ---------- */
 .topbar {
   display: flex !important;
-  position: sticky;
-  top: 0;
-  z-index: 900;
+  position: fixed !important;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: min(1160px, calc(100% - 3rem));
+  height: 60px;
+  padding: 0 1.5rem !important;
+
+  background: rgba(14, 11, 30, 0.82) !important;
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+  border: 1px solid rgba(124, 58, 237, 0.28) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+
+  z-index: 1000;
+  animation: dashTopbarIn 0.42s cubic-bezier(.4, 0, .2, 1);
+}
+@keyframes dashTopbarIn {
+  from { transform: translateX(-50%) translateY(-120%); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
 }
 
-/* Return the tab bar to the bottom of the viewport */
+/* Push page content below the floating bar */
+.content {
+  padding-top: 86px;
+  padding-bottom: calc(var(--nav-h, 62px) + 16px);
+}
+
+/* ---------- Kill default browser button chrome ---------- */
+/* The topbar actions are <button> elements; without this they render
+   with the user-agent's white background and grey border. */
+.topbar button,
+.topbar .icon-btn,
+.topbar .tb-profile {
+  background: transparent;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
+  color: var(--muted);
+  padding: 0;
+}
+.topbar .icon-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.topbar .icon-btn:hover {
+  background: rgba(124, 58, 237, 0.18);
+  color: #f5f3ff;
+}
+.topbar .icon-btn.is-open {
+  background: rgba(124, 58, 237, 0.28);
+  color: #f5f3ff;
+}
+.topbar .tb-profile {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(124, 58, 237, 0.45);
+  overflow: hidden;
+  background: #0b091a;
+  cursor: pointer;
+}
+
+/* ---------- Bottom tab bar back at the bottom ---------- */
 .bottom-nav,
 .bottom-nav.compact,
 .bottom-nav.nav-leaving,
@@ -2006,5 +2072,14 @@ body {
   z-index: 950 !important;
 }
 
-/* Keep page content clear of the fixed bottom bar */
-.content { padding-bottom: calc(var(--nav-h, 62px) + 16px); }
+/* ---------- Mobile ---------- */
+@media (max-width: 720px) {
+  .topbar {
+    top: 8px;
+    width: calc(100% - 1.2rem);
+    height: 56px;
+    padding: 0 0.9rem !important;
+    border-radius: 15px !important;
+  }
+  .content { padding-top: 74px; }
+}
