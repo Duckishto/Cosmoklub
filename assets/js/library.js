@@ -575,20 +575,6 @@ const Library={
         return;
       }
 
-      // Touch/coarse-pointer devices fire pointer events on tap but have
-      // no reliable "un-hover" gesture, which left this liquid-glass tilt
-      // effect stuck mid-animation after a tap on phones and tablets. Only
-      // attach it for devices with genuine hover + a fine pointer (mouse,
-      // trackpad, stylus).
-      if(
-        !window.matchMedia||
-        !window.matchMedia(
-          '(hover: hover) and (pointer: fine)'
-        ).matches
-      ){
-        return;
-      }
-
       let previousX=null;
       let previousY=null;
       let previousTime=
@@ -921,20 +907,6 @@ const Library={
     },
 
     attachLiquidCardInteractions(){
-
-      // Same reasoning as attachLiquidRankPanel(): skip the mouse-tilt /
-      // spotlight / hover-expand interactions entirely on touch devices so
-      // a tapped card can never get left mid-tilt, scaled up, or stuck in
-      // the "expanded + siblings blurred" state. Tapping still navigates
-      // via the @click handler in the template, which is unaffected.
-      if(
-        !window.matchMedia||
-        !window.matchMedia(
-          '(hover: hover) and (pointer: fine)'
-        ).matches
-      ){
-        return;
-      }
 
       const cards=[
         ...this.$el.querySelectorAll(
@@ -1379,13 +1351,10 @@ const Library={
 
         .rank-title{
           color:var(--stardust);
-          font-size:
-            clamp(
-              22px,
-              4vw,
-              34px
-            );
-          line-height:1.05;
+          /* matches the forum's .thread-title (14px/600) */
+          font-size:14px;
+          font-weight:600;
+          line-height:1.35;
           max-width:720px;
         }
 
@@ -1558,8 +1527,9 @@ const Library={
 
         .rank-panel-rank{
           color:var(--stardust);
-          font-size:26px;
-          font-weight:900;
+          /* matches the forum's largest text (14px) */
+          font-size:14px;
+          font-weight:700;
           margin-top:9px;
 
           display:flex;
@@ -1572,7 +1542,8 @@ const Library={
           align-items:center;
           justify-content:center;
 
-          font-size:25px;
+          /* graphic, kept slightly above the 14px text scale */
+          font-size:18px;
           line-height:1;
 
           filter:
