@@ -25,11 +25,9 @@
           padding:2px 0 4px;
         }
 
-        /* Capped so the title and rank panel stay a sensible distance
-           apart on very wide/ultrawide screens — full-width grid columns
-           here left them looking like two disconnected floating pieces
-           with a dead gap between them. The card grid below still goes
-           edge-to-edge; only this header row is bounded. */
+        /* Goes edge-to-edge, same as .roadmap-grid below it, so the
+           Overall Rank panel lines up with the right edge of the card
+           grid instead of stopping short mid-screen on wide viewports. */
         .rank-summary{
           display:grid;
           grid-template-columns:
@@ -37,7 +35,6 @@
             260px;
           gap:24px;
           align-items:stretch;
-          max-width:1500px;
           margin-bottom:14px;
         }
 
@@ -959,4 +956,3 @@
             display:none;
           }
         }
-
