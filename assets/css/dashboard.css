@@ -1995,10 +1995,13 @@ body {
   to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
 }
 
-/* Push page content below the floating bar */
+/* Clear the floating bar (14px offset + 60px tall) and leave a real
+   gap before the first section, so the sky strip isn't tucked under
+   the topbar. The bottom nav has been removed, so only a small
+   breathing space is needed at the end of the page. */
 .content {
-  padding-top: 86px;
-  padding-bottom: calc(var(--nav-h, 62px) + 16px);
+  padding-top: 104px;
+  padding-bottom: 32px;
 }
 
 /* ---------- Kill default browser button chrome ---------- */
@@ -2040,37 +2043,11 @@ body {
   cursor: pointer;
 }
 
-/* ---------- Bottom tab bar back at the bottom ---------- */
-.bottom-nav,
-.bottom-nav.compact,
-.bottom-nav.nav-leaving,
-.bottom-nav.nav-away {
-  position: fixed !important;
-  top: auto !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-
-  width: 100% !important;
-  max-width: none !important;
-  padding: 0 1rem !important;
-
-  transform: none !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-
-  background: linear-gradient(180deg, rgba(12,9,34,0.92), rgba(7,6,26,0.96)) !important;
-  backdrop-filter: blur(20px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
-
-  border: none !important;
-  border-top: 1px solid rgba(124,58,237,0.28) !important;
-  border-radius: 0 !important;
-  box-shadow: 0 -6px 24px rgba(0,0,0,0.35) !important;
-
-  animation: none !important;
-  z-index: 950 !important;
-}
+/* ---------- Old bottom tab bar: removed ---------- */
+/* The bottom navigation was deleted from dashboard.html; navigation now
+   lives in the topbar menu. Older rules further up this file still style
+   .bottom-nav, so keep it hidden in case the markup ever comes back. */
+.bottom-nav { display: none !important; }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 720px) {
@@ -2081,5 +2058,5 @@ body {
     padding: 0 0.9rem !important;
     border-radius: 15px !important;
   }
-  .content { padding-top: 74px; }
+  .content { padding-top: 88px; }
 }
