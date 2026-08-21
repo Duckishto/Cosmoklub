@@ -1671,6 +1671,17 @@ body.graphing-active .bottom-nav {
   --topbar-h: 0px;
   --nav-h: 0px;
   --safe-bot: 0px;
+
+  /* --topbar-h/--nav-h above are zeroed for the 3D Library layer (see
+     comment above) but several components (calculator, graph, chat)
+     still use "100dvh - vars - const" to size themselves to exactly
+     fit the visible area — with those vars now 0, those components
+     stopped subtracting real space and overflowed past the screen.
+     These two track .content's actual top/bottom padding (kept in
+     sync with the values below and in the max-width:720px override)
+     so that math stays correct. */
+  --shell-pad-top: 100px;
+  --shell-pad-bottom: 32px;
 }
 
 /* Keep the original dark document base under the translucent aurora. */
@@ -1698,6 +1709,10 @@ body {
   .content {
     padding-top: 84px;
     padding-bottom: 24px;
+  }
+  :root {
+    --shell-pad-top: 84px;
+    --shell-pad-bottom: 24px;
   }
 }
 
