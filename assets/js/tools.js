@@ -30,9 +30,9 @@ const PERSONAS = {
     ],
     toolsTitle: 'A complete toolkit for the community',
     tools: [
-      { title: 'Threaded discussions', desc: 'Keep every question and its answers organised by topic so nothing gets lost.', image: '../assets/images/tools/forum-tool-1.jpg' },
-      { title: 'Verified educators', desc: 'See which replies come from tutors and professors so you know who to trust.', image: '../assets/images/tools/forum-tool-2.jpg' },
-      { title: 'Searchable history', desc: 'Find answers to questions other learners have already asked before posting your own.', image: '../assets/images/tools/forum-tool-3.jpg' }
+      { title: 'Threaded discussions', desc: 'Keep every question and its answers organised by topic so nothing gets lost.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Verified educators', desc: 'See which replies come from tutors and professors so you know who to trust.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Searchable history', desc: 'Find answers to questions other learners have already asked before posting your own.', image: '../assets/images/pensiaplaceholder.png' }
     ],
     faqs: [
       {q: 'How do I ask a question?',
@@ -63,9 +63,9 @@ const PERSONAS = {
     ],
     toolsTitle: 'A complete toolkit for your research',
     tools: [
-      { title: 'NASA image search', desc: 'Search official NASA and mission archives by object, date or keyword.', image: '../assets/images/tools/library-tool-1.jpg' },
-      { title: 'Object profiles', desc: 'Every image links back to the object catalogue entry that explains it.', image: '../assets/images/tools/library-tool-2.jpg' },
-      { title: 'Saved collections', desc: 'Bookmark images and media to revisit later or share with others.', image: '../assets/images/tools/library-tool-3.jpg' }
+      { title: 'NASA image search', desc: 'Search official NASA and mission archives by object, date or keyword.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Object profiles', desc: 'Every image links back to the object catalogue entry that explains it.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Saved collections', desc: 'Bookmark images and media to revisit later or share with others.', image: '../assets/images/pensiaplaceholder.png' }
     ],
     faqs: [
       {q: 'What can I search for?',
@@ -96,9 +96,9 @@ const PERSONAS = {
     ],
     toolsTitle: 'A complete toolkit for staying connected',
     tools: [
-      { title: 'Live chat', desc: 'Talk with other members in real time during lessons and observation sessions.', image: '../assets/images/tools/comserver-tool-1.jpg' },
-      { title: 'Session scheduling', desc: 'See upcoming group sessions and join the ones that fit your plans.', image: '../assets/images/tools/comserver-tool-2.jpg' },
-      { title: 'Direct access to staff', desc: 'Reach tutors and moderators directly when you need a fast answer.', image: '../assets/images/tools/comserver-tool-3.jpg' }
+      { title: 'Live chat', desc: 'Talk with other members in real time during lessons and observation sessions.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Session scheduling', desc: 'See upcoming group sessions and join the ones that fit your plans.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Direct access to staff', desc: 'Reach tutors and moderators directly when you need a fast answer.', image: '../assets/images/pensiaplaceholder.png' }
     ],
     faqs: [
       {q: 'What happens in the community server?',
@@ -130,9 +130,9 @@ const PERSONAS = {
     ],
     toolsTitle: 'A complete toolkit for the maths',
     tools: [
-      { title: 'Function grapher', desc: 'Plot functions live and see how changing a variable changes the graph.', image: '../assets/images/tools/calcgraph-tool-1.jpg' },
-      { title: 'Astronomical calculators', desc: 'Run the calculations used throughout the lessons, from orbits to magnitudes.', image: '../assets/images/tools/calcgraph-tool-2.jpg' },
-      { title: 'Step by step working', desc: 'See the reasoning behind every result, not just the final number.', image: '../assets/images/tools/calcgraph-tool-3.jpg' }
+      { title: 'Function grapher', desc: 'Plot functions live and see how changing a variable changes the graph.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Astronomical calculators', desc: 'Run the calculations used throughout the lessons, from orbits to magnitudes.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Step by step working', desc: 'See the reasoning behind every result, not just the final number.', image: '../assets/images/pensiaplaceholder.png' }
     ],
     faqs: [
       {q: 'Can I graph functions?',

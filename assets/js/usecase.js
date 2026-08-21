@@ -30,22 +30,22 @@ const PERSONAS = {
     ],
     toolsTitle: 'A complete toolkit for your studies',
     tools: [
-      { title: 'Lesson roadmap', desc: 'Structured stages that unlock as you go, so you always know the next step.', image: '../assets/images/usecases/student-tool-1.jpg' },
-      { title: 'Practice quizzes', desc: 'Check your understanding after every section and revisit weak areas.', image: '../assets/images/usecases/student-tool-2.jpg' },
-      { title: 'Object browser', desc: 'Explore genuine NASA imagery and catalogues alongside the theory.', image: '../assets/images/usecases/student-tool-3.jpg' }
+      { title: 'Lesson roadmap', desc: 'Structured stages that unlock as you go, so you always know the next step.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Practice quizzes', desc: 'Check your understanding after every section and revisit weak areas.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Object browser', desc: 'Explore genuine NASA imagery and catalogues alongside the theory.', image: '../assets/images/pensiaplaceholder.png' }
     ],
     panels: [
       {
         title: 'A roadmap that adapts to you',
         desc: 'Lessons unlock as you go, so you always know the next step rather than guessing where to start.',
         points: ['Foundation to expert stages', 'Quizzes after each section', 'Pick up exactly where you left off'],
-        image: '../assets/images/usecases/student-panel-1.jpg'
+        image: '../assets/images/pensiaplaceholder.png'
       },
       {
         title: 'Practise with the real sky',
         desc: 'Browse the same object catalogues researchers use, then plan what to look for tonight.',
         points: ['22,000+ NASA images and media', 'Interactive 3D planetarium', 'Observation logbook'],
-        image: '../assets/images/usecases/student-panel-2.jpg'
+        image: '../assets/images/pensiaplaceholder.png'
       }
     ]
   },
@@ -69,22 +69,22 @@ const PERSONAS = {
     ],
     toolsTitle: 'A complete toolkit for your faculty',
     tools: [
-      { title: 'Course builder', desc: 'Assemble lessons, media and assessments into a coherent syllabus.', image: '../assets/images/usecases/professor-tool-1.jpg' },
-      { title: 'Cohort management', desc: 'Group learners, set access levels and track the whole class at a glance.', image: '../assets/images/usecases/professor-tool-2.jpg' },
-      { title: 'Analytics', desc: 'See completion, scores and per topic difficulty across your cohort.', image: '../assets/images/usecases/professor-tool-3.jpg' }
+      { title: 'Course builder', desc: 'Assemble lessons, media and assessments into a coherent syllabus.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Cohort management', desc: 'Group learners, set access levels and track the whole class at a glance.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Analytics', desc: 'See completion, scores and per topic difficulty across your cohort.', image: '../assets/images/pensiaplaceholder.png' }
     ],
     panels: [
       {
         title: 'Publish once, teach many',
         desc: 'Write your material a single time and reuse it across cohorts and semesters.',
         points: ['Reusable lesson templates', 'Version your material', 'Bulk enrol by CSV'],
-        image: '../assets/images/usecases/professor-panel-1.jpg'
+        image: '../assets/images/pensiaplaceholder.png'
       },
       {
         title: 'See the whole class clearly',
         desc: 'Per student and per topic breakdowns show who needs help and which topics need rework.',
         points: ['Completion and score reporting', 'Per topic difficulty signals', 'Export results'],
-        image: '../assets/images/usecases/professor-panel-2.jpg'
+        image: '../assets/images/pensiaplaceholder.png'
       }
     ]
   },
@@ -108,22 +108,22 @@ const PERSONAS = {
     ],
     toolsTitle: 'A complete toolkit for your sessions',
     tools: [
-      { title: 'Topic library', desc: 'Pull up any topic with its lesson, imagery and tools in seconds.', image: '../assets/images/usecases/tutor-tool-1.jpg' },
-      { title: 'Function grapher', desc: 'Plot and derive live so learners follow the reasoning, not just the result.', image: '../assets/images/usecases/tutor-tool-2.jpg' },
-      { title: 'Shared links', desc: 'Send a lesson or an object view straight to a learner mid session.', image: '../assets/images/usecases/tutor-tool-3.jpg' }
+      { title: 'Topic library', desc: 'Pull up any topic with its lesson, imagery and tools in seconds.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Function grapher', desc: 'Plot and derive live so learners follow the reasoning, not just the result.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Shared links', desc: 'Send a lesson or an object view straight to a learner mid session.', image: '../assets/images/pensiaplaceholder.png' }
     ],
     panels: [
       {
         title: 'A library you can teach straight from',
         desc: 'No prep scramble. The material, imagery and tools are already organised by topic.',
         points: ['Topic indexed lessons', 'Function grapher for derivations', 'Real imagery for every object'],
-        image: '../assets/images/usecases/tutor-panel-1.jpg'
+        image: '../assets/images/pensiaplaceholder.png'
       },
       {
         title: 'Keep each learner on track',
         desc: 'Track several learners separately so nobody repeats work or falls behind unnoticed.',
         points: ['Per learner progress', 'Notes against each session', 'Shareable session links'],
-        image: '../assets/images/usecases/tutor-panel-2.jpg'
+        image: '../assets/images/pensiaplaceholder.png'
       }
     ]
   },
@@ -147,22 +147,22 @@ const PERSONAS = {
     ],
     toolsTitle: 'A complete toolkit for your observing',
     tools: [
-      { title: 'Observation planner', desc: 'What is up tonight for your location, telescope and forecast.', image: '../assets/images/usecases/hobbyist-tool-1.jpg' },
-      { title: 'Conditions forecast', desc: 'Moon phase, cloud cover, seeing and light pollution in one view.', image: '../assets/images/usecases/hobbyist-tool-2.jpg' },
-      { title: 'Logbook', desc: 'Record equipment, conditions, sketches and notes for every session.', image: '../assets/images/usecases/hobbyist-tool-3.jpg' }
+      { title: 'Observation planner', desc: 'What is up tonight for your location, telescope and forecast.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Conditions forecast', desc: 'Moon phase, cloud cover, seeing and light pollution in one view.', image: '../assets/images/pensiaplaceholder.png' },
+      { title: 'Logbook', desc: 'Record equipment, conditions, sketches and notes for every session.', image: '../assets/images/pensiaplaceholder.png' }
     ],
     panels: [
       {
         title: 'Know before you set up',
         desc: 'Moon phase, cloud cover, seeing and light pollution in one view, so a cold night is not wasted.',
         points: ['Location aware visibility', 'Conditions forecast', 'Target suggestions for your gear'],
-        image: '../assets/images/usecases/hobbyist-panel-1.jpg'
+        image: '../assets/images/pensiaplaceholder.png'
       },
       {
         title: 'Build a record worth keeping',
         desc: 'Every session logged and searchable, so your observing history becomes genuinely useful over time.',
         points: ['Equipment and conditions per entry', 'Sketches and photo attachments', 'Achievements as you progress'],
-        image: '../assets/images/usecases/hobbyist-panel-2.jpg'
+        image: '../assets/images/pensiaplaceholder.png'
       }
     ]
   }
