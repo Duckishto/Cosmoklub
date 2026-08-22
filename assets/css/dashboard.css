@@ -1959,10 +1959,47 @@ body {
 /* ---------- Responsive ---------- */
 @media (max-width: 1200px) { .fxd-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 900px) {
-  .fxd-shell { grid-template-columns: 1fr; }
-  /* Stacked, the sidebar sits above the feed — leaving it sticky pinned it to
-     the top of the viewport where it covered every card scrolling past. */
-  .fxd-side { position: static; top: auto; z-index: auto; }
+  /* Stacked, the sidebar sits above the feed. This used to stay a CSS
+     grid (grid-template-columns: 1fr), which stacks the sidebar and the
+     feed as two separate grid ROWS. A sticky grid item is contained by
+     its own grid area, so with the sidebar in its own auto-sized row it
+     only had ~its own height worth of room to travel before running out
+     of room to stick in — it would drift up a little, then stop, leaving
+     a dead gap above it for the rest of the scroll. Switching to normal
+     block flow here makes .fxd-shell itself (sidebar + feed together)
+     the sidebar's containing block, so it has the full scroll length of
+     the feed to stick within. */
+  .fxd-shell { display: block; }
+  /* Sticky pinned to the top was previously turned off altogether
+     (position:static) because it used to cover every card scrolling
+     past. Keep it sticky — so it doesn't leave dead scroll space with
+     nothing pinned at the top — but cap its height and let it scroll
+     internally, so it can stick near the topbar without ever growing
+     tall enough to blot out the thread list beneath it. */
+  .fxd-side {
+    position: sticky;
+    /* Sticky's `top` is resolved against .content's CONTENT edge, i.e. it
+       is implicitly offset by .content's own padding-top (already tracked
+       in --shell-pad-top: 84px ≤720px, 100px between 721–900px). Without
+       subtracting that back out, `top: 72px` here would actually land
+       ~72px BELOW .content's padding — well under the floating topbar —
+       which is exactly the dead-space bug this rule fixes. Net result:
+       the sidebar's visible top sits 72px from the real viewport top,
+       clearing the topbar (8px top + 56px tall = 64px) with a little
+       breathing room. */
+    top: calc(72px - var(--shell-pad-top));
+    z-index: 5;
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    /* replaces .fxd-shell's grid `gap`, which no longer applies now
+       that .fxd-shell is block-level instead of grid */
+    margin-bottom: 1.6rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .fxd-side::-webkit-scrollbar { width: 4px; }
+  .fxd-side::-webkit-scrollbar-track { background: transparent; }
+  .fxd-side::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 }
 @media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
 
