@@ -1463,3 +1463,49 @@ button{
     transition:none!important;
   }
 }
+
+/* The lesson rectangle is an alternate target for the same lesson action. */
+.path-info-button{
+  appearance:none;
+  -webkit-appearance:none;
+  margin:0;
+  font:inherit;
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+  transition:
+    border-color .22s ease,
+    background .22s ease,
+    box-shadow .22s ease,
+    transform .22s ease;
+}
+
+.path-info-button:hover:not(:disabled),
+.path-info-button:focus-visible:not(:disabled){
+  border-color:rgba(168,85,247,.62);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(14,42,74,.34),
+      rgba(42,15,61,.32)
+    ),
+    rgba(124,58,237,.10);
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.22),
+    0 0 22px rgba(124,58,237,.16),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  transform:translateY(-2px);
+}
+
+.path-info-button:focus-visible:not(:disabled){
+  outline:2px solid rgba(192,132,252,.9);
+  outline-offset:3px;
+}
+
+.path-info-button:active:not(:disabled){
+  transform:translateY(0) scale(.99);
+}
+
+.path-info-button:disabled{
+  cursor:default;
+}
