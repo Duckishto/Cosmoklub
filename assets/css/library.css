@@ -26,35 +26,59 @@
         }
 
         /* Goes edge-to-edge, same as .roadmap-grid below it, so the
-           Overall Rank panel lines up with the right edge of the card
-           grid instead of stopping short mid-screen on wide viewports. */
+           header lines up with the card grid instead of stopping short
+           mid-screen on wide viewports.
+
+           Previously the title sat in plain text next to a separate
+           floating glass box for Overall Rank — two disconnected pieces
+           with mismatched visual weight. Now .rank-summary itself *is*
+           the glass panel (via .liquid-rank-panel below), so title and
+           rank live inside one continuous band, split by a thin
+           vertical divider instead of a gap between two boxes. */
         .rank-summary{
-          display:grid;
-          grid-template-columns:
-            minmax(0,1fr)
-            260px;
-          gap:24px;
-          align-items:stretch;
+          display:flex;
+          align-items:center;
+          gap:28px;
           margin-bottom:14px;
+        }
+
+        .rank-summary-text{
+          flex:1;
+          min-width:0;
         }
 
         .rank-kicker{
           color:var(--violet);
-          font-size:12.5px;
+          font-size:12px;
           font-weight:800;
           letter-spacing:.12em;
           text-transform:uppercase;
-          margin-bottom:7px;
+          margin-bottom:6px;
         }
 
         .rank-title{
           color:var(--stardust);
-          /* proper hero heading now that it has room to breathe */
-          font-size:1.6rem;
+          font-size:1.34rem;
           font-weight:800;
           letter-spacing:-0.01em;
-          line-height:1.35;
-          max-width:640px;
+          line-height:1.32;
+          max-width:560px;
+        }
+
+        /* Thin divider tying the title to the rank readout so they read
+           as one bar instead of two separate elements. */
+        .rank-summary-divider{
+          flex-shrink:0;
+          align-self:stretch;
+          width:1px;
+          background:
+            linear-gradient(
+              180deg,
+              transparent,
+              rgba(255,255,255,.16) 20%,
+              rgba(255,255,255,.16) 80%,
+              transparent
+            );
         }
 
         .liquid-rank-panel{
@@ -73,13 +97,10 @@
 
           --rank-rotate:0deg;
 
-          min-height:132px;
-
-          padding:20px;
+          padding:18px 24px;
 
           display:flex;
-          flex-direction:column;
-          justify-content:center;
+          align-items:center;
 
           position:relative;
           isolation:isolate;
@@ -216,46 +237,113 @@
           z-index:2;
         }
 
+        /* Overall Rank now reads as one compact row — small badge circle
+           + label/value/meta stacked beside it — instead of a stack of
+           three separately-sized lines with a big literal emoji glyph
+           floating above them. */
+        .rank-panel{
+          display:flex;
+          align-items:center;
+          gap:14px;
+          flex-shrink:0;
+        }
+
+        .rank-panel-badge{
+          position:relative;
+          width:44px;
+          height:44px;
+          flex-shrink:0;
+
+          display:flex;
+          align-items:center;
+          justify-content:center;
+        }
+
+        .rank-panel-badge-ring{
+          position:absolute;
+          inset:0;
+          border-radius:50%;
+          border:2px solid transparent;
+        }
+
+        .rank-panel-badge-ring.ring-bronze{
+          border-color:#d97757;
+          background:radial-gradient(circle,rgba(217,119,87,.22),transparent 70%);
+        }
+
+        .rank-panel-badge-ring.ring-silver{
+          border-color:#c7cdd8;
+          background:radial-gradient(circle,rgba(199,205,216,.22),transparent 70%);
+        }
+
+        .rank-panel-badge-ring.ring-gold{
+          border-color:#f2c14e;
+          background:radial-gradient(circle,rgba(242,193,78,.24),transparent 70%);
+        }
+
+        .rank-panel-badge-ring.ring-platinum{
+          border-color:#8fd8ff;
+          background:radial-gradient(circle,rgba(143,216,255,.24),transparent 70%);
+        }
+
+        .rank-panel-badge-ring.ring-diamond{
+          border-color:#c084fc;
+          background:radial-gradient(circle,rgba(192,132,252,.26),transparent 70%);
+        }
+
+        /* Small solid dot standing in for a rank glyph — same idea as
+           a medal center, drawn in CSS so it scales/crops cleanly at
+           any size instead of relying on an emoji glyph. */
+        .rank-panel-badge-glyph{
+          width:16px;
+          height:16px;
+          border-radius:50%;
+        }
+
+        .rank-panel-badge-glyph.glyph-bronze{
+          background:linear-gradient(145deg,#e8a27a,#b0603a);
+        }
+
+        .rank-panel-badge-glyph.glyph-silver{
+          background:linear-gradient(145deg,#eef1f6,#9aa3b2);
+        }
+
+        .rank-panel-badge-glyph.glyph-gold{
+          background:linear-gradient(145deg,#ffe08a,#d69a1f);
+        }
+
+        .rank-panel-badge-glyph.glyph-platinum{
+          background:linear-gradient(145deg,#d6f3ff,#5bb8e0);
+        }
+
+        .rank-panel-badge-glyph.glyph-diamond{
+          background:linear-gradient(145deg,#ecd6ff,#a855f7);
+        }
+
+        .rank-panel-info{
+          display:flex;
+          flex-direction:column;
+          gap:2px;
+        }
+
         .rank-panel-label{
           color:var(--muted);
-          font-size:11px;
+          font-size:10.5px;
           font-weight:800;
-          letter-spacing:.12em;
+          letter-spacing:.1em;
           text-transform:uppercase;
         }
 
         .rank-panel-rank{
           color:var(--stardust);
-          /* headline stat — biggest text in the hero besides the title */
-          font-size:1.4rem;
+          font-size:1.05rem;
           font-weight:800;
-          margin-top:10px;
-
-          display:flex;
-          align-items:center;
-          gap:10px;
-        }
-
-        .rank-panel-emoji{
-          display:inline-flex;
-          align-items:center;
-          justify-content:center;
-
-          /* graphic, kept slightly above the rank text scale */
-          font-size:26px;
-          line-height:1;
-
-          filter:
-            drop-shadow(
-              0 2px 5px
-              rgba(0,0,0,.28)
-            );
+          letter-spacing:.02em;
         }
 
         .rank-panel-meta{
           color:var(--muted);
-          font-size:12.5px;
-          margin-top:9px;
+          font-size:12px;
         }
 
         /* Fixed 3-column grid, same approach as the forum's .fxd-grid:
@@ -494,12 +582,6 @@
 
           border-radius:16px 16px 0 0;
           overflow:hidden;
-
-          display:flex;
-          align-items:flex-end;
-          justify-content:flex-end;
-
-          padding:10px;
         }
 
         .banner-stars{
@@ -634,45 +716,6 @@
 
         .banner-tier-pill{
           right:10px;
-        }
-
-        .banner-icon-mark{
-          position:relative;
-          z-index:2;
-
-          width:52px;
-          height:52px;
-
-          display:flex;
-          align-items:center;
-          justify-content:center;
-
-          background:
-            rgba(
-              255,
-              255,
-              255,
-              .16
-            );
-
-          border:
-            1px solid
-            rgba(
-              255,
-              255,
-              255,
-              .28
-            );
-
-          border-radius:12px;
-
-          -webkit-backdrop-filter:blur(6px);
-          backdrop-filter:blur(6px);
-        }
-
-        .banner-icon-mark svg{
-          width:30px;
-          height:30px;
         }
 
         .roadmap-body{
@@ -936,9 +979,27 @@
         @media(max-width:760px){
 
           .rank-summary{
+            flex-direction:column;
+            align-items:stretch;
+            gap:16px;
+          }
 
-            grid-template-columns:
-              1fr;
+          .rank-summary-divider{
+            width:100%;
+            height:1px;
+
+            background:
+              linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,.16) 20%,
+                rgba(255,255,255,.16) 80%,
+                transparent
+              );
+          }
+
+          .rank-panel{
+            justify-content:flex-start;
           }
         }
 
