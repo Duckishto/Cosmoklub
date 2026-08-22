@@ -508,3 +508,30 @@
 @media (prefers-reduced-motion: reduce) {
   .auth-submit, .auth-social, .auth-eye, .auth-pw-fill { transition: none; }
 }
+
+/* ---------- Google: not switched on yet ----------
+   The button stays in place so the sign-in options look complete, but it is
+   plainly inert rather than looking clickable and then erroring. */
+
+.auth-social.is-soon {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.auth-social.is-soon:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border);
+  transform: none;
+}
+
+.auth-social-soon {
+  margin-left: 0.5rem;
+  padding: 2px 9px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 999px;
+}

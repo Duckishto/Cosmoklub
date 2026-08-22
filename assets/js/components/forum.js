@@ -65,25 +65,6 @@ const Forum = {
   template: `
     <div class="fxd">
 
-      <!-- Tonight's sky strip (kept) -->
-      <div class="sky-strip">
-        <div class="sb-icon">◐</div>
-        <div class="sky-strip-text">
-          <div class="sky-strip-title">Waxing gibbous, 78% lit</div>
-          <div class="sky-strip-sub">Good night for Saturn, rises 21:40, Bangkok sky</div>
-        </div>
-        <div class="sky-strip-cta">TONIGHT'S SKY</div>
-      </div>
-
-      <!-- Composer entry point, full width under the strip. -->
-      <button class="fxd-newpost" @click="openComposer()">
-        <span class="fxd-newpost-avatar">{{ myInitial }}</span>
-        <span class="fxd-newpost-text">Share something with the club…</span>
-        <span class="fxd-newpost-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span class="fxd-newpost-btn-label">New post</span>
-        </span>
-      </button>
 
       <!-- ============ Composer ============ -->
       <transition name="fade">
@@ -280,6 +261,27 @@ const Forum = {
 
         <!-- ============ Thread catalog ============ -->
         <section class="fxd-main">
+
+          <!-- Sky strip and composer live inside this column rather than above
+               the whole shell, so their width lines up with the feed instead
+               of running the full page width past the sidebar. -->
+          <div class="sky-strip">
+            <div class="sb-icon">◐</div>
+            <div class="sky-strip-text">
+              <div class="sky-strip-title">Waxing gibbous, 78% lit</div>
+              <div class="sky-strip-sub">Good night for Saturn, rises 21:40, Bangkok sky</div>
+            </div>
+            <div class="sky-strip-cta">TONIGHT'S SKY</div>
+          </div>
+
+          <button class="fxd-newpost" @click="openComposer()">
+            <span class="fxd-newpost-avatar">{{ myInitial }}</span>
+            <span class="fxd-newpost-text">Share something with the club…</span>
+            <span class="fxd-newpost-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span class="fxd-newpost-btn-label">New post</span>
+            </span>
+          </button>
 
           <div class="fxd-toolbar">
             <h2 class="fxd-title">Discussions</h2>

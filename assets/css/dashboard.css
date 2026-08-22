@@ -2628,3 +2628,44 @@ body {
 }
 
 .fxd-solve-undo:hover { color: var(--white); }
+
+/* ---------- Forum: sky strip + composer moved into the feed column ----------
+   They used to sit above .fxd-shell at full page width while the thread list
+   below started after the 250px sidebar, so the two never lined up. Now they
+   are inside .fxd-main and share its edges. */
+
+.fxd-main > .sky-strip { margin-bottom: 12px; }
+
+.fxd-main > .fxd-newpost { margin: 0 0 18px; }
+
+/* The shell is now the first thing in the tab, so it carries the top gap. */
+.fxd-shell { margin-top: 0.4rem; }
+
+/* ---------- Filters on a phone ----------
+   The sidebar is sticky once the layout stacks, which works on a tall tablet
+   but not on a phone held upright: it pins under the topbar and rides over
+   the feed the whole way down. Locked in place there — it scrolls away like
+   any other block and the thread list is never covered.
+
+   Landscape phones get the same treatment: a viewport under ~520px tall has
+   no room to stick anything without eating the screen. */
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .fxd-side {
+    position: static;
+    top: auto;
+    z-index: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 900px) and (max-height: 520px) {
+  .fxd-side {
+    position: static;
+    top: auto;
+    z-index: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
