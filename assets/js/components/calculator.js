@@ -1,4 +1,4 @@
-// Planetarium tab → Scientific + Graphing Calculator.
+// Calculator tab → Scientific + Graphing Calculator.
 //
 // A native (vanilla Vue) rebuild of the "mirai" calculator adapted to
 // CosmoKlub's no-build stack and dark/violet theme. Two modes:
@@ -623,8 +623,8 @@ const GRAPH_KEY_SETS = {
 };
 
 // ── Vue component ───────────────────────────────────────────────────────────
-const Planetarium = {
-  name: 'Planetarium',
+const Calculator = {
+  name: 'Calculator',
   template: `
     <div class="section calc-wrap" :class="{ 'calc-graphing': mode === 'graphing' }">
       <div class="section-eyebrow-row">
