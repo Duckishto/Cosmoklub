@@ -86,6 +86,11 @@ function updateCategoryHeader(){
   }
 }
 
+function openLesson(lesson){
+  window.location.href=
+    `lesson.html?category=${encodeURIComponent(category.id)}&lesson=${encodeURIComponent(lesson.id)}`;
+}
+
 function attachLiquidGlass(node){
   if(!node||node.disabled){
     return;
@@ -425,19 +430,25 @@ function renderRoadmap(){
         button.textContent='★';
       }
 
-      button.disabled=!unlocked&&!completed;
+      const canOpen=unlocked||completed;
 
-      if(unlocked||completed){
-        button.addEventListener('click',()=>{
-          window.location.href=
-            `lesson.html?category=${encodeURIComponent(category.id)}&lesson=${encodeURIComponent(lesson.id)}`;
-        });
+      button.disabled=!canOpen;
+
+      if(canOpen){
+        button.addEventListener('click',()=>openLesson(lesson));
       }
 
       attachLiquidGlass(button);
 
-      const info=document.createElement('div');
-      info.className='path-info';
+      const info=document.createElement('button');
+      info.type='button';
+      info.className='path-info path-info-button';
+      info.disabled=!canOpen;
+      info.setAttribute('aria-label',`${lesson.title}${canOpen?' — open lesson':' — locked'}`);
+
+      if(canOpen){
+        info.addEventListener('click',()=>openLesson(lesson));
+      }
 
       const title=document.createElement('div');
       title.className='path-title';
