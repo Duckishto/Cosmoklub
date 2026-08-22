@@ -8,7 +8,7 @@ window.CosmoKlub = window.CosmoKlub || {};
 const VALID_TABS = [
   'forum',
   'library',
-  'planetarium',
+  'calculator',
   'chat',
   'profile',
   'settings'
@@ -32,7 +32,7 @@ const NAV_ICONS = {
 const NAV_DESTINATIONS = [
   { key: 'forum', label: 'Forum', desc: 'Ask questions & share observations', tab: 'forum', icon: NAV_ICONS.forum },
   { key: 'library', label: 'Library', desc: 'NASA imagery & mission archives', tab: 'library', icon: NAV_ICONS.library },
-  { key: 'calculator', label: 'Calculator', desc: 'Graph, solve & compute live', tab: 'planetarium', icon: NAV_ICONS.calculator },
+  { key: 'calculator', label: 'Calculator', desc: 'Graph, solve & compute live', tab: 'calculator', icon: NAV_ICONS.calculator },
   { key: 'chat', label: 'Chat', desc: 'Message the community', tab: 'chat', icon: NAV_ICONS.chat },
   { key: 'profile', label: 'Profile', desc: 'Your account & progress', tab: 'profile', icon: NAV_ICONS.profile },
   { key: 'minigames', label: 'Minigames', desc: 'Space themed mini games', tab: null, icon: NAV_ICONS.minigames }
@@ -355,7 +355,7 @@ createApp({
         forum: Forum,
         library: Library,
         chat: Chat,
-        planetarium: Planetarium,
+        calculator: Calculator,
         profile: Profile,
         settings: Settings
       }
