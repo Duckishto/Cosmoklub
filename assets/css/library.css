@@ -116,21 +116,11 @@
             );
         }
 
+        /* Static frosted glass panel — same glass look as before
+           (soft highlight, violet tint, blur, border) but fixed in
+           place: no mouse-follow highlight and no tilt/stretch, so
+           the header no longer wobbles as the pointer moves over it. */
         .liquid-rank-panel{
-
-          --rank-glass-x:50%;
-          --rank-glass-y:20%;
-
-          --rank-highlight-x:50%;
-          --rank-highlight-y:25%;
-
-          --rank-liquid-x:0;
-          --rank-liquid-y:0;
-
-          --rank-scale-x:1;
-          --rank-scale-y:1;
-
-          --rank-rotate:0deg;
 
           padding:24px 26px;
 
@@ -156,8 +146,7 @@
 
             radial-gradient(
               circle at
-              var(--rank-glass-x)
-              var(--rank-glass-y),
+              50% 20%,
 
               rgba(
                 255,
@@ -246,25 +235,6 @@
               255,
               .38
             );
-
-          transform:
-
-            rotate(
-              var(--rank-rotate)
-            )
-
-            scaleX(
-              var(--rank-scale-x)
-            )
-
-            scaleY(
-              var(--rank-scale-y)
-            );
-
-          transform-origin:center;
-
-          will-change:
-            transform;
         }
 
         .liquid-rank-panel>*{
