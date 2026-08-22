@@ -6,9 +6,12 @@ const Library={
 
       <div class="section library-hero">
 
-        <div class="rank-summary">
+        <div
+          class="rank-summary liquid-rank-panel"
+          ref="rankPanel"
+        >
 
-          <div>
+          <div class="rank-summary-text">
             <div class="rank-kicker">
               Study Roadmap
             </div>
@@ -18,27 +21,29 @@ const Library={
             </h2>
           </div>
 
-          <div
-            class="rank-panel liquid-rank-panel"
-            ref="rankPanel"
-          >
-            <div class="rank-panel-label">
-              Overall Rank
+          <div class="rank-summary-divider"></div>
+
+          <div class="rank-panel">
+
+            <div class="rank-panel-badge">
+              <span class="rank-panel-badge-ring" :class="'ring-'+overallRank.toLowerCase()"></span>
+              <span class="rank-panel-badge-glyph" :class="'glyph-'+overallRank.toLowerCase()"></span>
             </div>
 
-            <div class="rank-panel-rank">
-              <span class="rank-panel-emoji">
-                {{ overallRankEmoji }}
-              </span>
+            <div class="rank-panel-info">
+              <div class="rank-panel-label">
+                Overall Rank
+              </div>
 
-              <span>
+              <div class="rank-panel-rank">
                 {{ overallRank }}
-              </span>
+              </div>
+
+              <div class="rank-panel-meta">
+                {{ totalCompleted }} / {{ totalLessons }} lessons complete
+              </div>
             </div>
 
-            <div class="rank-panel-meta">
-              {{ totalCompleted }} / {{ totalLessons }} lessons complete
-            </div>
           </div>
 
         </div>
@@ -77,11 +82,6 @@ const Library={
               >
                 {{ lesson.rank }}
               </div>
-
-              <div
-                class="banner-icon-mark"
-                v-html="lesson.svg"
-              ></div>
 
             </div>
 
@@ -216,16 +216,6 @@ const Library={
           quizUnlocked:true,
           nextUnlocked:false,
           nextLabel:'Continue learning',
-          svg:`
-            <svg
-              viewBox="0 0 24 24"
-              fill="#facc15"
-            >
-              <path
-                d="m12 2 2.9 6.15 6.6.8-4.85 4.5 1.25 6.55L12 16.75 6.1 20l1.25-6.55-4.85-4.5 6.6-.8L12 2z"
-              />
-            </svg>
-          `
         },
 
         {
@@ -242,19 +232,6 @@ const Library={
           quizUnlocked:true,
           nextUnlocked:false,
           nextLabel:'Continue learning',
-          svg:`
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#c084fc"
-              stroke-width="1.7"
-              stroke-linecap="round"
-            >
-              <path d="M4 14c4.8-7.4 12.3-8 16-2.8"/>
-              <path d="M3 18c5-3.8 12-3.5 18 1"/>
-              <path d="M7 9c3.2 3.4 6.8 4 10.8 1.5"/>
-            </svg>
-          `
         },
 
         {
@@ -271,21 +248,6 @@ const Library={
           quizUnlocked:true,
           nextUnlocked:false,
           nextLabel:'Continue learning',
-          svg:`
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#93c5fd"
-              stroke-width="1.6"
-              stroke-linecap="round"
-            >
-              <path d="M12 3v18"/>
-              <path d="M4 12h16"/>
-              <path d="m5 5 14 14"/>
-              <path d="m19 5-14 14"/>
-              <circle cx="12" cy="12" r="2.2"/>
-            </svg>
-          `
         },
 
         {
@@ -302,20 +264,6 @@ const Library={
           quizUnlocked:true,
           nextUnlocked:false,
           nextLabel:'Continue learning',
-          svg:`
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#67e8f9"
-              stroke-width="1.6"
-              stroke-linecap="round"
-            >
-              <circle cx="12" cy="12" r="5.2"/>
-              <path
-                d="M3.2 14.2c2.8 2.2 9.4 1.7 14.6-1.1 2.1-1.1 3.2-2.3 3-3.2-.3-1.1-2.6-1.2-5.5-.4"
-              />
-            </svg>
-          `
         },
 
         {
@@ -332,19 +280,6 @@ const Library={
           quizUnlocked:true,
           nextUnlocked:false,
           nextLabel:'Continue learning',
-          svg:`
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M7 15.5c-2.2 0-4-1.3-4-3.2 0-1.7 1.4-3 3.2-3.2C7 6.8 9.2 5.5 11.7 6c1.7.3 3.1 1.4 3.8 2.9.4-.1.8-.2 1.3-.2 2.3 0 4.2 1.5 4.2 3.5s-1.9 3.4-4.2 3.4H7z"
-                fill="#d8b4fe"
-              />
-              <circle cx="9" cy="11" r="1" fill="#fff"/>
-              <circle cx="15" cy="13" r="1.2" fill="#fff"/>
-            </svg>
-          `
         },
 
         {
@@ -361,23 +296,6 @@ const Library={
           quizUnlocked:true,
           nextUnlocked:false,
           nextLabel:'Continue learning',
-          svg:`
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#fde68a"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M9 4 3 16"/>
-              <path d="m6 10 9 4"/>
-              <path d="m11 5 9 4"/>
-              <path d="m15 14 3 6"/>
-              <path d="M12 13 9 20"/>
-              <path d="M16 8l2-4"/>
-            </svg>
-          `
         }
       ]
 
@@ -418,18 +336,6 @@ const Library={
         this.averageLevel
       ).name;
     },
-
-    overallRankEmoji(){
-      const emojis={
-        BRONZE:'🥉',
-        SILVER:'🥈',
-        GOLD:'🥇',
-        PLATINUM:'💠',
-        DIAMOND:'💎'
-      };
-
-      return emojis[this.overallRank]||'🥉';
-    }
 
   },
 
