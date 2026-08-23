@@ -97,7 +97,7 @@ const Settings = {
 
             <div class="st-identity-body">
               <div class="st-identity-name">{{ username }}</div>
-              <div class="st-identity-mail">{{ email || '—' }}</div>
+              <div class="st-identity-mail">{{ email || 'Not set' }}</div>
 
               <!-- Uploading needs the avatars storage bucket, which is not
                    created yet (supabase/schema-storage.sql). Shown as
@@ -155,7 +155,7 @@ const Settings = {
           <div v-else class="ck-hint">{{ nameMin }}–{{ nameMax }} characters.</div>
 
           <label class="ck-label ck-label-spaced">Email</label>
-          <div class="ck-readonly">{{ email || '—' }}</div>
+          <div class="ck-readonly">{{ email || 'Not set' }}</div>
           <div class="ck-hint">Your email can't be changed here yet.</div>
         </section>
       </template>

@@ -16,64 +16,10 @@ const Forum = {
     <div class="fxd">
 
 
-      <!-- ============ Composer ============ -->
-      <transition name="fade">
-        <div class="fxd-composer-back" v-if="composerOpen" @click.self="closeComposer()">
-          <div class="fxd-composer">
-            <div class="fxd-composer-head">
-              <h3>New post</h3>
-              <button class="fxd-composer-x" @click="closeComposer()" aria-label="Close">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </button>
-            </div>
-
-            <input
-              class="fxd-composer-title"
-              v-model="draft.title"
-              type="text"
-              maxlength="160"
-              placeholder="Title — what's your question or find?"
-            />
-
-            <textarea
-              class="fxd-composer-body"
-              v-model="draft.body"
-              rows="5"
-              maxlength="8000"
-              placeholder="Add the details. Gear, sky conditions, what you've already tried…"
-            ></textarea>
-
-            <div class="fxd-composer-field">
-              <span class="fxd-composer-label">Category</span>
-              <div class="fxd-pills">
-                <button
-                  class="fxd-pill"
-                  v-for="tag in tags"
-                  :key="tag"
-                  :class="{ 'is-active': draft.tag === tag }"
-                  @click="draft.tag = tag"
-                >{{ tag }}</button>
-              </div>
-            </div>
-
-            <!-- Only questions can be solved, so this appears for Q&A only. -->
-            <div class="fxd-composer-field" v-if="draft.tag === 'Beginner Q&A'">
-              <span class="fxd-composer-label">Status</span>
-              <div class="fxd-pills">
-                <button class="fxd-pill" :class="{ 'is-active': !draft.solved }" @click="draft.solved = false">Unsolved</button>
-                <button class="fxd-pill" :class="{ 'is-active': draft.solved }" @click="draft.solved = true">Solved</button>
-              </div>
-            </div>
-
-            <p class="fxd-composer-error" v-if="draft.error">{{ draft.error }}</p>
-
-            <div class="fxd-composer-foot">
-              <span class="fxd-composer-note">Posted as {{ myName }}</span>
-              <button class="fxd-composer-post" @click="submitPost()">Post</button>
-            </div>
-          </div>
-        </div>
-      </transition>
+      <!-- New-post composer now lives inline in the page, right where the
+           "Share something…" button is — see below. Removed from here so
+           it isn't a fixed overlay centered over the whole viewport, which
+           looked off relative to the sidebar sitting at the left edge. -->
 
       <!-- ============ Thread reader ============
            Opens from a click anywhere on a card, or on its comment count. -->
@@ -218,7 +164,7 @@ const Forum = {
 
               <p class="fxd-comments-empty" v-if="commentsLoading">Loading comments…</p>
               <p class="fxd-comments-empty" v-else-if="!commentCount(reading)">
-                No comments yet — be the first to reply.
+                No comments yet. Be the first to reply.
               </p>
             </div>
 
@@ -254,7 +200,14 @@ const Forum = {
             <div class="sky-strip-cta">TONIGHT'S SKY</div>
           </div>
 
-          <button class="fxd-newpost" @click="openComposer()">
+          <!-- ============ New post: button, or the composer inline in
+               its place ============
+               Was a fixed overlay centered over the whole viewport, which
+               looked wrong with the sidebar fixed at the left — the modal
+               sat centered on the browser window instead of the content
+               column. Now it expands right here in the page flow, inside
+               the same column as everything else. -->
+          <button class="fxd-newpost" @click="openComposer()" v-if="!composerOpen">
             <span class="fxd-newpost-avatar">{{ myInitial }}</span>
             <span class="fxd-newpost-text">Share something with the club…</span>
             <span class="fxd-newpost-btn">
@@ -262,6 +215,60 @@ const Forum = {
               <span class="fxd-newpost-btn-label">New post</span>
             </span>
           </button>
+
+          <div class="fxd-composer fxd-composer--inline" v-else>
+            <div class="fxd-composer-head">
+              <h3>New post</h3>
+              <button class="fxd-composer-x" @click="closeComposer()" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            <input
+              class="fxd-composer-title"
+              v-model="draft.title"
+              type="text"
+              maxlength="160"
+              placeholder="Title: what's your question or find?"
+            />
+
+            <textarea
+              class="fxd-composer-body"
+              v-model="draft.body"
+              rows="5"
+              maxlength="8000"
+              placeholder="Add the details. Gear, sky conditions, what you've already tried…"
+            ></textarea>
+
+            <div class="fxd-composer-field">
+              <span class="fxd-composer-label">Category</span>
+              <div class="fxd-pills">
+                <button
+                  class="fxd-pill"
+                  v-for="tag in tags"
+                  :key="tag"
+                  :class="{ 'is-active': draft.tag === tag }"
+                  @click="draft.tag = tag"
+                >{{ tag }}</button>
+              </div>
+            </div>
+
+            <!-- Only questions can be solved, so this appears for Q&A only. -->
+            <div class="fxd-composer-field" v-if="draft.tag === 'Beginner Q&A'">
+              <span class="fxd-composer-label">Status</span>
+              <div class="fxd-pills">
+                <button class="fxd-pill" :class="{ 'is-active': !draft.solved }" @click="draft.solved = false">Unsolved</button>
+                <button class="fxd-pill" :class="{ 'is-active': draft.solved }" @click="draft.solved = true">Solved</button>
+              </div>
+            </div>
+
+            <p class="fxd-composer-error" v-if="draft.error">{{ draft.error }}</p>
+
+            <div class="fxd-composer-foot">
+              <span class="fxd-composer-note">Posted as {{ myName }}</span>
+              <button class="fxd-composer-post" @click="submitPost()">Post</button>
+            </div>
+          </div>
 
           <!-- ============ Filters (visual only) — horizontal bar ============ -->
           <div class="fxd-filterbar">
@@ -329,7 +336,7 @@ const Forum = {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" width="52" height="52"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <p class="fxd-state-title">{{ threads.length ? 'Nothing matches these filters' : 'No posts yet' }}</p>
             <p class="fxd-state-sub">
-              {{ threads.length ? 'Try another category or status.' : 'Be the first — use New post above.' }}
+              {{ threads.length ? 'Try another category or status.' : 'Be the first. Use New post above.' }}
             </p>
           </div>
 
