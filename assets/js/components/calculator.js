@@ -51,8 +51,12 @@ function normalizeExpression(raw) {
     .replace(/π/g, ' PI ')
     .replace(/²/g, '^2')
     .replace(/³/g, '^3');
-  s = s.replace(/(\d+(?:\.\d+)?)\s*ncr\s*(\d+(?:\.\d+)?)/gi, 'ncr($1,$2)')
-       .replace(/(\d+(?:\.\d+)?)\s*npr\s*(\d+(?:\.\d+)?)/gi, 'npr($1,$2)');
+  // Infix form: "5 nCr 2" → ncr(5,2). Only rewritten when BOTH sides are
+  // plain numbers; anything else (a parenthesised group, a variable) is
+  // left alone so it reaches the parser as the function call it already is.
+  // Guarded by (^|[^a-z]) so it can't fire inside an identifier.
+  s = s.replace(/(^|[^a-z0-9_])(\d+(?:\.\d+)?)\s*ncr\s*(\d+(?:\.\d+)?)/gi, '$1ncr($2,$3)')
+       .replace(/(^|[^a-z0-9_])(\d+(?:\.\d+)?)\s*npr\s*(\d+(?:\.\d+)?)/gi, '$1npr($2,$3)');
   return wrapAbsoluteBars(s);
 }
 
@@ -133,6 +137,11 @@ function applyFunction(name, args, ctx) {
     case 'sinh': need(1); return Math.sinh(args[0]);
     case 'cosh': need(1); return Math.cosh(args[0]);
     case 'tanh': need(1); return Math.tanh(args[0]);
+    // Inverse hyperbolics. Unlike asin/atan these are NOT angles, so they
+    // are never converted by angleMode — artanh(0.5) is 0.549 in DEG too.
+    case 'asinh': need(1); return Math.asinh(args[0]);
+    case 'acosh': need(1); if (args[0] < 1) throw new Error('arcosh needs a value ≥ 1'); return Math.acosh(args[0]);
+    case 'atanh': need(1); if (args[0] <= -1 || args[0] >= 1) throw new Error('artanh needs a value between −1 and 1'); return Math.atanh(args[0]);
     case 'sqrt': need(1); if (args[0] < 0) throw new Error('Result is not a real number'); return Math.sqrt(args[0]);
     case 'cbrt': need(1); return Math.cbrt(args[0]);
     case 'nthroot': {
@@ -145,6 +154,7 @@ function applyFunction(name, args, ctx) {
     case 'exp': need(1); return Math.exp(args[0]);
     case 'log': need(1); if (args[0] <= 0) throw new Error('log needs a positive value'); return Math.log10(args[0]);
     case 'ln': need(1); if (args[0] <= 0) throw new Error('ln needs a positive value'); return Math.log(args[0]);
+    case 'log2': need(1); if (args[0] <= 0) throw new Error('log₂ needs a positive value'); return Math.log2(args[0]);
     case 'logb': need(2); if (args[0] <= 0 || args[0] === 1 || args[1] <= 0) throw new Error('Undefined logarithm base or value'); return Math.log(args[1]) / Math.log(args[0]);
     case 'abs': need(1); return Math.abs(args[0]);
     case 'floor': need(1); return Math.floor(args[0]);
@@ -156,6 +166,11 @@ function applyFunction(name, args, ctx) {
     case 'lcm': need(2); if (args[0] === 0 || args[1] === 0) return 0; return Math.abs((args[0] / gcd(args[0], args[1])) * args[1]);
     case 'ncr': need(2); return combinations(args[0], args[1]);
     case 'npr': need(2); return permutations(args[0], args[1]);
+    // Variadic — max(1,7,3). Rejecting the empty call keeps max() from
+    // quietly returning −Infinity.
+    case 'max': if (!args.length) throw new Error('max() needs at least one value'); return Math.max(...args);
+    case 'min': if (!args.length) throw new Error('min() needs at least one value'); return Math.min(...args);
+    case 'hypot': if (args.length < 2) throw new Error('hypot() needs at least 2 arguments'); return Math.hypot(...args);
     default: throw new Error('Unknown function "' + name + '"');
   }
 }
@@ -579,8 +594,11 @@ const CALC_KEY_SETS = {
     { label: '−', token: '−', tone: 'operator' }, { label: 'xʸ', token: '^' }, { label: 'π', token: 'π' },
     { label: '1' }, { label: '2' }, { label: '3' },
     { label: '+', token: '+', tone: 'operator' }, { label: '|x|', token: 'abs(' }, { label: 'e', token: 'e' },
-    { label: '±', token: '−' }, { label: '0' }, { label: '.' },
-    { label: 'a⁄b', token: '÷' }, { label: '=', action: 'evaluate', tone: 'primary', span: 2 },
+    // ± was `token: '−'`, so it typed a minus instead of negating; it is a
+    // real action now. a⁄b was `token: '÷'` — a second divide key under a
+    // fraction label — replaced by ×10ˣ, which nothing else offered.
+    { label: '±', action: 'negate' }, { label: '0' }, { label: '.' },
+    { label: '×10ˣ', token: '×10^(' }, { label: '=', action: 'evaluate', tone: 'primary', span: 2 },
   ],
   functions: [
     { label: 'x²', token: '²' }, { label: 'x³', token: '³' }, { label: 'xʸ', token: '^' }, { label: '√', token: '√(' },
@@ -588,11 +606,18 @@ const CALC_KEY_SETS = {
     { label: 'eˣ', token: 'exp(' }, { label: 'log', token: 'log(' }, { label: 'ln', token: 'ln(' }, { label: 'logᵦ', token: 'logb(' },
     { label: 'ⁿ√x', token: 'nthroot(' }, { label: 'x!', token: '!' }, { label: '%', token: '%' }, { label: 'abs', token: 'abs(' },
     { label: 'floor', token: 'floor(' }, { label: 'ceil', token: 'ceil(' }, { label: 'round', token: 'round(' }, { label: 'mod', token: 'mod(' },
+    // These were all implemented in applyFunction() but had no key, so the
+    // only way to reach them was a physical keyboard.
+    { label: 'log₂', token: 'log2(' }, { label: 'sign', token: 'sign(' }, { label: 'gcd', token: 'gcd(' }, { label: 'lcm', token: 'lcm(' },
+    { label: 'nCr', token: 'ncr(' }, { label: 'nPr', token: 'npr(' }, { label: 'max', token: 'max(' }, { label: 'min', token: 'min(' },
+    { label: 'hypot', token: 'hypot(' }, { label: ',', token: ',' }, { label: '(', token: '(' }, { label: ')', token: ')' },
   ],
   trig: [
     { label: 'sin', token: 'sin(' }, { label: 'cos', token: 'cos(' }, { label: 'tan', token: 'tan(' }, { label: 'sec', token: 'sec(' },
     { label: 'csc', token: 'csc(' }, { label: 'cot', token: 'cot(' }, { label: 'sin⁻¹', token: 'asin(' }, { label: 'cos⁻¹', token: 'acos(' },
     { label: 'tan⁻¹', token: 'atan(' }, { label: 'sinh', token: 'sinh(' }, { label: 'cosh', token: 'cosh(' }, { label: 'tanh', token: 'tanh(' },
+    // The inverse hyperbolics complete the sinh/cosh/tanh row.
+    { label: 'sinh⁻¹', token: 'asinh(' }, { label: 'cosh⁻¹', token: 'acosh(' }, { label: 'tanh⁻¹', token: 'atanh(' }, { label: 'π', token: 'π' },
     { label: 'π/2', token: 'π÷2' }, { label: 'π/3', token: 'π÷3' }, { label: 'π/4', token: 'π÷4' }, { label: 'π/6', token: 'π÷6' },
     { label: 'deg→rad', token: '×π÷180' }, { label: 'rad→deg', token: '×180÷π' }, { label: '(', token: '(' }, { label: ')', token: ')' },
   ],
@@ -651,6 +676,11 @@ const Calculator = {
             <div class="calc-util">
               <button class="calc-util-btn" :class="{ active: fractionView }" @click="fractionView = !fractionView">{{ fractionView ? 'Decimal' : 'Fraction' }}</button>
               <button class="calc-util-btn" @click="insertAns">Ans</button>
+              <!-- Phone only: the history column has nowhere to sit once the
+                   keypad fills the screen, so it becomes a bottom sheet. -->
+              <button class="calc-util-btn calc-history-toggle" :class="{ active: historyOpen }" @click="historyOpen = !historyOpen">
+                History<span v-if="history.length"> · {{ history.length }}</span>
+              </button>
             </div>
           </div>
           <div class="calc-tabs">
@@ -661,11 +691,14 @@ const Calculator = {
           </div>
         </div>
 
-        <aside class="calc-sidebar">
+        <div class="calc-sheet-scrim" v-if="historyOpen" @click="historyOpen = false"></div>
+
+        <aside class="calc-sidebar" :class="{ 'is-open': historyOpen }">
           <div class="calc-side-block">
             <div class="calc-side-head">
               <span class="section-label">History</span><div class="section-rule"></div>
               <span class="section-link" v-if="history.length" @click="history = []">Clear</span>
+              <button class="calc-sheet-x" @click="historyOpen = false" aria-label="Close history">×</button>
             </div>
             <div class="calc-history" v-if="history.length">
               <button class="calc-history-item" v-for="h in history" :key="h.id" @click="reuse(h)">
@@ -683,7 +716,13 @@ const Calculator = {
         <div class="graph-canvas-host" ref="graphHost">
           <canvas ref="graphCanvas" @pointerdown="onGraphDown" @pointermove="onGraphMove" @pointerup="onGraphUp" @pointercancel="onGraphUp" @pointerleave="onGraphLeave"></canvas>
 
-          <!-- Floating expression list (Desmos-style, top-left overlay) -->
+          <!-- Panel and keyboard live in one stack. On a desktop the stack is
+               just an inset:0 layer and each child keeps its own corner; on a
+               phone the stack becomes a bottom column, so the expression sheet
+               is pushed up by the keyboard instead of being buried under it.
+               pointer-events are off on the layer and back on for the sheets,
+               so the canvas underneath still takes drags. -->
+          <div class="graph-sheets" :class="{ 'kbd-open': activeRowId !== null }">
           <div class="graph-panel">
             <div class="graph-rows">
               <div class="graph-row-wrap" v-for="row in graph.rows" :key="row.id">
@@ -746,6 +785,7 @@ const Calculator = {
               <button v-for="(k, i) in graphKeys" :key="i" class="graph-kbd-key" :class="k.tone ? 'tone-' + k.tone : ''" @click="graphKey(k)">{{ k.label }}</button>
             </div>
           </div>
+          </div>
         </div>
       </div>
     </div>
@@ -757,6 +797,7 @@ const Calculator = {
       angleMode: 'deg',
       activeSet: 'basic',
       fractionView: false,
+      historyOpen: false,  // phone only — the sheet; ignored on desktop
       history: [],
       ans: 0,
       justEvaluated: false,
@@ -819,18 +860,63 @@ const Calculator = {
       const size = len === 1 ? 'k-single' : len <= 3 ? 'k-short' : len <= 5 ? 'k-medium' : 'k-long';
       return [k.tone ? 'tone-' + k.tone : '', k.span === 2 ? 'span-2' : '', size];
     },
+    // A key that acts ON the result rather than starting a new sum. Tapping
+    // any of these straight after "=" should keep the answer: 18 then x²
+    // means 18², not a fresh 2.
+    continuesResult(k) {
+      if (k.tone === 'operator') return true;
+      if (k.action === 'negate') return true;
+      const t = k.token != null ? k.token : k.label;
+      return ['²', '³', '^', '!', '%', '×10^('].includes(t);
+    },
     press(k) {
       if (k.action === 'backspace') { this.justEvaluated = false; this.committed = null; return this.backspace(); }
       if (k.action === 'clear') { this.justEvaluated = false; this.committed = null; return this.clearAll(); }
       if (k.action === 'evaluate') return this.evaluate();
+      if (k.action === 'negate') { this.justEvaluated = false; this.committed = null; return this.negate(); }
       if (this.justEvaluated) {
         this.justEvaluated = false;
         this.committed = null;
-        // Tapping +, −, ×, ÷ continues from the result (e.g. 18 → 18+); anything
-        // else (a digit, a function, a constant...) starts a brand new expression.
-        if (k.tone !== 'operator') this.expression = '';
+        // Operators and the postfix keys continue from the result (18 → 18+,
+        // 18 → 18²); anything else — a digit, a function, a constant — starts
+        // a brand new expression.
+        if (!this.continuesResult(k)) this.expression = '';
       }
       this.insertToken(k.token != null ? k.token : k.label);
+    },
+
+    // ± flips the sign of the number the caret sits in, the way a handheld
+    // calculator does — it is not the same as typing a minus. With nothing
+    // typed yet it opens a negative number.
+    negate() {
+      const { el, start } = this.selection();
+      const expr = this.expression;
+
+      if (!expr.trim()) { this.expression = '−'; return this.setCaret(el, 1); }
+
+      // Walk back from the caret over the number (digits, one dot) it is
+      // touching, so 12+34 with the caret at the end negates only the 34.
+      let i = start;
+      while (i > 0 && /[0-9.]/.test(expr[i - 1])) i--;
+
+      // Nothing numeric under the caret — wrap the whole thing instead.
+      if (i === start && !/[0-9.]/.test(expr[start] || '')) {
+        this.expression = '−(' + expr + ')';
+        return this.setCaret(el, this.expression.length);
+      }
+
+      const before = expr.slice(0, i);
+      if (/[−-]$/.test(before)) {
+        // Already negative — drop the sign, unless it is really a subtraction
+        // between two values, in which case leave it alone.
+        const prior = before.slice(0, -1).trimEnd();
+        if (!prior || /[+\-−×÷*/^(,]$/.test(prior)) {
+          this.expression = before.slice(0, -1) + expr.slice(i);
+          return this.setCaret(el, Math.max(0, start - 1));
+        }
+      }
+      this.expression = before + '−' + expr.slice(i);
+      this.setCaret(el, start + 1);
     },
     selection() {
       const el = this.$refs.expr;
@@ -885,7 +971,7 @@ const Calculator = {
       }
       this.focusInput();
     },
-    reuse(h) { this.justEvaluated = false; this.committed = null; this.expression = h.expression; this.setCaret(this.$refs.expr, this.expression.length); },
+    reuse(h) { this.historyOpen = false; this.justEvaluated = false; this.committed = null; this.expression = h.expression; this.setCaret(this.$refs.expr, this.expression.length); },
     renderKatex(el, latex, fallback) {
       if (!el) return;
       const K = window.katex;
@@ -1378,6 +1464,8 @@ const Calculator = {
         .calc-side-block { display: flex; flex-direction: column; gap: 10px; height: 100%; background: linear-gradient(165deg, rgba(124,58,237,0.06), rgba(8,6,24,0.35)); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
         .calc-side-head { display: flex; align-items: center; gap: 10px; }
         .calc-side-empty { font-size: 12px; color: var(--muted); line-height: 1.6; padding: 2px 2px 4px; }
+        /* The sheet chrome only exists on phones. */
+        .calc-history-toggle, .calc-sheet-x, .calc-sheet-scrim { display: none; }
 
         /* Display */
         .calc-display { position: relative; flex-shrink: 0; cursor: text; display: flex; align-items: center; justify-content: flex-end; height: clamp(96px, 18vh, 150px); background: radial-gradient(120% 140% at 90% 0%, rgba(168,85,247,0.14), transparent 60%), linear-gradient(160deg, rgba(14,42,74,0.30), rgba(42,15,61,0.34)), rgba(8,6,24,0.62); border: 1px solid var(--border); border-radius: 18px; padding: 22px 24px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 40px rgba(8,4,24,0.5); overflow: hidden; }
@@ -1432,6 +1520,12 @@ const Calculator = {
 
         /* Graphing — canvas fills the whole area; expression list floats on top. */
         .calc-graph { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+        /* Desktop: a transparent inset layer. The panel and keyboard keep the
+           exact corners they always had; only phones re-stack it (see the
+           640px block at the end of this stylesheet). */
+        .graph-sheets { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+        .graph-sheets > * { pointer-events: auto; }
+
         .graph-panel { position: absolute; top: 14px; left: 14px; z-index: 5; width: min(340px, calc(100% - 28px)); max-height: calc(100% - 28px); overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: rgba(13, 11, 30, 0.86); border: 1px solid var(--border); border-radius: 16px; backdrop-filter: blur(12px); box-shadow: 0 16px 44px rgba(4, 2, 16, 0.55); }
         .graph-rows { display: flex; flex-direction: column; gap: 8px; }
         .graph-row-wrap { display: flex; flex-direction: column; gap: 5px; }
@@ -1499,10 +1593,59 @@ const Calculator = {
           .graph-panel { width: calc(100% - 24px); max-height: 42%; top: 12px; left: 12px; }
           .graph-kbd-key { min-height: 42px; font-size: 0.95rem; }
         }
+
+        /* ── Phone: the graph owns the screen ──────────────────────────────
+           The canvas fills the tab edge to edge and the two panels become
+           sheets rising from the bottom. .graph-sheets turns into a bottom
+           column here, which is what keeps them from overlapping: the
+           expression sheet is a flex item above the keyboard, so opening the
+           keyboard pushes the list up rather than covering it. */
+        @media (max-width: 640px) {
+          .calc-wrap.calc-graphing {
+            display: flex;
+            flex-direction: column;
+            height: calc(100dvh - var(--topbar-h) - var(--shell-pad-top) - var(--shell-pad-bottom));
+            min-height: 420px;
+          }
+          .calc-graph { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+          .graph-canvas-host { flex: 1 1 auto; min-height: 0; margin: 6px -16px 0; border-radius: 14px 14px 0 0; }
+
+          .graph-sheets {
+            top: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            max-height: 100%;
+          }
+
+          .graph-panel {
+            position: static;
+            width: auto;
+            max-height: 38vh;
+            border-radius: 16px 16px 0 0;
+            border-bottom: none;
+            box-shadow: 0 -12px 36px rgba(4, 2, 16, 0.55);
+          }
+          /* With the keyboard up there is far less room; the list keeps a
+             usable minimum and scrolls inside itself. */
+          .graph-sheets.kbd-open .graph-panel {
+            max-height: 26vh;
+            border-radius: 16px 16px 0 0;
+          }
+
+          .graph-kbd {
+            position: static;
+            animation: none;
+            border-radius: 0;
+          }
+
+          /* Keep the floating controls clear of the sheets. */
+          .graph-controls { top: 10px; right: 10px; }
+          .graph-analysis-toggle, .graph-analysis { top: 10px; left: 10px; }
+          .graph-trace-chip { top: 56px; left: 10px; }
+        }
+        /* Tablet: one column, history above the keypad, page scrolls. */
         @media (max-width: 900px) {
-          /* Stacked: history above the keypad; let the page scroll naturally
-             (nav space is already reserved by .content padding) instead of
-             forcing the keypad+history to squeeze into one screen. */
           .calc-sci { grid-template-columns: 1fr; flex: 0 1 auto; height: auto; min-height: 0; }
           .calc-main { order: 2; }
           .calc-sidebar { order: 1; }
@@ -1513,22 +1656,87 @@ const Calculator = {
           .calc-grid.cols-6 { grid-auto-rows: minmax(52px, auto); }
           .calc-grid.cols-4 { grid-auto-rows: minmax(52px, auto); }
         }
+
+        /* ── Phone: fill the screen, don't scroll ──────────────────────────
+           A handheld calculator doesn't scroll, and neither should this. The
+           tab claims exactly the visible height (the shell's header and
+           .content padding subtracted), the display takes what it needs at
+           the top, and the keypad is told to consume every remaining pixel:
+           1fr rows on a min-height:0 grid, so the keys grow or shrink with
+           the device instead of overflowing a short screen.
+
+           History has nowhere left to sit, so it becomes a bottom sheet. */
+        @media (max-width: 640px) {
+          .calc-wrap {
+            display: flex;
+            flex-direction: column;
+            height: calc(100dvh - var(--topbar-h) - var(--shell-pad-top) - var(--shell-pad-bottom));
+            min-height: 420px;   /* below this, scrolling beats unusable keys */
+          }
+          .section-eyebrow-row { flex-shrink: 0; }
+
+          .calc-sci { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; gap: 0; }
+          .calc-main { flex: 1 1 auto; min-height: 0; gap: 10px; }
+
+          .calc-display { flex: 0 0 auto; height: clamp(84px, 14vh, 118px); padding: 14px 16px; border-radius: 16px; }
+          .calc-controls, .calc-tabs { flex-shrink: 0; }
+
+          /* The keypad absorbs the leftover height. */
+          .calc-grid { flex: 1 1 auto; min-height: 0; gap: 7px; }
+          .calc-grid.cols-6, .calc-grid.cols-4 { grid-auto-rows: 1fr; }
+          .calc-key { min-height: 0; border-radius: 12px; }
+
+          /* ── History sheet ── */
+          .calc-history-toggle { display: inline-flex; }
+          .calc-sheet-scrim {
+            display: block; position: fixed; inset: 0; z-index: 60;
+            background: rgba(4, 3, 12, 0.6); backdrop-filter: blur(3px);
+          }
+          .calc-sidebar {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 61;
+            max-height: 62vh;
+            transform: translateY(101%);
+            transition: transform 0.26s cubic-bezier(.4, 0, .2, 1);
+            padding: 0;
+          }
+          .calc-sidebar.is-open { transform: translateY(0); }
+          .calc-sidebar .calc-side-block {
+            height: auto; max-height: 62vh;
+            border-radius: 18px 18px 0 0;
+            border-bottom: none;
+            padding: 14px 16px calc(16px + var(--safe-bot));
+            background: linear-gradient(165deg, rgba(30,22,62,0.98), rgba(10,8,26,0.99));
+            box-shadow: 0 -14px 44px rgba(4,2,16,0.6);
+          }
+          .calc-sidebar .calc-history { max-height: 46vh; }
+          .calc-sheet-x {
+            display: block; margin-left: 6px; padding: 0 6px;
+            background: none; border: none; color: var(--muted);
+            font-size: 22px; line-height: 1; cursor: pointer;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .calc-sidebar { transition: none; }
+        }
+        /* These two run AFTER the 640px block above, so they deliberately no
+           longer set .calc-key min-height or .calc-grid grid-auto-rows: doing
+           so would re-impose a fixed key height and undo the fill-the-screen
+           sizing on every phone narrower than 520px. Type scale and spacing
+           only from here down. */
         @media (max-width: 520px) {
-          .calc-key { min-height: 48px; border-radius: 12px; }
           .calc-grid { gap: 7px; }
-          .calc-grid.cols-6 { grid-auto-rows: minmax(48px, 1fr); }
-          .calc-grid.cols-4 { grid-auto-rows: minmax(48px, 1fr); }
           .calc-tabs { gap: 18px; }
-          .calc-display { padding: 16px; min-height: 104px; }
           .calc-controls { gap: 8px; }
           .graph-slider-val { font-size: 11px; }
         }
         @media (max-width: 380px) {
-          .calc-key { min-height: 44px; }
           .calc-key.k-single { font-size: 1.1rem; }
+          .calc-key.k-short { font-size: 0.95rem; }
           .calc-key.tone-primary { font-size: 1.25rem; }
           .calc-grid { gap: 6px; }
           .calc-seg button { padding: 6px 13px; }
+          .calc-history-toggle { font-size: 11px; }
         }
       `;
       document.head.appendChild(style);
