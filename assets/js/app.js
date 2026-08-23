@@ -115,6 +115,19 @@ createApp({
         initial: 'G'
       },
 
+      // Rank/level shown in the header. `ready` gates rendering so the
+      // pill doesn't flash "Level 0" before progress.js has resolved.
+      progress: {
+        ready: false,
+        level: 0,
+        rank: '',
+        rankClass: '',
+        xp: 0,
+        percent: 0,
+        isMaxLevel: false,
+        toNext: 0
+      },
+
       tabComponents: {
         forum: Forum,
         library: Library,
@@ -153,6 +166,16 @@ createApp({
 
     pageTitle() {
       return TAB_TITLES[this.activeTab] || 'CosmoKlub';
+    },
+
+    // Native tooltip on the header pill — the detail that doesn't fit.
+    xpTitle() {
+      if (!this.progress.ready) return '';
+
+      return this.progress.isMaxLevel
+        ? `${this.progress.rank} · level ${this.progress.level} · max level reached`
+        : `${this.progress.rank} · level ${this.progress.level} · ` +
+          `${this.progress.toNext.toLocaleString()} XP to level ${this.progress.level + 1}`;
     }
   },
 
@@ -240,6 +263,37 @@ createApp({
       }
     },
 
+    // Same source the Profile tab reads, so the two always agree: level
+    // and rank from total XP rather than the mean of the category levels.
+    async loadProgress() {
+      try {
+        if (window.progressReady) {
+          await window.progressReady;
+        }
+
+        if (typeof window.getOverallProgress !== 'function' ||
+            typeof window.getLevelProgress !== 'function') {
+          return;
+        }
+
+        const overall = window.getOverallProgress();
+        const level = window.getLevelProgress(overall ? overall.totalXP : 0);
+
+        this.progress = {
+          ready: true,
+          level: level.level,
+          rank: level.rank,
+          rankClass: level.rankClass,
+          xp: level.xp,
+          percent: level.progress,
+          isMaxLevel: level.isMaxLevel,
+          toNext: level.xpForNextLevel
+        };
+      } catch (error) {
+        console.warn('[CosmoKlub] Could not read progress for the header.', error);
+      }
+    },
+
     applyAccount(next) {
       const username = next.username || this.account.username;
 
@@ -278,6 +332,11 @@ createApp({
     window.CosmoKlub.setTab = (tab) => this.setTab(tab);
 
     this.loadAccount();
+    this.loadProgress();
+
+    // XP earned in the Library should move the header pill without a reload.
+    this._onProgressChanged = () => this.loadProgress();
+    window.addEventListener('cosmoklub-progress-changed', this._onProgressChanged);
 
     // Settings renames the account and changes the picture; both chips
     // should follow without a reload.
@@ -318,6 +377,13 @@ createApp({
       window.removeEventListener(
         'cosmoklub-profile-changed',
         this._onProfileChanged
+      );
+    }
+
+    if (this._onProgressChanged) {
+      window.removeEventListener(
+        'cosmoklub-progress-changed',
+        this._onProgressChanged
       );
     }
   }
