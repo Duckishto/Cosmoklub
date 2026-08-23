@@ -433,6 +433,23 @@
 
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
+/* Longer search box on desktop — was hugging its own content (icon +
+   "Search" + "/"), which read as cramped next to the rest of the header.
+   The label/kbd disappear below 861px (icon-only, see the 860px query
+   further down) so the wider box is only applied where they're visible. */
+@media (min-width: 861px) {
+  .hdr-search-btn {
+    width: 200px;
+    justify-content: flex-start;
+  }
+  .hdr-search-label { margin-right: auto; }
+}
+/* A little longer again once there's real room to spare, so it doesn't
+   stay squeezed against Home/Docs + the XP readout on narrower desktop
+   windows (861–1180px). */
+@media (min-width: 1180px) {
+  .hdr-search-btn { width: 260px; }
+}
 .hdr-search-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
 .hdr-search-btn:hover {
   background: var(--sh-raise);
@@ -825,6 +842,26 @@
   body.library-3d-active .library-roadmap::before {
     left: var(--sb-w);
     width: auto;
+  }
+}
+
+/* ---------- Desktop scale-up ----------
+
+   Sidebar, header and every tab (Forum included, since it renders inside
+   .content) all felt slightly small on a normal desktop window — like the
+   whole app wanted to sit at ~110% browser zoom. `zoom` (not `transform`)
+   is used deliberately: unlike a scale transform it actually reflows
+   layout, so 100dvh/100% heights, the sidebar width var(--sb-w) and every
+   font-size grow together in proportion, with no clipping or overlap.
+
+   Scoped to this file only (dashboard-shell.css loads on dashboard.html
+   alone) and gated to the same 981px breakpoint that already separates
+   "desktop" from the off-canvas mobile sidebar below, so phones/small
+   tablets are untouched and stay at their normal, already-tuned size.
+   Supported in Chrome, Edge, Safari and Firefox 126+. */
+@media (min-width: 981px) {
+  html {
+    zoom: 1.1;
   }
 }
 
