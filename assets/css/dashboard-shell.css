@@ -105,7 +105,7 @@
   align-items: center;
   gap: 8px;
   height: var(--hdr-h);
-  padding: 0 12px 0 14px;
+  padding: 0 12px;
   border-bottom: 1px solid var(--sh-line);
   flex-shrink: 0;
 }
@@ -122,9 +122,14 @@
 }
 .sb-brand-btn:hover { opacity: 0.8; }
 
+/* logo.png is 2172x724 — a 3:1 wordmark. Sized off the brand row rather
+   than a fixed px value so it always fills it: 56px row - 12px of
+   breathing room = 44px tall, ~132px wide inside the 252px rail. */
 .sb-brand-logo {
-  height: 34px;
+  height: calc(var(--hdr-h) - 12px);
   width: auto;
+  max-width: 100%;
+  object-fit: contain;
   display: block;
   filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.35));
 }
@@ -411,12 +416,6 @@
   border-color: var(--sh-line);
   color: var(--sh-text);
 }
-.hdr-icon.is-active {
-  background: var(--sh-accent-bg);
-  border-color: rgba(168, 85, 247, 0.35);
-  color: #ddccff;
-}
-
 .hdr-dot {
   position: absolute;
   top: 7px;
@@ -428,48 +427,98 @@
   box-shadow: 0 0 0 2px rgba(8, 6, 22, 0.9);
 }
 
-.hdr-user {
+/* Rank + level readout.
+   The header used to carry a settings gear and a profile chip; both are
+   sidebar destinations now (ACCOUNT group), and a second route to the
+   same page is just clutter. This shows something the sidebar can't:
+   live progress. It is a readout, not a control — no hover state, no
+   cursor change, nothing to click. */
+.hdr-xp {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   height: 34px;
-  padding: 0 10px 0 4px;
-  margin-left: 2px;
+  padding: 0 12px 0 8px;
+  margin-right: 2px;
 
   border-radius: 999px;
   border: 1px solid var(--sh-line);
   background: var(--sh-card-soft);
-  color: var(--sh-text);
-  transition: background 0.16s ease, border-color 0.16s ease;
+  user-select: none;
 }
-.hdr-user:hover { background: var(--sh-raise); border-color: var(--sh-line-2); }
 
-.hdr-user-av {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  overflow: hidden;
+.hdr-xp-rank {
+  display: inline-flex;
+  align-items: center;
+  height: 19px;
+  padding: 0 8px;
+  border-radius: 999px;
   flex-shrink: 0;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: linear-gradient(135deg, var(--sh-accent-2), var(--sh-accent));
-  color: #fff;
-  font-size: 11.5px;
+  font-size: 9.5px;
   font-weight: 700;
-}
-.hdr-user-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #17121f;
 
-.hdr-user-name {
-  font-size: 12.5px;
-  font-weight: 500;
-  max-width: 130px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  /* falls back to violet until progress.js supplies a rank-* class */
+  background: linear-gradient(135deg, var(--sh-accent-2), var(--sh-accent));
 }
+
+/* Rank palette, same values the Profile page uses. */
+.hdr-xp-rank.rank-bronze   { background: linear-gradient(135deg, #d8a15f, #a86b32); }
+.hdr-xp-rank.rank-silver   { background: linear-gradient(135deg, #dfe6ee, #9aa8b8); }
+.hdr-xp-rank.rank-gold     { background: linear-gradient(135deg, #ffd970, #d99b26); }
+.hdr-xp-rank.rank-platinum { background: linear-gradient(135deg, #d6f4f2, #7fb6bd); }
+.hdr-xp-rank.rank-diamond  { background: linear-gradient(135deg, #b6ecff, #5aa9e6); }
+
+.hdr-xp-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 116px;
+}
+
+.hdr-xp-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  line-height: 1;
+}
+
+.hdr-xp-lvl {
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--sh-text);
+}
+
+.hdr-xp-val {
+  font-size: 10.5px;
+  color: var(--sh-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.hdr-xp-bar {
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.hdr-xp-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sh-accent-2), var(--sh-accent));
+  transition: width 0.5s cubic-bezier(.4, 0, .2, 1);
+}
+.hdr-xp-fill.rank-bronze   { background: linear-gradient(90deg, #a86b32, #d8a15f); }
+.hdr-xp-fill.rank-silver   { background: linear-gradient(90deg, #9aa8b8, #dfe6ee); }
+.hdr-xp-fill.rank-gold     { background: linear-gradient(90deg, #d99b26, #ffd970); }
+.hdr-xp-fill.rank-platinum { background: linear-gradient(90deg, #7fb6bd, #d6f4f2); }
+.hdr-xp-fill.rank-diamond  { background: linear-gradient(90deg, #5aa9e6, #b6ecff); }
 
 /* ---------- 5. Content area ---------- */
 
@@ -548,10 +597,19 @@
   :root { --shell-pad-top: 20px; --shell-pad-bottom: 32px; }
 }
 
+@media (max-width: 720px) {
+  /* Not enough room for the XP bar next to the title — keep the rank
+     chip, which is the part worth glancing at. */
+  .hdr-xp {
+    padding: 0 4px;
+    border-color: transparent;
+    background: none;
+  }
+  .hdr-xp-body { display: none; }
+}
+
 @media (max-width: 560px) {
   .shell-header { padding: 0 12px; gap: 6px; }
-  .hdr-user-name { display: none; }
-  .hdr-user { padding: 0 4px; }
   .content { padding: 16px 12px 28px; }
   :root { --shell-pad-top: 16px; --shell-pad-bottom: 28px; }
 }
