@@ -1356,12 +1356,23 @@ const Calculator = {
       const style = document.createElement('style');
       style.id = 'mirai-calc-styles';
       style.textContent = `
-        .calc-wrap { max-width: 1180px; margin: 0 auto; }
+        /* Fills the exact visible height of .content (100% of a flex column
+           whose only other member, .section-eyebrow-row, sizes itself and
+           is subtracted automatically) instead of computing a height from
+           100dvh minus a hand-tuned magic number. The old calc() was pinned
+           to the topbar's un-scaled pixel height, so it drifted out of sync
+           — and the keypad ran off the bottom of the screen — the moment
+           anything upstream (a font-size bump, a browser zoom level) made
+           the real header/eyebrow row taller than the constant assumed.
+           Flex fill has no such constant to go stale. */
+        .calc-wrap { max-width: 1180px; margin: 0 auto; height: 100%; min-height: 0; display: flex; flex-direction: column; }
         .calc-wrap.calc-graphing { max-width: 1180px; }
+        .calc-wrap > .section-eyebrow-row { flex-shrink: 0; }
         .calc-mode-switch { flex-shrink: 0; }
-        /* Cap the scientific calculator to the space between the eyebrow row and
-           the bottom nav so the keypad's last row is always fully visible. */
-        .calc-sci { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 22px; align-items: stretch; height: calc(100dvh - var(--topbar-h) - var(--nav-h) - var(--safe-bot) - 92px); min-height: 420px; }
+        /* Fills whatever's left under the eyebrow row so the keypad's last
+           row is always fully visible; min-height is the only hard floor,
+           for very short viewports (page scrolls past it if needed). */
+        .calc-sci { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 22px; align-items: stretch; flex: 1 1 auto; min-height: 420px; }
         .calc-main { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; height: 100%; }
         .calc-sidebar { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
         .calc-side-block { display: flex; flex-direction: column; gap: 10px; height: 100%; background: linear-gradient(165deg, rgba(124,58,237,0.06), rgba(8,6,24,0.35)); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
@@ -1420,7 +1431,7 @@ const Calculator = {
         .calc-history-res.err { color: #fca5a5; font-weight: 600; font-size: 11.5px; white-space: normal; }
 
         /* Graphing — canvas fills the whole area; expression list floats on top. */
-        .calc-graph { display: block; }
+        .calc-graph { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
         .graph-panel { position: absolute; top: 14px; left: 14px; z-index: 5; width: min(340px, calc(100% - 28px)); max-height: calc(100% - 28px); overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: rgba(13, 11, 30, 0.86); border: 1px solid var(--border); border-radius: 16px; backdrop-filter: blur(12px); box-shadow: 0 16px 44px rgba(4, 2, 16, 0.55); }
         .graph-rows { display: flex; flex-direction: column; gap: 8px; }
         .graph-row-wrap { display: flex; flex-direction: column; gap: 5px; }
@@ -1444,7 +1455,7 @@ const Calculator = {
         .graph-add { align-self: flex-start; background: #1d1736; border: 1px solid var(--border); color: var(--glow); font-family: var(--font); font-size: 12.5px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: all var(--tr); }
         .graph-add:hover { border-color: var(--violet); background: #2c2154; transform: translateY(-1px); }
         /* Canvas fills the area below the eyebrow row (nav hides on graphing). */
-        .graph-canvas-host { position: relative; height: calc(100dvh - var(--topbar-h) - 74px); min-height: 360px; margin: 6px -16px 0; border: none; border-radius: 14px 14px 0 0; overflow: hidden; background: rgba(8,6,22,0.55); }
+        .graph-canvas-host { position: relative; flex: 1 1 auto; min-height: 360px; margin: 6px -16px 0; border: none; border-radius: 14px 14px 0 0; overflow: hidden; background: rgba(8,6,22,0.55); }
         .graph-canvas-host canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
         /* Controls on the right so they don't overlap the floating panel. */
         .graph-controls { position: absolute; top: 14px; right: 14px; z-index: 5; display: flex; flex-direction: column; gap: 4px; padding: 4px; background: rgba(13,11,30,0.85); border: 1px solid var(--border); border-radius: 10px; backdrop-filter: blur(6px); }
@@ -1485,14 +1496,14 @@ const Calculator = {
         .graph-kbd-key.tone-operator { background: linear-gradient(180deg, #2f2361, #271c50); color: var(--glow); }
 
         @media (max-width: 760px) {
-          .graph-canvas-host { height: calc(100dvh - var(--topbar-h) - 74px); }
           .graph-panel { width: calc(100% - 24px); max-height: 42%; top: 12px; left: 12px; }
           .graph-kbd-key { min-height: 42px; font-size: 0.95rem; }
         }
         @media (max-width: 900px) {
           /* Stacked: history above the keypad; let the page scroll naturally
-             (nav space is already reserved by .content padding). */
-          .calc-sci { grid-template-columns: 1fr; max-height: none; }
+             (nav space is already reserved by .content padding) instead of
+             forcing the keypad+history to squeeze into one screen. */
+          .calc-sci { grid-template-columns: 1fr; flex: 0 1 auto; height: auto; min-height: 0; }
           .calc-main { order: 2; }
           .calc-sidebar { order: 1; }
           .calc-side-block { height: auto; }
