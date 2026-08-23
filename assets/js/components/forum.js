@@ -238,59 +238,13 @@ const Forum = {
         </div>
       </transition>
 
-      <!-- Catalog shell: filter sidebar + card grid -->
+      <!-- Catalog: single column now — filters live in a horizontal bar
+           above the feed instead of a sidebar card, so they read as
+           toolbar controls rather than a second nav rail next to the
+           real sidebar. -->
       <div class="fxd-shell">
-
-        <!-- ============ Filters (visual only) ============ -->
-        <aside class="fxd-side">
-          <div class="fxd-side-head">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-            <span>Filters</span>
-          </div>
-
-          <div class="fxd-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Search threads" aria-label="Search threads" />
-          </div>
-
-          <div class="fxd-select">
-            <select aria-label="Sort by">
-              <option>Most recent</option>
-              <option>Most replies</option>
-              <option>Most upvoted</option>
-              <option>Solved first</option>
-            </select>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-
-          <div class="fxd-group">
-            <div class="fxd-group-head">Category</div>
-            <div class="fxd-pills">
-              <button class="fxd-pill" :class="{ 'is-active': activeChip === 'All' }" @click="activeChip = 'All'">All</button>
-              <button class="fxd-pill" v-for="tag in tags" :key="tag" :class="{ 'is-active': activeChip === tag }" @click="activeChip = tag">{{ tag }}</button>
-            </div>
-          </div>
-
-          <div class="fxd-group">
-            <div class="fxd-group-head">Status</div>
-            <div class="fxd-pills">
-              <button
-                class="fxd-pill"
-                v-for="status in statuses"
-                :key="status"
-                :class="{ 'is-active': activeStatus === status }"
-                @click="activeStatus = status"
-              >{{ status }}</button>
-            </div>
-          </div>
-        </aside>
-
-        <!-- ============ Thread catalog ============ -->
         <section class="fxd-main">
 
-          <!-- Sky strip and composer live inside this column rather than above
-               the whole shell, so their width lines up with the feed instead
-               of running the full page width past the sidebar. -->
           <div class="sky-strip">
             <div class="sb-icon">◐</div>
             <div class="sky-strip-text">
@@ -308,6 +262,47 @@ const Forum = {
               <span class="fxd-newpost-btn-label">New post</span>
             </span>
           </button>
+
+          <!-- ============ Filters (visual only) — horizontal bar ============ -->
+          <div class="fxd-filterbar">
+            <div class="fxd-filterbar-row">
+              <div class="fxd-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" placeholder="Search threads" aria-label="Search threads" />
+              </div>
+
+              <div class="fxd-select">
+                <select aria-label="Sort by">
+                  <option>Most recent</option>
+                  <option>Most replies</option>
+                  <option>Most upvoted</option>
+                  <option>Solved first</option>
+                </select>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+
+            <div class="fxd-filterbar-row fxd-filterbar-pills">
+              <div class="fxd-pillgroup">
+                <span class="fxd-pill-label">Category</span>
+                <button class="fxd-pill" :class="{ 'is-active': activeChip === 'All' }" @click="activeChip = 'All'">All</button>
+                <button class="fxd-pill" v-for="tag in tags" :key="tag" :class="{ 'is-active': activeChip === tag }" @click="activeChip = tag">{{ tag }}</button>
+              </div>
+
+              <span class="fxd-pill-sep" aria-hidden="true"></span>
+
+              <div class="fxd-pillgroup">
+                <span class="fxd-pill-label">Status</span>
+                <button
+                  class="fxd-pill"
+                  v-for="status in statuses"
+                  :key="status"
+                  :class="{ 'is-active': activeStatus === status }"
+                  @click="activeStatus = status"
+                >{{ status }}</button>
+              </div>
+            </div>
+          </div>
 
           <div class="fxd-toolbar">
             <h2 class="fxd-title">Discussions</h2>
