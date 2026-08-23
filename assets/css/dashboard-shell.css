@@ -845,25 +845,28 @@
   }
 }
 
-/* ---------- Desktop scale-up ----------
+/* ---------- Desktop scale-up (REMOVED) ----------
 
-   Sidebar, header and every tab (Forum included, since it renders inside
-   .content) all felt slightly small on a normal desktop window — like the
-   whole app wanted to sit at ~110% browser zoom. `zoom` (not `transform`)
-   is used deliberately: unlike a scale transform it actually reflows
-   layout, so 100dvh/100% heights, the sidebar width var(--sb-w) and every
-   font-size grow together in proportion, with no clipping or overlap.
+   There used to be a `@media (min-width: 981px) { html { zoom: 1.1; } }`
+   rule here to make the sidebar/header/tabs feel less small on desktop.
 
-   Scoped to this file only (dashboard-shell.css loads on dashboard.html
-   alone) and gated to the same 981px breakpoint that already separates
-   "desktop" from the off-canvas mobile sidebar below, so phones/small
-   tablets are untouched and stay at their normal, already-tuned size.
-   Supported in Chrome, Edge, Safari and Firefox 126+. */
-@media (min-width: 981px) {
-  html {
-    zoom: 1.1;
-  }
-}
+   It caused the calculator and graphing keypads (and, more subtly, every
+   other tab) to render with their bottom ~10% cut off, with no scrollbar
+   to reach it. Root cause: #app etc. are sized with 100dvh/100%, which
+   the browser computes against the REAL, unscaled viewport (e.g. 900px).
+   `zoom: 1.1` then paints that same 900px-tall box at 990px on screen —
+   but the actual browser window is still only 900px, so the extra 90px
+   hangs off the bottom of the visible area. Worse, scrollHeight/
+   clientHeight are also measured in the unscaled 900px space, where they
+   match exactly — so the browser never detects an overflow and never
+   shows a scrollbar, making that clipped slice permanently unreachable.
+
+   `zoom` and viewport units (dvh/vh) don't reconcile safely together in
+   this layout, so the scale-up was removed rather than patched. If a
+   "feels bigger on desktop" effect is wanted again, do it with real
+   font-size/spacing increases at this breakpoint (which participate
+   correctly in height calculations), not `zoom` or a `transform: scale`
+   on a viewport-height-sized ancestor. */
 
 /* ---------- Responsive ---------- */
 
