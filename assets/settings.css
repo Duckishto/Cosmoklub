@@ -1,0 +1,203 @@
+/* CosmoKlub — Settings tab styles.
+ *
+ * Markup lives in components/settings.js. Everything is scoped under
+ * .settings-tab so nothing here can reach the dashboard shell.
+ *
+ * Rebuilt on the OpenRouter page structure. The page header, cards,
+ * inputs, buttons, badges and messages all come from the shared
+ * primitives in dashboard-shell.css (.pg-head, .ck-card, .ck-input,
+ * .ck-btn, .ck-badge, .ck-msg…). This file only carries what's specific
+ * to Settings, all prefixed .st-.
+ *
+ * The old two-column layout (section list on the left, panel on the
+ * right) is gone: with a permanent app sidebar beside it, a second
+ * vertical nav read as a duplicate. Sections are a .ck-seg switcher
+ * across the top instead.
+ */
+
+.settings-tab {
+  padding-bottom: 8px;
+}
+
+.settings-tab .st-seg {
+  margin-bottom: 18px;
+}
+
+/* Log out gets a warm tint in the switcher so it reads as the odd one
+   out even before it's selected. */
+.settings-tab .st-seg-danger { color: #c9a3b4; }
+.settings-tab .st-seg-danger:hover { color: var(--sh-danger); }
+.settings-tab .st-seg-danger.is-active {
+  background: rgba(244, 63, 94, 0.14);
+  color: var(--sh-danger);
+}
+
+/* ---------- Identity / avatar ---------- */
+
+.settings-tab .st-identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.settings-tab .st-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 23px;
+  font-weight: 700;
+  color: #fff;
+
+  background: linear-gradient(135deg, var(--sh-accent-2), var(--sh-accent));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.settings-tab .st-avatar.has-img { background: rgba(0, 0, 0, 0.3); }
+.settings-tab .st-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Spinner overlay while a picture is being written. */
+.settings-tab .st-avatar-busy {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 4, 18, 0.6);
+}
+.settings-tab .st-avatar-busy::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: stSpin 0.7s linear infinite;
+}
+@keyframes stSpin { to { transform: rotate(360deg); } }
+
+.settings-tab .st-identity-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-tab .st-identity-name {
+  font-size: 15.5px;
+  font-weight: 650;
+  color: var(--sh-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-tab .st-identity-mail {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--sh-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-tab .st-avatar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Sign-in methods ---------- */
+
+.settings-tab .st-provider {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--sh-line);
+}
+.settings-tab .st-provider:first-of-type { padding-top: 0; }
+.settings-tab .st-provider:last-of-type { border-bottom: 0; padding-bottom: 0; }
+
+.settings-tab .st-provider-ic {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+  background: var(--sh-card-soft);
+  border: 1px solid var(--sh-line);
+  color: var(--sh-dim);
+}
+.settings-tab .st-provider-ic svg { width: 18px; height: 18px; display: block; }
+
+.settings-tab .st-provider-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-tab .st-provider-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sh-text);
+}
+
+.settings-tab .st-provider-hint {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--sh-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Log out ---------- */
+
+.settings-tab .st-danger-card {
+  border-color: rgba(244, 63, 94, 0.24);
+  background:
+    linear-gradient(180deg, rgba(244, 63, 94, 0.06), transparent 62%),
+    var(--sh-card);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 560px) {
+  .settings-tab .st-identity {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 13px;
+  }
+  .settings-tab .st-avatar { width: 54px; height: 54px; font-size: 20px; }
+
+  .settings-tab .st-provider {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  .settings-tab .st-provider-body { flex-basis: calc(100% - 49px); }
+  .settings-tab .st-provider > .ck-btn,
+  .settings-tab .st-provider > .ck-badge { margin-left: 49px; }
+
+  .settings-tab .ck-field-row { flex-direction: column; align-items: stretch; }
+  .settings-tab .ck-field-row .ck-input { width: 100%; }
+}

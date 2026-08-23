@@ -1,0 +1,359 @@
+/* CosmoKlub — Profile tab styles.
+ *
+ * Markup lives in components/profile.js. Everything is scoped under
+ * .profile-tab so nothing here can reach the dashboard shell.
+ *
+ * Rebuilt on the OpenRouter page structure: the page header, cards,
+ * segmented switcher, buttons and empty state all come from the shared
+ * primitives in dashboard-shell.css (.pg-head, .ck-card, .ck-seg,
+ * .ck-empty…). This file only carries what's specific to Profile, all
+ * prefixed .pf-.
+ *
+ * Rank colours are defined here rather than reused from elsewhere: the
+ * rank-* class names come from progress.js (COSMOKLUB_RANKS) but no
+ * stylesheet in the project had ever styled them — the Library tab only
+ * carried the names.
+ */
+
+.profile-tab {
+  padding-bottom: 8px;
+}
+
+/* ---------- Identity card ---------- */
+
+.profile-tab .pf-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-tab .pf-avatar {
+  flex-shrink: 0;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+  font-weight: 700;
+  color: #14101f;
+
+  /* Falls back to the violet gradient until progress.js hands over a
+     rank-* class; the rank colours below then take over. */
+  background: linear-gradient(135deg, var(--sh-accent-2), var(--sh-accent));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.profile-tab .pf-identity-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-tab .pf-name {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--sh-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-tab .pf-identity-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+  flex-wrap: wrap;
+}
+
+.profile-tab .pf-rank {
+  display: inline-flex;
+  align-items: center;
+  height: 21px;
+  padding: 0 9px;
+  border-radius: 999px;
+
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #17121f;
+}
+
+/* Rank palette — shared by the badge, the avatar and the XP bar fill. */
+.profile-tab .rank-bronze   { background: linear-gradient(135deg, #d8a15f, #a86b32); }
+.profile-tab .rank-silver   { background: linear-gradient(135deg, #dfe6ee, #9aa8b8); }
+.profile-tab .rank-gold     { background: linear-gradient(135deg, #ffd970, #d99b26); }
+.profile-tab .rank-platinum { background: linear-gradient(135deg, #d6f4f2, #7fb6bd); }
+.profile-tab .rank-diamond  { background: linear-gradient(135deg, #b6ecff, #5aa9e6); }
+
+/* Follower/following/likes, tucked to the right of the identity row the
+   way OpenRouter keeps its secondary metadata out of the headline. */
+.profile-tab .pf-counts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.profile-tab .pf-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 66px;
+  padding: 9px 10px;
+
+  background: var(--sh-card-soft);
+  border: 1px solid var(--sh-line);
+  border-radius: var(--sh-r);
+}
+
+.profile-tab .pf-count-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--sh-text);
+  line-height: 1.1;
+}
+
+.profile-tab .pf-count-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--sh-faint);
+}
+
+.profile-tab .pf-seg {
+  margin-top: 20px;
+}
+
+/* ---------- Posts ---------- */
+
+.profile-tab .pf-posts {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-tab .pf-post {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--sh-line);
+}
+.profile-tab .pf-post:first-child { padding-top: 0; }
+.profile-tab .pf-post:last-child { border-bottom: 0; padding-bottom: 0; }
+
+/* Category / SOLVED / timestamp strip above each post title. Ported from
+   the .profile-post-* rules into the .pf- naming, and retinted to the
+   shell's token set so it sits with the rest of the page. */
+.profile-tab .pf-post-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.profile-tab .pf-post-cat {
+  display: inline-flex;
+  align-items: center;
+  height: 19px;
+  padding: 0 8px;
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  color: #ddccff;
+  background: var(--sh-accent-bg);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.profile-tab .pf-post-solved {
+  display: inline-flex;
+  align-items: center;
+  height: 19px;
+  padding: 0 8px;
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  color: #6ee7b7;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.34);
+}
+
+.profile-tab .pf-post-time {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--sh-faint);
+}
+
+.profile-tab .pf-post-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 650;
+  color: var(--sh-text);
+  line-height: 1.4;
+}
+
+.profile-tab .pf-post-body {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: var(--sh-dim);
+  line-height: 1.55;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.profile-tab .pf-post-meta {
+  display: flex;
+  gap: 14px;
+  margin-top: 9px;
+  font-size: 12px;
+  color: var(--sh-faint);
+}
+
+/* ---------- Progression ---------- */
+
+.profile-tab .pf-xp-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.profile-tab .pf-xp-total {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--sh-text);
+}
+
+.profile-tab .pf-xp-next {
+  font-size: 12.5px;
+  color: var(--sh-dim);
+  text-align: right;
+}
+
+.profile-tab .pf-bar {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.34);
+  border: 1px solid var(--sh-line);
+}
+
+.profile-tab .pf-bar-sm {
+  height: 6px;
+}
+
+.profile-tab .pf-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sh-accent-2), var(--sh-accent));
+  transition: width 0.5s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Three-up stat tiles, matching the bordered-panel language of the rest
+   of the page rather than floating numbers. */
+.profile-tab .pf-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.profile-tab .pf-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 13px 14px;
+
+  background: var(--sh-card-soft);
+  border: 1px solid var(--sh-line);
+  border-radius: var(--sh-r);
+}
+
+.profile-tab .pf-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--sh-text);
+  line-height: 1.15;
+}
+
+.profile-tab .pf-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sh-faint);
+}
+
+/* ---------- By topic ---------- */
+
+.profile-tab .pf-topic + .pf-topic {
+  margin-top: 15px;
+}
+
+.profile-tab .pf-topic-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+}
+
+.profile-tab .pf-topic-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sh-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-tab .pf-topic-meta {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--sh-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 720px) {
+  .profile-tab .pf-identity {
+    flex-wrap: wrap;
+  }
+  .profile-tab .pf-counts {
+    width: 100%;
+    gap: 8px;
+  }
+  .profile-tab .pf-count {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-tab .pf-avatar { width: 50px; height: 50px; font-size: 19px; }
+  .profile-tab .pf-name { font-size: 17px; }
+  .profile-tab .pf-stats { grid-template-columns: 1fr; }
+  .profile-tab .pf-xp-head { flex-direction: column; align-items: flex-start; gap: 3px; }
+  .profile-tab .pf-xp-next { text-align: left; }
+}

@@ -1,0 +1,1641 @@
+/* ===================================================
+   CosmoKlub — dashboard.css
+   Styles for the dashboard's TAB CONTENT: Forum, Library,
+   Chat and Calculator.
+
+   The shell around them — sidebar, header, .content scroller,
+   and the layout variables they all measure against — lives in
+   dashboard-shell.css, which loads after this file. Rules here
+   may read those variables (--topbar-h, --safe-bot, --shell-pad-*)
+   but must not declare them.
+   =================================================== */
+
+/* ---------- Reset & Variables ---------- */
+[v-cloak] { display: none !important; }
+
+:root {
+  --purple:   #7c3aed;
+  --violet:   #a855f7;
+  --glow:     #c084fc;
+  --stardust: #f5f3ff;
+  --white:    #f5f3ff;
+  --muted:    #8b7aa8;
+  --border:   rgba(124, 58, 237, 0.25);
+  --glass:    rgba(124, 58, 237, 0.08);
+  --glass2:   rgba(255, 255, 255, 0.04);
+  --font:     'Inter', -apple-system, sans-serif;
+  --radius:   12px;
+  --tr:       0.22s cubic-bezier(.4, 0, .2, 1);
+
+  /* --topbar-h / --nav-h / --safe-bot / --shell-pad-* are NOT declared
+     here. They describe the shell (sidebar + header), so dashboard-shell.css
+     owns them — it's the file that decides how tall the header is and how
+     much padding .content carries. Rules in this file may read them. */
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: #07061a;
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.55;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ---------- Star Canvas & Page Grid ---------- */
+#star-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-grid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ---------- Aurora ---------- */
+.aurora-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.aurora-base {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 120% 65% at 18% 0%, #0e2a4a 0%, transparent 62%),
+    radial-gradient(ellipse 95% 55% at 85% 8%, #2a0f3d 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, #1a0e30 0%, transparent 65%),
+    linear-gradient(180deg, #060816 0%, #050410 55%, #03020a 100%);
+}
+.aurora-1 {
+  position: absolute;
+  top: -10%; left: -22%;
+  width: 85%; height: 75%;
+  background: radial-gradient(ellipse 100% 100% at 50% 0%,
+    rgba(20,210,200,0.16) 0%, rgba(10,150,210,0.08) 45%, transparent 75%);
+  filter: blur(60px);
+  animation: aShift1 14s ease-in-out infinite;
+}
+.aurora-2 {
+  position: absolute;
+  top: -15%; right: -18%;
+  width: 75%; height: 85%;
+  background: radial-gradient(ellipse 100% 100% at 50% 0%,
+    rgba(230,60,170,0.16) 0%, rgba(140,20,180,0.09) 50%, transparent 75%);
+  filter: blur(70px);
+  animation: aShift2 18s ease-in-out infinite;
+}
+.aurora-3 {
+  position: absolute;
+  top: 8%; left: 22%;
+  width: 60%; height: 60%;
+  background: radial-gradient(ellipse 100% 100% at 50% 0%,
+    rgba(120,90,255,0.12) 0%, transparent 80%);
+  filter: blur(80px);
+  animation: aShift3 22s ease-in-out infinite;
+}
+@keyframes aShift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(5%, 8%) scale(1.06); }
+}
+@keyframes aShift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(-6%, 5%) scale(1.04); }
+}
+@keyframes aShift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(4%, -6%) scale(1.08); }
+}
+
+/* ---------- App Shell ----------
+   #app, .app-shell and .content are laid out in dashboard-shell.css,
+   alongside the sidebar and header they hold. Nothing to declare here. */
+
+/* ---------- Shared Section Styles ---------- */
+.section {
+  margin-bottom: 24px;
+}
+
+.section-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.section-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.section-link {
+  font-size: 11px;
+  color: var(--violet);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity var(--tr);
+}
+.section-link:hover { opacity: 0.75; }
+
+/* ---------- Sky Strip (Forum top banner) ---------- */
+.sky-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.14) 0%, rgba(168,85,247,0.06) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: border-color var(--tr), background var(--tr);
+}
+.sky-strip:hover {
+  border-color: var(--violet);
+  background: linear-gradient(135deg, rgba(124,58,237,0.2) 0%, rgba(168,85,247,0.1) 100%);
+}
+
+.sb-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  background: rgba(168,85,247,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sky-strip-text { flex: 1; }
+.sky-strip-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--stardust);
+}
+.sky-strip-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.sky-strip-cta {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--violet);
+  flex-shrink: 0;
+}
+
+/* ---------- Chip Row (Forum filters) ---------- */
+.chip-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+}
+.chip-row::-webkit-scrollbar { display: none; }
+
+.chip {
+  flex-shrink: 0;
+  padding: 5px 13px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  background: var(--glass);
+  transition: border-color var(--tr), color var(--tr), background var(--tr);
+  white-space: nowrap;
+}
+.chip:hover, .chip.active {
+  border-color: var(--violet);
+  color: var(--violet);
+  background: rgba(168,85,247,0.1);
+}
+
+/* ---------- Thread Card ---------- */
+.thread-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.thread-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  transition: border-color var(--tr), background var(--tr);
+}
+.thread-card:hover {
+  border-color: var(--violet);
+  background: rgba(124,58,237,0.12);
+}
+
+.thread-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.thread-meta { flex: 1; }
+.thread-author {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--stardust);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lvl {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--glow);
+  background: rgba(192,132,252,0.12);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.thread-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.thread-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--violet);
+  background: rgba(168,85,247,0.1);
+  border: 1px solid rgba(168,85,247,0.2);
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
+.thread-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--stardust);
+  margin-bottom: 4px;
+}
+.thread-body {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.thread-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.stat.solved {
+  color: #34d399;
+}
+.spacer { flex: 1; }
+
+/* ---------- Library ---------- */
+.lessons-grid, .library-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.lesson-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  transition: border-color var(--tr), background var(--tr);
+}
+.lesson-card:hover {
+  border-color: var(--violet);
+  background: rgba(124,58,237,0.12);
+}
+
+.lesson-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.lesson-title {
+  /* bumped up from the forum's card-title scale (0.97rem) — the dense
+     dashboard scale read too small for a card that's meant to be a primary
+     tappable unit, not a compact list row */
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--stardust);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.lesson-desc {
+  /* bumped up from the forum's card-desc scale (0.82rem) for the same
+     reason — these cards carry more weight on the page than a thread card */
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.lesson-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lesson-tier {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 8px;
+  letter-spacing: 0.04em;
+}
+
+/* Saved / Library items */
+.library-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color var(--tr), background var(--tr);
+}
+.library-item:hover {
+  border-color: var(--violet);
+}
+
+.library-icon {
+  flex-shrink: 0;
+}
+.library-info { flex: 1; }
+.library-name {
+  /* matches the forum's .thread-title (14px/600) */
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--stardust);
+}
+.library-meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.remove-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background var(--tr), color var(--tr);
+}
+.remove-btn:hover {
+  background: rgba(239,68,68,0.12);
+  color: #f87171;
+}
+
+.empty-library {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--muted);
+  /* matches the forum's body text size (12px) */
+  font-size: 12px;
+}
+
+/* ---------- Chat ---------- */
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(20, 16, 44, 0.72), rgba(12, 10, 30, 0.6));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 6px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 18px 50px rgba(4, 2, 16, 0.45);
+  overflow: hidden;
+}
+
+.conversation-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 14px;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background var(--tr), transform var(--tr);
+}
+/* Hairline divider between rows (not after the last one). */
+.conversation-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 71px;
+  right: 14px;
+  bottom: 0;
+  height: 1px;
+  background: var(--border);
+  opacity: 0.5;
+}
+.conversation-item:hover {
+  background: rgba(124, 58, 237, 0.1);
+}
+.conversation-item:active {
+  transform: scale(0.99);
+}
+.conversation-item.active {
+  background: rgba(124,58,237,0.16);
+}
+
+.conversation-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+/* Online status dot on the avatar. */
+.conversation-item .conversation-avatar::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #34d399;
+  border: 2.5px solid #100c22;
+}
+
+.conversation-info { flex: 1; min-width: 0; }
+.conversation-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--stardust);
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+.conversation-preview {
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+.conversation-time {
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding-top: 2px;
+}
+
+/* Chat window */
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(20, 16, 44, 0.72), rgba(12, 10, 30, 0.6));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 18px 50px rgba(4, 2, 16, 0.45);
+  overflow: hidden;
+}
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(124, 58, 237, 0.08);
+  border-bottom: 1px solid var(--border);
+}
+.chat-back {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 18px;
+  border: 1px solid transparent;
+  transition: background var(--tr), color var(--tr), border-color var(--tr);
+}
+.chat-back:hover {
+  background: var(--glass);
+  color: var(--stardust);
+  border-color: var(--border);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.chat-container {
+  /* height comes from dashboard-shell.css, which knows the header and
+     .content padding it has to subtract */
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(4, 2, 16, 0.3);
+}
+.message-outgoing {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--purple), var(--violet));
+  color: #fff;
+  border-bottom-right-radius: 5px;
+}
+.message-incoming {
+  align-self: flex-start;
+  background: #1c1738;
+  border: 1px solid var(--border);
+  color: var(--stardust);
+  border-bottom-left-radius: 5px;
+}
+
+.chat-input-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px calc(12px + var(--safe-bot));
+  background: rgba(10, 8, 24, 0.5);
+  border-top: 1px solid var(--border);
+}
+.chat-input {
+  flex: 1;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 11px 18px;
+  color: var(--white);
+  font-size: 13.5px;
+  font-family: var(--font);
+  outline: none;
+  resize: none;
+  transition: border-color var(--tr), background var(--tr);
+}
+.chat-input::placeholder { color: var(--muted); }
+.chat-input:focus { border-color: var(--violet); background: rgba(124, 58, 237, 0.08); }
+
+.chat-send {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--purple), var(--violet));
+  color: #fff;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+  transition: transform var(--tr), box-shadow var(--tr);
+}
+.chat-send:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(168,85,247,0.55);
+}
+.chat-send svg {
+  stroke: #fff;
+}
+
+/* ---------- Tag (used in threads) ---------- */
+.tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--glow);
+  background: rgba(192,132,252,0.1);
+  border: 1px solid rgba(192,132,252,0.2);
+  padding: 2px 7px;
+  border-radius: 8px;
+}
+/* =========================================================
+   DOCUMENT BASE
+   ========================================================= */
+
+/* Keep the original dark document base under the translucent aurora. */
+html,
+body {
+  background: #07061a !important;
+}
+
+/* Let the aurora, stars, and 3D canvas show through the app surfaces. */
+#app,
+.app-shell,
+.content {
+  background: transparent !important;
+}
+
+/* ============================================================
+   DASHBOARD FORUM — catalog layout (.fxd-*)
+   Filter sidebar + thread card grid, CosmoKlub dark/violet.
+   Filters/tabs other than Category are visual placeholders.
+   ============================================================ */
+
+.fxd-shell {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 1.6rem;
+  align-items: start;
+  margin-top: 1.2rem;
+}
+
+/* ---------- Sidebar ---------- */
+.fxd-side {
+  position: sticky; top: 1rem;
+  background: linear-gradient(180deg, rgba(22,18,46,0.92), rgba(11,9,24,0.95));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(124,58,237,0.25);
+  border-radius: 14px;
+  padding: 1.1rem 1rem 1.3rem;
+}
+.fxd-side-head {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 800; font-size: 0.95rem; color: #f5f3ff;
+  padding-bottom: 0.85rem; margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(124,58,237,0.25);
+}
+.fxd-side-head svg { width: 17px; height: 17px; color: #a855f7; }
+
+.fxd-search { position: relative; margin-bottom: 0.8rem; }
+.fxd-search svg {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  width: 15px; height: 15px; color: #8b7aa8; pointer-events: none;
+}
+.fxd-search input {
+  width: 100%; box-sizing: border-box;
+  padding: 0.58rem 0.75rem 0.58rem 2.1rem;
+  background: rgba(9,7,20,0.6);
+  border: 1px solid rgba(124,58,237,0.25); border-radius: 9px;
+  color: #f5f3ff; font-family: inherit; font-size: 0.85rem; outline: none;
+}
+.fxd-search input::placeholder { color: #8b7aa8; }
+.fxd-search input:focus { border-color: rgba(168,85,247,0.6); }
+
+.fxd-select { position: relative; margin-bottom: 1.3rem; }
+.fxd-select select {
+  width: 100%; box-sizing: border-box; appearance: none; -webkit-appearance: none;
+  padding: 0.58rem 2.1rem 0.58rem 0.75rem;
+  background: rgba(9,7,20,0.6);
+  border: 1px solid rgba(124,58,237,0.25); border-radius: 9px;
+  color: #f5f3ff; font-family: inherit; font-size: 0.85rem; cursor: pointer; outline: none;
+}
+.fxd-select select option { background: #14102a; color: #f5f3ff; }
+.fxd-select svg {
+  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+  width: 13px; height: 13px; color: #8b7aa8; pointer-events: none;
+}
+
+.fxd-group { margin-bottom: 1.3rem; }
+.fxd-group:last-child { margin-bottom: 0; }
+.fxd-group-head {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #8b7aa8; margin-bottom: 0.6rem;
+}
+.fxd-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.fxd-pill {
+  padding: 0.35rem 0.72rem;
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.25); border-radius: 999px;
+  color: #d9d2f0; font-family: inherit; font-size: 0.76rem; font-weight: 600;
+  cursor: pointer; transition: background .2s, border-color .2s, color .2s;
+}
+.fxd-pill:hover { background: rgba(124,58,237,0.18); color: #fff; }
+.fxd-pill.is-active {
+  background: linear-gradient(100deg, rgba(124,58,237,0.5), rgba(168,85,247,0.32));
+  border-color: rgba(168,85,247,0.7); color: #fff;
+}
+
+/* ---------- Main ---------- */
+.fxd-main { min-width: 0; }
+.fxd-toolbar { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 0.9rem; }
+.fxd-title { font-size: 1.25rem; font-weight: 800; color: #f5f3ff; letter-spacing: -0.02em; }
+.fxd-count { font-size: 0.82rem; color: #8b7aa8; }
+
+.fxd-tabs {
+  display: flex; gap: 1.3rem;
+  border-bottom: 1px solid rgba(124,58,237,0.25);
+  margin-bottom: 1.3rem;
+}
+.fxd-tab {
+  position: relative; background: none; border: none; cursor: pointer;
+  padding: 0.55rem 0.1rem; font-family: inherit;
+  font-size: 0.88rem; font-weight: 600; color: #8b7aa8; transition: color .2s;
+}
+.fxd-tab:hover { color: #f5f3ff; }
+.fxd-tab.is-active { color: #f5f3ff; }
+.fxd-tab.is-active::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px; background: linear-gradient(90deg, #a855f7, #c084fc); border-radius: 2px;
+}
+
+/* ---------- Card grid ---------- */
+.fxd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+
+.fxd-card {
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, rgba(20,16,42,0.7), rgba(11,9,24,0.72));
+  border: 1px solid rgba(124,58,237,0.25); border-radius: 14px;
+  overflow: hidden; transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.fxd-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(168,85,247,0.5);
+  box-shadow: 0 16px 38px rgba(0,0,0,0.4);
+}
+
+.fxd-card-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #0b091a; }
+.fxd-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fxd-badge {
+  position: absolute; top: 9px; left: 9px; z-index: 2;
+  padding: 0.22rem 0.55rem; border-radius: 6px;
+  font-size: 0.64rem; font-weight: 800; letter-spacing: 0.06em; color: #fff;
+  background: linear-gradient(135deg, #059669, #34d399);
+  box-shadow: 0 3px 9px rgba(5,150,105,0.35);
+}
+.fxd-fav {
+  position: absolute; top: 9px; right: 9px; z-index: 2;
+  width: 28px; height: 28px; display: grid; place-items: center;
+  border-radius: 50%; cursor: pointer;
+  background: rgba(9,7,20,0.55); border: 1px solid rgba(255,255,255,0.14);
+  color: #fff; transition: background .2s;
+}
+.fxd-fav svg { width: 14px; height: 14px; }
+.fxd-fav:hover { background: rgba(244,63,94,0.85); border-color: transparent; }
+
+.fxd-card-body { display: flex; flex-direction: column; flex: 1; padding: 0.9rem 1rem 1rem; }
+.fxd-card-tag { font-size: 0.7rem; font-weight: 700; color: #c084fc; margin-bottom: 0.45rem; }
+.fxd-card-title {
+  font-size: 0.97rem; font-weight: 700; line-height: 1.32; color: #f5f3ff; margin-bottom: 0.4rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.fxd-card-desc {
+  font-size: 0.82rem; color: #8b7aa8; line-height: 1.55; margin-bottom: 0.85rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.fxd-card-author { display: flex; align-items: center; gap: 7px; margin-bottom: 0.85rem; }
+.fxd-avatar {
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  color: #fff; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+}
+.fxd-author-name { font-size: 0.8rem; color: #d9d2f0; font-weight: 500; }
+.fxd-lvl {
+  font-size: 0.66rem; font-weight: 700; color: #c084fc;
+  background: rgba(124,58,237,0.16); border-radius: 5px; padding: 0.1rem 0.35rem;
+}
+.fxd-card-meta {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding-top: 0.75rem; margin-top: auto;
+  border-top: 1px solid rgba(124,58,237,0.25);
+  font-size: 0.76rem; color: #8b7aa8;
+}
+.fxd-stat { display: inline-flex; align-items: center; gap: 5px; }
+.fxd-stat svg { width: 13px; height: 13px; opacity: 0.85; }
+.fxd-time { margin-left: auto; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1200px) { .fxd-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) {
+  /* Stacked, the sidebar sits above the feed. This used to stay a CSS
+     grid (grid-template-columns: 1fr), which stacks the sidebar and the
+     feed as two separate grid ROWS. A sticky grid item is contained by
+     its own grid area, so with the sidebar in its own auto-sized row it
+     only had ~its own height worth of room to travel before running out
+     of room to stick in — it would drift up a little, then stop, leaving
+     a dead gap above it for the rest of the scroll. Switching to normal
+     block flow here makes .fxd-shell itself (sidebar + feed together)
+     the sidebar's containing block, so it has the full scroll length of
+     the feed to stick within. */
+  .fxd-shell { display: block; }
+  /* Sticky pinned to the top was previously turned off altogether
+     (position:static) because it used to cover every card scrolling
+     past. Keep it sticky — so it doesn't leave dead scroll space with
+     nothing pinned at the top — but cap its height and let it scroll
+     internally, so it can stick near the top without ever growing
+     tall enough to blot out the thread list beneath it. */
+  .fxd-side {
+    position: sticky;
+    /* Sticky offsets resolve against the scrollport (.content's padding
+       box), so this is measured from directly under the header — 12px of
+       clearance. The old value subtracted --shell-pad-top to compensate
+       for the floating topbar pill that used to overlap the content;
+       nothing overlaps it now, so the compensation is gone with it. */
+    top: 12px;
+    z-index: 5;
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    /* replaces .fxd-shell's grid `gap`, which no longer applies now
+       that .fxd-shell is block-level instead of grid */
+    margin-bottom: 1.6rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .fxd-side::-webkit-scrollbar { width: 4px; }
+  .fxd-side::-webkit-scrollbar-track { background: transparent; }
+  .fxd-side::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+}
+@media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Forum backdrop ----------
+   The CosmoKlub mark sits behind the forum as a watermark. It's fixed rather
+   than scrolling so it reads as part of the room, not part of the feed, and
+   pointer-events:none keeps it from swallowing clicks on the cards above it.
+   The mask fades the edges out so it never fights the text for contrast. */
+
+.fxd {
+  position: relative;
+}
+
+.fxd::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(78vmin, 720px);
+  height: min(78vmin, 720px);
+  transform: translate(-50%, -50%);
+  background: url("../images/logo-tab.png") center / contain no-repeat;
+  opacity: 0.055;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 38%, transparent 72%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 38%, transparent 72%);
+}
+
+/* Everything the forum renders sits above the watermark. */
+.fxd > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  .fxd::before {
+    width: min(88vmin, 420px);
+    height: min(88vmin, 420px);
+    opacity: 0.045;
+  }
+}
+
+/* ---------- New post box ----------
+   Full width under the tonight's sky strip, the way a social feed puts its
+   composer at the head of the timeline. */
+
+.fxd-newpost {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.85rem 1.1rem;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(22,18,46,0.92), rgba(11,9,24,0.95));
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.fxd-newpost:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+  background: linear-gradient(180deg, rgba(31,24,64,0.95), rgba(15,12,32,0.96));
+}
+
+.fxd-newpost-avatar {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: #08040f;
+  background: linear-gradient(140deg, #c084fc, #7c3aed);
+}
+
+.fxd-newpost-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fxd-newpost-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 15px;
+  font-size: 13px;
+  font-weight: 650;
+  color: #fff;
+  background: linear-gradient(135deg, var(--purple), var(--violet));
+  border-radius: 999px;
+}
+
+.fxd-newpost-btn svg { width: 14px; height: 14px; }
+
+@media (max-width: 520px) {
+  /* Shrink the button to its icon rather than hiding the prompt — a box with
+     no words in it reads as broken. */
+  .fxd-newpost { gap: 0.6rem; padding: 0.75rem 0.85rem; }
+  .fxd-newpost-btn-label { display: none; }
+  .fxd-newpost-btn {
+    margin-left: auto;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  .fxd-newpost-avatar { width: 30px; height: 30px; font-size: 13px; }
+  .fxd-newpost-text { font-size: 13px; }
+}
+
+/* ---------- Composer ---------- */
+
+.fxd-composer-back {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(4, 3, 12, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.fxd-composer {
+  width: min(620px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(24,20,50,0.98), rgba(12,10,26,0.99));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.fxd-composer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.fxd-composer-head h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.fxd-composer-x {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.fxd-composer-x svg { width: 14px; height: 14px; }
+.fxd-composer-x:hover { color: var(--white); }
+
+.fxd-composer-title,
+.fxd-composer-body {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 11px 13px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--white);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  outline: none;
+  resize: vertical;
+}
+
+.fxd-composer-title:focus,
+.fxd-composer-body:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.16);
+}
+
+.fxd-composer-field { margin-bottom: 14px; }
+
+.fxd-composer-label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.fxd-composer-error {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  color: #fca5a5;
+}
+
+.fxd-composer-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.fxd-composer-note { font-size: 12px; color: var(--muted); }
+
+.fxd-composer-post {
+  padding: 10px 22px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 650;
+  color: #fff;
+  background: linear-gradient(135deg, var(--purple), var(--violet));
+  border: none;
+  border-radius: 11px;
+  cursor: pointer;
+}
+
+
+/* ---------- Like / comment buttons on a card ---------- */
+
+.fxd-stat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  margin: -3px -1px;
+  font: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+.fxd-stat-btn:hover {
+  color: var(--white);
+  background: rgba(168, 85, 247, 0.12);
+}
+
+.fxd-like.is-liked { color: #f472b6; }
+.fxd-like.is-liked:hover { color: #f9a8d4; }
+
+/* The whole card opens the reader, so say so on hover. */
+.fxd-card { cursor: pointer; }
+
+/* ---------- Thread reader ---------- */
+
+.fxd-reader {
+  width: min(680px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(24,20,50,0.98), rgba(12,10,26,0.99));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.fxd-reader-title {
+  margin: 12px 0 14px;
+  font-size: 19px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.fxd-badge-inline {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.fxd-reader-body {
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+.fxd-reader-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 18px;
+  padding: 12px 0;
+  font-size: 13px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ---------- Comments ---------- */
+
+.fxd-comments { padding: 6px 0 2px; }
+
+.fxd-comment {
+  display: flex;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.fxd-comment:last-child { border-bottom: none; }
+
+.fxd-avatar-sm {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  font-size: 12px;
+  background: linear-gradient(140deg, #c084fc, #7c3aed);
+}
+
+.fxd-comment-body { min-width: 0; flex: 1; }
+
+.fxd-comment-head {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 3px;
+}
+
+.fxd-comment-body p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.fxd-comments-empty {
+  margin: 0;
+  padding: 18px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.fxd-comment-form {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.fxd-comment-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 13px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--white);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  outline: none;
+}
+
+.fxd-comment-form input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.16);
+}
+
+.fxd-comment-form button {
+  flex: 0 0 auto;
+  padding: 9px 18px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  color: #fff;
+  background: linear-gradient(135deg, var(--purple), var(--violet));
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.fxd-comment-form button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---------- "Has this been solved?" prompt ----------
+   Shown at the top of the reader on your own open questions. */
+
+.fxd-solve-ask {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 12px 0 4px;
+  padding: 12px 14px;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.32);
+  border-radius: 12px;
+}
+
+.fxd-solve-ask-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #a7f3d0;
+}
+
+.fxd-solve-ask-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.fxd-solve-yes,
+.fxd-solve-no {
+  padding: 7px 18px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.fxd-solve-yes {
+  color: #052e1c;
+  background: #34d399;
+  border: 1px solid #34d399;
+}
+
+.fxd-solve-yes:hover { background: #6ee7b7; }
+
+.fxd-solve-no {
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+}
+
+.fxd-solve-no:hover {
+  color: var(--white);
+  border-color: rgba(255,255,255,0.25);
+}
+
+.fxd-solve-undo {
+  margin-left: 10px;
+  padding: 4px 11px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.fxd-solve-undo:hover { color: var(--white); }
+
+/* ---------- Forum: sky strip + composer moved into the feed column ----------
+   They used to sit above .fxd-shell at full page width while the thread list
+   below started after the 250px sidebar, so the two never lined up. Now they
+   are inside .fxd-main and share its edges. */
+
+.fxd-main > .sky-strip { margin-bottom: 12px; }
+
+.fxd-main > .fxd-newpost { margin: 0 0 18px; }
+
+/* The shell is now the first thing in the tab, so it carries the top gap. */
+.fxd-shell { margin-top: 0.4rem; }
+
+/* ---------- Filters on a phone ----------
+   The sidebar is sticky once the layout stacks, which works on a tall tablet
+   but not on a phone held upright: it pins under the header and rides over
+   the feed the whole way down. Locked in place there — it scrolls away like
+   any other block and the thread list is never covered.
+
+   Landscape phones get the same treatment: a viewport under ~520px tall has
+   no room to stick anything without eating the screen. */
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .fxd-side {
+    position: static;
+    top: auto;
+    z-index: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 900px) and (max-height: 520px) {
+  .fxd-side {
+    position: static;
+    top: auto;
+    z-index: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* ---------- Forum: loading / empty / error ---------- */
+
+.fxd-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 54px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.fxd-state svg { opacity: 0.32; margin-bottom: 4px; }
+
+.fxd-state .spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(168, 85, 247, 0.25);
+  border-top-color: var(--purple);
+  border-radius: 50%;
+  animation: fxdSpin 0.7s linear infinite;
+}
+
+@keyframes fxdSpin { to { transform: rotate(360deg); } }
+
+.fxd-state-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--stardust);
+}
+
+.fxd-state-sub { margin: 0; max-width: 320px; line-height: 1.55; }
+
+.fxd-state-error { color: #fca5a5; border-color: rgba(248, 113, 113, 0.3); }
+
+/* ---------- Replying to a comment ---------- */
+
+.fxd-comment-thread + .fxd-comment-thread {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* One level of indent, with a rule down the left so the answers read as
+   belonging to the comment above them. */
+.fxd-comment-child {
+  margin-left: 38px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(168, 85, 247, 0.22);
+  border-bottom: none;
+}
+
+.fxd-reply-btn {
+  margin-top: 6px;
+  padding: 3px 10px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.fxd-reply-btn:hover {
+  color: var(--white);
+  border-color: rgba(168, 85, 247, 0.45);
+}
+
+.fxd-reply-form {
+  margin-left: 38px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: none;
+}
+
+.fxd-reply-cancel {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.fxd-reply-cancel:hover { color: var(--white); }
+
+@media (max-width: 520px) {
+  .fxd-comment-child,
+  .fxd-reply-form { margin-left: 16px; }
+}
+
+/* ---------- Deleting a post or comment ----------
+   Confirmation happens inline rather than in a browser dialog, so the thing
+   being deleted stays visible while you decide. */
+
+.fxd-comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.fxd-comment-actions .fxd-reply-btn { margin-top: 0; }
+
+.fxd-reply-btn-danger {
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.fxd-reply-btn-danger:hover {
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.fxd-del-btn {
+  margin-left: auto;
+  padding: 5px 13px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fca5a5;
+  background: none;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.fxd-del-btn:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.fxd-del-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  font-size: 12px;
+  color: #fca5a5;
+}
+
+.fxd-del-yes,
+.fxd-del-no {
+  padding: 5px 13px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.fxd-del-yes {
+  color: #fff;
+  background: #dc2626;
+  border: 1px solid #dc2626;
+}
+
+.fxd-del-yes:hover:not(:disabled) { background: #ef4444; }
+.fxd-del-yes:disabled { opacity: 0.5; cursor: default; }
+
+.fxd-del-no {
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+}
+
+.fxd-del-no:hover { color: var(--white); }
+
+@media (max-width: 520px) {
+  .fxd-del-btn,
+  .fxd-del-confirm { margin-left: 0; }
+  .fxd-del-confirm { flex-wrap: wrap; }
+}
