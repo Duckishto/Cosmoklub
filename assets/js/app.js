@@ -5,13 +5,18 @@ window.CosmoKlub = window.CosmoKlub || {};
 // Every one of these is reachable from the sidebar: the first four from
 // the top group, Profile and Settings from the ACCOUNT group underneath.
 // They all share the ?tab= routing and Back behaviour.
+//
+// 'docs' is the one exception — it's a tab (so it gets a URL and a
+// component like everything else here) but it's reachable only from the
+// header's Docs link, not the sidebar. See PRIMARY_NAV/ACCOUNT_NAV below.
 const VALID_TABS = [
   'forum',
   'library',
   'calculator',
   'chat',
   'profile',
-  'settings'
+  'settings',
+  'docs'
 ];
 
 // Icons for the sidebar. Forum/Library/Calculator/Chat reuse the exact
@@ -23,6 +28,8 @@ const NAV_ICONS = {
   chat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
   profile: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.5 3.6-8 8-8s8 3.5 8 8"/></svg>`,
   minigames: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M7 10v5M4.5 12.5h5"/><circle cx="16" cy="10.5" r="1"/><circle cx="18.5" cy="13" r="1"/></svg>`,
+  docs: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  home: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21V12h6v9"/></svg>`,
   settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
   logout: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`
 };
@@ -55,8 +62,23 @@ const TAB_TITLES = {
   calculator: 'Calculator',
   chat: 'Chat',
   profile: 'Profile',
-  settings: 'Settings'
+  settings: 'Settings',
+  docs: 'Docs'
 };
+
+// The header search overlay's result list — every place "Search" can jump
+// you. Keeps the sidebar/header destinations as the single source of truth
+// for what's searchable, rather than indexing content inside each tab.
+const SEARCH_INDEX = [
+  { key: 'forum', label: 'Forum', hint: 'Ask questions & share your astrophotos', tab: 'forum', icon: NAV_ICONS.forum },
+  { key: 'library', label: 'Library', hint: 'Guided astronomy course & roadmap', tab: 'library', icon: NAV_ICONS.library },
+  { key: 'calculator', label: 'Calculator', hint: 'Telescope & imaging calculators', tab: 'calculator', icon: NAV_ICONS.calculator },
+  { key: 'chat', label: 'Chat', hint: 'Your direct messages', tab: 'chat', icon: NAV_ICONS.chat },
+  { key: 'profile', label: 'Profile', hint: 'Your public identity & progression', tab: 'profile', icon: NAV_ICONS.profile },
+  { key: 'settings', label: 'Settings', hint: 'Account & security', tab: 'settings', icon: NAV_ICONS.settings },
+  { key: 'docs', label: 'Docs', hint: 'Guides for using CosmoKlub', tab: 'docs', icon: NAV_ICONS.docs },
+  { key: 'home', label: 'Home', hint: 'cosmoklub.com — leaves the dashboard', href: 'index.html', icon: NAV_ICONS.home }
+];
 
 // Below this width the sidebar is off-canvas, so navigating has to close
 // it or the destination stays hidden behind the panel.
@@ -134,8 +156,14 @@ createApp({
         chat: Chat,
         calculator: Calculator,
         profile: Profile,
-        settings: Settings
-      }
+        settings: Settings,
+        docs: Docs
+      },
+
+      // Header search overlay. Not wired to any tab's internal state —
+      // it only ever jumps you to one of SEARCH_INDEX's destinations.
+      searchOpen: false,
+      searchQuery: ''
     };
   },
 
@@ -176,6 +204,21 @@ createApp({
         ? `${this.progress.rank} · level ${this.progress.level} · max level reached`
         : `${this.progress.rank} · level ${this.progress.level} · ` +
           `${this.progress.toNext.toLocaleString()} XP to level ${this.progress.level + 1}`;
+    },
+
+    // Substring match against label + hint; empty query shows everything,
+    // so the overlay is never empty the moment it opens.
+    filteredSearchResults() {
+      const q = this.searchQuery.trim().toLowerCase();
+
+      if (!q) {
+        return SEARCH_INDEX;
+      }
+
+      return SEARCH_INDEX.filter((r) =>
+        r.label.toLowerCase().includes(q) ||
+        (r.hint || '').toLowerCase().includes(q)
+      );
     }
   },
 
@@ -219,6 +262,41 @@ createApp({
       if (this.sidebarOpen) {
         this.sidebarOpen = false;
       }
+    },
+
+    // Header search overlay.
+    openSearch() {
+      this.searchOpen = true;
+      this.searchQuery = '';
+
+      this.$nextTick(() => {
+        if (this.$refs.searchInput) {
+          this.$refs.searchInput.focus();
+        }
+      });
+    },
+
+    closeSearch() {
+      this.searchOpen = false;
+    },
+
+    // A result either has a tab (stays in the SPA) or an href (Home —
+    // leaves the dashboard for the marketing site).
+    goSearchResult(result) {
+      if (!result) {
+        return;
+      }
+
+      if (result.href) {
+        window.location.href = result.href;
+        return;
+      }
+
+      if (result.tab) {
+        this.setTab(result.tab);
+      }
+
+      this.closeSearch();
     },
 
     // Name + picture for the two account chips. Best-effort: any failure
@@ -359,6 +437,27 @@ createApp({
       if (e.key === 'Escape') this.closeSidebar();
     });
 
+    // "/" opens search from anywhere, same convention as GitHub/Slack —
+    // unless the person is already typing in a field (forum composer, chat
+    // box, a settings input…), in which case it should just type a slash.
+    this._onSearchShortcut = (e) => {
+      if (e.key === '/' && !this.searchOpen) {
+        const active = document.activeElement;
+        const tag = active ? active.tagName : '';
+        const typing =
+          tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
+          (active && active.isContentEditable);
+
+        if (!typing) {
+          e.preventDefault();
+          this.openSearch();
+        }
+      } else if (e.key === 'Escape' && this.searchOpen) {
+        this.closeSearch();
+      }
+    };
+    window.addEventListener('keydown', this._onSearchShortcut);
+
     if (
       window.CosmoKlub &&
       typeof window.CosmoKlub.initStarfield === 'function'
@@ -385,6 +484,10 @@ createApp({
         'cosmoklub-progress-changed',
         this._onProgressChanged
       );
+    }
+
+    if (this._onSearchShortcut) {
+      window.removeEventListener('keydown', this._onSearchShortcut);
     }
   }
 }).mount('#app');
