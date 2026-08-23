@@ -1,21 +1,20 @@
 -- ---------------------------------------------------------------------------
--- CosmoKlub — forum schema.
+-- CosmoKlub — forum schema (FIRST RUN version)
 --
--- Run this once in the Supabase dashboard: SQL Editor -> New query -> paste
--- -> Run. It is safe to run again; every statement is idempotent.
+-- Identical to schema-forum.sql with every `drop policy` / `drop trigger`
+-- line taken out. Those lines only exist so the original can be re-run
+-- safely; on a database that has never had the forum tables there is nothing
+-- for them to drop. Removing them means the Supabase SQL editor no longer
+-- flags the query as destructive — because now it genuinely contains no
+-- destructive statement at all.
 --
--- Depends on supabase/schema.sql having been run first (it creates
--- public.profiles, which everything here joins against for usernames).
+-- This file only ever CREATES. It does not drop, truncate or delete anything,
+-- and it never mentions profiles, user_progress, lesson_completions, badges,
+-- user_badges, cosmetic_items, user_cosmetics, staff_applications or
+-- bug_reports except to read a username.
 --
--- Four tables:
---   forum_threads    a post
---   forum_replies    a comment on a post
---   forum_likes      one row per person per post
---   notifications    "someone replied to you" / "someone liked your post"
---
--- Reply and like counts are not stored on the thread. They are derived by the
--- forum_thread_feed view below, so a like can never drift out of sync with the
--- rows in forum_likes.
+-- Use this one for the first run. If you ever need to re-run after editing,
+-- use schema-forum.sql instead — it tolerates objects that already exist.
 -- ---------------------------------------------------------------------------
 
 -- ---------------------------------------------------------------------------
@@ -54,23 +53,19 @@ create index if not exists forum_threads_author_idx   on public.forum_threads (a
 
 alter table public.forum_threads enable row level security;
 
-drop policy if exists "threads are readable by everyone" on public.forum_threads;
 create policy "threads are readable by everyone"
   on public.forum_threads for select
   using (true);
 
-drop policy if exists "signed-in users can post" on public.forum_threads;
 create policy "signed-in users can post"
   on public.forum_threads for insert
   with check (auth.uid() = author_id);
 
-drop policy if exists "authors can edit their own threads" on public.forum_threads;
 create policy "authors can edit their own threads"
   on public.forum_threads for update
   using (auth.uid() = author_id)
   with check (auth.uid() = author_id);
 
-drop policy if exists "authors can delete their own threads" on public.forum_threads;
 create policy "authors can delete their own threads"
   on public.forum_threads for delete
   using (auth.uid() = author_id);
@@ -92,17 +87,14 @@ create index if not exists forum_replies_author_idx on public.forum_replies (aut
 
 alter table public.forum_replies enable row level security;
 
-drop policy if exists "replies are readable by everyone" on public.forum_replies;
 create policy "replies are readable by everyone"
   on public.forum_replies for select
   using (true);
 
-drop policy if exists "signed-in users can reply" on public.forum_replies;
 create policy "signed-in users can reply"
   on public.forum_replies for insert
   with check (auth.uid() = author_id);
 
-drop policy if exists "authors can delete their own replies" on public.forum_replies;
 create policy "authors can delete their own replies"
   on public.forum_replies for delete
   using (auth.uid() = author_id);
@@ -125,17 +117,14 @@ create index if not exists forum_likes_user_idx on public.forum_likes (user_id);
 
 alter table public.forum_likes enable row level security;
 
-drop policy if exists "likes are readable by everyone" on public.forum_likes;
 create policy "likes are readable by everyone"
   on public.forum_likes for select
   using (true);
 
-drop policy if exists "signed-in users can like" on public.forum_likes;
 create policy "signed-in users can like"
   on public.forum_likes for insert
   with check (auth.uid() = user_id);
 
-drop policy if exists "people can remove their own like" on public.forum_likes;
 create policy "people can remove their own like"
   on public.forum_likes for delete
   using (auth.uid() = user_id);
@@ -164,18 +153,15 @@ create index if not exists notifications_user_idx
 
 alter table public.notifications enable row level security;
 
-drop policy if exists "people read their own notifications" on public.notifications;
 create policy "people read their own notifications"
   on public.notifications for select
   using (auth.uid() = user_id);
 
-drop policy if exists "people mark their own notifications read" on public.notifications;
 create policy "people mark their own notifications read"
   on public.notifications for update
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
-drop policy if exists "people delete their own notifications" on public.notifications;
 create policy "people delete their own notifications"
   on public.notifications for delete
   using (auth.uid() = user_id);
@@ -209,7 +195,6 @@ begin
 end;
 $$;
 
-drop trigger if exists on_forum_reply_created on public.forum_replies;
 create trigger on_forum_reply_created
   after insert on public.forum_replies
   for each row execute function public.notify_thread_reply();
@@ -236,7 +221,6 @@ begin
 end;
 $$;
 
-drop trigger if exists on_forum_like_created on public.forum_likes;
 create trigger on_forum_like_created
   after insert on public.forum_likes
   for each row execute function public.notify_thread_like();

@@ -82,11 +82,16 @@ const Profile = {
       <section v-if="view === 'posts'" class="profile-card">
         <div v-if="posts.length" class="profile-post-list">
           <article class="profile-post" v-for="post in posts" :key="post.id">
+            <div class="profile-post-head">
+              <span class="profile-post-cat">{{ post.category }}</span>
+              <span class="profile-post-solved" v-if="post.solved">SOLVED</span>
+              <span class="profile-post-time">{{ post.time }}</span>
+            </div>
             <h4 class="profile-post-title">{{ post.title }}</h4>
             <p class="profile-post-body">{{ post.body }}</p>
             <div class="profile-post-meta">
-              <span>{{ post.replies }} replies</span>
-              <span>{{ post.likes }} likes</span>
+              <span>{{ post.replies }} {{ post.replies === 1 ? 'reply' : 'replies' }}</span>
+              <span>{{ post.likes }} {{ post.likes === 1 ? 'like' : 'likes' }}</span>
             </div>
           </article>
         </div>
@@ -275,15 +280,28 @@ const Profile = {
     // only these two bodies need replacing.
 
     async loadSocial() {
-      // Real version: count rows in `follows` (both directions) and `likes`
-      // for this.userId.
-      this.social = { following: 0, followers: 0, likes: 0 };
+      // Followers and following have no tables yet — that is a separate
+      // feature. Likes are real: every like on everything this person wrote.
+      const likes = await window.ForumAPI.likeCountForUser(this.userId);
+      this.social = { following: 0, followers: 0, likes };
     },
 
     async loadPosts() {
-      // Real version: select this user's rows from `threads`, newest first,
-      // with reply and like counts joined in.
-      this.posts = [];
+      if (!this.userId) return;
+
+      const res = await window.ForumAPI.threadsByUser(this.userId, { limit: 50 });
+      if (!res.ok) return;
+
+      this.posts = res.threads.map(row => ({
+        id: row.id,
+        title: row.title,
+        body: row.body,
+        category: row.category,
+        solved: !!row.solved,
+        time: window.ForumAPI.timeAgo(row.created_at),
+        replies: row.reply_count || 0,
+        likes: row.like_count || 0,
+      }));
     },
   },
 };

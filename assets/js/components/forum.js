@@ -2,62 +2,12 @@
 // Includes subtle 3D cursor interaction on thread cards.
 // No mouse highlight.
 
-// Seeded comments for the mock feed, keyed by thread id. Threads missing from
-// here genuinely have none, which is what makes the "Unanswered" filter show
-// anything at all. Each thread's `replies` count is reconciled against this in
-// data() so a card can never claim more comments than the reader will show.
-const FORUM_MOCK_COMMENTS = {
-  1: [
-    { author: 'darkskydave', initial: 'D', color: '#22d3ee', time: '2h ago',
-      body: "A 6\" will show the rings clearly and the Cassini division on a steady night. Don't expect Hubble, but you'll grin." },
-    { author: 'rings_of_r', initial: 'R', color: '#a855f7', time: '1h ago',
-      body: '150x is about right for that aperture. Let it cool outside for 30 minutes first — it makes a bigger difference than the eyepiece.' },
-    { author: 'firstlight', initial: 'F', color: '#3b82f6', time: '44m ago',
-      body: 'Bortle 5 is fine for planets. Light pollution barely touches them.' },
-  ],
-  3: [
-    { author: 'coldfinger', initial: 'C', color: '#60a5fa', time: '5h ago',
-      body: 'Check collimation before you blame the seeing. A reflector that has been in a car boot is almost never still aligned.' },
-    { author: 'lens_lena', initial: 'L', color: '#ec4899', time: '3h ago',
-      body: 'Had the same thing. Turned out I was using too much power for the night — dropped to 100x and it snapped into focus.' },
-  ],
-  5: [
-    { author: 'nebula_nia', initial: 'N', color: '#8b5cf6', time: '1d ago',
-      body: 'Gorgeous framing. What total integration time did this end up being?' },
-  ],
-  7: [
-    { author: 'meteor_mo', initial: 'M', color: '#10b981', time: '2d ago',
-      body: 'Saw the same thing from a much worse sky and still caught a dozen. Worth staying up for.' },
-    { author: 'starhopper', initial: 'S', color: '#c084fc', time: '2d ago',
-      body: 'Any tips for keeping warm on an all-nighter? Last time I gave up at 2am.' },
-  ],
-  10: [
-    { author: 'solar_sam', initial: 'S', color: '#fbbf24', time: '4d ago',
-      body: 'The shadow really does look like someone dotted the disc with a marker. Nice capture.' },
-  ],
-  16: [
-    { author: 'archive_ada', initial: 'A', color: '#34d399', time: '5h ago',
-      body: 'f/2 at ISO 3200 for 4s is a lot of light for a Kp7 display. Try ISO 800 and 2s next time.' },
-    { author: 'coldfinger', initial: 'C', color: '#60a5fa', time: '4h ago',
-      body: 'Also worth shooting raw and pulling the highlights back rather than chasing it in camera.' },
-  ],
-  18: [
-    { author: 'quiet_quasar', initial: 'Q', color: '#f472b6', time: '9h ago',
-      body: 'It is almost always the eyepiece being pushed past what the sky will allow. Try half the magnification.' },
-  ],
-  22: [
-    { author: 'darkskydave', initial: 'D', color: '#22d3ee', time: '1d ago',
-      body: 'Dew shield first, always. It is cheaper and solves most of it. Heater only if you are out past midnight regularly.' },
-    { author: 'aurora_ann', initial: 'A', color: '#f59e0b', time: '22h ago',
-      body: 'Seconding the shield. A strip of camping mat and some velcro cost me nothing and bought two extra hours.' },
-    { author: 'firstlight', initial: 'F', color: '#3b82f6', time: '20h ago',
-      body: 'If you do go heater, get one with a controller. Full power fogs your view with heat shimmer instead.' },
-  ],
-  27: [
-    { author: 'nebula_nia', initial: 'N', color: '#8b5cf6', time: '3d ago',
-      body: 'Twenty hours shows. The halo control around Alnitak is the hard part and you nailed it.' },
-  ],
-};
+// Forum tab — thread feed, composer, reader.
+//
+// All data comes from Supabase through assets/js/lib/forum-api.js, which is
+// backed by supabase/schema-forum.sql. If those tables have not been created
+// the API returns an empty list with an explanatory message, and the empty
+// state below shows it rather than the tab looking broken.
 
 const Forum = {
   name: 'Forum',
@@ -177,21 +127,97 @@ const Forum = {
                 {{ reading.upvotes }} {{ reading.upvotes === 1 ? 'like' : 'likes' }}
               </button>
               <span class="fxd-stat">{{ commentCount(reading) }} {{ commentCount(reading) === 1 ? 'comment' : 'comments' }}</span>
+
+              <!-- Only ever shown on your own post; the database refuses it
+                   for anyone else regardless. -->
+              <button
+                v-if="isMine(reading) && confirmDeleteThread !== reading.id"
+                class="fxd-del-btn"
+                @click="askDeleteThread(reading)"
+              >Delete post</button>
+
+              <span v-else-if="isMine(reading)" class="fxd-del-confirm">
+                Delete this post and its comments?
+                <button class="fxd-del-yes" :disabled="deleting" @click="doDeleteThread(reading)">
+                  {{ deleting ? 'Deleting…' : 'Delete' }}
+                </button>
+                <button class="fxd-del-no" @click="cancelDelete()">Cancel</button>
+              </span>
             </div>
 
             <div class="fxd-comments">
-              <div class="fxd-comment" v-for="c in commentsFor(reading)" :key="c.id">
-                <span class="fxd-avatar fxd-avatar-sm" :style="{ background: c.color }">{{ c.initial }}</span>
-                <div class="fxd-comment-body">
-                  <div class="fxd-comment-head">
-                    <span class="fxd-author-name">{{ c.author }}</span>
-                    <span class="fxd-time">{{ c.time }}</span>
+              <div class="fxd-comment-thread" v-for="c in topLevelComments" :key="c.id">
+
+                <div class="fxd-comment">
+                  <span class="fxd-avatar fxd-avatar-sm" :style="{ background: c.color }">{{ c.initial }}</span>
+                  <div class="fxd-comment-body">
+                    <div class="fxd-comment-head">
+                      <span class="fxd-author-name">{{ c.author }}</span>
+                      <span class="fxd-time">{{ c.time }}</span>
+                    </div>
+                    <p>{{ c.body }}</p>
+                    <div class="fxd-comment-actions">
+                      <button class="fxd-reply-btn" @click="startReply(c)">Reply</button>
+
+                      <button
+                        v-if="isMyComment(c) && confirmDeleteComment !== c.id"
+                        class="fxd-reply-btn fxd-reply-btn-danger"
+                        @click="askDeleteComment(c)"
+                      >Delete</button>
+
+                      <span v-else-if="isMyComment(c)" class="fxd-del-confirm">
+                        Delete?
+                        <button class="fxd-del-yes" :disabled="deleting" @click="doDeleteComment(c)">Yes</button>
+                        <button class="fxd-del-no" @click="cancelDelete()">No</button>
+                      </span>
+                    </div>
                   </div>
-                  <p>{{ c.body }}</p>
                 </div>
+
+                <!-- Answers to this comment, indented one level. Deliberately
+                     only one level deep: threads that nest without limit get
+                     unreadable fast on a phone. -->
+                <div class="fxd-comment fxd-comment-child" v-for="r in repliesTo(c.id)" :key="r.id">
+                  <span class="fxd-avatar fxd-avatar-sm" :style="{ background: r.color }">{{ r.initial }}</span>
+                  <div class="fxd-comment-body">
+                    <div class="fxd-comment-head">
+                      <span class="fxd-author-name">{{ r.author }}</span>
+                      <span class="fxd-time">{{ r.time }}</span>
+                    </div>
+                    <p>{{ r.body }}</p>
+                    <div class="fxd-comment-actions" v-if="isMyComment(r)">
+                      <button
+                        v-if="confirmDeleteComment !== r.id"
+                        class="fxd-reply-btn fxd-reply-btn-danger"
+                        @click="askDeleteComment(r)"
+                      >Delete</button>
+                      <span v-else class="fxd-del-confirm">
+                        Delete?
+                        <button class="fxd-del-yes" :disabled="deleting" @click="doDeleteComment(r)">Yes</button>
+                        <button class="fxd-del-no" @click="cancelDelete()">No</button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reply box, shown under whichever comment you chose. -->
+                <div class="fxd-comment-form fxd-reply-form" v-if="replyingTo === c.id">
+                  <span class="fxd-avatar fxd-avatar-sm">{{ myInitial }}</span>
+                  <input
+                    type="text"
+                    v-model="replyDraft"
+                    :placeholder="'Reply to ' + c.author + '…'"
+                    @keyup.enter="submitReply(c)"
+                    maxlength="4000"
+                  />
+                  <button @click="submitReply(c)" :disabled="!replyDraft.trim()">Send</button>
+                  <button class="fxd-reply-cancel" @click="cancelReply()">Cancel</button>
+                </div>
+
               </div>
 
-              <p class="fxd-comments-empty" v-if="!commentCount(reading)">
+              <p class="fxd-comments-empty" v-if="commentsLoading">Loading comments…</p>
+              <p class="fxd-comments-empty" v-else-if="!commentCount(reading)">
                 No comments yet — be the first to reply.
               </p>
             </div>
@@ -294,15 +320,30 @@ const Forum = {
             <button class="fxd-tab">Popular</button>
           </div>
 
-          <div class="fxd-grid">
+          <!-- Three states before the grid: still fetching, something went
+               wrong, or nothing matches the filters. -->
+          <div class="fxd-state" v-if="loading">
+            <span class="spinner"></span> Loading the forum…
+          </div>
+
+          <div class="fxd-state fxd-state-error" v-else-if="loadError">
+            {{ loadError }}
+          </div>
+
+          <div class="fxd-state" v-else-if="!filteredThreads.length">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" width="52" height="52"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <p class="fxd-state-title">{{ threads.length ? 'Nothing matches these filters' : 'No posts yet' }}</p>
+            <p class="fxd-state-sub">
+              {{ threads.length ? 'Try another category or status.' : 'Be the first — use New post above.' }}
+            </p>
+          </div>
+
+          <div class="fxd-grid" v-else>
 
             <article class="fxd-card" v-for="t in filteredThreads" :key="t.id" @click="openThread(t)">
 
               <div class="fxd-card-media">
                 <span class="fxd-badge" v-if="t.solved">SOLVED</span>
-                <button class="fxd-fav" aria-label="Save thread" @click.stop>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-                </button>
                 <img src="assets/images/pensiaplaceholder.png" alt="" draggable="false" loading="lazy" />
               </div>
 
@@ -358,10 +399,22 @@ const Forum = {
       // Likes and comments are local for now, same as the threads themselves.
       // ForumAPI.toggleLike / addReply replace these once the tables exist.
       likedIds: [],
-      comments: JSON.parse(JSON.stringify(FORUM_MOCK_COMMENTS)),
+      // Keyed by thread id, fetched when a thread's reader is opened.
+      comments: {},
+      commentsLoading: false,
 
       reading: null,
       commentDraft: '',
+
+      // Which comment the reply box is currently open under, and its text.
+      replyingTo: null,
+      replyDraft: '',
+
+      // Id of the post or comment showing its "really delete?" row. Only one
+      // at a time, and nothing is removed until it is confirmed.
+      confirmDeleteThread: null,
+      confirmDeleteComment: null,
+      deleting: false,
 
       // Threads whose "Has this been solved?" prompt has been answered or
       // waved away, so it doesn't nag on every visit.
@@ -371,6 +424,7 @@ const Forum = {
       // flow can be judged on screen before assets/js/lib/forum-api.js and
       // supabase/schema-forum.sql take over the storage.
       composerOpen: false,
+      myId: null,
       myName: 'you',
       draft: {
         title: '',
@@ -389,562 +443,13 @@ const Forum = {
         'News'
       ],
 
-      threads: [
-        {
-          id: 1,
-          author: 'galileo_jr',
-          initial: 'G',
-          color: '#7c3aed',
-          level: 'Lv. 4',
-          time: '2h ago',
-          replies: 14,
-          upvotes: 38,
-          tag: 'Equipment',
-
-          title:
-            "Is a 6\" Dobsonian enough to actually see Saturn's rings, or am I being too hopeful?",
-
-          body:
-            'Picking up a used Apertura AD6 this weekend. Mainly want planetary views from a Bortle 5 backyard, realistic expectations for Saturn and Jupiter at 150x?',
-
-          solved: false
-        },
-
-        {
-          id: 2,
-          author: 'nebula_noor',
-          initial: 'N',
-          color: '#a855f7',
-          level: 'Lv. 9',
-          time: '5h ago',
-          replies: 27,
-          upvotes: 102,
-          tag: 'Astrophotography',
-
-          title:
-            'First decent capture of the Orion Nebula, 2hr integration, stacked in Siril',
-
-          body:
-            "Finally got the cooling box working on my old DSLR. Still a lot of gradient in the corners I couldn't fully remove, tips welcome on the flat frames.",
-
-          solved: false
-        },
-
-        {
-          id: 3,
-          author: 'stardust_mei',
-          initial: 'M',
-          color: '#5b21b6',
-          level: 'Lv. 2',
-          time: '7h ago',
-          replies: 6,
-          upvotes: 19,
-          tag: 'Beginner Q&A',
-
-          title:
-            'What does "magnitude" actually mean? Keep seeing it but the scale confuses me',
-
-          body:
-            'I get that lower numbers are brighter, but why are some negative? And how do I use it to figure out if something is naked-eye visible from a suburban sky?',
-
-          solved: true
-        },
-
-        {
-          id: 4,
-          author: 'redgiant_theo',
-          initial: 'T',
-          color: '#9333ea',
-          level: 'Lv. 6',
-          time: '11h ago',
-          replies: 9,
-          upvotes: 54,
-          tag: 'Solar System',
-
-          title:
-            'Mars opposition prep: best filters for surface detail on a 8" SCT?',
-
-          body:
-            'Planning a session for the upcoming opposition. Currently have a basic moon filter only. Would a Wratten #21 orange make a noticeable difference for polar caps and Syrtis Major?',
-
-          solved: false
-        },
-
-        {
-          id: 5,
-          author: 'pleiades_anya',
-          initial: 'A',
-          color: '#c084fc',
-          level: 'Lv. 5',
-          time: '1d ago',
-          replies: 21,
-          upvotes: 67,
-          tag: 'Deep Sky',
-
-          title:
-            'Pleiades nebulosity: am I actually seeing the reflection nebula visually?',
-
-          body:
-            'Through my 8" dob last night under fairly dark skies I thought I caught faint wisps around Merope. Could this realistically be visual, or is it more likely scatter/eye strain?',
-
-          solved: true
-        },
-
-        {
-          id: 6,
-          author: 'cosmic_leo',
-          initial: 'L',
-          color: '#f97316',
-          level: 'Lv. 7',
-          time: '2d ago',
-          replies: 34,
-          upvotes: 89,
-          tag: 'Equipment',
-
-          title:
-            'Best budget astrophotography camera under $500?',
-
-          body:
-            'Looking to start deep-sky with a used DSLR vs dedicated astro camera. Anyone have experience with the ZWO ASI120MC?',
-
-          solved: false
-        },
-
-        {
-          id: 7,
-          author: 'lunar_emily',
-          initial: 'E',
-          color: '#14b8a6',
-          level: 'Lv. 3',
-          time: '2d ago',
-          replies: 12,
-          upvotes: 28,
-          tag: 'Beginner Q&A',
-
-          title:
-            'Why do some stars twinkle more than others?',
-
-          body:
-            "I know it's atmospheric turbulence, but Arcturus twinkles wildly while Vega is steady. Is it just altitude?",
-
-          solved: true
-        },
-
-        {
-          id: 8,
-          author: 'deepsky_dave',
-          initial: 'D',
-          color: '#3b82f6',
-          level: 'Lv. 12',
-          time: '3d ago',
-          replies: 56,
-          upvotes: 203,
-          tag: 'Deep Sky',
-
-          title:
-            'First light with 16" truss dob – Veil Nebula blew my mind',
-
-          body:
-            'Observed from a Bortle 4 site. The Eastern Veil with OIII filter was like a glowing cosmic snake. Anyone else prefer unfiltered views?',
-
-          solved: false
-        },
-
-        {
-          id: 9,
-          author: 'astro_jessi',
-          initial: 'J',
-          color: '#ec489a',
-          level: 'Lv. 8',
-          time: '3d ago',
-          replies: 19,
-          upvotes: 76,
-          tag: 'Astrophotography',
-
-          title:
-            'My first mosaic of the Cygnus region – 12 panels',
-
-          body:
-            'Captured with a 50mm lens and modded DSLR. Processing the seams was tough but worth it. Feedback appreciated!',
-
-          solved: false
-        },
-
-        {
-          id: 10,
-          author: 'planet_hunter',
-          initial: 'P',
-          color: '#8b5cf6',
-          level: 'Lv. 10',
-          time: '4d ago',
-          replies: 41,
-          upvotes: 115,
-          tag: 'Solar System',
-
-          title:
-            'Jupiter Io transit tonight – grabbed some lucky imaging',
-
-          body:
-            "Seeing was average but caught the shadow transit. Stacked 2000 frames. Io's shadow looked like a sharp black dot.",
-
-          solved: false
-        },
-
-        {
-          id: 11,
-          author: 'nova_chaser',
-          initial: 'N',
-          color: '#ef4444',
-          level: 'Lv. 5',
-          time: '4d ago',
-          replies: 8,
-          upvotes: 22,
-          tag: 'News',
-
-          title:
-            'New supernova in M101? Anyone confirm?',
-
-          body:
-            'Saw reports of a possible brightening. Checked with my 10" dob – could be a new transient near the core. Not yet in official catalogs.',
-
-          solved: false
-        },
-
-        {
-          id: 12,
-          author: 'astrophotons',
-          initial: 'A',
-          color: '#10b981',
-          level: 'Lv. 11',
-          time: '5d ago',
-          replies: 33,
-          upvotes: 144,
-          tag: 'Astrophotography',
-
-          title:
-            'Andromeda core with 135mm lens – dramatic dust lanes',
-
-          body:
-            '2 hours integration, Bortle 8. Surprised how much dust detail I could pull out with gradients removal.',
-
-          solved: false
-        },
-
-        {
-          id: 13,
-          author: 'moonwatcher',
-          initial: 'M',
-          color: '#f59e0b',
-          level: 'Lv. 4',
-          time: '5d ago',
-          replies: 7,
-          upvotes: 18,
-          tag: 'Equipment',
-
-          title:
-            'Which lunar atlas is best for sketching?',
-
-          body:
-            'Printed vs app? I like sketching at the eyepiece but need a detailed reference for rilles and domes.',
-
-          solved: true
-        },
-
-        {
-          id: 14,
-          author: 'exoplanet_ella',
-          initial: 'E',
-          color: '#06b6d4',
-          level: 'Lv. 9',
-          time: '6d ago',
-          replies: 23,
-          upvotes: 92,
-          tag: 'Deep Sky',
-
-          title:
-            'Transit of HD 189733b with a small telescope? Possible?',
-
-          body:
-            "Has anyone managed to detect an exoplanet transit visually or with a DSLR on a 6\" scope? I've seen tutorials but curious about real-world results.",
-
-          solved: false
-        },
-
-        {
-          id: 16,
-          author: 'aurora_ann',
-          initial: 'A',
-          color: '#f59e0b',
-          level: 'Lv. 7',
-          time: '6h ago',
-          replies: 9,
-          upvotes: 27,
-          tag: 'Astrophotography',
-
-          title:
-            'First real aurora from 52°N — what settings would you have used?',
-
-          body:
-            'Kp hit 7 and the whole northern sky went green. I shot 4s at f/2 ISO 3200 and blew the highlights. Next time?',
-
-          solved: false
-        },
-
-        {
-          id: 17,
-          author: 'darkskydave',
-          initial: 'D',
-          color: '#22d3ee',
-          level: 'Lv. 12',
-          time: '9h ago',
-          replies: 22,
-          upvotes: 64,
-          tag: 'Deep Sky',
-
-          title:
-            'Bortle 4 vs Bortle 2 for faint galaxies — is the drive worth it?',
-
-          body:
-            'Two hours each way to the dark site. Ran the same target from both. Posting the stacks so you can judge for yourself.',
-
-          solved: true
-        },
-
-        {
-          id: 18,
-          author: 'lens_lena',
-          initial: 'L',
-          color: '#ec4899',
-          level: 'Lv. 3',
-          time: '11h ago',
-          replies: 5,
-          upvotes: 12,
-          tag: 'Beginner Q&A',
-
-          title:
-            'Why does my Moon look like a white blob at high power?',
-
-          body:
-            '130mm reflector, 6mm eyepiece. The Moon is just a bright smear. Is it collimation, seeing, or am I overpowering the scope?',
-
-          solved: false
-        },
-
-        {
-          id: 19,
-          author: 'rings_of_r',
-          initial: 'R',
-          color: '#a855f7',
-          level: 'Lv. 8',
-          time: '14h ago',
-          replies: 17,
-          upvotes: 53,
-          tag: 'Solar System',
-
-          title:
-            'Cassini division held steady for a full minute last night',
-
-          body:
-            'Best seeing I have had all year. 8" SCT at 220x. Saturn finally looked like the textbook photo.',
-
-          solved: false
-        },
-
-        {
-          id: 20,
-          author: 'meteor_mo',
-          initial: 'M',
-          color: '#10b981',
-          level: 'Lv. 5',
-          time: '18h ago',
-          replies: 31,
-          upvotes: 88,
-          tag: 'News',
-
-          title:
-            'Perseid outburst forecast — anyone planning an all-nighter?',
-
-          body:
-            'A couple of models are hinting at a secondary peak. Thinking of driving out Thursday if the cloud clears.',
-
-          solved: false
-        },
-
-        {
-          id: 21,
-          author: 'firstlight',
-          initial: 'F',
-          color: '#3b82f6',
-          level: 'Lv. 2',
-          time: '1d ago',
-          replies: 8,
-          upvotes: 19,
-          tag: 'Equipment',
-
-          title:
-            'Is a 2x Barlow worth it before buying more eyepieces?',
-
-          body:
-            'Budget is tight. Two decent eyepieces plus a Barlow, or four cheaper eyepieces? Leaning toward the former.',
-
-          solved: true
-        },
-
-        {
-          id: 22,
-          author: 'nebula_nia',
-          initial: 'N',
-          color: '#8b5cf6',
-          level: 'Lv. 9',
-          time: '1d ago',
-          replies: 14,
-          upvotes: 47,
-          tag: 'Deep Sky',
-
-          title:
-            'Veil Nebula in 6nm OIII — 9 hours integration',
-
-          body:
-            'Finally finished the mosaic. The filaments came out far better than my broadband attempt last summer.',
-
-          solved: false
-        },
-
-        {
-          id: 23,
-          author: 'quiet_quasar',
-          initial: 'Q',
-          color: '#f472b6',
-          level: 'Lv. 11',
-          time: '2d ago',
-          replies: 26,
-          upvotes: 71,
-          tag: 'Beginner Q&A',
-
-          title:
-            'What actually counts as "averted vision" and how do I practise it?',
-
-          body:
-            'Everyone says look slightly to the side. I tried and the object vanished entirely. What am I doing wrong?',
-
-          solved: true
-        },
-
-        {
-          id: 24,
-          author: 'solar_sam',
-          initial: 'S',
-          color: '#fbbf24',
-          level: 'Lv. 6',
-          time: '2d ago',
-          replies: 11,
-          upvotes: 33,
-          tag: 'Solar System',
-
-          title:
-            'Huge sunspot group rotating into view — white light shots',
-
-          body:
-            'AR3664 sized region coming round the limb. Herschel wedge on a 90mm refractor. Detail is incredible.',
-
-          solved: false
-        },
-
-        {
-          id: 25,
-          author: 'coldfinger',
-          initial: 'C',
-          color: '#60a5fa',
-          level: 'Lv. 10',
-          time: '3d ago',
-          replies: 19,
-          upvotes: 58,
-          tag: 'Astrophotography',
-
-          title:
-            'Dew heater or dew shield first? Losing half my sessions to fog',
-
-          body:
-            'Optical tube fogs about 90 minutes in. Trying to work out the cheapest fix that actually works in humid air.',
-
-          solved: false
-        },
-
-        {
-          id: 26,
-          author: 'starhopper',
-          initial: 'S',
-          color: '#c084fc',
-          level: 'Lv. 4',
-          time: '3d ago',
-          replies: 7,
-          upvotes: 21,
-          tag: 'Beginner Q&A',
-
-          title:
-            'Star hopping to M81 keeps failing — is my finder the problem?',
-
-          body:
-            'I get to the Big Dipper fine then lose the trail. Red dot finder only. Should I get a proper optical finder?',
-
-          solved: false
-        },
-
-        {
-          id: 27,
-          author: 'archive_ada',
-          initial: 'A',
-          color: '#34d399',
-          level: 'Lv. 13',
-          time: '5d ago',
-          replies: 38,
-          upvotes: 102,
-          tag: 'News',
-
-          title:
-            'JWST released a new deep field this morning',
-
-          body:
-            'The lensing arcs in the corner are unreal. Dropping the FITS links below for anyone who wants to process it themselves.',
-
-          solved: false
-        },
-
-        {
-          id: 15,
-          author: 'spacetime_steve',
-          initial: 'S',
-          color: '#6b7280',
-          level: 'Lv. 13',
-          time: '6d ago',
-          replies: 45,
-          upvotes: 188,
-          tag: 'Astrophotography',
-
-          title:
-            'My best image yet – 20 hours on the Horsehead Nebula',
-
-          body:
-            'Used a cooled astro camera and narrowband filters. The hydrogen alpha detail around Alnitak is finally controlled without halos.',
-
-          solved: false
-        }
-      ]
+      // Filled from Supabase in mounted(). Empty until then — the template
+      // already has a loading state and an empty state for both cases.
+      threads: [],
+      loading: true,
+      loadError: '',
+      posting: false,
     };
-
-    // A card's comment count and the reader's list must agree, so the seeded
-    // `replies` numbers are replaced by the real count. Threads with no seeded
-    // comments land on 0 — which is what the "Unanswered" filter looks for.
-    state.threads.forEach(thread => {
-      thread.replies = (state.comments[thread.id] || []).length;
-    });
-
-    // Stable keys for v-for.
-    Object.keys(state.comments).forEach(id => {
-      state.comments[id].forEach((comment, i) => {
-        if (!comment.id) comment.id = 'seed-' + id + '-' + i;
-      });
-    });
 
     return state;
   },
@@ -953,6 +458,11 @@ const Forum = {
   computed: {
     myInitial() {
       return (this.myName || '?').trim().charAt(0).toUpperCase() || '?';
+    },
+
+    // Comments arrive flat with a parentId; the reader groups them.
+    topLevelComments() {
+      return this.commentsFor(this.reading).filter(c => !c.parentId);
     },
 
     // Your own question, still open, prompt not yet answered.
@@ -983,19 +493,76 @@ const Forum = {
 
 
   methods: {
-    // ---- Solved state ---------------------------------------------------
+    // ---- Loading --------------------------------------------------------
 
-    // Mock threads carry an author name rather than an id; once the forum is
-    // on Supabase this becomes thread.author_id === user.id.
-    isMine(thread) {
-      return !!thread && thread.author === this.myName;
+    // Threads come from the forum_thread_feed view, which carries the author's
+    // name and the reply/like counts already joined in — one request for the
+    // whole board rather than one per card.
+    async loadFeed() {
+      this.loading = true;
+      this.loadError = '';
+
+      const res = await window.ForumAPI.listThreads({ limit: 100 });
+
+      if (!res.ok) {
+        this.loadError = res.error || 'Could not load the forum.';
+        this.threads = [];
+        this.loading = false;
+        return;
+      }
+
+      this.threads = res.threads.map(this.shapeThread);
+
+      // Which of these the signed-in person has already liked, so the hearts
+      // render filled without a request per card.
+      const liked = await window.ForumAPI.likedThreadIds(this.threads.map(t => t.id));
+      this.likedIds = [...liked];
+
+      this.loading = false;
     },
 
-    markSolved(thread, solved) {
+    // The view's column names differ from what this component has always
+    // rendered; translating here keeps the template untouched.
+    shapeThread(row) {
+      const name = row.author_username || 'Someone';
+      return {
+        id: row.id,
+        authorId: row.author_id,
+        author: name,
+        initial: name.trim().charAt(0).toUpperCase() || '?',
+        avatar: row.author_avatar_url || '',
+        color: '#7c3aed',
+        level: '',
+        time: window.ForumAPI.timeAgo(row.created_at),
+        replies: row.reply_count || 0,
+        upvotes: row.like_count || 0,
+        tag: row.category,
+        solved: !!row.solved,
+        title: row.title,
+        body: row.body,
+      };
+    },
+
+    // ---- Solved state ---------------------------------------------------
+
+    // Compared by id, not by name — a display name can be changed or
+    // duplicated, and the database checks the same thing in its RLS policy.
+    isMine(thread) {
+      return !!thread && !!this.myId && thread.authorId === this.myId;
+    },
+
+    async markSolved(thread, solved) {
       if (!thread) return;
-      thread.solved = !!solved;
-      // Answering the prompt either way retires it for this thread.
+
+      const previous = thread.solved;
+      thread.solved = !!solved;          // optimistic
       this.dismissSolvePrompt(thread);
+
+      const res = await window.ForumAPI.setSolved(thread.id, solved);
+      if (!res.ok) {
+        thread.solved = previous;        // put it back if the server refused
+        this.loadError = res.error || 'Could not update that.';
+      }
     },
 
     dismissSolvePrompt(thread) {
@@ -1010,17 +577,34 @@ const Forum = {
       return !!thread && this.likedIds.includes(thread.id);
     },
 
-    toggleLike(thread) {
+    // Updated on screen straight away and rolled back if the write fails —
+    // waiting for a round trip to fill in a heart feels broken.
+    async toggleLike(thread) {
       if (!thread) return;
 
+      const wasLiked = this.isLiked(thread);
       const at = this.likedIds.indexOf(thread.id);
 
-      if (at >= 0) {
+      if (wasLiked) {
         this.likedIds.splice(at, 1);
         thread.upvotes = Math.max(0, thread.upvotes - 1);
       } else {
         this.likedIds.push(thread.id);
         thread.upvotes += 1;
+      }
+
+      const res = await window.ForumAPI.toggleLike(thread.id, wasLiked);
+
+      if (!res.ok) {
+        if (wasLiked) {
+          this.likedIds.push(thread.id);
+          thread.upvotes += 1;
+        } else {
+          const i = this.likedIds.indexOf(thread.id);
+          if (i >= 0) this.likedIds.splice(i, 1);
+          thread.upvotes = Math.max(0, thread.upvotes - 1);
+        }
+        this.loadError = res.error || 'Could not save that like.';
       }
     },
 
@@ -1030,46 +614,155 @@ const Forum = {
       return (thread && this.comments[thread.id]) || [];
     },
 
-    // The seeded mock threads carry a reply count that predates the comment
-    // list, so fall back to it until someone actually comments.
+    // The card shows the count the feed view computed; once the reader has
+    // fetched the actual list, that is the more current number.
     commentCount(thread) {
       if (!thread) return 0;
       const list = this.comments[thread.id];
       return list ? list.length : (thread.replies || 0);
     },
 
-    openThread(thread) {
+    async openThread(thread) {
       this.reading = thread;
       this.commentDraft = '';
+      this.replyingTo = null;
+      this.replyDraft = '';
+
+      this.commentsLoading = true;
+      await this.refreshComments(thread);
+      this.commentsLoading = false;
     },
 
     closeThread() {
       this.reading = null;
       this.commentDraft = '';
+      this.replyingTo = null;
+      this.replyDraft = '';
     },
 
-    submitComment() {
+    repliesTo(commentId) {
+      return this.commentsFor(this.reading).filter(c => c.parentId === commentId);
+    },
+
+    startReply(comment) {
+      this.replyingTo = comment.id;
+      this.replyDraft = '';
+    },
+
+    cancelReply() {
+      this.replyingTo = null;
+      this.replyDraft = '';
+    },
+
+    async submitReply(comment) {
+      const body = this.replyDraft.trim();
+      if (!body || !this.reading) return;
+
+      const thread = this.reading;
+      this.replyDraft = '';
+      this.replyingTo = null;
+
+      const res = await window.ForumAPI.addReply(thread.id, body, comment.id);
+
+      if (!res.ok) {
+        this.replyDraft = body;          // hand it back rather than losing it
+        this.replyingTo = comment.id;
+        this.loadError = res.error || 'Could not post that reply.';
+        return;
+      }
+
+      await this.refreshComments(thread);
+    },
+
+    // One place that re-reads a thread's comments, used after posting either
+    // a comment or a reply.
+    async refreshComments(thread) {
+      const res = await window.ForumAPI.listReplies(thread.id);
+      if (!res.ok) return;
+
+      this.comments[thread.id] = res.replies.map(r => ({
+        id: r.id,
+        parentId: r.parentId,
+        authorId: r.authorId,
+        author: r.author,
+        initial: (r.author || '?').trim().charAt(0).toUpperCase() || '?',
+        color: '#7c3aed',
+        time: window.ForumAPI.timeAgo(r.createdAt),
+        body: r.body,
+      }));
+
+      thread.replies = this.comments[thread.id].length;
+    },
+
+    // ---- Deleting -------------------------------------------------------
+
+    isMyComment(comment) {
+      return !!comment && !!this.myId && comment.authorId === this.myId;
+    },
+
+    askDeleteThread(thread) {
+      this.confirmDeleteThread = thread.id;
+    },
+
+    askDeleteComment(comment) {
+      this.confirmDeleteComment = comment.id;
+    },
+
+    cancelDelete() {
+      this.confirmDeleteThread = null;
+      this.confirmDeleteComment = null;
+    },
+
+    async doDeleteThread(thread) {
+      if (this.deleting) return;
+      this.deleting = true;
+
+      const res = await window.ForumAPI.deleteThread(thread.id);
+      this.deleting = false;
+      this.confirmDeleteThread = null;
+
+      if (!res.ok) {
+        this.loadError = res.error || 'Could not delete that post.';
+        return;
+      }
+
+      // The reader is showing a post that no longer exists.
+      this.closeThread();
+      await this.loadFeed();
+    },
+
+    async doDeleteComment(comment) {
+      if (this.deleting) return;
+      this.deleting = true;
+
+      const res = await window.ForumAPI.deleteReply(comment.id);
+      this.deleting = false;
+      this.confirmDeleteComment = null;
+
+      if (!res.ok) {
+        this.loadError = res.error || 'Could not delete that comment.';
+        return;
+      }
+
+      await this.refreshComments(this.reading);
+    },
+
+    async submitComment() {
       const body = this.commentDraft.trim();
       if (!body || !this.reading) return;
 
-      const id = this.reading.id;
-      // Seeding on first use keeps the mock thread list readable — no need to
-      // hand-write an empty array on all 27 of them.
-      if (!this.comments[id]) this.comments[id] = [];
-
-      this.comments[id].push({
-        id: Date.now(),
-        author: this.myName,
-        initial: this.myInitial,
-        color: '#7c3aed',
-        time: 'just now',
-        body,
-      });
-
-      // The card's count now comes from the comment list, so keep the seeded
-      // number in step rather than letting it jump backwards.
-      this.reading.replies = this.comments[id].length;
+      const thread = this.reading;
       this.commentDraft = '';
+
+      const res = await window.ForumAPI.addReply(thread.id, body);
+
+      if (!res.ok) {
+        this.commentDraft = body;        // give it back so nothing is lost
+        this.loadError = res.error || 'Could not post that comment.';
+        return;
+      }
+
+      await this.refreshComments(thread);
     },
 
     openComposer() {
@@ -1087,41 +780,34 @@ const Forum = {
       this.composerOpen = false;
     },
 
-    submitPost() {
-      const title = this.draft.title.trim();
-      const body = this.draft.body.trim();
+    async submitPost() {
+      if (this.posting) return;
 
-      if (title.length < 4) {
-        this.draft.error = 'Give your post a title of at least 4 characters.';
-        return;
-      }
-      if (!body) {
-        this.draft.error = 'Write something in the body.';
-        return;
-      }
+      this.draft.error = '';
+      this.posting = true;
 
-      // Local-only for now — swap this block for ForumAPI.createThread() once
-      // the tables exist, and the rest of the component stays as it is.
-      this.threads.unshift({
-        id: Date.now(),
-        author: this.myName,
-        initial: this.myInitial,
-        color: '#7c3aed',
-        level: 'Lv. 1',
-        time: 'just now',
-        replies: 0,
-        upvotes: 0,
-        tag: this.draft.tag,
-        // Only questions carry a solved state.
-        solved: this.draft.tag === 'Beginner Q&A' ? this.draft.solved : false,
-        title,
-        body,
+      const res = await window.ForumAPI.createThread({
+        title: this.draft.title,
+        body: this.draft.body,
+        category: this.draft.tag,
+        solved: this.draft.solved,
       });
 
-      // Jump the filter to the new post's category so it can't vanish behind
-      // whichever chip happened to be selected.
-      this.activeChip = 'All';
+      this.posting = false;
+
+      if (!res.ok) {
+        this.draft.error = res.error || 'Could not post that.';
+        return;
+      }
+
       this.composerOpen = false;
+
+      // Show the whole board again so the new post can't be hidden behind
+      // whichever filter happened to be selected, then reload so the card
+      // carries the real id, timestamp and counts.
+      this.activeChip = 'All';
+      this.activeStatus = 'All';
+      await this.loadFeed();
     },
 
 
@@ -1641,29 +1327,36 @@ const Forum = {
 
 
   async mounted() {
-    // The composer shows who you're posting as. Threads are still mock data,
-    // but the name is real — no reason to fake that part.
+    // Who is posting — shown in the composer, and the id is what decides
+    // whether the "has this been solved?" prompt belongs to you.
     try {
       const client = window.supabaseClient || (window.supabaseReady ? await window.supabaseReady : null);
-      if (!client) return;
 
-      const { data } = await client.auth.getSession();
-      const user = data && data.session && data.session.user;
-      if (!user) return;
+      if (client) {
+        const { data } = await client.auth.getSession();
+        const user = data && data.session && data.session.user;
 
-      const { data: row } = await client
-        .from('profiles')
-        .select('username')
-        .eq('uid', user.id)
-        .single();
+        if (user) {
+          this.myId = user.id;
 
-      this.myName =
-        (row && row.username) ||
-        (user.user_metadata && user.user_metadata.username) ||
-        (user.email || '').split('@')[0] ||
-        'you';
+          const { data: row } = await client
+            .from('profiles')
+            .select('username')
+            .eq('uid', user.id)
+            .single();
+
+          this.myName =
+            (row && row.username) ||
+            (user.user_metadata && user.user_metadata.username) ||
+            (user.email || '').split('@')[0] ||
+            'you';
+        }
+      }
     } catch (error) {
-      console.warn('[CosmoKlub] forum could not read your name; using a placeholder.', error);
+      console.warn('[CosmoKlub] forum could not read your account.', error);
     }
-  }
+
+    await this.loadFeed();
+  },
+
 };

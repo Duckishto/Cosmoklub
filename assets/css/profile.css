@@ -494,3 +494,40 @@
     padding: 11px 20px;
   }
 }
+
+/* ---------- Post card header (Posts tab) ---------- */
+
+.profile-tab .profile-post-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 7px;
+  flex-wrap: wrap;
+}
+
+.profile-tab .profile-post-cat {
+  padding: 3px 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--purple);
+  background: rgba(168, 85, 247, 0.12);
+  border-radius: 999px;
+}
+
+.profile-tab .profile-post-solved {
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #052e1c;
+  background: #34d399;
+  border-radius: 999px;
+}
+
+.profile-tab .profile-post-time {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--muted);
+}

@@ -69,27 +69,61 @@ window.ForumAPI = (function () {
     return { ok: true, threads: data || [] };
   }
 
+  // Look up display names for a set of user ids.
+  //
+  // Deliberately a second query rather than a PostgREST embed: author_id has
+  // a foreign key to auth.users, not to profiles, so `profiles:author_id(...)`
+  // is rejected with PGRST200 — there is no relationship for it to follow.
+  // The thread feed gets away with a join only because the view spells it out
+  // in SQL.
+  async function usernamesFor(userIds) {
+    const ids = [...new Set((userIds || []).filter(Boolean))];
+    if (!ids.length) return {};
+
+    const c = await client();
+    if (!c) return {};
+
+    const { data, error } = await c
+      .from('profiles')
+      .select('uid, username, avatar_url')
+      .in('uid', ids);
+
+    if (error) {
+      fail(error);
+      return {};
+    }
+
+    const byId = {};
+    (data || []).forEach(row => {
+      byId[row.uid] = { username: row.username, avatarUrl: row.avatar_url || '' };
+    });
+    return byId;
+  }
+
   async function listReplies(threadId) {
     const c = await client();
     if (!c) return { ok: false, error: 'Not connected.', replies: [] };
 
-    // profiles is joined through the author_id foreign key so each reply
-    // arrives with its author's display name already attached.
     const { data, error } = await c
       .from('forum_replies')
-      .select('id, thread_id, author_id, body, created_at, profiles:author_id (username)')
+      .select('id, thread_id, author_id, parent_id, body, created_at')
       .eq('thread_id', threadId)
       .order('created_at', { ascending: true });
 
     if (error) return { ...fail(error), replies: [] };
 
+    const rows = data || [];
+    const names = await usernamesFor(rows.map(r => r.author_id));
+
     return {
       ok: true,
-      replies: (data || []).map(r => ({
+      replies: rows.map(r => ({
         id: r.id,
         threadId: r.thread_id,
         authorId: r.author_id,
-        author: (r.profiles && r.profiles.username) || 'Someone',
+        parentId: r.parent_id || null,
+        author: (names[r.author_id] && names[r.author_id].username) || 'Someone',
+        avatarUrl: (names[r.author_id] && names[r.author_id].avatarUrl) || '',
         body: r.body,
         createdAt: r.created_at,
       })),
@@ -118,7 +152,22 @@ window.ForumAPI = (function () {
 
   // ---- Writing ----------------------------------------------------------
 
-  async function createThread({ title, body, category }) {
+  // Only the author can close their own question — enforced by the RLS update
+  // policy, so a forged request is refused by the database, not just the UI.
+  async function setSolved(threadId, solved) {
+    const c = await client();
+    if (!c) return { ok: false, error: 'Not connected.' };
+
+    const { error } = await c
+      .from('forum_threads')
+      .update({ solved: !!solved, updated_at: new Date().toISOString() })
+      .eq('id', threadId);
+
+    if (error) return fail(error);
+    return { ok: true, solved: !!solved };
+  }
+
+  async function createThread({ title, body, category, solved = false }) {
     const c = await client();
     const user = await currentUser();
     if (!c) return { ok: false, error: 'Not connected.' };
@@ -134,7 +183,14 @@ window.ForumAPI = (function () {
 
     const { data, error } = await c
       .from('forum_threads')
-      .insert({ author_id: user.id, title: cleanTitle, body: cleanBody, category })
+      .insert({
+        author_id: user.id,
+        title: cleanTitle,
+        body: cleanBody,
+        category,
+        // Only questions can be marked solved; anything else is stored false.
+        solved: category === 'Beginner Q&A' ? !!solved : false,
+      })
       .select('id')
       .single();
 
@@ -142,7 +198,7 @@ window.ForumAPI = (function () {
     return { ok: true, id: data.id };
   }
 
-  async function addReply(threadId, body) {
+  async function addReply(threadId, body, parentId = null) {
     const c = await client();
     const user = await currentUser();
     if (!c) return { ok: false, error: 'Not connected.' };
@@ -153,7 +209,13 @@ window.ForumAPI = (function () {
 
     const { error } = await c
       .from('forum_replies')
-      .insert({ thread_id: threadId, author_id: user.id, body: cleanBody });
+      .insert({
+        thread_id: threadId,
+        author_id: user.id,
+        body: cleanBody,
+        // null for a top-level comment, otherwise the comment being answered
+        parent_id: parentId,
+      });
 
     if (error) return fail(error);
     return { ok: true };
@@ -185,6 +247,46 @@ window.ForumAPI = (function () {
     // as success — the end state is what the caller wanted.
     if (error && error.code !== '23505') return fail(error);
     return { ok: true, liked: true };
+  }
+
+  // Deleting is guarded by RLS: the policies only allow a row whose author_id
+  // matches auth.uid(), so someone else's post cannot be removed even with a
+  // hand-crafted request.
+  //
+  // forum_replies, forum_likes and notifications all reference the thread with
+  // `on delete cascade`, so removing a post takes its comments and likes with
+  // it rather than leaving orphans behind.
+  async function deleteThread(threadId) {
+    const c = await client();
+    const user = await currentUser();
+    if (!c) return { ok: false, error: 'Not connected.' };
+    if (!user) return { ok: false, error: 'Sign in first.' };
+
+    const { error } = await c
+      .from('forum_threads')
+      .delete()
+      .eq('id', threadId)
+      .eq('author_id', user.id);
+
+    if (error) return fail(error);
+    return { ok: true };
+  }
+
+  // Answers to a comment cascade away with it, same as above.
+  async function deleteReply(replyId) {
+    const c = await client();
+    const user = await currentUser();
+    if (!c) return { ok: false, error: 'Not connected.' };
+    if (!user) return { ok: false, error: 'Sign in first.' };
+
+    const { error } = await c
+      .from('forum_replies')
+      .delete()
+      .eq('id', replyId)
+      .eq('author_id', user.id);
+
+    if (error) return fail(error);
+    return { ok: true };
   }
 
   // ---- Notifications ----------------------------------------------------
@@ -302,9 +404,13 @@ window.ForumAPI = (function () {
     currentUser,
     listThreads,
     listReplies,
+    usernamesFor,
     likedThreadIds,
     createThread,
+    setSolved,
     addReply,
+    deleteThread,
+    deleteReply,
     toggleLike,
     listNotifications,
     markAllRead,

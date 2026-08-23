@@ -9,7 +9,7 @@
   <!-- KaTeX — LaTeX math rendering for the calculator display -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <link rel="stylesheet" href="assets/css/dashboard.css?v=10">
+  <link rel="stylesheet" href="assets/css/dashboard.css?v=13">
   <!-- Study Roadmap header + Overall Rank panel (Library tab). Previously
        injected at runtime from a JS string in components/library.js, which
        made it fragile and was why the header/rank panel sometimes rendered
@@ -96,6 +96,9 @@
 <!-- Supabase client must load before progress.js, which uses it to sync
      XP/lesson-completions server-side for signed-in users -->
 <script src="assets/js/lib/supabase-client.js"></script>
+
+<!-- Forum data layer — every Supabase call the forum and profile tabs make -->
+<script src="assets/js/lib/forum-api.js"></script>
 
 <!-- Library progression data must load before library.js -->
 <script src="assets/js/course-data.js"></script>
