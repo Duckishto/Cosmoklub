@@ -1,15 +1,22 @@
 // CosmoKlub — Settings tab.
 //
-// Opens from the gear in the dashboard top bar. A normal tab underneath
-// (?tab=settings) so it shares the app's routing and Back behaviour.
+// Opens from the ACCOUNT group in the dashboard sidebar, or from the gear
+// in the header. A normal tab underneath (?tab=settings) so it shares the
+// app's routing and Back behaviour.
 //
-// Laid out the way most apps do it: a list of sections on the left, the
-// selected one on the right, and signing out kept apart from the rest so it
-// can't be hit while reading through settings.
+// The page's own section list used to be a second sidebar on the left,
+// which now duplicates the app sidebar sitting right beside it. It's a
+// segmented switcher across the top instead, on the shared .ck-seg
+// primitive. Signing out is still its own section rather than a button
+// among the others, so it can't be hit while reading through settings.
 //
 //   Account   — picture, display name, email
 //   Security  — which sign-in methods are attached to this account
 //   Log out   — confirm, then go
+//
+// Built from the shared page primitives in dashboard-shell.css
+// (.pg-head, .ck-card, .ck-input, .ck-btn…). Anything page-specific is
+// prefixed .st- and lives in assets/css/settings.css.
 //
 // Provider linking uses supabase-js's identity API (getUserIdentities,
 // linkIdentity, unlinkIdentity). Linking needs "Allow manual linking" turned
@@ -46,184 +53,189 @@ const Settings = {
   name: 'Settings',
 
   template: `
-  <div class="settings-tab">
+  <div class="settings-tab pg">
 
-    <div v-if="loading" class="set-loading">
-      <span class="spinner"></span> Loading your account…
+    <div v-if="loading" class="ck-loading-row">
+      <span class="ck-spinner"></span> Loading your account…
     </div>
 
     <template v-else>
-      <div class="set-shell">
 
-        <!-- ─────────── Section list ─────────── -->
-        <aside class="set-nav">
-          <button
-            class="set-nav-item"
-            :class="{ 'is-active': section === 'account' }"
-            @click="section = 'account'"
-          >
-            <span class="set-nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-            <span class="set-nav-text"><strong>Account</strong><em>Picture, name, email</em></span>
-          </button>
+      <!-- ─────────────── Page header ─────────────── -->
+      <header class="pg-head">
+        <div class="pg-head-text">
+          <h1 class="pg-title">Settings</h1>
+          <p class="pg-sub">Manage your account details and how you sign in.</p>
+        </div>
+      </header>
 
-          <button
-            class="set-nav-item"
-            :class="{ 'is-active': section === 'security' }"
-            @click="section = 'security'"
-          >
-            <span class="set-nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-            <span class="set-nav-text"><strong>Security</strong><em>Sign-in methods</em></span>
-          </button>
+      <!-- ─────────────── Section switcher ─────────────── -->
+      <div class="ck-seg st-seg">
+        <button type="button" class="ck-seg-btn" :class="{ 'is-active': section === 'account' }"
+                @click="section = 'account'">Account</button>
+        <button type="button" class="ck-seg-btn" :class="{ 'is-active': section === 'security' }"
+                @click="section = 'security'">Security</button>
+        <button type="button" class="ck-seg-btn st-seg-danger" :class="{ 'is-active': section === 'logout' }"
+                @click="section = 'logout'">Log out</button>
+      </div>
 
-          <button class="set-nav-item set-nav-danger" @click="section = 'logout'"
-                  :class="{ 'is-active': section === 'logout' }">
-            <span class="set-nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
-            <span class="set-nav-text"><strong>Log out</strong><em>Sign out of this device</em></span>
-          </button>
-        </aside>
+      <!-- ============ Account ============ -->
+      <template v-if="section === 'account'">
 
-        <!-- ─────────── Panel ─────────── -->
-        <section class="set-panel">
+        <section class="ck-card">
+          <div class="ck-card-head">
+            <h3 class="ck-card-title">Profile picture</h3>
+            <p class="ck-card-sub">Shown next to your name across CosmoKlub.</p>
+          </div>
 
-          <!-- ============ Account ============ -->
-          <template v-if="section === 'account'">
-            <h3 class="set-panel-title">Account</h3>
+          <div class="st-identity">
+            <span class="st-avatar" :class="{ 'has-img': !!avatarUrl }">
+              <img v-if="avatarUrl" :src="avatarUrl" :alt="username" referrerpolicy="no-referrer" />
+              <template v-else>{{ initial }}</template>
+              <span class="st-avatar-busy" v-if="avatarBusy"></span>
+            </span>
 
-            <div class="set-identity">
-              <span class="set-avatar" :class="{ 'has-img': !!avatarUrl }">
-                <img v-if="avatarUrl" :src="avatarUrl" :alt="username" referrerpolicy="no-referrer" />
-                <template v-else>{{ initial }}</template>
-                <span class="set-avatar-busy" v-if="avatarBusy"></span>
-              </span>
+            <div class="st-identity-body">
+              <div class="st-identity-name">{{ username }}</div>
+              <div class="st-identity-mail">{{ email || '—' }}</div>
 
-              <div class="set-identity-body">
-                <div class="set-identity-name">{{ username }}</div>
-                <div class="set-identity-mail">{{ email || '—' }}</div>
+              <!-- Uploading needs the avatars storage bucket, which is not
+                   created yet (supabase/schema-storage.sql). Shown as
+                   pending rather than hidden, so the feature reads as
+                   planned instead of missing. onAvatarPicked() and the rest
+                   below still work — drop the disabled attribute once the
+                   bucket exists. -->
+              <div class="st-avatar-actions">
+                <button class="ck-btn ck-btn-sm" type="button" disabled>
+                  Upload photo
+                  <span class="ck-badge ck-badge-muted">Soon</span>
+                </button>
 
-                <!-- Uploading needs the avatars storage bucket, which is not
-                     created yet (supabase/schema-storage.sql). Shown as
-                     pending rather than hidden, so the feature reads as
-                     planned instead of missing. onAvatarPicked() and the rest
-                     below still work — drop the disabled attribute once the
-                     bucket exists. -->
-                <div class="set-avatar-actions">
-                  <button class="set-btn-ghost set-btn-sm is-soon" type="button" disabled>
-                    Upload photo
-                    <span class="set-soon-tag">Coming soon</span>
-                  </button>
-
-                  <button
-                    v-if="avatarUrl"
-                    class="set-btn-danger-ghost set-btn-sm"
-                    :disabled="avatarBusy"
-                    @click="removeAvatar()"
-                  >Remove</button>
-                </div>
-
-                <p class="set-avatar-note" v-if="avatarError">
-                  <span class="set-msg-error">{{ avatarError }}</span>
-                </p>
-                <p class="set-avatar-note" v-else-if="avatarOk">
-                  <span class="set-msg-ok">{{ avatarOk }}</span>
-                </p>
-                <p class="set-avatar-note" v-else>
-                  No picture just shows your initial.
-                </p>
-              </div>
-            </div>
-
-            <label class="set-label" for="set-name">Display name</label>
-            <div class="set-row">
-              <input
-                id="set-name"
-                class="set-input"
-                type="text"
-                v-model="nameInput"
-                :maxlength="nameMax"
-                :disabled="saving"
-                @keyup.enter="saveName()"
-                placeholder="Your name"
-              />
-              <button class="set-btn-primary" :disabled="saving || !nameChanged" @click="saveName()">
-                {{ saving ? 'Saving…' : 'Save' }}
-              </button>
-            </div>
-
-            <div v-if="saveError" class="set-msg set-msg-error">{{ saveError }}</div>
-            <div v-else-if="saveOk" class="set-msg set-msg-ok">Name updated.</div>
-            <div v-else class="set-hint">{{ nameMin }}–{{ nameMax }} characters. Everyone sees this name.</div>
-
-            <label class="set-label set-label-spaced">Email</label>
-            <div class="set-readonly">{{ email || '—' }}</div>
-            <div class="set-hint">Your email can't be changed here yet.</div>
-          </template>
-
-          <!-- ============ Security ============ -->
-          <template v-else-if="section === 'security'">
-            <h3 class="set-panel-title">Security</h3>
-            <p class="set-panel-sub">Ways you can sign in to this account. Keep at least one.</p>
-
-            <div class="set-provider" v-for="p in providerRows" :key="p.id">
-              <span class="set-provider-ic" v-html="p.icon"></span>
-              <div class="set-provider-body">
-                <div class="set-provider-name">
-                  {{ p.label }}
-                  <span class="set-badge" v-if="p.connected">Connected</span>
-                </div>
-                <div class="set-provider-hint">{{ p.connected ? p.email || p.hint : p.hint }}</div>
+                <button
+                  v-if="avatarUrl"
+                  class="ck-btn ck-btn-sm ck-btn-danger"
+                  type="button"
+                  :disabled="avatarBusy"
+                  @click="removeAvatar()"
+                >Remove</button>
               </div>
 
-              <!-- Google is not configured in Supabase yet, so Connect would
-                   only ever fail. Shown as pending instead of offering an
-                   action that cannot work. -->
-              <span v-if="!p.connected && !p.available" class="set-provider-soon">Coming soon</span>
-
-              <button
-                v-else-if="!p.connected"
-                class="set-btn-ghost"
-                :disabled="linking"
-                @click="link(p.id)"
-              >{{ linking ? 'Opening…' : 'Connect' }}</button>
-
-              <button
-                v-else-if="canUnlink"
-                class="set-btn-danger-ghost"
-                :disabled="linking"
-                @click="unlink(p.id)"
-              >Disconnect</button>
-
-              <span v-else class="set-provider-locked">Only method</span>
+              <p class="ck-msg ck-msg-error" v-if="avatarError">{{ avatarError }}</p>
+              <p class="ck-msg ck-msg-ok" v-else-if="avatarOk">{{ avatarOk }}</p>
+              <p class="ck-hint" v-else>No picture just shows your initial.</p>
             </div>
+          </div>
+        </section>
 
-            <div v-if="linkError" class="set-msg set-msg-error">{{ linkError }}</div>
-            <div v-else-if="linkOk" class="set-msg set-msg-ok">{{ linkOk }}</div>
+        <section class="ck-card">
+          <div class="ck-card-head">
+            <h3 class="ck-card-title">Account details</h3>
+            <p class="ck-card-sub">Everyone in the community sees your display name.</p>
+          </div>
 
-            <div class="set-divider"></div>
-
-            <h4 class="set-sub-title">Password</h4>
-            <p class="set-hint" style="margin-top:0;">
-              We'll email you a link to set a new one.
-            </p>
-            <button class="set-btn-ghost" :disabled="resetting || !email" @click="sendPasswordReset()">
-              {{ resetting ? 'Sending…' : 'Send reset link' }}
+          <label class="ck-label" for="set-name">Display name</label>
+          <div class="ck-field-row">
+            <input
+              id="set-name"
+              class="ck-input"
+              type="text"
+              v-model="nameInput"
+              :maxlength="nameMax"
+              :disabled="saving"
+              @keyup.enter="saveName()"
+              placeholder="Your name"
+            />
+            <button class="pg-action" :disabled="saving || !nameChanged" @click="saveName()">
+              {{ saving ? 'Saving…' : 'Save' }}
             </button>
-            <div v-if="resetMsg" class="set-msg" :class="resetOk ? 'set-msg-ok' : 'set-msg-error'">{{ resetMsg }}</div>
-          </template>
+          </div>
 
-          <!-- ============ Log out ============ -->
-          <template v-else>
-            <h3 class="set-panel-title">Log out</h3>
-            <p class="set-panel-sub">
+          <div v-if="saveError" class="ck-msg ck-msg-error">{{ saveError }}</div>
+          <div v-else-if="saveOk" class="ck-msg ck-msg-ok">Name updated.</div>
+          <div v-else class="ck-hint">{{ nameMin }}–{{ nameMax }} characters.</div>
+
+          <label class="ck-label ck-label-spaced">Email</label>
+          <div class="ck-readonly">{{ email || '—' }}</div>
+          <div class="ck-hint">Your email can't be changed here yet.</div>
+        </section>
+      </template>
+
+      <!-- ============ Security ============ -->
+      <template v-else-if="section === 'security'">
+
+        <section class="ck-card">
+          <div class="ck-card-head">
+            <h3 class="ck-card-title">Sign-in methods</h3>
+            <p class="ck-card-sub">Ways you can get into this account. Keep at least one.</p>
+          </div>
+
+          <div class="st-provider" v-for="p in providerRows" :key="p.id">
+            <span class="st-provider-ic" v-html="p.icon"></span>
+
+            <div class="st-provider-body">
+              <div class="st-provider-name">
+                {{ p.label }}
+                <span class="ck-badge" v-if="p.connected">Connected</span>
+              </div>
+              <div class="st-provider-hint">{{ p.connected ? p.email || p.hint : p.hint }}</div>
+            </div>
+
+            <!-- Google is not configured in Supabase yet, so Connect would
+                 only ever fail. Shown as pending instead of offering an
+                 action that cannot work. -->
+            <span v-if="!p.connected && !p.available" class="ck-badge ck-badge-muted">Soon</span>
+
+            <button
+              v-else-if="!p.connected"
+              class="ck-btn ck-btn-sm"
+              :disabled="linking"
+              @click="link(p.id)"
+            >{{ linking ? 'Opening…' : 'Connect' }}</button>
+
+            <button
+              v-else-if="canUnlink"
+              class="ck-btn ck-btn-sm ck-btn-danger"
+              :disabled="linking"
+              @click="unlink(p.id)"
+            >Disconnect</button>
+
+            <span v-else class="ck-badge ck-badge-muted">Only method</span>
+          </div>
+
+          <div v-if="linkError" class="ck-msg ck-msg-error">{{ linkError }}</div>
+          <div v-else-if="linkOk" class="ck-msg ck-msg-ok">{{ linkOk }}</div>
+        </section>
+
+        <section class="ck-card">
+          <div class="ck-card-head">
+            <h3 class="ck-card-title">Password</h3>
+            <p class="ck-card-sub">We'll email you a link to set a new one.</p>
+          </div>
+
+          <button class="ck-btn" :disabled="resetting || !email" @click="sendPasswordReset()">
+            {{ resetting ? 'Sending…' : 'Send reset link' }}
+          </button>
+          <div v-if="resetMsg" class="ck-msg" :class="resetOk ? 'ck-msg-ok' : 'ck-msg-error'">{{ resetMsg }}</div>
+        </section>
+      </template>
+
+      <!-- ============ Log out ============ -->
+      <template v-else>
+        <section class="ck-card st-danger-card">
+          <div class="ck-card-head">
+            <h3 class="ck-card-title">Log out</h3>
+            <p class="ck-card-sub">
               You'll be signed out on this device and sent back to the landing page.
               Your progress stays on your account.
             </p>
-            <button class="set-btn-danger" :disabled="signingOut" @click="signOut()">
-              {{ signingOut ? 'Signing out…' : 'Log out' }}
-            </button>
-          </template>
+          </div>
 
+          <button class="ck-btn ck-btn-solid-danger" :disabled="signingOut" @click="signOut()">
+            {{ signingOut ? 'Signing out…' : 'Log out' }}
+          </button>
         </section>
-      </div>
+      </template>
+
     </template>
   </div>
   `,
@@ -301,11 +313,36 @@ const Settings = {
   },
 
   async mounted() {
+    // The sidebar's "Log out" item opens this tab already on the log-out
+    // section. app.js stashes the request on window.CosmoKlub for a fresh
+    // mount and broadcasts it for an already-mounted one, so handle both.
+    this.applyPendingSection();
+
+    this._onSectionRequest = (event) => {
+      const requested = event && event.detail && event.detail.section;
+      if (requested) this.section = requested;
+    };
+    window.addEventListener('cosmoklub-settings-section', this._onSectionRequest);
+
     await this.loadAccount();
     this.loading = false;
   },
 
+  beforeUnmount() {
+    if (this._onSectionRequest) {
+      window.removeEventListener('cosmoklub-settings-section', this._onSectionRequest);
+    }
+  },
+
   methods: {
+    applyPendingSection() {
+      const pending = window.CosmoKlub && window.CosmoKlub.pendingSettingsSection;
+      if (!pending) return;
+
+      this.section = pending;
+      window.CosmoKlub.pendingSettingsSection = null;
+    },
+
     async client() {
       return window.supabaseClient || (window.supabaseReady ? await window.supabaseReady : null);
     },
