@@ -17,15 +17,10 @@
    - Extra tuning added for very small phones (<=380px).
    =================================================== */
 
-.bottom-nav a.nav-item {
-  text-decoration: none;
-}
-
-/* Remove the thin divider below the Dashboard header. */
-
-body.library-3d-active .topbar {
-  border-bottom: 0 !important;
-  box-shadow: none !important;
+/* Remove the thin divider below the dashboard header while the 3D layer
+   is up, so the canvas reads as continuous with the chrome above it. */
+body.library-3d-active .shell-header {
+  border-bottom-color: transparent;
 }
 
 /* ---------- Library 3D canvas ---------- */
