@@ -769,10 +769,10 @@ body {
 }
 .fxd-search input {
   width: 100%; box-sizing: border-box;
-  padding: 0.52rem 0.75rem 0.52rem 2.1rem;
+  padding: 0.55rem 0.75rem 0.55rem 2.1rem;
   background: rgba(9,7,20,0.6);
   border: 1px solid rgba(124,58,237,0.22); border-radius: 9px;
-  color: #f5f3ff; font-family: inherit; font-size: 0.85rem; outline: none;
+  color: #f5f3ff; font-family: inherit; font-size: 0.92rem; outline: none;
 }
 .fxd-search input::placeholder { color: #8b7aa8; }
 .fxd-search input:focus { border-color: rgba(168,85,247,0.6); }
@@ -780,10 +780,10 @@ body {
 .fxd-select { position: relative; flex: 0 0 auto; width: 170px; }
 .fxd-select select {
   width: 100%; box-sizing: border-box; appearance: none; -webkit-appearance: none;
-  padding: 0.52rem 2.1rem 0.52rem 0.75rem;
+  padding: 0.55rem 2.1rem 0.55rem 0.75rem;
   background: rgba(9,7,20,0.6);
   border: 1px solid rgba(124,58,237,0.22); border-radius: 9px;
-  color: #f5f3ff; font-family: inherit; font-size: 0.85rem; cursor: pointer; outline: none;
+  color: #f5f3ff; font-family: inherit; font-size: 0.92rem; cursor: pointer; outline: none;
 }
 .fxd-select select option { background: #14102a; color: #f5f3ff; }
 .fxd-select svg {
@@ -794,18 +794,18 @@ body {
 .fxd-filterbar-pills { row-gap: 0.5rem; }
 .fxd-pillgroup { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
 .fxd-pill-label {
-  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: #8b7aa8; margin-right: 0.15rem;
+  font-size: 0.76rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: #a496c4; margin-right: 0.15rem;
 }
 .fxd-pill-sep {
   width: 1px; height: 18px; flex-shrink: 0;
   background: rgba(124,58,237,0.22);
 }
 .fxd-pill {
-  padding: 0.32rem 0.68rem;
+  padding: 0.35rem 0.72rem;
   background: rgba(124,58,237,0.08);
   border: 1px solid rgba(124,58,237,0.25); border-radius: 999px;
-  color: #d9d2f0; font-family: inherit; font-size: 0.76rem; font-weight: 600;
+  color: #d9d2f0; font-family: inherit; font-size: 0.84rem; font-weight: 600;
   cursor: pointer; transition: background .2s, border-color .2s, color .2s;
 }
 .fxd-pill:hover { background: rgba(124,58,237,0.18); color: #fff; }
@@ -1059,6 +1059,21 @@ body {
   border-radius: 18px;
 }
 
+/* Inline variant: the New Post card now expands in place of the button,
+   inside the normal page column, rather than in a fixed overlay centered
+   over the whole viewport (which sat oddly off-center next to the
+   sidebar). Full width of the column instead of the overlay's capped
+   620px, no max-height/scroll clamp since it's not competing with a
+   backdrop for viewport space, and it carries the same top margin the
+   button had so nothing shifts when it swaps in. */
+.fxd-composer--inline {
+  width: 100%;
+  max-height: none;
+  overflow-y: visible;
+  margin-top: 1rem;
+  box-sizing: border-box;
+}
+
 .fxd-composer-head {
   display: flex;
   align-items: center;
@@ -1094,7 +1109,7 @@ body {
   margin-bottom: 12px;
   padding: 11px 13px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--white);
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--border);
@@ -1114,16 +1129,16 @@ body {
 .fxd-composer-label {
   display: block;
   margin-bottom: 7px;
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
 .fxd-composer-error {
   margin: 0 0 12px;
-  font-size: 12.5px;
+  font-size: 13.5px;
   color: #fca5a5;
 }
 
@@ -1136,7 +1151,7 @@ body {
   border-top: 1px solid var(--border);
 }
 
-.fxd-composer-note { font-size: 12px; color: var(--muted); }
+.fxd-composer-note { font-size: 13px; color: var(--muted); }
 
 .fxd-composer-post {
   padding: 10px 22px;
@@ -1397,6 +1412,8 @@ body {
 .fxd-main > .sky-strip { margin-bottom: 12px; }
 
 .fxd-main > .fxd-newpost { margin: 0 0 18px; }
+
+.fxd-main > .fxd-composer--inline { margin: 0 0 18px; }
 
 /* The shell is now the first thing in the tab, so it carries the top gap. */
 .fxd-shell { margin-top: 0.4rem; }
