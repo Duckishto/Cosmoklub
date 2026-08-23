@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>CosmoKlub: Forum & Library & Chat</title>
+  <title>CosmoKlub: Forum &amp; Library &amp; Chat</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- KaTeX — LaTeX math rendering for the calculator display -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <link rel="stylesheet" href="assets/css/dashboard.css?v=13">
+  <link rel="stylesheet" href="assets/css/dashboard.css?v=14">
   <!-- Study Roadmap header + Overall Rank panel (Library tab). Previously
        injected at runtime from a JS string in components/library.js, which
        made it fragile and was why the header/rank panel sometimes rendered
@@ -17,11 +17,20 @@
        dashboard.css since it uses the --stardust/--violet/etc. variables
        defined there. -->
   <link rel="stylesheet" href="assets/css/library.css?v=1">
+
+  <!-- Dashboard shell — the persistent left sidebar + slim header that
+       replaced the old floating topbar pill. Loaded AFTER dashboard.css on
+       purpose: it re-lays-out .app-shell / .content and neutralises the
+       topbar rules that are still defined further up in dashboard.css.
+       It also carries the shared page primitives (.pg-head, .ck-card,
+       .seg-tabs, .ck-empty…) that profile.css and settings.css build on. -->
+  <link rel="stylesheet" href="assets/css/dashboard-shell.css?v=1">
+
   <!-- Profile + Settings tabs — every rule is scoped under .profile-tab so it
        can't reach the dashboard shell -->
-  <link rel="stylesheet" href="assets/css/profile.css">
+  <link rel="stylesheet" href="assets/css/profile.css?v=2">
   <!-- Settings tab — scoped under .settings-tab, same idea as profile.css -->
-  <link rel="stylesheet" href="assets/css/settings.css">
+  <link rel="stylesheet" href="assets/css/settings.css?v=2">
   <link rel="stylesheet" href="assets/css/loader.css">
 </head>
 <body>
@@ -30,61 +39,112 @@
 <canvas id="star-canvas"></canvas>
 <div class="page-grid"></div>
 
-<div id="app">
-  <div class="app-shell">
+<div id="app" v-cloak>
+  <div class="app-shell" :class="{ 'sidebar-open': sidebarOpen }">
 
-    <!-- Top bar -->
-    <div class="topbar">
-      <button type="button" class="brand" @click="setTab('forum')" aria-label="CosmoKlub home">
-        <img class="brand-logo" src="assets/images/logo.png" alt="CosmoKlub" draggable="false" />
+    <!-- =====================================================
+         SIDEBAR — persistent navigation. Replaces the old
+         floating .topbar pill entirely. Off-canvas below
+         980px, opened by the header's hamburger.
+         ===================================================== -->
+    <aside class="sidebar" @click.stop>
+
+      <div class="sb-brand">
+        <button type="button" class="sb-brand-btn" @click="setTab('forum')" aria-label="CosmoKlub home">
+          <img class="sb-brand-logo" src="assets/images/logo.png" alt="CosmoKlub" draggable="false" />
+        </button>
+        <button type="button" class="sb-close" @click="sidebarOpen = false" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Account chip, in the slot OpenRouter gives its workspace
+           switcher. Opens the Profile tab. -->
+      <button type="button" class="sb-account" @click="setTab('profile')"
+              :class="{ 'is-active': activeTab === 'profile' }">
+        <span class="sb-account-av">
+          <img v-if="account.avatarUrl" :src="account.avatarUrl" :alt="account.username" referrerpolicy="no-referrer" />
+          <template v-else>{{ account.initial }}</template>
+        </span>
+        <span class="sb-account-text">
+          <strong>{{ account.username }}</strong>
+          <em>{{ account.signedIn ? 'Personal' : 'Not signed in' }}</em>
+        </span>
+        <svg class="sb-account-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
 
-      <div class="topbar-spacer"></div>
-
-      <div class="topbar-actions">
-        <button type="button" class="icon-btn" aria-label="Notifications" title="Notifications">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span class="icon-dot"></span>
-        </button>
-
-        <button type="button" class="icon-btn" :class="{'is-open': activeTab === 'settings'}"
-                @click="setTab('settings')" aria-label="Settings" title="Settings">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
-
-        <!-- Hamburger: opens the navigation dropdown to the rest of CosmoKlub,
-             styled after the marketing site's usecases nav-dropdown. -->
-        <div class="tb-menu-wrap">
-          <button type="button" class="icon-btn" :class="{'is-open': menuOpen}"
-                  @click.stop="menuOpen = !menuOpen"
-                  aria-haspopup="true" :aria-expanded="menuOpen" aria-label="Open navigation menu" title="Menu">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-          </button>
-
-          <div class="tb-pop" v-if="menuOpen" @click.stop>
-            <span class="tb-pop-label">Navigate</span>
-            <div class="tb-pop-grid">
-              <a v-for="dest in navDestinations" :key="dest.key" href="javascript:void(0)"
-                 class="tb-pop-item"
-                 :class="{'is-active': dest.tab && activeTab === dest.tab, 'is-soon': !dest.tab}"
-                 :aria-disabled="!dest.tab"
-                 @click="goToDestination(dest)">
-                <span class="tb-pop-ic" v-html="dest.icon"></span>
-                <span class="tb-pop-text">
-                  <strong>{{ dest.label }}<span class="tb-pop-soon" v-if="!dest.tab">Soon</span></strong>
-                  <span>{{ dest.desc }}</span>
-                </span>
-              </a>
-            </div>
-          </div>
+      <nav class="sb-nav">
+        <div class="sb-group">
+          <a v-for="dest in primaryNav" :key="dest.key" href="javascript:void(0)"
+             class="sb-item"
+             :class="{ 'is-active': dest.tab && activeTab === dest.tab, 'is-soon': !dest.tab }"
+             :aria-disabled="!dest.tab"
+             @click="goToDestination(dest)">
+            <span class="sb-ic" v-html="dest.icon"></span>
+            <span class="sb-label">{{ dest.label }}</span>
+            <span class="sb-soon" v-if="!dest.tab">Soon</span>
+          </a>
         </div>
-      </div>
-    </div>
 
-    <div class="content">
-      <!-- Each tab is an independent component; see components/*.js.
-           tabComponents maps tab name -> component, defined in app.js. -->
-      <component :is="tabComponents[activeTab]"></component>
+        <div class="sb-group">
+          <span class="sb-group-label">Account</span>
+          <a v-for="dest in accountNav" :key="dest.key" href="javascript:void(0)"
+             class="sb-item"
+             :class="{ 'is-active': dest.tab && activeTab === dest.tab && !dest.section, 'is-danger': dest.danger }"
+             @click="goToDestination(dest)">
+            <span class="sb-ic" v-html="dest.icon"></span>
+            <span class="sb-label">{{ dest.label }}</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sb-foot">
+        <a class="sb-foot-link" href="index.html">Back to cosmoklub.com</a>
+      </div>
+    </aside>
+
+    <div class="sb-scrim" v-if="sidebarOpen" @click="sidebarOpen = false"></div>
+
+    <!-- =====================================================
+         MAIN COLUMN — slim header + the scrolling tab area.
+         ===================================================== -->
+    <div class="shell-main">
+
+      <header class="shell-header">
+        <button type="button" class="hdr-menu" @click.stop="sidebarOpen = !sidebarOpen"
+                aria-label="Open menu" :aria-expanded="sidebarOpen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+
+        <span class="hdr-title">{{ pageTitle }}</span>
+
+        <div class="hdr-spacer"></div>
+
+        <button type="button" class="hdr-icon" aria-label="Notifications" title="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="hdr-dot"></span>
+        </button>
+
+        <button type="button" class="hdr-icon" :class="{ 'is-active': activeTab === 'settings' }"
+                @click="setTab('settings')" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+
+        <button type="button" class="hdr-user" @click="setTab('profile')" aria-label="Your profile">
+          <span class="hdr-user-av">
+            <img v-if="account.avatarUrl" :src="account.avatarUrl" :alt="account.username" referrerpolicy="no-referrer" />
+            <template v-else>{{ account.initial }}</template>
+          </span>
+          <span class="hdr-user-name">{{ account.username }}</span>
+        </button>
+      </header>
+
+      <div class="content">
+        <!-- Each tab is an independent component; see components/*.js.
+             tabComponents maps tab name -> component, defined in app.js. -->
+        <component :is="tabComponents[activeTab]"></component>
+      </div>
+
     </div>
 
   </div>
@@ -109,10 +169,10 @@
 <script src="assets/js/components/library.js?v=3"></script>
 <script src="assets/js/components/chat.js"></script>
 <script src="assets/js/components/calculator.js"></script>
-<script src="assets/js/components/profile.js"></script>
-<script src="assets/js/components/settings.js"></script>
+<script src="assets/js/components/profile.js?v=2"></script>
+<script src="assets/js/components/settings.js?v=2"></script>
 
-<script src="assets/js/app.js"></script>
+<script src="assets/js/app.js?v=2"></script>
   <script src="assets/js/loader.js"></script>
 </body>
 </html>
