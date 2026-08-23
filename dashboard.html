@@ -24,7 +24,7 @@
        topbar rules that are still defined further up in dashboard.css.
        It also carries the shared page primitives (.pg-head, .ck-card,
        .seg-tabs, .ck-empty…) that profile.css and settings.css build on. -->
-  <link rel="stylesheet" href="assets/css/dashboard-shell.css?v=1">
+  <link rel="stylesheet" href="assets/css/dashboard-shell.css?v=2">
 
   <!-- Profile + Settings tabs — every rule is scoped under .profile-tab so it
        can't reach the dashboard shell -->
@@ -120,22 +120,27 @@
 
         <div class="hdr-spacer"></div>
 
+        <!-- Rank + level readout. Deliberately NOT a button: Profile and
+             Settings both live in the sidebar's ACCOUNT group, so the
+             header shows status instead of repeating navigation. Fed by
+             progress.js and refreshed on cosmoklub-progress-changed. -->
+        <div class="hdr-xp" v-if="progress.ready" :title="xpTitle">
+          <span class="hdr-xp-rank" :class="progress.rankClass">{{ progress.rank }}</span>
+          <span class="hdr-xp-body">
+            <span class="hdr-xp-top">
+              <span class="hdr-xp-lvl">Level {{ progress.level }}</span>
+              <span class="hdr-xp-val">{{ progress.xp.toLocaleString() }} XP</span>
+            </span>
+            <span class="hdr-xp-bar">
+              <span class="hdr-xp-fill" :class="progress.rankClass"
+                    :style="{ width: progress.percent + '%' }"></span>
+            </span>
+          </span>
+        </div>
+
         <button type="button" class="hdr-icon" aria-label="Notifications" title="Notifications">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="hdr-dot"></span>
-        </button>
-
-        <button type="button" class="hdr-icon" :class="{ 'is-active': activeTab === 'settings' }"
-                @click="setTab('settings')" aria-label="Settings" title="Settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
-
-        <button type="button" class="hdr-user" @click="setTab('profile')" aria-label="Your profile">
-          <span class="hdr-user-av">
-            <img v-if="account.avatarUrl" :src="account.avatarUrl" :alt="account.username" referrerpolicy="no-referrer" />
-            <template v-else>{{ account.initial }}</template>
-          </span>
-          <span class="hdr-user-name">{{ account.username }}</span>
         </button>
       </header>
 
@@ -172,7 +177,7 @@
 <script src="assets/js/components/profile.js?v=2"></script>
 <script src="assets/js/components/settings.js?v=2"></script>
 
-<script src="assets/js/app.js?v=2"></script>
+<script src="assets/js/app.js?v=3"></script>
   <script src="assets/js/loader.js"></script>
 </body>
 </html>
