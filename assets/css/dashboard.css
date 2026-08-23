@@ -849,6 +849,8 @@ body {
 
 .fxd-card-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #0b091a; }
 .fxd-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Overlaid on a picture when there is one. */
 .fxd-badge {
   position: absolute; top: 9px; left: 9px; z-index: 2;
   padding: 0.22rem 0.55rem; border-radius: 6px;
@@ -856,6 +858,22 @@ body {
   background: linear-gradient(135deg, #059669, #34d399);
   box-shadow: 0 3px 9px rgba(5,150,105,0.35);
 }
+
+/* Most posts have no picture, so SOLVED has to sit in the body instead —
+   inline next to the category, in normal flow rather than overlaid. */
+.fxd-badge-flow {
+  position: static;
+  box-shadow: none;
+  vertical-align: middle;
+}
+
+.fxd-card-tagrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.45rem;
+}
+.fxd-card-tagrow .fxd-card-tag { margin-bottom: 0; }
 .fxd-fav {
   position: absolute; top: 9px; right: 9px; z-index: 2;
   width: 28px; height: 28px; display: grid; place-items: center;
@@ -867,6 +885,9 @@ body {
 .fxd-fav:hover { background: rgba(244,63,94,0.85); border-color: transparent; }
 
 .fxd-card-body { display: flex; flex-direction: column; flex: 1; padding: 0.9rem 1rem 1rem; }
+/* No picture above it — give the text the space the media used to occupy
+   so the card doesn't look top-cropped. */
+.fxd-card > .fxd-card-body:first-child { padding-top: 1.15rem; }
 .fxd-card-tag { font-size: 0.7rem; font-weight: 700; color: #c084fc; margin-bottom: 0.45rem; }
 .fxd-card-title {
   font-size: 0.97rem; font-weight: 700; line-height: 1.32; color: #f5f3ff; margin-bottom: 0.4rem;
@@ -940,29 +961,13 @@ body {
 @media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
 
 /* ---------- Forum backdrop ----------
-   The CosmoKlub mark sits behind the forum as a watermark. It's fixed rather
-   than scrolling so it reads as part of the room, not part of the feed, and
-   pointer-events:none keeps it from swallowing clicks on the cards above it.
-   The mask fades the edges out so it never fights the text for contrast. */
+   The CosmoKlub mark used to sit behind the feed as a fixed watermark. It was
+   removed: with the aurora and starfield already showing through the shell,
+   a third background layer was one too many and it read as a stray logo
+   rather than texture. .fxd keeps its stacking context for the cards. */
 
 .fxd {
   position: relative;
-}
-
-.fxd::before {
-  content: "";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: min(78vmin, 720px);
-  height: min(78vmin, 720px);
-  transform: translate(-50%, -50%);
-  background: url("../images/logo-tab.png") center / contain no-repeat;
-  opacity: 0.055;
-  pointer-events: none;
-  z-index: 0;
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 38%, transparent 72%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 38%, transparent 72%);
 }
 
 /* Everything the forum renders sits above the watermark. */

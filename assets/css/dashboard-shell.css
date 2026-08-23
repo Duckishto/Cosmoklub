@@ -564,6 +564,26 @@
 .content::-webkit-scrollbar-track { background: transparent; }
 .content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 6px; }
 
+/* ---------- Stacking order ----------
+
+   The shell introduced two new fixed layers, and they outrank things that
+   were written when nothing sat above the content:
+
+     1200  modal overlays (forum composer / thread reader)
+      900  sidebar
+      880  sidebar scrim
+      800  header
+
+   The forum's overlay was authored at z-index 120, back when the only
+   chrome was a floating pill it was meant to sit under. Against a 900
+   sidebar that left the modal's left edge painted over — the panel is
+   centred on the viewport, so roughly 30px of it disappeared behind the
+   rail. Modals should cover the whole window, sidebar included, so they
+   go above everything. */
+.fxd-composer-back {
+  z-index: 1200;
+}
+
 /* The 3D Library canvas and its glow overlay are position:fixed and were
    written for a full-bleed viewport. With a rail on the left they need
    to start after it, or they slide underneath the sidebar. */
