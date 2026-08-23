@@ -1451,7 +1451,14 @@ const Calculator = {
            anything upstream (a font-size bump, a browser zoom level) made
            the real header/eyebrow row taller than the constant assumed.
            Flex fill has no such constant to go stale. */
+        /* height:100% fills the scrollport exactly — but .calc-wrap is also a
+           .section, and dashboard.css gives every .section a 24px bottom
+           margin. Margin sits OUTSIDE the 100%, so the component ended up
+           24px taller than the space it had: enough to push the last keypad
+           row and the bottom of the graph under the fold on every screen.
+           Zeroed here (same specificity, later stylesheet, so this wins). */
         .calc-wrap { max-width: 1180px; margin: 0 auto; height: 100%; min-height: 0; display: flex; flex-direction: column; }
+        .section.calc-wrap { margin-bottom: 0; }
         .calc-wrap.calc-graphing { max-width: 1180px; }
         .calc-wrap > .section-eyebrow-row { flex-shrink: 0; }
         .calc-mode-switch { flex-shrink: 0; }
@@ -1670,6 +1677,8 @@ const Calculator = {
           .calc-wrap {
             display: flex;
             flex-direction: column;
+            /* Same subtraction the desktop height:100% gets implicitly; the
+               .section margin is already zeroed above. */
             height: calc(100dvh - var(--topbar-h) - var(--shell-pad-top) - var(--shell-pad-bottom));
             min-height: 420px;   /* below this, scrolling beats unusable keys */
           }
