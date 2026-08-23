@@ -342,13 +342,24 @@ const Forum = {
 
             <article class="fxd-card" v-for="t in filteredThreads" :key="t.id" @click="openThread(t)">
 
-              <div class="fxd-card-media">
+              <!-- Only rendered when the post actually carries a picture.
+                   This used to be an unconditional placeholder image, which
+                   made every text post look like it had an attachment.
+                   t.image is not populated by anything yet (attachments
+                   aren't built), so in practice cards are text-only until
+                   that lands, at which point this needs no further change. -->
+              <div class="fxd-card-media" v-if="t.image">
                 <span class="fxd-badge" v-if="t.solved">SOLVED</span>
-                <img src="assets/images/pensiaplaceholder.png" alt="" draggable="false" loading="lazy" />
+                <img :src="t.image" alt="" draggable="false" loading="lazy" />
               </div>
 
               <div class="fxd-card-body">
-                <span class="fxd-card-tag">{{ t.tag }}</span>
+                <!-- With no picture to overlay, SOLVED sits beside the
+                     category instead. -->
+                <div class="fxd-card-tagrow">
+                  <span class="fxd-card-tag">{{ t.tag }}</span>
+                  <span class="fxd-badge fxd-badge-flow" v-if="t.solved && !t.image">SOLVED</span>
+                </div>
                 <h3 class="fxd-card-title">{{ t.title }}</h3>
                 <p class="fxd-card-desc">{{ t.body }}</p>
 
