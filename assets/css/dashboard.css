@@ -735,52 +735,54 @@ body {
    ============================================================ */
 
 .fxd-shell {
-  display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  gap: 1.6rem;
-  align-items: start;
   margin-top: 1.2rem;
 }
 
-/* ---------- Sidebar ---------- */
-.fxd-side {
-  position: sticky; top: 1rem;
-  background: linear-gradient(180deg, rgba(22,18,46,0.92), rgba(11,9,24,0.95));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(124,58,237,0.25);
-  border-radius: 14px;
-  padding: 1.1rem 1rem 1.3rem;
+/* ---------- Filter bar ----------
+   Was a sticky sidebar card styled almost identically to the real nav
+   rail (same panel gradient, blurred glass, icon+label header) — next to
+   the actual sidebar it read as a second nav rather than a filter tool.
+   Rebuilt as a flat horizontal toolbar above the feed: no header row, no
+   heavy blur/gradient, just search + sort on one line and category/status
+   chips on the next. */
+.fxd-filterbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.85rem 0.95rem;
+  margin-bottom: 1.1rem;
+  background: rgba(15,12,32,0.45);
+  border: 1px solid rgba(124,58,237,0.18);
+  border-radius: 12px;
 }
-.fxd-side-head {
-  display: flex; align-items: center; gap: 8px;
-  font-weight: 800; font-size: 0.95rem; color: #f5f3ff;
-  padding-bottom: 0.85rem; margin-bottom: 1rem;
-  border-bottom: 1px solid rgba(124,58,237,0.25);
+.fxd-filterbar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
-.fxd-side-head svg { width: 17px; height: 17px; color: #a855f7; }
 
-.fxd-search { position: relative; margin-bottom: 0.8rem; }
+.fxd-search { position: relative; flex: 1 1 220px; min-width: 160px; }
 .fxd-search svg {
   position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
   width: 15px; height: 15px; color: #8b7aa8; pointer-events: none;
 }
 .fxd-search input {
   width: 100%; box-sizing: border-box;
-  padding: 0.58rem 0.75rem 0.58rem 2.1rem;
+  padding: 0.52rem 0.75rem 0.52rem 2.1rem;
   background: rgba(9,7,20,0.6);
-  border: 1px solid rgba(124,58,237,0.25); border-radius: 9px;
+  border: 1px solid rgba(124,58,237,0.22); border-radius: 9px;
   color: #f5f3ff; font-family: inherit; font-size: 0.85rem; outline: none;
 }
 .fxd-search input::placeholder { color: #8b7aa8; }
 .fxd-search input:focus { border-color: rgba(168,85,247,0.6); }
 
-.fxd-select { position: relative; margin-bottom: 1.3rem; }
+.fxd-select { position: relative; flex: 0 0 auto; width: 170px; }
 .fxd-select select {
   width: 100%; box-sizing: border-box; appearance: none; -webkit-appearance: none;
-  padding: 0.58rem 2.1rem 0.58rem 0.75rem;
+  padding: 0.52rem 2.1rem 0.52rem 0.75rem;
   background: rgba(9,7,20,0.6);
-  border: 1px solid rgba(124,58,237,0.25); border-radius: 9px;
+  border: 1px solid rgba(124,58,237,0.22); border-radius: 9px;
   color: #f5f3ff; font-family: inherit; font-size: 0.85rem; cursor: pointer; outline: none;
 }
 .fxd-select select option { background: #14102a; color: #f5f3ff; }
@@ -789,15 +791,18 @@ body {
   width: 13px; height: 13px; color: #8b7aa8; pointer-events: none;
 }
 
-.fxd-group { margin-bottom: 1.3rem; }
-.fxd-group:last-child { margin-bottom: 0; }
-.fxd-group-head {
-  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
-  text-transform: uppercase; color: #8b7aa8; margin-bottom: 0.6rem;
+.fxd-filterbar-pills { row-gap: 0.5rem; }
+.fxd-pillgroup { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
+.fxd-pill-label {
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #8b7aa8; margin-right: 0.15rem;
 }
-.fxd-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.fxd-pill-sep {
+  width: 1px; height: 18px; flex-shrink: 0;
+  background: rgba(124,58,237,0.22);
+}
 .fxd-pill {
-  padding: 0.35rem 0.72rem;
+  padding: 0.32rem 0.68rem;
   background: rgba(124,58,237,0.08);
   border: 1px solid rgba(124,58,237,0.25); border-radius: 999px;
   color: #d9d2f0; font-family: inherit; font-size: 0.76rem; font-weight: 600;
@@ -807,6 +812,12 @@ body {
 .fxd-pill.is-active {
   background: linear-gradient(100deg, rgba(124,58,237,0.5), rgba(168,85,247,0.32));
   border-color: rgba(168,85,247,0.7); color: #fff;
+}
+
+@media (max-width: 640px) {
+  .fxd-select { flex: 1 1 140px; width: auto; }
+  .fxd-pill-sep { display: none; }
+  .fxd-pillgroup { width: 100%; }
 }
 
 /* ---------- Main ---------- */
@@ -919,45 +930,6 @@ body {
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1200px) { .fxd-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 900px) {
-  /* Stacked, the sidebar sits above the feed. This used to stay a CSS
-     grid (grid-template-columns: 1fr), which stacks the sidebar and the
-     feed as two separate grid ROWS. A sticky grid item is contained by
-     its own grid area, so with the sidebar in its own auto-sized row it
-     only had ~its own height worth of room to travel before running out
-     of room to stick in — it would drift up a little, then stop, leaving
-     a dead gap above it for the rest of the scroll. Switching to normal
-     block flow here makes .fxd-shell itself (sidebar + feed together)
-     the sidebar's containing block, so it has the full scroll length of
-     the feed to stick within. */
-  .fxd-shell { display: block; }
-  /* Sticky pinned to the top was previously turned off altogether
-     (position:static) because it used to cover every card scrolling
-     past. Keep it sticky — so it doesn't leave dead scroll space with
-     nothing pinned at the top — but cap its height and let it scroll
-     internally, so it can stick near the top without ever growing
-     tall enough to blot out the thread list beneath it. */
-  .fxd-side {
-    position: sticky;
-    /* Sticky offsets resolve against the scrollport (.content's padding
-       box), so this is measured from directly under the header — 12px of
-       clearance. The old value subtracted --shell-pad-top to compensate
-       for the floating topbar pill that used to overlap the content;
-       nothing overlaps it now, so the compensation is gone with it. */
-    top: 12px;
-    z-index: 5;
-    max-height: calc(100vh - 88px);
-    overflow-y: auto;
-    /* replaces .fxd-shell's grid `gap`, which no longer applies now
-       that .fxd-shell is block-level instead of grid */
-    margin-bottom: 1.6rem;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-  .fxd-side::-webkit-scrollbar { width: 4px; }
-  .fxd-side::-webkit-scrollbar-track { background: transparent; }
-  .fxd-side::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-}
 @media (max-width: 560px) { .fxd-grid { grid-template-columns: 1fr; } }
 
 /* ---------- Forum backdrop ----------
@@ -1418,9 +1390,9 @@ body {
 .fxd-solve-undo:hover { color: var(--white); }
 
 /* ---------- Forum: sky strip + composer moved into the feed column ----------
-   They used to sit above .fxd-shell at full page width while the thread list
-   below started after the 250px sidebar, so the two never lined up. Now they
-   are inside .fxd-main and share its edges. */
+   They live inside .fxd-main (now the only column, since the filter
+   sidebar was replaced by the horizontal .fxd-filterbar above) and share
+   its edges rather than running full page width. */
 
 .fxd-main > .sky-strip { margin-bottom: 12px; }
 
@@ -1428,35 +1400,6 @@ body {
 
 /* The shell is now the first thing in the tab, so it carries the top gap. */
 .fxd-shell { margin-top: 0.4rem; }
-
-/* ---------- Filters on a phone ----------
-   The sidebar is sticky once the layout stacks, which works on a tall tablet
-   but not on a phone held upright: it pins under the header and rides over
-   the feed the whole way down. Locked in place there — it scrolls away like
-   any other block and the thread list is never covered.
-
-   Landscape phones get the same treatment: a viewport under ~520px tall has
-   no room to stick anything without eating the screen. */
-
-@media (max-width: 900px) and (orientation: portrait) {
-  .fxd-side {
-    position: static;
-    top: auto;
-    z-index: auto;
-    max-height: none;
-    overflow: visible;
-  }
-}
-
-@media (max-width: 900px) and (max-height: 520px) {
-  .fxd-side {
-    position: static;
-    top: auto;
-    z-index: auto;
-    max-height: none;
-    overflow: visible;
-  }
-}
 
 /* ---------- Forum: loading / empty / error ---------- */
 
