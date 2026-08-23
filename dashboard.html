@@ -24,7 +24,7 @@
        topbar rules that are still defined further up in dashboard.css.
        It also carries the shared page primitives (.pg-head, .ck-card,
        .seg-tabs, .ck-empty…) that profile.css and settings.css build on. -->
-  <link rel="stylesheet" href="assets/css/dashboard-shell.css?v=4">
+  <link rel="stylesheet" href="assets/css/dashboard-shell.css?v=5">
 
   <!-- Profile + Settings tabs — every rule is scoped under .profile-tab so it
        can't reach the dashboard shell -->
@@ -127,6 +127,11 @@
           <span class="hdr-search-kbd">/</span>
         </button>
 
+        <!-- Spacer moved ahead of Home/Docs (was after) so the nav links
+             get pushed to the right of the topbar, next to the XP readout
+             and notification bell, instead of hugging the search button. -->
+        <div class="hdr-spacer"></div>
+
         <!-- Home leaves the dashboard entirely for the marketing site; Docs
              stays inside the SPA as its own tab. Deliberately not in the
              sidebar — OpenRouter keeps these in the top strip too. -->
@@ -141,8 +146,6 @@
             <span class="hdr-nav-label">Docs</span>
           </a>
         </nav>
-
-        <div class="hdr-spacer"></div>
 
         <!-- Rank + level readout. Deliberately NOT a button: Profile and
              Settings both live in the sidebar's ACCOUNT group, so the
