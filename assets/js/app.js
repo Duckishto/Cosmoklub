@@ -81,8 +81,37 @@ const SEARCH_INDEX = [
 ];
 
 // Below this width the sidebar is off-canvas, so navigating has to close
-// it or the destination stays hidden behind the panel.
+// it or the destination stays hidden behind the panel. Above it the
+// sidebar is normally docked in-flow — SIDEBAR_COLLAPSE_KEY below is what
+// lets it be closed there too.
 const SIDEBAR_BREAKPOINT = 980;
+
+// Desktop collapse preference, remembered across visits the same way
+// report-bug.js/staff-application.js remember their cooldown — a plain
+// localStorage flag, read once on mount. Wrapped in try/catch everywhere
+// it's touched since localStorage can throw (private browsing, disabled
+// storage, etc.) and losing the preference is fine, breaking the app isn't.
+const SIDEBAR_COLLAPSE_KEY = 'cosmoklub-sidebar-collapsed';
+
+function readStoredSidebarCollapsed() {
+  try {
+    return localStorage.getItem(SIDEBAR_COLLAPSE_KEY) === '1';
+  } catch (err) {
+    return false;
+  }
+}
+
+function writeStoredSidebarCollapsed(collapsed) {
+  try {
+    if (collapsed) {
+      localStorage.setItem(SIDEBAR_COLLAPSE_KEY, '1');
+    } else {
+      localStorage.removeItem(SIDEBAR_COLLAPSE_KEY);
+    }
+  } catch (err) {
+    /* ignore — preference just won't persist */
+  }
+}
 
 function getTabFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -123,9 +152,14 @@ createApp({
       activeTab: getTabFromUrl(),
 
       // Only meaningful below SIDEBAR_BREAKPOINT, where the sidebar is
-      // off-canvas. On desktop the rail is always in flow and this is
-      // ignored.
+      // off-canvas: true while the panel is slid into view over the page.
       sidebarOpen: false,
+
+      // Only meaningful at/above SIDEBAR_BREAKPOINT, where the sidebar is
+      // normally docked in-flow: true once the user has closed it, so the
+      // content column reclaims the rail's width. Restored from
+      // localStorage on mount so the preference survives a reload.
+      sidebarCollapsed: readStoredSidebarCollapsed(),
 
       // Drives the sidebar chip and the header chip. Filled by
       // loadAccount(); stays as the signed-out placeholder if there's no
@@ -190,6 +224,15 @@ createApp({
 
     accountNav() {
       return ACCOUNT_NAV;
+    },
+
+    // Whichever of sidebarOpen/sidebarCollapsed is live at the current
+    // width — for the hamburger's aria-expanded, so it's accurate on
+    // both the off-canvas (mobile) and docked (desktop) sidebar.
+    sidebarExpanded() {
+      return window.innerWidth <= SIDEBAR_BREAKPOINT
+        ? this.sidebarOpen
+        : !this.sidebarCollapsed;
     },
 
     pageTitle() {
@@ -262,6 +305,32 @@ createApp({
       if (this.sidebarOpen) {
         this.sidebarOpen = false;
       }
+    },
+
+    // Header hamburger. Below SIDEBAR_BREAKPOINT it slides the off-canvas
+    // panel in/out (sidebarOpen); at/above it, it docks/undocks the rail
+    // in place (sidebarCollapsed) instead, since the sidebar there is
+    // already visible and part of the flex layout rather than overlaid.
+    toggleSidebar() {
+      if (window.innerWidth <= SIDEBAR_BREAKPOINT) {
+        this.sidebarOpen = !this.sidebarOpen;
+        return;
+      }
+
+      this.sidebarCollapsed = !this.sidebarCollapsed;
+      writeStoredSidebarCollapsed(this.sidebarCollapsed);
+    },
+
+    // The X inside the sidebar itself (.sb-close). Same breakpoint split
+    // as toggleSidebar, but only ever closes — it never reopens.
+    closeSidebarManually() {
+      if (window.innerWidth <= SIDEBAR_BREAKPOINT) {
+        this.sidebarOpen = false;
+        return;
+      }
+
+      this.sidebarCollapsed = true;
+      writeStoredSidebarCollapsed(true);
     },
 
     // Header search overlay.
