@@ -60,8 +60,23 @@
 #app {
   position: relative;
   z-index: 1;
+
+  /* Order matters, and it was backwards: 100vh was written AFTER 100dvh, so
+     it won everywhere instead of acting as the fallback.
+
+     On iOS Safari 100vh is the LARGE viewport — the height the page would
+     have if the address bar and tab bar were hidden. With them on screen
+     (which is almost always), #app was taller than the visible area, so the
+     shell's bottom edge sat below the fold. .content never overflowed, so
+     it never grew a scrollbar; the whole app was simply hanging off the
+     screen. That is why the last keypad row, the bottom of the graph and
+     the ends of the Forum and Library feeds were all clipped at once.
+
+     100dvh is the dynamic viewport — what you can actually see. It has to
+     come last so it overrides the fallback in browsers that support it. */
+  height: 100vh;   /* fallback for browsers without dvh */
   height: 100dvh;
-  height: 100vh;
+
   display: block;
 }
 
