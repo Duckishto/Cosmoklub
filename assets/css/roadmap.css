@@ -559,7 +559,11 @@ button{
 }
 
 .path{
-  width:min(500px,100%);
+  /* 500px was chosen when rows also shifted up to 100px sideways, so the
+     column really occupied ~700px. Straight, that reads narrow on a desktop;
+     560px gives the cards the same generous proportion they have on a phone
+     without letting a lesson title run to an awkward line length. */
+  width:min(560px,100%);
   height:auto;
   margin:35px auto 0;
   display:flex;
@@ -582,28 +586,24 @@ button{
   transition:transform .2s ease;
 }
 
-.path-position-0{
-  transform:translateX(0);
-}
+/* The path used to zigzag: .path-position-0..5 pushed each row sideways by
+   up to 100px, cycling as you went down. Only phones (≤560px) ever saw the
+   straight version, because the offsets were zeroed there for lack of room.
 
-.path-position-1{
-  transform:translateX(-65px);
-}
+   The straight column is now the layout on every device. The zigzag put the
+   nodes on six different x-positions, so the eye had to re-find the start of
+   each row and the lock/tick icons no longer lined up into a single spine.
 
-.path-position-2{
-  transform:translateX(-100px);
-}
-
-.path-position-3{
-  transform:translateX(-45px);
-}
-
-.path-position-4{
-  transform:translateX(45px);
-}
-
+   .path-position-* is still applied by roadmap.js — the classes are kept and
+   flattened here rather than removed from the JS, so nothing depends on the
+   markup changing. */
+.path-position-0,
+.path-position-1,
+.path-position-2,
+.path-position-3,
+.path-position-4,
 .path-position-5{
-  transform:translateX(95px);
+  transform:none;
 }
 
 /* =========================================================
@@ -1344,29 +1344,8 @@ button{
     gap:36px;
   }
 
-  .path-position-0{
-    transform:translateX(0);
-  }
-
-  .path-position-1{
-    transform:translateX(-32px);
-  }
-
-  .path-position-2{
-    transform:translateX(-48px);
-  }
-
-  .path-position-3{
-    transform:translateX(-24px);
-  }
-
-  .path-position-4{
-    transform:translateX(24px);
-  }
-
-  .path-position-5{
-    transform:translateX(46px);
-  }
+  /* The tablet tier used to carry a reduced-size zigzag here. The path is
+     straight at every width now, so there is nothing to scale down. */
 }
 
 @media(max-width:560px){
@@ -1389,16 +1368,6 @@ button{
   .path{
     width:100%;
     gap:28px;
-  }
-
-  .path-item,
-  .path-position-0,
-  .path-position-1,
-  .path-position-2,
-  .path-position-3,
-  .path-position-4,
-  .path-position-5{
-    transform:none;
   }
 
   .path-node{
