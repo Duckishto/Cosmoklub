@@ -242,14 +242,31 @@ const Forum = {
 
             <div class="fxd-composer-field">
               <span class="fxd-composer-label">Category</span>
+              <!-- Topic first, then the specific category within it. A flat
+                   list of 54 in the composer would be worse than the filter
+                   row, because here exactly one has to be chosen. -->
               <div class="fxd-pills">
                 <button
                   class="fxd-pill"
-                  v-for="tag in tags"
-                  :key="tag"
-                  :class="{ 'is-active': draft.tag === tag }"
-                  @click="draft.tag = tag"
-                >{{ tag }}</button>
+                  v-for="g in categoryGroups"
+                  :key="g.name"
+                  :class="[ 'hue-' + g.hue, { 'is-active': draftGroup === g.name } ]"
+                  @click="pickDraftGroup(g)"
+                >{{ g.name }}</button>
+              </div>
+              <div class="fxd-pills fxd-pills-sub" v-if="draftGroupChildren.length">
+                <button
+                  class="fxd-pill fxd-pill-sub"
+                  :class="[ 'hue-' + draftGroupHue, { 'is-active': draft.tag === draftGroup } ]"
+                  @click="draft.tag = draftGroup"
+                >General</button>
+                <button
+                  class="fxd-pill fxd-pill-sub"
+                  v-for="child in draftGroupChildren"
+                  :key="child"
+                  :class="[ 'hue-' + draftGroupHue, { 'is-active': draft.tag === child } ]"
+                  @click="draft.tag = child"
+                >{{ child }}</button>
               </div>
             </div>
 
@@ -290,10 +307,20 @@ const Forum = {
             </div>
 
             <div class="fxd-filterbar-row fxd-filterbar-pills">
+              <!-- Two levels. The top row is the six parent topics; picking
+                   one reveals its eight children below. 54 pills in a single
+                   flat row would bury the feed, and every pill carries its
+                   topic's hue so the two rows read as one family. -->
               <div class="fxd-pillgroup">
                 <span class="fxd-pill-label">Category</span>
-                <button class="fxd-pill" :class="{ 'is-active': activeChip === 'All' }" @click="activeChip = 'All'">All</button>
-                <button class="fxd-pill" v-for="tag in tags" :key="tag" :class="{ 'is-active': activeChip === tag }" @click="activeChip = tag">{{ tag }}</button>
+                <button class="fxd-pill" :class="{ 'is-active': activeChip === 'All' }" @click="pickCategory('All')">All</button>
+                <button
+                  class="fxd-pill"
+                  v-for="g in categoryGroups"
+                  :key="g.name"
+                  :class="[ 'hue-' + g.hue, { 'is-active': activeChip === g.name, 'is-open': openGroup === g.name } ]"
+                  @click="pickCategory(g.name)"
+                >{{ g.name }}</button>
               </div>
 
               <span class="fxd-pill-sep" aria-hidden="true"></span>
@@ -307,6 +334,25 @@ const Forum = {
                   :class="{ 'is-active': activeStatus === status }"
                   @click="activeStatus = status"
                 >{{ status }}</button>
+              </div>
+            </div>
+
+            <!-- Children of the open topic. Selecting the parent again (or
+                 All) closes it. -->
+            <div class="fxd-filterbar-row fxd-filterbar-sub" v-if="openGroupChildren.length">
+              <div class="fxd-pillgroup" :class="'hue-' + openGroupHue">
+                <button
+                  class="fxd-pill fxd-pill-sub"
+                  :class="[ 'hue-' + openGroupHue, { 'is-active': activeChip === openGroup } ]"
+                  @click="pickCategory(openGroup)"
+                >All {{ openGroup }}</button>
+                <button
+                  class="fxd-pill fxd-pill-sub"
+                  v-for="child in openGroupChildren"
+                  :key="child"
+                  :class="[ 'hue-' + openGroupHue, { 'is-active': activeChip === child } ]"
+                  @click="pickCategory(child)"
+                >{{ child }}</button>
               </div>
             </div>
           </div>
@@ -402,6 +448,8 @@ const Forum = {
   data() {
     const state = {
       activeChip: 'All',
+      openGroup: null,   // which parent topic's children are showing
+      draftGroup: 'Beginner Q&A',  // composer: topic picked, before category
 
       // Sidebar status filter. 'Unanswered' means no comments yet, which is a
       // different thing from 'not solved' — a question can have ten replies
@@ -447,13 +495,16 @@ const Forum = {
         error: '',
       },
 
-      tags: [
-        'Beginner Q&A',
-        'Equipment',
-        'Astrophotography',
-        'Deep Sky',
-        'Solar System',
-        'News'
+      // The taxonomy lives in lib/forum-api.js so the API, the UI and the
+      // SQL migration can't drift apart. The fallback keeps the component
+      // rendering if forum-api.js somehow hasn't loaded.
+      categoryGroups: (window.ForumAPI && window.ForumAPI.CATEGORY_GROUPS) || [
+        { name: 'Beginner Q&A', hue: 'violet', children: [] },
+        { name: 'Equipment', hue: 'blue', children: [] },
+        { name: 'Astrophotography', hue: 'pink', children: [] },
+        { name: 'Deep Sky', hue: 'cyan', children: [] },
+        { name: 'Solar System', hue: 'amber', children: [] },
+        { name: 'News', hue: 'green', children: [] }
       ],
 
       // Filled from Supabase in mounted(). Empty until then — the template
@@ -490,9 +541,42 @@ const Forum = {
       );
     },
 
+    // Every category, flat — parents and children together.
+    tags() {
+      return this.categoryGroups.flatMap(g => [g.name, ...g.children]);
+    },
+
+    openGroupChildren() {
+      const g = this.categoryGroups.find(x => x.name === this.openGroup);
+      return (g && g.children) || [];
+    },
+
+    openGroupHue() {
+      const g = this.categoryGroups.find(x => x.name === this.openGroup);
+      return (g && g.hue) || 'violet';
+    },
+
+    draftGroupChildren() {
+      const g = this.categoryGroups.find(x => x.name === this.draftGroup);
+      return (g && g.children) || [];
+    },
+
+    draftGroupHue() {
+      const g = this.categoryGroups.find(x => x.name === this.draftGroup);
+      return (g && g.hue) || 'violet';
+    },
+
     filteredThreads() {
       return this.threads.filter(thread => {
-        if (this.activeChip !== 'All' && thread.tag !== this.activeChip) return false;
+        // Picking a parent topic matches the parent AND everything filed
+        // under it, so "Equipment" doesn't hide the Telescopes threads.
+        if (this.activeChip !== 'All') {
+          const group = this.categoryGroups.find(g => g.name === this.activeChip);
+          const match = group
+            ? (thread.tag === group.name || group.children.includes(thread.tag))
+            : thread.tag === this.activeChip;
+          if (!match) return false;
+        }
 
         if (this.activeStatus === 'Solved') return !!thread.solved;
         if (this.activeStatus === 'Unanswered') return this.commentCount(thread) === 0;
@@ -506,6 +590,28 @@ const Forum = {
 
 
   methods: {
+    // Tapping a parent selects it and opens its children; tapping the open
+    // parent again closes the row without clearing the filter.
+    pickCategory(name) {
+      if (name === 'All') {
+        this.activeChip = 'All';
+        this.openGroup = null;
+        return;
+      }
+      const group = this.categoryGroups.find(g => g.name === name);
+      if (group) {
+        this.openGroup = this.openGroup === name ? null : name;
+      }
+      this.activeChip = name;
+    },
+
+    pickDraftGroup(group) {
+      this.draftGroup = group.name;
+      // Default to the topic itself, so a post is always valid even if no
+      // specific category is chosen.
+      this.draft.tag = group.name;
+    },
+
     // ---- Loading --------------------------------------------------------
 
     // Threads come from the forum_thread_feed view, which carries the author's
