@@ -157,6 +157,233 @@ body {
   min-height: 35px;
 }
 
+/* ---------- Forum filter pills on a phone ----------
+   The row was built at desktop scale: 0.8rem labels, 32px-tall pills and a
+   full-size CATEGORY / STATUS caption. On a phone that wraps onto four or
+   five lines and pushes the feed most of a screen down. Everything here is
+   size only — no pill is removed, and the row still wraps rather than
+   scrolling, so nothing becomes unreachable. */
+@media (max-width: 640px) {
+  .fxd-filterbar-pills { gap: 6px; }
+
+  .fxd-pillgroup { gap: 5px; }
+
+  .fxd-pill-label {
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    /* Its own line, so the pills get the full width instead of the first
+       one being pushed in by the caption. */
+    flex-basis: 100%;
+    margin-bottom: 1px;
+  }
+
+  .fxd-pill {
+    height: 26px;
+    padding: 0 9px;
+    font-size: 11.5px;
+    border-radius: 999px;
+  }
+}
+
+@media (max-width: 400px) {
+  .fxd-pill { height: 24px; padding: 0 8px; font-size: 11px; }
+  .fxd-filterbar-pills { gap: 5px; }
+}
+
+/* ---------- Category pill hues ----------
+   Six parent topics, one hue each; a topic's children are the same hue at
+   lower weight. Set from the `hue` field on each group in lib/forum-api.js,
+   so adding a topic there needs a matching block here.
+
+   Deliberately tinted borders and text rather than filled pills: 54 solid
+   colour chips would fight the feed for attention. */
+
+.fxd-pill.hue-violet {
+  border-color: rgba(168,85,247, 0.30);
+  color: #ddccff;
+}
+.fxd-pill.hue-violet:hover {
+  border-color: rgba(168,85,247, 0.60);
+  background: rgba(168,85,247, 0.12);
+}
+.fxd-pill.hue-violet.is-active {
+  background: rgba(168,85,247, 0.26);
+  border-color: rgba(168,85,247, 0.75);
+  color: #fff;
+}
+/* Children sit a shade lower than their parent so the two rows read as
+   one family rather than two competing sets. */
+.fxd-pill-sub.hue-violet {
+  border-color: rgba(168,85,247, 0.20);
+  color: rgba(168,85,247, 1);
+  color: #ddccff;
+  opacity: 0.86;
+}
+.fxd-pill-sub.hue-violet.is-active {
+  background: rgba(168,85,247, 0.20);
+  border-color: rgba(168,85,247, 0.62);
+  color: #fff;
+  opacity: 1;
+}
+
+.fxd-pill.hue-blue {
+  border-color: rgba(59,130,246, 0.30);
+  color: #c7dcff;
+}
+.fxd-pill.hue-blue:hover {
+  border-color: rgba(59,130,246, 0.60);
+  background: rgba(59,130,246, 0.12);
+}
+.fxd-pill.hue-blue.is-active {
+  background: rgba(59,130,246, 0.26);
+  border-color: rgba(59,130,246, 0.75);
+  color: #fff;
+}
+/* Children sit a shade lower than their parent so the two rows read as
+   one family rather than two competing sets. */
+.fxd-pill-sub.hue-blue {
+  border-color: rgba(59,130,246, 0.20);
+  color: rgba(59,130,246, 1);
+  color: #c7dcff;
+  opacity: 0.86;
+}
+.fxd-pill-sub.hue-blue.is-active {
+  background: rgba(59,130,246, 0.20);
+  border-color: rgba(59,130,246, 0.62);
+  color: #fff;
+  opacity: 1;
+}
+
+.fxd-pill.hue-pink {
+  border-color: rgba(236,72,153, 0.30);
+  color: #ffcfe6;
+}
+.fxd-pill.hue-pink:hover {
+  border-color: rgba(236,72,153, 0.60);
+  background: rgba(236,72,153, 0.12);
+}
+.fxd-pill.hue-pink.is-active {
+  background: rgba(236,72,153, 0.26);
+  border-color: rgba(236,72,153, 0.75);
+  color: #fff;
+}
+/* Children sit a shade lower than their parent so the two rows read as
+   one family rather than two competing sets. */
+.fxd-pill-sub.hue-pink {
+  border-color: rgba(236,72,153, 0.20);
+  color: rgba(236,72,153, 1);
+  color: #ffcfe6;
+  opacity: 0.86;
+}
+.fxd-pill-sub.hue-pink.is-active {
+  background: rgba(236,72,153, 0.20);
+  border-color: rgba(236,72,153, 0.62);
+  color: #fff;
+  opacity: 1;
+}
+
+.fxd-pill.hue-cyan {
+  border-color: rgba(34,211,238, 0.30);
+  color: #bff2fa;
+}
+.fxd-pill.hue-cyan:hover {
+  border-color: rgba(34,211,238, 0.60);
+  background: rgba(34,211,238, 0.12);
+}
+.fxd-pill.hue-cyan.is-active {
+  background: rgba(34,211,238, 0.26);
+  border-color: rgba(34,211,238, 0.75);
+  color: #fff;
+}
+/* Children sit a shade lower than their parent so the two rows read as
+   one family rather than two competing sets. */
+.fxd-pill-sub.hue-cyan {
+  border-color: rgba(34,211,238, 0.20);
+  color: rgba(34,211,238, 1);
+  color: #bff2fa;
+  opacity: 0.86;
+}
+.fxd-pill-sub.hue-cyan.is-active {
+  background: rgba(34,211,238, 0.20);
+  border-color: rgba(34,211,238, 0.62);
+  color: #fff;
+  opacity: 1;
+}
+
+.fxd-pill.hue-amber {
+  border-color: rgba(245,158,11, 0.30);
+  color: #ffe3ab;
+}
+.fxd-pill.hue-amber:hover {
+  border-color: rgba(245,158,11, 0.60);
+  background: rgba(245,158,11, 0.12);
+}
+.fxd-pill.hue-amber.is-active {
+  background: rgba(245,158,11, 0.26);
+  border-color: rgba(245,158,11, 0.75);
+  color: #fff;
+}
+/* Children sit a shade lower than their parent so the two rows read as
+   one family rather than two competing sets. */
+.fxd-pill-sub.hue-amber {
+  border-color: rgba(245,158,11, 0.20);
+  color: rgba(245,158,11, 1);
+  color: #ffe3ab;
+  opacity: 0.86;
+}
+.fxd-pill-sub.hue-amber.is-active {
+  background: rgba(245,158,11, 0.20);
+  border-color: rgba(245,158,11, 0.62);
+  color: #fff;
+  opacity: 1;
+}
+
+.fxd-pill.hue-green {
+  border-color: rgba(34,197,94, 0.30);
+  color: #c3f5d4;
+}
+.fxd-pill.hue-green:hover {
+  border-color: rgba(34,197,94, 0.60);
+  background: rgba(34,197,94, 0.12);
+}
+.fxd-pill.hue-green.is-active {
+  background: rgba(34,197,94, 0.26);
+  border-color: rgba(34,197,94, 0.75);
+  color: #fff;
+}
+/* Children sit a shade lower than their parent so the two rows read as
+   one family rather than two competing sets. */
+.fxd-pill-sub.hue-green {
+  border-color: rgba(34,197,94, 0.20);
+  color: rgba(34,197,94, 1);
+  color: #c3f5d4;
+  opacity: 0.86;
+}
+.fxd-pill-sub.hue-green.is-active {
+  background: rgba(34,197,94, 0.20);
+  border-color: rgba(34,197,94, 0.62);
+  color: #fff;
+  opacity: 1;
+}
+
+/* The open parent gets a soft ring so it's clear which row belongs to it. */
+.fxd-pill.is-open { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) inset; }
+
+.fxd-filterbar-sub { margin-top: 8px; }
+.fxd-pills-sub { margin-top: 7px; }
+
+.fxd-pill-sub {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 11.5px;
+}
+
+@media (max-width: 640px) {
+  .fxd-pill-sub { height: 24px; padding: 0 8px; font-size: 11px; }
+  .fxd-filterbar-sub { margin-top: 6px; }
+}
+
+
 .section-label {
   font-size: 11px;
   font-weight: 700;
