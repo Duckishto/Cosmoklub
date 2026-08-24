@@ -14,14 +14,36 @@
 //   <script src="assets/js/lib/forum-api.js"></script>
 
 window.ForumAPI = (function () {
-  const CATEGORIES = [
-    'Beginner Q&A',
-    'Equipment',
-    'Astrophotography',
-    'Deep Sky',
-    'Solar System',
-    'News',
+  // The category taxonomy. Six parent topics, each with eight children —
+  // 54 categories in all. Parents are themselves valid categories, so every
+  // thread posted before the children existed is still legal.
+  //
+  // This list is the source of truth for the UI, but NOT for the database:
+  // threads.category carries a CHECK constraint that has to be kept in step.
+  // See supabase/migration-forum-categories.sql — adding a category here
+  // without running that migration means posts in it are rejected on insert.
+  const CATEGORY_GROUPS = [
+    { name: "Beginner Q&A", hue: "violet", children: ["Getting Started", "First Telescope", "Star Hopping", "Reading Star Charts", "Observing Basics", "Terminology", "Buying Advice", "Common Mistakes"] },
+    { name: "Equipment", hue: "blue", children: ["Telescopes", "Mounts", "Eyepieces", "Binoculars", "Filters", "Astro Cameras", "DIY & Mods", "Maintenance"] },
+    { name: "Astrophotography", hue: "pink", children: ["Deep Sky Imaging", "Planetary Imaging", "Nightscapes", "Guiding", "Stacking", "Post-Processing", "Smartphone Astro", "Solar Imaging"] },
+    { name: "Deep Sky", hue: "cyan", children: ["Galaxies", "Nebulae", "Open Clusters", "Globular Clusters", "Supernova Remnants", "Messier Objects", "NGC & IC", "Dark Sky Sites"] },
+    { name: "Solar System", hue: "amber", children: ["The Moon", "Sun & Solar", "Mars", "Jupiter", "Saturn", "Venus & Mercury", "Comets", "Meteor Showers"] },
+    { name: "News", hue: "green", children: ["Missions & Launches", "Discoveries", "Space Agencies", "Eclipses & Transits", "Satellites", "Research Papers", "Star Parties", "Community"] }
   ];
+
+  // Flat list, parents first within each group. Used for validation.
+  const CATEGORIES = CATEGORY_GROUPS.flatMap(g => [g.name, ...g.children]);
+
+  // 'Deep Sky Imaging' -> 'Astrophotography'. Used by the filter row so
+  // picking a parent also matches everything filed underneath it.
+  const CATEGORY_PARENT = (() => {
+    const map = {};
+    CATEGORY_GROUPS.forEach(g => {
+      map[g.name] = g.name;
+      g.children.forEach(c => { map[c] = g.name; });
+    });
+    return map;
+  })();
 
   async function client() {
     return window.supabaseClient || (window.supabaseReady ? await window.supabaseReady : null);
@@ -400,6 +422,8 @@ window.ForumAPI = (function () {
   }
 
   return {
+    CATEGORY_GROUPS,
+    CATEGORY_PARENT,
     CATEGORIES,
     currentUser,
     listThreads,
