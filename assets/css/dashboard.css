@@ -1039,6 +1039,16 @@ body {
   background: rgba(124,58,237,0.22);
 }
 .fxd-pill {
+  /* A button with a fixed height needs its label centred explicitly. The
+     mobile rules below set an exact height and zero vertical padding, and
+     without this the text sat against the top of the pill instead of in the
+     middle — inline content aligns to the top of the line box, it does not
+     centre itself in a taller box. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
   padding: 0.35rem 0.72rem;
   background: rgba(124,58,237,0.08);
   border: 1px solid rgba(124,58,237,0.25); border-radius: 999px;
