@@ -1300,25 +1300,51 @@
   max-width: 380px;
 }
 
-/* Loading */
+/* Loading — the full-page state Profile/Settings show while their data is
+   still in flight (see profile.js/settings.js, the only two callers).
+   Was a single left-aligned "spinner + text" line sitting at the very top
+   of an otherwise empty page, which read as an unstyled placeholder next
+   to all that empty space underneath it. Now a proper centered loading
+   screen: bigger glowing spinner, label underneath, roughly centered in
+   the viewport instead of pinned to the top-left. */
 .ck-loading-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 48px 4px;
+  justify-content: center;
+  gap: 16px;
+  min-height: min(52vh, 420px);
+  animation: ckLoadingIn 0.4s ease both;
+}
+@keyframes ckLoadingIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ck-loading-text {
   color: var(--sh-dim);
   font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
+
 .ck-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(168, 85, 247, 0.25);
-  border-top-color: var(--sh-accent);
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
+  border: 3px solid rgba(168, 85, 247, 0.16);
+  border-top-color: var(--sh-accent);
+  border-right-color: var(--sh-accent);
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.3);
   display: inline-block;
-  animation: ckShellSpin 0.7s linear infinite;
+  animation: ckShellSpin 0.75s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
 }
 @keyframes ckShellSpin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ck-loading-row { animation: none; }
+  .ck-spinner { animation-duration: 1.4s; }
+}
 
 @media (max-width: 560px) {
   .pg-head { flex-direction: column; gap: 12px; }
