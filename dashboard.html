@@ -224,6 +224,10 @@
 <script src="assets/js/lib/supabase-client.js"></script>
 
 <!-- Forum data layer — every Supabase call the forum and profile tabs make -->
+<!-- Tonight's sky: moon phase and planet rise times, computed locally.
+     Must load before forum.js, which reads window.SkyNow on mount. -->
+<script src="assets/js/lib/sky.js"></script>
+
 <script src="assets/js/lib/forum-api.js"></script>
 
 <!-- Library progression data must load before library.js -->
