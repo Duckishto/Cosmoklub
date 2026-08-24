@@ -60,23 +60,9 @@
           margin-bottom:9px;
         }
 
-        /* Small static accent mark anchoring the kicker — no motion,
-           just a bit of graphic weight so the label isn't just plain
-           small text sitting on its own. */
-        .rank-kicker::before{
-          content:'';
-          display:block;
-          width:18px;
-          height:3px;
-          border-radius:2px;
-          background:
-            linear-gradient(
-              90deg,
-              var(--violet),
-              var(--glow)
-            );
-          flex-shrink:0;
-        }
+        /* The small accent dash that used to sit before the kicker was
+           removed — the label reads cleaner on its own. The flex/gap above
+           is kept so the rule still holds if anything is added back. */
 
         .rank-title{
           /* headline treatment: notably larger and heavier than before,

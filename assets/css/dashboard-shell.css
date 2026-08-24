@@ -427,6 +427,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  /* The header's own 8px gap left the page name almost touching the search
+     field. This is on top of that, and it never collapses because the title
+     can't shrink below its text. */
+  margin-right: 10px;
+  flex-shrink: 0;
 }
 
 /* Search — a button that opens a full jump-to-anywhere overlay. Stands in
