@@ -40,17 +40,8 @@ const Profile = {
 
     <template v-else>
 
-      <!-- ─────────────── Page header ─────────────── -->
-      <header class="pg-head">
-        <div class="pg-head-text">
-          <h1 class="pg-title">Profile</h1>
-          <p class="pg-sub">Your public identity, activity and progression.</p>
-        </div>
-        <button type="button" class="pg-action" @click="openSettings()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
-          Edit profile
-        </button>
-      </header>
+      <!-- No page header: the shell's top bar already names the page, so a
+           title and description underneath just repeated it. -->
 
       <!-- ─────────────── Identity ─────────────── -->
       <section class="ck-card pf-identity">
