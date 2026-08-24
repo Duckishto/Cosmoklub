@@ -3,8 +3,12 @@
 const Chat = {
   name: 'Chat',
   template: `
-    <div>
-      <div class="section">
+    <div class="section chat-wrap">
+      <div class="chat-inner">
+        <!-- Same wrapper shape the calculator uses (a .section whose first
+             child is the eyebrow row) so "DIRECT MESSAGES" lines up with
+             "SCIENTIFIC CALCULATOR" instead of sitting a level lower inside
+             a nested .section. -->
         <div class="section-eyebrow-row">
           <span class="section-label">Direct Messages</span>
           <div class="section-rule"></div>

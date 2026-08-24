@@ -61,13 +61,9 @@ const Settings = {
 
     <template v-else>
 
-      <!-- ─────────────── Page header ─────────────── -->
-      <header class="pg-head">
-        <div class="pg-head-text">
-          <h1 class="pg-title">Settings</h1>
-          <p class="pg-sub">Manage your account details and how you sign in.</p>
-        </div>
-      </header>
+      <!-- No page header here: the shell's top bar already shows "Settings",
+           so a title and subtitle underneath it just said the same thing
+           twice. The section switcher below is the first thing on the page. -->
 
       <!-- ─────────────── Section switcher ─────────────── -->
       <div class="ck-seg st-seg">
