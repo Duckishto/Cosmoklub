@@ -1733,6 +1733,36 @@ const Calculator = {
            so would re-impose a fixed key height and undo the fill-the-screen
            sizing on every phone narrower than 520px. Type scale and spacing
            only from here down. */
+        /* ── Graphing keyboard on a phone ──────────────────────────────────
+           The head was laid out for a tablet: three 16px-padded tab pills
+           plus C, ⌫ and Done, all on one row with space-between. Under about
+           520px that adds up to more than the width available, so the row
+           overflowed and Done was pushed off the edge. The tabs now take the
+           leftover space and scroll sideways; the actions keep their full
+           size and never shrink, because Done is the only way out of the
+           keyboard. */
+        @media (max-width: 560px) {
+          .graph-kbd { padding: 8px 10px calc(10px + var(--safe-bot)); }
+          .graph-kbd-head { gap: 8px; margin-bottom: 7px; }
+
+          .graph-kbd-tabs {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+          }
+          .graph-kbd-tabs::-webkit-scrollbar { display: none; }
+          .graph-kbd-tabs button { padding: 6px 11px; font-size: 11.5px; white-space: nowrap; }
+
+          .graph-kbd-actions { flex: 0 0 auto; gap: 6px; }
+          .graph-kbd-back { width: 36px; height: 32px; }
+          .graph-kbd-done { padding: 7px 14px; font-size: 12px; white-space: nowrap; }
+
+          .graph-kbd-grid { gap: 6px; }
+          .graph-kbd-key { min-height: 40px; font-size: 0.9rem; border-radius: 10px; }
+        }
+
         @media (max-width: 520px) {
           .calc-grid { gap: 7px; }
           .calc-tabs { gap: 18px; }
