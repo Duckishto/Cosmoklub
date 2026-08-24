@@ -242,12 +242,12 @@ const Chat = {
 
     .dm-list-head {
       display: flex; align-items: center; gap: 10px;
-      padding: 16px 16px 12px;
+      padding: 14px 14px 10px;
       flex-shrink: 0;
     }
     .dm-list-title {
       margin: 0; flex: 1;
-      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
+      font-size: 0.98rem; font-weight: 800; letter-spacing: -0.01em;
       color: #f5f3ff;
     }
     .dm-icon-btn {
@@ -271,7 +271,7 @@ const Chat = {
       width: 15px; height: 15px; color: #8b7aa8; pointer-events: none;
     }
     .dm-search input {
-      width: 100%; box-sizing: border-box; height: 36px;
+      width: 100%; box-sizing: border-box; height: 34px;
       padding: 0 12px 0 33px;
       background: rgba(9,7,20,0.7);
       border: 1px solid var(--border); border-radius: 999px;
@@ -290,8 +290,8 @@ const Chat = {
     .dm-convos::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
     .dm-convo {
-      width: 100%; display: flex; align-items: center; gap: 11px;
-      padding: 10px; margin-bottom: 2px;
+      width: 100%; display: flex; align-items: center; gap: 10px;
+      padding: 8px 9px; margin-bottom: 2px;
       background: none; border: none; border-radius: 12px;
       font-family: inherit; text-align: left; cursor: pointer;
       transition: background .16s;
@@ -302,11 +302,11 @@ const Chat = {
 
     .dm-convo-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
     .dm-convo-name {
-      font-size: 0.86rem; font-weight: 700; color: #f5f3ff;
+      font-size: 0.82rem; font-weight: 700; color: #f5f3ff;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .dm-convo-preview {
-      font-size: 0.75rem; color: #9d90bb;
+      font-size: 0.72rem; color: #9d90bb;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .dm-convo.is-active .dm-convo-preview { color: rgba(255,255,255,0.75); }
@@ -316,26 +316,30 @@ const Chat = {
     .dm-no-results { padding: 22px 12px; font-size: 0.8rem; color: #8b7aa8; text-align: center; }
 
     /* ---------- Avatars ---------- */
+    /* The whole component was a notch large: at 42px avatars and 0.86rem
+       bubbles a three-message thread filled half an iPad. Everything below is
+       one step down, which fits more conversation on screen and reads closer
+       to a real messenger. */
     .dm-av {
       flex-shrink: 0;
-      width: 42px; height: 42px; border-radius: 50%;
+      width: 36px; height: 36px; border-radius: 50%;
       display: grid; place-items: center;
-      color: #fff; font-size: 0.95rem; font-weight: 800;
+      color: #fff; font-size: 0.82rem; font-weight: 800;
     }
-    .dm-av-lg { width: 38px; height: 38px; font-size: 0.9rem; }
-    .dm-av-sm { width: 28px; height: 28px; font-size: 0.72rem; }
+    .dm-av-lg { width: 34px; height: 34px; font-size: 0.8rem; }
+    .dm-av-sm { width: 24px; height: 24px; font-size: 0.64rem; }
 
     /* ---------- Thread ---------- */
     .dm-thread { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
 
     .dm-thread-head {
-      display: flex; align-items: center; gap: 11px;
-      padding: 12px 16px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; flex-shrink: 0;
       border-bottom: 1px solid var(--border);
     }
     .dm-thread-id { display: flex; flex-direction: column; min-width: 0; }
     .dm-thread-name {
-      font-size: 0.98rem; font-weight: 700; color: #f5f3ff;
+      font-size: 0.88rem; font-weight: 700; color: #f5f3ff;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .dm-thread-status { font-size: 0.7rem; color: #4ade80; }
@@ -354,10 +358,20 @@ const Chat = {
 
     .dm-messages {
       flex: 1; min-height: 0; overflow-y: auto;
-      display: flex; flex-direction: column; gap: 10px;
-      padding: 18px 16px;
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 16px 18px;
       scrollbar-width: thin; scrollbar-color: var(--border) transparent;
     }
+    /* A short conversation used to sit at the top of a tall pane with a wall
+       of empty space under it, which is what made the tab look unfinished.
+       Chats grow upward from the composer, so the first message is pushed
+       down by an auto margin.
+
+       Deliberately NOT justify-content:flex-end — that positions overflowing
+       content above the scrollport's top edge and the oldest messages become
+       unreachable. An auto margin collapses to nothing once the thread is
+       long enough to scroll, so it stays correct either way. */
+    .dm-messages > .dm-row:first-child { margin-top: auto; }
     .dm-messages::-webkit-scrollbar { width: 4px; }
     .dm-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
@@ -372,9 +386,9 @@ const Chat = {
     .dm-out { align-self: flex-end; }
 
     .dm-bubble {
-      padding: 10px 14px;
-      font-size: 0.86rem; line-height: 1.5;
-      border-radius: 18px;
+      padding: 8px 13px;
+      font-size: 0.82rem; line-height: 1.45;
+      border-radius: 16px;
       word-break: break-word;
     }
     .dm-in .dm-bubble {
@@ -391,13 +405,13 @@ const Chat = {
 
     .dm-compose {
       display: flex; align-items: center; gap: 8px;
-      padding: 12px 14px calc(12px + var(--safe-bot, 0px));
+      padding: 10px 14px calc(10px + var(--safe-bot, 0px));
       flex-shrink: 0;
       border-top: 1px solid var(--border);
     }
     .dm-compose-input {
-      flex: 1; min-width: 0; height: 40px;
-      padding: 0 16px;
+      flex: 1; min-width: 0; height: 38px;
+      padding: 0 15px;
       background: rgba(9,7,20,0.7);
       border: 1px solid var(--border); border-radius: 999px;
       color: #f5f3ff; font-family: inherit; font-size: 0.86rem; outline: none;
@@ -406,7 +420,7 @@ const Chat = {
     .dm-compose-input:focus { border-color: rgba(168,85,247,0.55); }
 
     .dm-send {
-      width: 40px; height: 40px; flex-shrink: 0;
+      width: 38px; height: 38px; flex-shrink: 0;
       display: grid; place-items: center;
       background: linear-gradient(135deg, #7c3aed, #a855f7);
       border: none; border-radius: 50%;
