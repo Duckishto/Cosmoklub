@@ -56,7 +56,8 @@ const Settings = {
   <div class="settings-tab pg">
 
     <div v-if="loading" class="ck-loading-row">
-      <span class="ck-spinner"></span> Loading your account…
+      <span class="ck-spinner"></span>
+      <span class="ck-loading-text">Loading your account…</span>
     </div>
 
     <template v-else>

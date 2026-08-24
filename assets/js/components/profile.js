@@ -35,7 +35,8 @@ const Profile = {
   <div class="profile-tab pg">
 
     <div v-if="loading" class="ck-loading-row">
-      <span class="ck-spinner"></span> Loading your profile…
+      <span class="ck-spinner"></span>
+      <span class="ck-loading-text">Loading your profile…</span>
     </div>
 
     <template v-else>
