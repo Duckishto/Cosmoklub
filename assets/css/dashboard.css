@@ -147,6 +147,16 @@ body {
   margin-bottom: 12px;
 }
 
+/* The Calculator's eyebrow row is ~35px tall because it carries the
+   Scientific/Graphing switch, so its label sits centred at ~17px. Chat's row
+   holds only text, making it half the height and its label ride visibly
+   higher than "SCIENTIFIC CALCULATOR" on the neighbouring tab. Matching the
+   height puts the two labels on the same line. Scoped to .chat-wrap so
+   Library and Forum keep their own spacing. */
+.chat-wrap > .section-eyebrow-row {
+  min-height: 35px;
+}
+
 .section-label {
   font-size: 11px;
   font-weight: 700;
