@@ -120,6 +120,29 @@
   z-index: 900;
 }
 
+/* Desktop close/collapse. Below SIDEBAR_BREAKPOINT the sidebar is
+   off-canvas and .sidebar-open (further down) handles show/hide by
+   sliding it over the page. At/above it the rail is normally docked
+   in-flow, so closing it here instead shrinks it out of the flex row —
+   .shell-main is flex: 1 1 auto, so the content column reclaims the
+   width on its own, no extra rule needed there. overflow: hidden keeps
+   the (fixed-width) nav labels from wrapping/reflowing as it shrinks. */
+@media (min-width: 981px) {
+  .sidebar {
+    overflow: hidden;
+    transition: flex-basis 0.22s cubic-bezier(.4, 0, .2, 1),
+                width 0.22s cubic-bezier(.4, 0, .2, 1),
+                opacity 0.16s ease;
+  }
+  .app-shell.sidebar-collapsed .sidebar {
+    flex-basis: 0;
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
 /* Vertical divider, picking up exactly where the header row ends. Combined
    with .sb-brand's and .shell-header's border-bottom (same height, same
    line colour) the whole top strip reads as one continuous bar with no
@@ -169,9 +192,12 @@
   filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.35));
 }
 
-/* Only ever shown in the off-canvas (mobile) state. */
+/* Closes the sidebar. Below SIDEBAR_BREAKPOINT that means sliding the
+   off-canvas panel away; at/above it, docking the in-flow rail closed —
+   see .sidebar-collapsed further down. Shown at every width so both
+   behaviours have the same affordance. */
 .sb-close {
-  display: none;
+  display: flex;
   margin-left: auto;
   width: 32px;
   height: 32px;
@@ -404,8 +430,12 @@
   cursor: pointer;
 }
 
+/* Shown at every width now: below SIDEBAR_BREAKPOINT it slides the
+   off-canvas sidebar in/out, at/above it docks/undocks the in-flow rail
+   (see .sidebar-collapsed). Previously desktop-only-hidden (display:
+   none) because the rail used to be permanently visible there. */
 .hdr-menu {
-  display: none;
+  display: flex;
   width: 34px;
   height: 34px;
   align-items: center;
