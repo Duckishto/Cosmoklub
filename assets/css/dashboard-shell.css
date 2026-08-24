@@ -459,8 +459,10 @@
   white-space: nowrap;
 
   /* The header's own 8px gap left the page name almost touching the search
-     field. This is on top of that, and it never collapses because the title
-     can't shrink below its text. */
+     field, so this adds 10px on top of it — 18px title→search total.
+     Mirrored on the left (margin-left) so the hamburger→title gap matches
+     it instead of sitting at the bare 8px flex gap. */
+  margin-left: 10px;
   margin-right: 10px;
   flex-shrink: 0;
 }
