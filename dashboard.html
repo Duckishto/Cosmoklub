@@ -24,7 +24,7 @@
        topbar rules that are still defined further up in dashboard.css.
        It also carries the shared page primitives (.pg-head, .ck-card,
        .seg-tabs, .ck-empty…) that profile.css and settings.css build on. -->
-  <link rel="stylesheet" href="assets/css/dashboard-shell.css?v=5">
+  <link rel="stylesheet" href="assets/css/dashboard-shell.css?v=6">
 
   <!-- Profile + Settings tabs — every rule is scoped under .profile-tab so it
        can't reach the dashboard shell -->
@@ -40,7 +40,7 @@
 <div class="page-grid"></div>
 
 <div id="app" v-cloak>
-  <div class="app-shell" :class="{ 'sidebar-open': sidebarOpen }">
+  <div class="app-shell" :class="{ 'sidebar-open': sidebarOpen, 'sidebar-collapsed': sidebarCollapsed }">
 
     <!-- =====================================================
          SIDEBAR — persistent navigation. Replaces the old
@@ -53,7 +53,7 @@
         <button type="button" class="sb-brand-btn" @click="setTab('forum')" aria-label="CosmoKlub home">
           <img class="sb-brand-logo" src="assets/images/logo.png" alt="CosmoKlub" draggable="false" />
         </button>
-        <button type="button" class="sb-close" @click="sidebarOpen = false" aria-label="Close menu">
+        <button type="button" class="sb-close" @click="closeSidebarManually" aria-label="Close menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
         </button>
       </div>
@@ -111,8 +111,8 @@
     <div class="shell-main">
 
       <header class="shell-header">
-        <button type="button" class="hdr-menu" @click.stop="sidebarOpen = !sidebarOpen"
-                aria-label="Open menu" :aria-expanded="sidebarOpen">
+        <button type="button" class="hdr-menu" @click.stop="toggleSidebar"
+                aria-label="Toggle menu" :aria-expanded="sidebarExpanded">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
         </button>
 
@@ -243,7 +243,7 @@
 <script src="assets/js/components/settings.js?v=3"></script>
 <script src="assets/js/components/docs.js?v=1"></script>
 
-<script src="assets/js/app.js?v=4"></script>
+<script src="assets/js/app.js?v=5"></script>
   <script src="assets/js/loader.js"></script>
 </body>
 </html>
