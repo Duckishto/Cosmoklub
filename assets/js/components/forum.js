@@ -191,11 +191,16 @@ const Forum = {
       <div class="fxd-shell">
         <section class="fxd-main">
 
+          <!-- Real numbers, computed in the browser by lib/sky.js: moon
+               phase from the Sun-Moon elongation, planet rise times from the
+               JPL approximate elements, location from the visitor's time
+               zone (so no permission prompt). Falls back to the previous
+               static text only if sky.js failed to load. -->
           <div class="sky-strip">
-            <div class="sb-icon">◐</div>
+            <div class="sb-icon">{{ sky.icon }}</div>
             <div class="sky-strip-text">
-              <div class="sky-strip-title">Waxing gibbous, 78% lit</div>
-              <div class="sky-strip-sub">Good night for Saturn, rises 21:40, Bangkok sky</div>
+              <div class="sky-strip-title">{{ sky.title }}</div>
+              <div class="sky-strip-sub">{{ sky.subtitle }}</div>
             </div>
             <div class="sky-strip-cta">TONIGHT'S SKY</div>
           </div>
@@ -447,6 +452,10 @@ const Forum = {
 
   data() {
     const state = {
+      // Overwritten by refreshSky() on mount. These values are only ever
+      // seen if lib/sky.js is missing.
+      sky: { icon: '◐', title: 'Tonight\u2019s sky', subtitle: 'Loading sky conditions\u2026' },
+
       activeChip: 'All',
       openGroup: null,   // which parent topic's children are showing
       draftGroup: 'Beginner Q&A',  // composer: topic picked, before category
@@ -590,6 +599,17 @@ const Forum = {
 
 
   methods: {
+    // The strip is time-dependent — a rise time that was right at 20:00 is
+    // stale by midnight — so it recomputes on mount and every ten minutes.
+    refreshSky() {
+      if (!window.SkyNow) return;
+      try {
+        this.sky = window.SkyNow.tonight();
+      } catch (e) {
+        console.warn('[CosmoKlub] Could not compute tonight\u2019s sky.', e);
+      }
+    },
+
     // Tapping a parent selects it and opens its children; tapping the open
     // parent again closes the row without clearing the filter.
     pickCategory(name) {
@@ -1476,6 +1496,11 @@ const Forum = {
     }
 
     await this.loadFeed();
+  },
+
+  beforeUnmount() {
+    // The sky strip polls; stop it when the tab is swapped out.
+    if (this._skyTimer) clearInterval(this._skyTimer);
   },
 
 };
