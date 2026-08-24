@@ -361,6 +361,125 @@ function astToLatex(node) {
 function exprToLatex(text) {
   try { return astToLatex(parseToAst(text)); } catch (e) { return null; }
 }
+
+/**
+ * LaTeX for text that does NOT parse — i.e. most of what is on screen while
+ * someone is still typing: "2+", "sin(", "log(4,". astToLatex needs a complete
+ * expression, so the display used to drop to raw textContent mid-entry and the
+ * line visibly switched out of math type and back again on every keystroke.
+ *
+ * This is a lexer, not a parser: it walks the string and maps each token to its
+ * LaTeX equivalent, leaving structure alone. Nothing can throw and nothing is
+ * rejected, so there is always a math-typeset line to show.
+ *
+ * Unclosed brackets are closed with \phantom{)} — invisible, but it keeps
+ * \left...\right balanced, which KaTeX requires.
+ */
+function lexToLatex(text) {
+  const src = String(text == null ? '' : text);
+  const FN = {
+    asinh: '\\sinh^{-1}', acosh: '\\cosh^{-1}', atanh: '\\tanh^{-1}',
+    asin: '\\sin^{-1}', acos: '\\cos^{-1}', atan: '\\tan^{-1}',
+    sinh: '\\sinh', cosh: '\\cosh', tanh: '\\tanh',
+    sin: '\\sin', cos: '\\cos', tan: '\\tan',
+    sec: '\\sec', csc: '\\csc', cot: '\\cot',
+    sqrt: '\\sqrt', cbrt: '\\sqrt[3]', log2: '\\log_{2}',
+    log: '\\log', ln: '\\ln', exp: '\\exp',
+    abs: '\\mathrm{abs}', ans: '\\mathrm{Ans}'
+  };
+  let out = '';
+  // A stack of closing strings, not a depth counter: an exponent opened
+  // with ^( has to close with an extra brace, because KaTeX requires a
+  // group after ^ — 2^\\left(3\\right) is an error, 2^{\\left(3\\right)} is not.
+  const closers = [];
+  let i = 0;
+
+  while (i < src.length) {
+    const rest = src.slice(i);
+
+    // Numbers, kept whole so 12.5 doesn't become 1 2 . 5
+    let m = rest.match(/^\d+(?:\.\d*)?|^\.\d+/);
+    if (m) { out += m[0]; i += m[0].length; continue; }
+
+    // Identifiers: a known function, a constant, or a variable
+    m = rest.match(/^[A-Za-z][A-Za-z0-9_]*/);
+    if (m) {
+      const word = m[0];
+      const low = word.toLowerCase();
+      if (FN[low]) out += FN[low] + ' ';
+      else if (low === 'pi') out += '\\pi ';
+      else if (low === 'e') out += 'e';
+      else if (word.length === 1) out += word;
+      else out += '\\mathrm{' + word + '}';
+      i += word.length;
+      continue;
+    }
+
+    const c = src[i];
+    switch (c) {
+      case '*': case '×': out += ' \\times '; break;
+      case '/': case '÷': out += ' \\div '; break;
+      case '-': case '−': out += ' - '; break;
+      case '+': out += ' + '; break;
+      case '^':
+        // ^( becomes a braced group so the superscript is well formed.
+        if (src[i + 1] === '(') {
+          out += '^{\\left(';
+          closers.push('\\right)}');
+          i++;                      // the '(' is consumed here
+        } else {
+          out += '^';
+        }
+        break;
+      case '²': out += '^{2}'; break;
+      case '³': out += '^{3}'; break;
+      case '√': out += '\\sqrt'; break;
+      case 'π': out += '\\pi '; break;
+      case '∞': out += '\\infty '; break;
+      case '≤': out += ' \\le '; break;
+      case '≥': out += ' \\ge '; break;
+      case '(': out += '\\left('; closers.push('\\right)'); break;
+      case ')':
+        // A stray ) with nothing open would unbalance \left/\right.
+        if (closers.length) out += closers.pop();
+        else out += '\\left.\\right)';
+        break;
+      case '|': out += '\\,|\\,'; break;
+      case ',': out += ',\\;'; break;
+      case '!': out += '!'; break;
+      case '%': out += '\\%'; break;
+      case ' ': out += '\\;'; break;
+      case '{': case '}': case '$': case '&': case '#': case '_':
+        // Never let raw input reach KaTeX as markup.
+        out += '\\' + c;
+        break;
+      case '\\':
+        // NOT '\\' + c here: in LaTeX a doubled backslash is a line break,
+        // not an escaped backslash.
+        out += '\\backslash ';
+        break;
+      default:
+        out += '\\text{' + c + '}';
+    }
+    i++;
+  }
+
+  // Close anything still open, invisibly. The braced form has to keep its
+  // brace or the group never terminates.
+  while (closers.length) {
+    const close = closers.pop();
+    out += close.endsWith('}')
+      ? '\\right.\\phantom{)}}'
+      : '\\right.\\phantom{)}';
+  }
+
+  // A lone trailing sqrt or ^ has no argument, which KaTeX reports as a
+  // visible error rather than ignoring. Give it an empty one.
+  out = out.replace(/\\sqrt(\[3\])?\s*$/, (mm, three) => '\\sqrt' + (three || '') + '{}');
+  out = out.replace(/\^\s*$/, '^{}');
+
+  return out;
+}
 /** Formatted result string → LaTeX (fractions, ×10^ exponents, ∞). */
 function resultToLatex(text) {
   if (text == null) return '';
@@ -702,8 +821,8 @@ const Calculator = {
             </div>
             <div class="calc-history" v-if="history.length">
               <button class="calc-history-item" v-for="h in history" :key="h.id" @click="reuse(h)">
-                <span class="calc-history-expr">{{ h.expression }}</span>
-                <span class="calc-history-res" :class="{ err: h.error }">{{ h.error ? h.result : '= ' + h.result }}</span>
+                <span class="calc-history-expr" ref="histExpr"></span>
+                <span class="calc-history-res" ref="histRes" :class="{ err: h.error }"></span>
               </button>
             </div>
             <p class="calc-side-empty" v-else>Your calculations appear here. Tap one to reuse it.</p>
@@ -847,6 +966,15 @@ const Calculator = {
       if (value === 'graphing') this.$nextTick(() => { this.setupGraph(); this.resizeGraph(); });
     },
     mathState() { this.$nextTick(() => this.renderMath()); },
+
+    // History is rendered imperatively into refs, so it has to be redrawn
+    // whenever the list changes — adding an entry, clearing it, or reusing
+    // one. Deep isn't needed: entries are never mutated in place.
+    history() { this.$nextTick(() => this.renderHistoryMath()); },
+
+    // The sheet's rows don't exist in the DOM until it opens on a phone, so
+    // their refs are empty until then.
+    historyOpen(open) { if (open) this.$nextTick(() => this.renderHistoryMath()); },
     // If the user edits the field directly (physical keyboard) after a result,
     // drop the committed "expr = result" so we go back to plain-expression display.
     expression(val) {
@@ -987,9 +1115,37 @@ const Calculator = {
       const el = this.$refs.lineRender;
       if (!el) return;
       if (!this.expression.trim()) { this.renderKatex(el, '0', '0'); return; }
+      // Prefer the parsed form — it lays out fractions, roots and powers
+      // properly. When the expression is mid-entry and doesn't parse, fall
+      // back to the lexer rather than to plain text, so the line stays
+      // typeset the whole way through instead of flicking between fonts.
       const exprL = exprToLatex(this.expression);
-      if (exprL != null) this.renderKatex(el, exprL, this.expression);
-      else el.textContent = this.expression;
+      this.renderKatex(el, exprL != null ? exprL : lexToLatex(this.expression), this.expression);
+    },
+
+    // History rows were plain text spans. Same treatment: the stored
+    // expression through the parser (lexer as backstop) and the stored result
+    // through resultToLatex, so the panel matches the display.
+    renderHistoryMath() {
+      const rows = this.$refs.histExpr;
+      const outs = this.$refs.histRes;
+      const list = Array.isArray(rows) ? rows : (rows ? [rows] : []);
+      const ress = Array.isArray(outs) ? outs : (outs ? [outs] : []);
+
+      list.forEach((el, idx) => {
+        const h = this.history[idx];
+        if (!h) return;
+        const l = exprToLatex(h.expression);
+        this.renderKatex(el, l != null ? l : lexToLatex(h.expression), h.expression);
+      });
+
+      ress.forEach((el, idx) => {
+        const h = this.history[idx];
+        if (!h) return;
+        // Errors are prose, not maths — leave them as text.
+        if (h.error) { el.textContent = h.result; return; }
+        this.renderKatex(el, '= ' + resultToLatex(h.result), '= ' + h.result);
+      });
     },
 
     // ── Graphing: setup & lifecycle ──
@@ -1615,7 +1771,14 @@ const Calculator = {
             min-height: 420px;
           }
           .calc-graph { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
-          .graph-canvas-host { flex: 1 1 auto; min-height: 0; margin: 6px -16px 0; border-radius: 14px 14px 0 0; }
+          /* This was margin: 6px -16px 0 to bleed the canvas past .content's
+             padding. That negative margin is why the zoom controls looked
+             off-screen: they are positioned right:10px INSIDE the host, so
+             pulling the host 16px wider than the viewport pushed them 6px
+             beyond the screen edge — and .content's padding is 16px at 640px
+             but 12px below 560px, so no single offset could correct it.
+             Dropping the bleed keeps the controls where they are declared. */
+          .graph-canvas-host { flex: 1 1 auto; min-height: 0; margin: 6px 0 0; border-radius: 14px; }
 
           .graph-sheets {
             top: auto;
@@ -1646,10 +1809,22 @@ const Calculator = {
             border-radius: 0;
           }
 
-          /* Keep the floating controls clear of the sheets. */
-          .graph-controls { top: 10px; right: 10px; }
-          .graph-analysis-toggle, .graph-analysis { top: 10px; left: 10px; }
-          .graph-trace-chip { top: 56px; left: 10px; }
+          /* Zoom / reset / grid was a vertical stack of four 34px buttons —
+             about 150px of column down the right edge, over a canvas that is
+             already short once the expression sheet is up. Laid out as a row
+             along the top instead: same four buttons, ~135px wide, clear of
+             both the sheet below and the analysis toggle opposite. */
+          .graph-controls {
+            top: 8px;
+            right: 8px;
+            flex-direction: row;
+            gap: 2px;
+            padding: 3px;
+          }
+          .graph-controls button { width: 32px; height: 32px; font-size: 15px; }
+
+          .graph-analysis-toggle, .graph-analysis { top: 8px; left: 8px; }
+          .graph-trace-chip { top: 50px; left: 8px; }
         }
         /* Tablet: one column, history above the keypad, page scrolls. */
         @media (max-width: 900px) {
@@ -1783,11 +1958,11 @@ const Calculator = {
   },
   mounted() {
     this.injectStyles();
-    this.$nextTick(() => { this.setupGraph(); this.renderMath(); });
+    this.$nextTick(() => { this.setupGraph(); this.renderMath(); this.renderHistoryMath(); });
     // KaTeX is loaded with `defer`; if it isn't ready yet, re-render once it is.
     if (!window.katex) {
       this._katexTimer = setInterval(() => {
-        if (window.katex) { clearInterval(this._katexTimer); this._katexTimer = null; this.renderMath(); }
+        if (window.katex) { clearInterval(this._katexTimer); this._katexTimer = null; this.renderMath(); this.renderHistoryMath(); }
       }, 200);
       setTimeout(() => { if (this._katexTimer) { clearInterval(this._katexTimer); this._katexTimer = null; } }, 5000);
     }
