@@ -563,7 +563,12 @@ button{
   height:auto;
   margin:35px auto 0;
   display:flex;
-  flex-direction:column-reverse;
+  /* Was column-reverse, which put the last lesson at the top and the first
+     one at the bottom — you had to read the section upwards. Normal column
+     order now: lesson 1 at the top, the path descending as you progress.
+     The zigzag is unaffected; .path-position-* is assigned per index in
+     roadmap.js, so the offsets simply mirror. */
+  flex-direction:column;
   gap:42px;
   overflow:visible;
 }
