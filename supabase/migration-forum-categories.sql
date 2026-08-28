@@ -1,8 +1,15 @@
 -- CosmoKlub - forum category expansion
 --
 -- Run once in the Supabase SQL editor. Replaces the CHECK constraint on
--- public.threads.category with the 54-category taxonomy: six parent topics,
--- eight children each.
+-- public.forum_threads.category with the 54-category taxonomy: six parent
+-- topics, eight children each.
+--
+-- FIXED 2026-08-28: every statement below named a table `threads`, which
+-- does not exist. The table schema-forum-firstrun.sql creates is called
+-- forum_threads, and that is the name forum-api.js queries too. As written
+-- the do-block failed on the ::regclass lookup, so this migration had never
+-- actually run — meaning all 48 child categories were still being rejected
+-- on insert by the original six-value constraint.
 --
 -- Safe on existing data. The six original categories ARE the six parents and
 -- stay valid, so every thread already in the table satisfies the new
@@ -23,17 +30,17 @@ declare
 begin
   select conname into con_name
   from pg_constraint
-  where conrelid = 'public.threads'::regclass
+  where conrelid = 'public.forum_threads'::regclass
     and contype = 'c'
     and pg_get_constraintdef(oid) ilike '%category%';
 
   if con_name is not null then
-    execute format('alter table public.threads drop constraint %I', con_name);
+    execute format('alter table public.forum_threads drop constraint %I', con_name);
   end if;
 end $$;
 
-alter table public.threads
-  add constraint threads_category_check
+alter table public.forum_threads
+  add constraint forum_threads_category_check
   check (category in (
     -- Beginner Q&A
     'Beginner Q&A', 'Getting Started', 'First Telescope',
@@ -67,4 +74,4 @@ commit;
 -- Postgres validates the constraint against the whole table before adding it.
 -- To see the distribution afterwards:
 --
---   select category, count(*) from public.threads group by 1 order by 2 desc;
+--   select category, count(*) from public.forum_threads group by 1 order by 2 desc;
