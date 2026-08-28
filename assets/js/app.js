@@ -113,6 +113,16 @@ function writeStoredSidebarCollapsed(collapsed) {
   }
 }
 
+// ?user=<uuid> turns the Profile tab into somebody else's profile, opened
+// from an author's name in the Forum. Only ever meaningful alongside
+// tab=profile; every other tab drops it.
+//
+// Validated as a UUID rather than passed through: it goes straight into a
+// Supabase filter, and a junk value should land on your own profile instead
+// of a failed request.
+const USER_ID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 function getTabFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const tab = params.get('tab');
@@ -122,27 +132,43 @@ function getTabFromUrl() {
     : 'forum';
 }
 
-function setUrlTab(tab, replace = false) {
+function getUserFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const user = params.get('user');
+
+  return user && USER_ID_PATTERN.test(user)
+    ? user
+    : null;
+}
+
+// Writes both params at once. They have to move together: switching away
+// from Profile has to drop ?user, or a Back press later reopens a stranger's
+// profile under the Forum's title.
+function setUrlLocation(tab, userId, replace = false) {
   const url = new URL(window.location.href);
 
-  if (url.searchParams.get('tab') === tab) {
+  const nextUser = tab === 'profile' ? (userId || null) : null;
+  const sameTab = url.searchParams.get('tab') === tab;
+  const sameUser = (url.searchParams.get('user') || null) === nextUser;
+
+  if (sameTab && sameUser) {
     return;
   }
 
   url.searchParams.set('tab', tab);
 
-  if (replace) {
-    window.history.replaceState(
-      { tab },
-      '',
-      url
-    );
+  if (nextUser) {
+    url.searchParams.set('user', nextUser);
   } else {
-    window.history.pushState(
-      { tab },
-      '',
-      url
-    );
+    url.searchParams.delete('user');
+  }
+
+  const state = { tab, user: nextUser };
+
+  if (replace) {
+    window.history.replaceState(state, '', url);
+  } else {
+    window.history.pushState(state, '', url);
   }
 }
 
@@ -150,6 +176,12 @@ createApp({
   data() {
     return {
       activeTab: getTabFromUrl(),
+
+      // Whose profile the Profile tab is showing. null means your own —
+      // which is what the sidebar's Profile entry and every other tab set it
+      // back to. Filled from ?user= on load so a shared link opens the right
+      // person.
+      profileUserId: getUserFromUrl(),
 
       // Only meaningful below SIDEBAR_BREAKPOINT, where the sidebar is
       // off-canvas: true while the panel is slid into view over the page.
@@ -208,7 +240,9 @@ createApp({
         return;
       }
 
-      setUrlTab(newTab);
+      // The URL is written by setTab(), not here: opening a second person's
+      // profile changes ?user without changing the tab, and this watcher
+      // never fires for that.
 
       // On mobile the sidebar covers the page it just navigated to.
       if (window.innerWidth <= SIDEBAR_BREAKPOINT) {
@@ -266,12 +300,19 @@ createApp({
   },
 
   methods: {
-    setTab(tab) {
+    // `options.userId` is only read for the Profile tab, and only when it is
+    // somebody else's — reaching Profile any other way (the sidebar, search,
+    // Back) clears it, so "Profile" always means yours unless a name was
+    // clicked to get here.
+    setTab(tab, options = {}) {
       if (!VALID_TABS.includes(tab)) {
         return;
       }
 
+      this.profileUserId = tab === 'profile' ? (options.userId || null) : null;
       this.activeTab = tab;
+
+      setUrlLocation(tab, this.profileUserId);
     },
 
     // Sidebar item click. Destinations without a tab (Minigames) don't
@@ -454,9 +495,14 @@ createApp({
 
     handlePopState() {
       const tab = getTabFromUrl();
+      const user = getUserFromUrl();
 
       if (this.activeTab !== tab) {
         this.activeTab = tab;
+      }
+
+      if (this.profileUserId !== user) {
+        this.profileUserId = user;
       }
     }
   },
@@ -465,7 +511,7 @@ createApp({
     const params = new URLSearchParams(window.location.search);
 
     if (!VALID_TABS.includes(params.get('tab'))) {
-      setUrlTab(this.activeTab, true);
+      setUrlLocation(this.activeTab, this.profileUserId, true);
     }
 
     window.addEventListener(
@@ -476,7 +522,34 @@ createApp({
     // Let the tab components navigate — Profile's "Edit profile" button
     // hands over to Settings, for instance — without each one needing a
     // reference to this instance.
-    window.CosmoKlub.setTab = (tab) => this.setTab(tab);
+    window.CosmoKlub.setTab = (tab, options) => this.setTab(tab, options);
+
+    // Clicking a name in the Forum opens that person's profile. Passing no
+    // id is how a tab asks for your own — Profile's "back to my profile"
+    // link uses exactly that.
+    window.CosmoKlub.openProfile = (userId) => {
+      this.setTab('profile', { userId: userId || null });
+    };
+
+    // "Message" on someone's profile. The Chat tab may or may not be mounted
+    // yet, so the request is both stashed for a fresh mount to pick up and
+    // broadcast for an already-mounted one — the same two-way handover the
+    // sidebar's Log out uses for Settings.
+    window.CosmoKlub.openChatWith = (userId) => {
+      if (!userId) {
+        return;
+      }
+
+      window.CosmoKlub.pendingChatUser = userId;
+
+      window.dispatchEvent(
+        new CustomEvent('cosmoklub-open-chat', {
+          detail: { userId }
+        })
+      );
+
+      this.setTab('chat');
+    };
 
     this.loadAccount();
     this.loadProgress();

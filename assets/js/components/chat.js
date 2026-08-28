@@ -1,14 +1,27 @@
-// Chat tab: direct messages, laid out as a two-pane messenger — conversation
-// list permanently on the left, open thread on the right.
+// Chat tab: private one-to-one messages, laid out as a two-pane messenger —
+// conversation list permanently on the left, open thread on the right.
 //
-// This replaced a single-pane version that swapped the list out for the thread
-// and needed a back button to return. On a desktop that wasted most of the
-// width and hid the other conversations; the list is always visible now, and
-// the panes only collapse to one on a phone, where there genuinely isn't room.
+// Everything here is real. The three mock conversations this file used to
+// carry are gone; the list, the messages and the send button all go through
+// assets/js/lib/dm-api.js, backed by supabase/schema-social.sql. If those
+// tables have not been created the tab shows the setup message the API
+// returns rather than looking broken.
 //
-// Deliberately NO call buttons. The reference layout has phone and video icons
-// in the thread header, but neither is implemented and a button that does
-// nothing is worse than no button. The header carries identity only.
+// Privacy is the database's job, not this file's. dm_threads, dm_members and
+// dm_messages each carry a select policy of "are you in this room?", so a
+// request for someone else's conversation comes back empty however it was
+// made — there is no filter here that could be removed to see more.
+//
+// Two ways in:
+//   • the conversation list, for rooms that already exist
+//   • the Chat button on somebody's profile, which routes through
+//     window.CosmoKlub.openChatWith() in app.js and lands in
+//     consumePendingChat() below. dm_open() creates the room if this is the
+//     first time the two of you have spoken.
+//
+// Deliberately NO call buttons. The reference layout has phone and video
+// icons in the thread header, but neither is implemented and a button that
+// does nothing is worse than no button. The header carries identity only.
 //
 // Styles are injected below rather than living in dashboard.css: every class
 // is prefixed .dm- and used nowhere else, so keeping them with the markup
@@ -16,24 +29,27 @@
 // .chat-container because dashboard-shell.css sizes it to the visible area.
 const Chat = {
   name: 'Chat',
+
   template: `
     <div class="section chat-wrap">
       <div class="chat-inner">
         <div class="section-eyebrow-row">
           <span class="section-label">Direct Messages</span>
           <div class="section-rule"></div>
-          <span class="section-link">New message</span>
+          <button type="button" class="section-link dm-new-link" @click="openPicker">New message</button>
         </div>
+
+        <p class="dm-error" v-if="loadError">{{ loadError }}</p>
 
         <!-- dm-showing-thread only matters below 760px, where the two panes
              become one and this decides which of them is on screen. -->
-        <div class="chat-container dm" :class="{ 'dm-showing-thread': !!selectedChat }">
+        <div class="chat-container dm" :class="{ 'dm-showing-thread': !!selected }">
 
           <!-- ─────────── Conversation list ─────────── -->
           <aside class="dm-list">
             <div class="dm-list-head">
               <h3 class="dm-list-title">Chats</h3>
-              <button class="dm-icon-btn" type="button" aria-label="New message" title="New message">
+              <button class="dm-icon-btn" type="button" @click="openPicker" aria-label="New message" title="New message">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               </button>
             </div>
@@ -44,53 +60,83 @@ const Chat = {
             </div>
 
             <div class="dm-convos">
-              <button
-                class="dm-convo"
-                v-for="conv in filteredConversations"
-                :key="conv.id"
-                :class="{ 'is-active': selectedChat && selectedChat.id === conv.id }"
-                @click="openChat(conv)"
-              >
-                <span class="dm-av" :style="{ background: conv.color }">{{ conv.initial }}</span>
-                <span class="dm-convo-text">
-                  <span class="dm-convo-name">{{ conv.name }}</span>
-                  <span class="dm-convo-preview">{{ conv.lastMessage }}</span>
-                </span>
-                <span class="dm-convo-time">{{ conv.time }}</span>
-              </button>
+              <p class="dm-no-results" v-if="loading">Loading conversations…</p>
 
-              <p class="dm-no-results" v-if="!filteredConversations.length">
-                No conversations match “{{ query }}”.
-              </p>
+              <template v-else>
+                <button
+                  class="dm-convo"
+                  v-for="conv in filteredConversations"
+                  :key="conv.id"
+                  :class="{ 'is-active': selectedId === conv.id }"
+                  @click="openChat(conv)"
+                >
+                  <span class="dm-av" :style="avatarStyle(conv)">
+                    <template v-if="!conv.avatarUrl">{{ conv.initial }}</template>
+                  </span>
+                  <span class="dm-convo-text">
+                    <span class="dm-convo-name">{{ conv.name }}</span>
+                    <span class="dm-convo-preview">{{ preview(conv) }}</span>
+                  </span>
+                  <span class="dm-convo-side">
+                    <span class="dm-convo-time">{{ time(conv.lastAt) }}</span>
+                    <span class="dm-unread" v-if="conv.unread">{{ conv.unread > 99 ? '99+' : conv.unread }}</span>
+                  </span>
+                </button>
+
+                <p class="dm-no-results" v-if="!filteredConversations.length && query.trim()">
+                  No conversations match “{{ query }}”.
+                </p>
+
+                <p class="dm-no-results" v-else-if="!conversations.length">
+                  No conversations yet. Press <strong>New message</strong>, or open
+                  someone's profile from the Forum and press Chat.
+                </p>
+              </template>
             </div>
           </aside>
 
           <!-- ─────────── Open thread ─────────── -->
-          <section class="dm-thread" v-if="selectedChat">
+          <section class="dm-thread" v-if="selected">
             <header class="dm-thread-head">
               <!-- Only reachable on a phone; on a desktop the list never left. -->
-              <button class="dm-back" type="button" @click="selectedChat = null" aria-label="Back to conversations">
+              <button class="dm-back" type="button" @click="closeChat" aria-label="Back to conversations">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
-              <span class="dm-av dm-av-lg" :style="{ background: selectedChat.color }">{{ selectedChat.initial }}</span>
-              <span class="dm-thread-id">
-                <span class="dm-thread-name">{{ selectedChat.name }}</span>
-                <span class="dm-thread-status">Online</span>
-              </span>
+
+              <!-- The whole identity block opens their profile, the same as a
+                   name in the Forum does. -->
+              <button type="button" class="dm-thread-who" @click="openProfile(selected.otherId)"
+                      :aria-label="'View ' + selected.name + '\\u2019s profile'">
+                <span class="dm-av dm-av-lg" :style="avatarStyle(selected)">
+                  <template v-if="!selected.avatarUrl">{{ selected.initial }}</template>
+                </span>
+                <span class="dm-thread-id">
+                  <span class="dm-thread-name">{{ selected.name }}</span>
+                  <span class="dm-thread-status">View profile</span>
+                </span>
+              </button>
             </header>
 
             <div class="dm-messages" ref="chatMessages">
+              <p class="dm-no-results" v-if="messagesLoading">Loading messages…</p>
+
+              <p class="dm-thread-hint" v-else-if="!messages.length">
+                This is the start of your conversation with {{ selected.name }}.
+              </p>
+
               <!-- The avatar repeats beside incoming messages, as in a real
                    messenger. Outgoing ones don't need it — there is only ever
                    one of you in the thread. -->
               <div
-                v-for="(msg, idx) in selectedChat.messages"
-                :key="idx"
+                v-for="msg in messages"
+                :key="msg.id"
                 class="dm-row"
-                :class="msg.sender === 'me' ? 'dm-out' : 'dm-in'"
+                :class="msg.mine ? 'dm-out' : 'dm-in'"
               >
-                <span class="dm-av dm-av-sm" v-if="msg.sender !== 'me'" :style="{ background: selectedChat.color }">{{ selectedChat.initial }}</span>
-                <div class="dm-bubble">{{ msg.text }}</div>
+                <span class="dm-av dm-av-sm" v-if="!msg.mine" :style="avatarStyle(selected)">
+                  <template v-if="!selected.avatarUrl">{{ selected.initial }}</template>
+                </span>
+                <div class="dm-bubble" :title="fullTime(msg.createdAt)">{{ msg.body }}</div>
               </div>
             </div>
 
@@ -101,9 +147,11 @@ const Chat = {
                 @keyup.enter="sendMessage"
                 class="dm-compose-input"
                 placeholder="Message"
+                maxlength="4000"
                 aria-label="Message"
               />
-              <button class="dm-send" type="button" @click="sendMessage" :disabled="!newMessage.trim()" aria-label="Send">
+              <button class="dm-send" type="button" @click="sendMessage"
+                      :disabled="!newMessage.trim() || sending" aria-label="Send">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               </button>
             </div>
@@ -115,59 +163,394 @@ const Chat = {
             <span class="dm-empty-ic">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </span>
-            <p class="dm-empty-title">Your messages</p>
+            <p class="dm-empty-title">{{ opening ? 'Opening conversation…' : 'Your messages' }}</p>
             <p class="dm-empty-sub">Pick a conversation on the left to start reading.</p>
           </section>
 
         </div>
       </div>
+
+      <!-- ─────────── New message: who to ─────────── -->
+      <div class="dm-picker-back" v-if="pickerOpen" @click.self="closePicker">
+        <div class="dm-picker">
+          <div class="dm-picker-head">
+            <h3 class="dm-picker-title">New message</h3>
+            <button class="dm-picker-x" type="button" @click="closePicker" aria-label="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <div class="dm-search dm-picker-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input ref="pickerInput" type="search" v-model="pickerQuery"
+                   placeholder="Search by username" aria-label="Search people" />
+          </div>
+
+          <div class="dm-picker-results">
+            <p class="dm-no-results" v-if="pickerLoading">Searching…</p>
+
+            <template v-else>
+              <button
+                class="dm-person"
+                v-for="person in pickerResults"
+                :key="person.id"
+                @click="startChatWith(person.id)"
+              >
+                <span class="dm-av" :style="avatarStyle(person)">
+                  <template v-if="!person.avatarUrl">{{ person.initial }}</template>
+                </span>
+                <span class="dm-convo-text">
+                  <span class="dm-convo-name">{{ person.name }}</span>
+                  <span class="dm-convo-preview" v-if="person.username">&#64;{{ person.username }}</span>
+                </span>
+              </button>
+
+              <p class="dm-no-results" v-if="!pickerResults.length && pickerQuery.trim()">
+                Nobody found for “{{ pickerQuery }}”.
+              </p>
+              <p class="dm-no-results" v-else-if="!pickerQuery.trim()">
+                Start typing a username.
+              </p>
+            </template>
+          </div>
+        </div>
+      </div>
     </div>
   `,
+
   data() {
     return {
-      selectedChat: null,
+      me: null,
+
+      loading: true,
+      loadError: '',
+
+      conversations: [],
+
+      // The open room is held by id, not by object reference: the list is
+      // replaced wholesale on every refresh and a stored object would go
+      // stale the moment a message arrived.
+      selectedId: null,
+
+      messages: [],
+      messagesLoading: false,
+
       newMessage: '',
+      sending: false,
+      opening: false,
+
       query: '',
-      conversations: [
-        { id: 1, name: "NebulaNoor", initial: "N", color: "#a855f7", lastMessage: "Great image! Try taking flats next time.", time: "5m", messages: [{ sender: "them", text: "Hey! Loved your Orion Nebula shot." }, { sender: "me", text: "Thanks! Still learning flat frames." }, { sender: "them", text: "Great image! Try taking flats next time." }] },
-        { id: 2, name: "GalileoJr", initial: "G", color: "#7c3aed", lastMessage: "Yes, 6\" Dob is fine for Saturn", time: "1h", messages: [{ sender: "them", text: "Is a 6\" Dobsonian enough for Saturn's rings?" }, { sender: "me", text: "Yes, 6\" Dob is fine for Saturn. At 150x you'll see the rings clearly!" }] },
-        { id: 3, name: "StarDustMei", initial: "M", color: "#5b21b6", lastMessage: "Thanks for the magnitude explanation!", time: "3h", messages: [{ sender: "them", text: "Thanks for the magnitude explanation!" }, { sender: "me", text: "You're welcome! Negative magnitudes are brighter." }] }
-      ]
+
+      // "New message" people picker.
+      pickerOpen: false,
+      pickerQuery: '',
+      pickerResults: [],
+      pickerLoading: false,
     };
   },
+
   computed: {
+    selected() {
+      return this.conversations.find(c => c.id === this.selectedId) || null;
+    },
+
     // Matches the name and the last message, so searching for a topic finds
     // the thread it was discussed in, not just the person.
     filteredConversations() {
       const needle = this.query.trim().toLowerCase();
       if (!needle) return this.conversations;
+
       return this.conversations.filter(c =>
-        (c.name + ' ' + c.lastMessage).toLowerCase().includes(needle)
+        (c.name + ' ' + (c.lastMessage || '')).toLowerCase().includes(needle)
       );
-    }
+    },
   },
+
+  watch: {
+    // Debounced so a fast typist doesn't fire a query per keystroke.
+    pickerQuery() {
+      clearTimeout(this._pickerTimer);
+      this._pickerTimer = setTimeout(() => this.searchPeople(), 220);
+    },
+  },
+
+  async mounted() {
+    this.me = await window.DMAPI.currentUser();
+
+    await this.refreshConversations();
+    this.loading = false;
+
+    // The Chat button on a profile fires before this component exists when
+    // the tab wasn't already open, so app.js leaves the request on
+    // window.CosmoKlub for a fresh mount to pick up — and broadcasts it for
+    // an already-mounted one. Both paths land here.
+    this.consumePendingChat();
+
+    this._onOpenChat = (event) => {
+      const userId = event && event.detail && event.detail.userId;
+      if (userId) {
+        window.CosmoKlub.pendingChatUser = null;
+        this.startChatWith(userId);
+      }
+    };
+    window.addEventListener('cosmoklub-open-chat', this._onOpenChat);
+
+    // Realtime delivers the other person's messages without a refresh.
+    this._realtime = await window.DMAPI.subscribe((msg) => this.onIncoming(msg));
+
+    // …and a slow poll covers the case where dm_messages was never added to
+    // the supabase_realtime publication, so the tab degrades to a few
+    // seconds' delay rather than to nothing at all.
+    this._poll = setInterval(() => {
+      this.refreshConversations({ quiet: true });
+      if (this.selectedId) this.loadMessages({ quiet: true });
+    }, 10000);
+  },
+
+  beforeUnmount() {
+    if (this._onOpenChat) window.removeEventListener('cosmoklub-open-chat', this._onOpenChat);
+    if (this._poll) clearInterval(this._poll);
+    if (this._pickerTimer) clearTimeout(this._pickerTimer);
+    if (this._realtime && typeof this._realtime.stop === 'function') this._realtime.stop();
+  },
+
   methods: {
-    openChat(conv) {
-      // Keep the original object rather than a copy: a copy meant messages
-      // sent in the thread never made it back to the list preview.
-      this.selectedChat = conv;
-      this.newMessage = '';
-      this.$nextTick(() => { this.scrollToBottom(); });
+    // ---- Loading ---------------------------------------------------------
+
+    // `quiet` is for the poll and for refreshes that happen underneath an
+    // open thread: the list updates without the spinner flashing over it.
+    async refreshConversations({ quiet = false } = {}) {
+      const res = await window.DMAPI.listConversations();
+
+      if (!res.ok) {
+        if (!quiet) this.loadError = res.error || 'Could not load your messages.';
+        return;
+      }
+
+      this.loadError = '';
+      this.conversations = res.conversations;
     },
-    sendMessage() {
-      if (!this.newMessage.trim()) return;
-      const text = this.newMessage.trim();
-      this.selectedChat.messages.push({ sender: "me", text });
-      this.selectedChat.lastMessage = text;
-      this.selectedChat.time = 'now';
-      this.newMessage = '';
-      this.$nextTick(() => { this.scrollToBottom(); });
+
+    async loadMessages({ quiet = false } = {}) {
+      if (!this.selectedId) return;
+
+      const threadId = this.selectedId;
+      if (!quiet) this.messagesLoading = true;
+
+      const res = await window.DMAPI.listMessages(threadId);
+
+      // The room may have been switched while this was in flight.
+      if (this.selectedId !== threadId) return;
+
+      if (!quiet) this.messagesLoading = false;
+
+      if (!res.ok) {
+        this.loadError = res.error || 'Could not load that conversation.';
+        return;
+      }
+
+      const wasAtBottom = this.isAtBottom();
+      const grew = res.messages.length !== this.messages.length;
+      this.messages = res.messages;
+
+      // Don't yank someone out of the history they were scrolled back to.
+      if (grew && wasAtBottom) this.$nextTick(() => this.scrollToBottom());
     },
+
+    // ---- Opening a room --------------------------------------------------
+
+    async openChat(conv) {
+      this.selectedId = conv.id;
+      this.newMessage = '';
+      this.messages = [];
+
+      await this.loadMessages();
+      this.$nextTick(() => this.scrollToBottom());
+
+      if (conv.unread) {
+        conv.unread = 0;
+        window.DMAPI.markRead(conv.id);
+      }
+    },
+
+    closeChat() {
+      this.selectedId = null;
+      this.messages = [];
+    },
+
+    consumePendingChat() {
+      const pending = window.CosmoKlub && window.CosmoKlub.pendingChatUser;
+      if (!pending) return;
+
+      window.CosmoKlub.pendingChatUser = null;
+      this.startChatWith(pending);
+    },
+
+    // dm_open() returns the existing room or makes one, so pressing Chat on
+    // the same person twice lands in the same conversation rather than
+    // creating a second empty one.
+    async startChatWith(userId) {
+      if (!userId || this.opening) return;
+
+      this.closePicker();
+      this.opening = true;
+
+      const res = await window.DMAPI.openWith(userId);
+
+      if (!res.ok) {
+        this.opening = false;
+        this.loadError = res.error || 'Could not open that conversation.';
+        return;
+      }
+
+      await this.refreshConversations();
+      this.opening = false;
+
+      const conv = this.conversations.find(c => c.id === res.threadId);
+
+      if (!conv) {
+        this.loadError = 'The conversation was created but could not be loaded. Try reloading.';
+        return;
+      }
+
+      await this.openChat(conv);
+    },
+
+    // ---- Sending ---------------------------------------------------------
+
+    async sendMessage() {
+      const body = this.newMessage.trim();
+      if (!body || this.sending || !this.selectedId) return;
+
+      const threadId = this.selectedId;
+      this.sending = true;
+      this.newMessage = '';
+
+      const res = await window.DMAPI.sendMessage(threadId, body);
+      this.sending = false;
+
+      if (!res.ok) {
+        this.newMessage = body;          // hand it back rather than losing it
+        this.loadError = res.error || 'That message did not send.';
+        return;
+      }
+
+      this.loadError = '';
+
+      // Realtime echoes your own insert back, so guard against showing it
+      // twice — whichever arrives first wins and the other is ignored.
+      if (this.selectedId === threadId && !this.messages.some(m => m.id === res.message.id)) {
+        this.messages.push(res.message);
+        this.$nextTick(() => this.scrollToBottom());
+      }
+
+      this.refreshConversations({ quiet: true });
+    },
+
+    // ---- Realtime --------------------------------------------------------
+
+    onIncoming(msg) {
+      if (this.selectedId === msg.threadId) {
+        if (!this.messages.some(m => m.id === msg.id)) {
+          const wasAtBottom = this.isAtBottom();
+          this.messages.push(msg);
+          if (wasAtBottom) this.$nextTick(() => this.scrollToBottom());
+        }
+
+        // Reading it as it arrives is what stops the badge appearing on a
+        // conversation that is open on screen.
+        if (!msg.mine) window.DMAPI.markRead(this.selectedId);
+      }
+
+      // The preview and the ordering in the list are now out of date whether
+      // or not the room was the open one.
+      this.refreshConversations({ quiet: true });
+    },
+
+    // ---- People picker ---------------------------------------------------
+
+    openPicker() {
+      this.pickerOpen = true;
+      this.pickerQuery = '';
+      this.pickerResults = [];
+
+      this.$nextTick(() => {
+        if (this.$refs.pickerInput) this.$refs.pickerInput.focus();
+      });
+    },
+
+    closePicker() {
+      this.pickerOpen = false;
+    },
+
+    async searchPeople() {
+      const q = this.pickerQuery.trim();
+
+      if (!q) {
+        this.pickerResults = [];
+        this.pickerLoading = false;
+        return;
+      }
+
+      this.pickerLoading = true;
+      const res = await window.SocialAPI.searchPeople(q);
+
+      // A later keystroke may have already replaced this search.
+      if (this.pickerQuery.trim() !== q) return;
+
+      this.pickerLoading = false;
+      this.pickerResults = res.people || [];
+    },
+
+    // ---- Presentation ----------------------------------------------------
+
+    openProfile(userId) {
+      if (window.CosmoKlub && typeof window.CosmoKlub.openProfile === 'function') {
+        window.CosmoKlub.openProfile(userId);
+      }
+    },
+
+    // Inline so it beats the gradient .dm-av paints; without a picture the
+    // class wins and the initial shows through.
+    avatarStyle(who) {
+      if (!who || !who.avatarUrl) return {};
+      return {
+        backgroundImage: `url("${who.avatarUrl}")`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      };
+    },
+
+    // "You: …" on your own last message, the way every messenger marks it.
+    preview(conv) {
+      if (!conv.lastMessage) return 'No messages yet';
+      const mine = this.me && conv.lastSenderId === this.me.id;
+      return mine ? `You: ${conv.lastMessage}` : conv.lastMessage;
+    },
+
+    time(iso) {
+      return window.DMAPI.shortTime(iso);
+    },
+
+    fullTime(iso) {
+      if (!iso) return '';
+      return new Date(iso).toLocaleString();
+    },
+
+    // ---- Scrolling -------------------------------------------------------
+
+    // Within 60px of the bottom counts as "following the conversation".
+    isAtBottom() {
+      const el = this.$refs.chatMessages;
+      if (!el) return true;
+      return el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+    },
+
     scrollToBottom() {
       const container = this.$refs.chatMessages;
       if (container) container.scrollTop = container.scrollHeight;
-    }
-  }
+    },
+  },
 };
 
 (function injectChatStyles() {
@@ -529,6 +912,172 @@ const Chat = {
       .dm { grid-template-columns: 250px minmax(0, 1fr); }
       .dm-av { width: 38px; height: 38px; font-size: 0.86rem; }
     }
+    /* ---------- Added with the real data layer ----------
+       Everything below arrived when the mock conversations were replaced by
+       supabase/schema-social.sql: an unread count, a people picker for
+       starting a new conversation, a place to show what the API said when a
+       call fails, and a thread header that is now a link to a profile. */
+
+    /* "New message" in the eyebrow row is a button now, not a label. */
+    .dm-new-link {
+      background: none;
+      border: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      padding: 0;
+    }
+    .dm-new-link:hover { color: #d9c9ff; text-decoration: underline; }
+
+    .dm-error {
+      margin: 0 0 10px;
+      padding: 9px 12px;
+      flex-shrink: 0;
+      background: rgba(248, 113, 133, 0.1);
+      border: 1px solid rgba(248, 113, 133, 0.32);
+      border-radius: 10px;
+      color: #fb7185;
+      font-size: 0.78rem;
+    }
+
+    /* Time and unread badge stack on the right of a conversation row. */
+    .dm-convo-side {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .dm-unread {
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      box-sizing: border-box;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      font-size: 0.64rem;
+      font-weight: 800;
+    }
+    /* On the open row the pill fill is already violet, so the badge needs to
+       separate itself from it rather than blend in. */
+    .dm-convo.is-active .dm-unread { background: #fff; color: #4c1d95; }
+
+    /* The identity block in the thread header opens their profile. */
+    .dm-thread-who {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 0;
+      background: none;
+      border: none;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .dm-thread-who:hover .dm-thread-name { color: #fff; text-decoration: underline; }
+    .dm-thread-who:hover .dm-thread-status { color: #c4b5fd; }
+    /* Not a status any more — it says "View profile", so the green of an
+       online indicator would be misleading. */
+    .dm-thread-status { color: #9d90bb; }
+
+    .dm-thread-hint {
+      margin: auto auto 8px;
+      padding: 0 12px;
+      font-size: 0.76rem;
+      color: #8b7aa8;
+      text-align: center;
+    }
+
+    /* Avatars can carry a real picture now, set inline from avatar_url. */
+    .dm-av { background: linear-gradient(140deg, #c084fc, #7c3aed); overflow: hidden; }
+
+    /* ---------- People picker ---------- */
+    .dm-picker-back {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(4, 2, 12, 0.72);
+      backdrop-filter: blur(3px);
+    }
+
+    .dm-picker {
+      width: min(420px, 100%);
+      max-height: min(70vh, 560px);
+      display: flex;
+      flex-direction: column;
+      background: rgba(14, 11, 30, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .dm-picker-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 14px 10px;
+      flex-shrink: 0;
+    }
+    .dm-picker-title {
+      margin: 0;
+      flex: 1;
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #f5f3ff;
+    }
+    .dm-picker-x {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      background: none;
+      border: none;
+      border-radius: 8px;
+      color: #b8a9d9;
+      cursor: pointer;
+    }
+    .dm-picker-x svg { width: 16px; height: 16px; }
+    .dm-picker-x:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+    .dm-picker-search { margin: 0 14px 10px; }
+
+    .dm-picker-results {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0 8px 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .dm-picker-results::-webkit-scrollbar { width: 4px; }
+    .dm-picker-results::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Same row as a conversation, minus the timestamp. */
+    .dm-person {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 9px;
+      margin-bottom: 2px;
+      background: none;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background .16s;
+    }
+    .dm-person:hover { background: rgba(255,255,255,0.05); }
+
   `;
   document.head.appendChild(style);
 })();

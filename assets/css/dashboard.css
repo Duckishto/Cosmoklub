@@ -1851,3 +1851,62 @@ body {
   .fxd-del-confirm { margin-left: 0; }
   .fxd-del-confirm { flex-wrap: wrap; }
 }
+
+/* ---------------------------------------------------------------------------
+   Forum — author links
+   ---------------------------------------------------------------------------
+   Every name and avatar in the Forum opens that person's profile, so they are
+   real <button>s rather than spans with a click handler: keyboard focus and
+   screen readers both need them to be. These rules only strip the browser's
+   default button chrome back to what the span looked like — the sizes and
+   colours still come from .fxd-avatar / .fxd-author-name above.
+
+   On a thread card the button sits inside a card that is itself clickable;
+   the @click.stop in components/forum.js is what keeps one from firing the
+   other.
+   ------------------------------------------------------------------------ */
+
+.fxd-author-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.fxd-author-btn:hover .fxd-author-name,
+.fxd-author-link:hover {
+  color: #f5f3ff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* The comment avatar and the comment name are separated by the comment's own
+   layout, so each is its own button rather than one wrapping both. */
+.fxd-avatar-btn {
+  padding: 0;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.fxd-author-link {
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.fxd-author-btn:focus-visible,
+.fxd-avatar-btn:focus-visible,
+.fxd-author-link:focus-visible {
+  outline: 2px solid rgba(168, 85, 247, 0.7);
+  outline-offset: 2px;
+}

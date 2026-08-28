@@ -9,7 +9,7 @@
   <!-- KaTeX — LaTeX math rendering for the calculator display -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <link rel="stylesheet" href="assets/css/dashboard.css?v=17">
+  <link rel="stylesheet" href="assets/css/dashboard.css?v=18">
   <!-- Study Roadmap header + Overall Rank panel (Library tab). Previously
        injected at runtime from a JS string in components/library.js, which
        made it fragile and was why the header/rank panel sometimes rendered
@@ -28,7 +28,7 @@
 
   <!-- Profile + Settings tabs — every rule is scoped under .profile-tab so it
        can't reach the dashboard shell -->
-  <link rel="stylesheet" href="assets/css/profile.css?v=2">
+  <link rel="stylesheet" href="assets/css/profile.css?v=3">
   <!-- Settings tab — scoped under .settings-tab, same idea as profile.css -->
   <link rel="stylesheet" href="assets/css/settings.css?v=2">
   <link rel="stylesheet" href="assets/css/loader.css">
@@ -174,7 +174,9 @@
       <div class="content">
         <!-- Each tab is an independent component; see components/*.js.
              tabComponents maps tab name -> component, defined in app.js. -->
-        <component :is="tabComponents[activeTab]"></component>
+        <!-- user-id only means anything to Profile; it is null on every
+             other tab, so Vue drops the attribute entirely. -->
+        <component :is="tabComponents[activeTab]" :user-id="profileUserId"></component>
       </div>
 
     </div>
@@ -230,20 +232,26 @@
 
 <script src="assets/js/lib/forum-api.js"></script>
 
+<!-- Follow graph + public profiles, and the private-message layer. Both are
+     backed by supabase/schema-social.sql. social-api.js must load before
+     components/profile.js, dm-api.js before components/chat.js. -->
+<script src="assets/js/lib/social-api.js"></script>
+<script src="assets/js/lib/dm-api.js"></script>
+
 <!-- Library progression data must load before library.js -->
 <script src="assets/js/course-data.js"></script>
 <script src="assets/js/progress.js"></script>
 
 <!-- Components must load before app.js, which registers and mounts them -->
-<script src="assets/js/components/forum.js?v=5"></script>
+<script src="assets/js/components/forum.js?v=6"></script>
 <script src="assets/js/components/library.js?v=3"></script>
-<script src="assets/js/components/chat.js"></script>
+<script src="assets/js/components/chat.js?v=2"></script>
 <script src="assets/js/components/calculator.js"></script>
-<script src="assets/js/components/profile.js?v=3"></script>
+<script src="assets/js/components/profile.js?v=4"></script>
 <script src="assets/js/components/settings.js?v=4"></script>
 <script src="assets/js/components/docs.js?v=1"></script>
 
-<script src="assets/js/app.js?v=5"></script>
+<script src="assets/js/app.js?v=6"></script>
   <script src="assets/js/loader.js"></script>
 </body>
 </html>

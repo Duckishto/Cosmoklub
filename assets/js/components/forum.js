@@ -55,8 +55,11 @@ const Forum = {
             </h3>
 
             <div class="fxd-card-author">
-              <span class="fxd-avatar" :style="{ background: reading.color }">{{ reading.initial }}</span>
-              <span class="fxd-author-name">{{ reading.author }}</span>
+              <button type="button" class="fxd-author-btn" @click="openProfile(reading.authorId)"
+                      :aria-label="'View ' + reading.author + '\u2019s profile'">
+                <span class="fxd-avatar" :style="{ background: reading.color }">{{ reading.initial }}</span>
+                <span class="fxd-author-name">{{ reading.author }}</span>
+              </button>
               <span class="fxd-lvl">{{ reading.level }}</span>
               <span class="fxd-time">{{ reading.time }}</span>
             </div>
@@ -95,10 +98,13 @@ const Forum = {
               <div class="fxd-comment-thread" v-for="c in topLevelComments" :key="c.id">
 
                 <div class="fxd-comment">
-                  <span class="fxd-avatar fxd-avatar-sm" :style="{ background: c.color }">{{ c.initial }}</span>
+                  <button type="button" class="fxd-avatar fxd-avatar-sm fxd-avatar-btn"
+                          :style="{ background: c.color }" @click="openProfile(c.authorId)"
+                          :aria-label="'View ' + c.author + '\u2019s profile'">{{ c.initial }}</button>
                   <div class="fxd-comment-body">
                     <div class="fxd-comment-head">
-                      <span class="fxd-author-name">{{ c.author }}</span>
+                      <button type="button" class="fxd-author-name fxd-author-link"
+                              @click="openProfile(c.authorId)">{{ c.author }}</button>
                       <span class="fxd-time">{{ c.time }}</span>
                     </div>
                     <p>{{ c.body }}</p>
@@ -124,10 +130,13 @@ const Forum = {
                      only one level deep: threads that nest without limit get
                      unreadable fast on a phone. -->
                 <div class="fxd-comment fxd-comment-child" v-for="r in repliesTo(c.id)" :key="r.id">
-                  <span class="fxd-avatar fxd-avatar-sm" :style="{ background: r.color }">{{ r.initial }}</span>
+                  <button type="button" class="fxd-avatar fxd-avatar-sm fxd-avatar-btn"
+                          :style="{ background: r.color }" @click="openProfile(r.authorId)"
+                          :aria-label="'View ' + r.author + '\u2019s profile'">{{ r.initial }}</button>
                   <div class="fxd-comment-body">
                     <div class="fxd-comment-head">
-                      <span class="fxd-author-name">{{ r.author }}</span>
+                      <button type="button" class="fxd-author-name fxd-author-link"
+                              @click="openProfile(r.authorId)">{{ r.author }}</button>
                       <span class="fxd-time">{{ r.time }}</span>
                     </div>
                     <p>{{ r.body }}</p>
@@ -417,8 +426,11 @@ const Forum = {
                 <p class="fxd-card-desc">{{ t.body }}</p>
 
                 <div class="fxd-card-author">
-                  <span class="fxd-avatar" :style="{ background: t.color }">{{ t.initial }}</span>
-                  <span class="fxd-author-name">{{ t.author }}</span>
+                  <button type="button" class="fxd-author-btn" @click.stop="openProfile(t.authorId)"
+                          :aria-label="'View ' + t.author + '\u2019s profile'">
+                    <span class="fxd-avatar" :style="{ background: t.color }">{{ t.initial }}</span>
+                    <span class="fxd-author-name">{{ t.author }}</span>
+                  </button>
                   <span class="fxd-lvl">{{ t.level }}</span>
                 </div>
 
@@ -680,6 +692,21 @@ const Forum = {
         title: row.title,
         body: row.body,
       };
+    },
+
+    // ---- Navigation -----------------------------------------------------
+
+    // Any author's name or avatar, anywhere in the tab, opens their profile.
+    // app.js owns the routing (?tab=profile&user=…); the reader is closed
+    // first so it isn't left hanging over the page underneath.
+    openProfile(userId) {
+      if (!userId) return;
+
+      this.closeThread();
+
+      if (window.CosmoKlub && typeof window.CosmoKlub.openProfile === 'function') {
+        window.CosmoKlub.openProfile(userId);
+      }
     },
 
     // ---- Solved state ---------------------------------------------------
